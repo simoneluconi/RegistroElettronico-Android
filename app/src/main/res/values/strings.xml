@@ -14,4 +14,23 @@
     <string name="non_sufficiente">Non sei sufficiente</string>
     <string name="nointernet">Non sei connesso ad internet!</string>
 
+    <string name="dettaglio_voti_titolo">Dettaglio voti</string>
+    <string name="dettaglio_voti_desc">Nel tab voti clicca su una scheda per visualizzare i commenti dei voti</string>
+    <string name="agenda_titolo">Agenda</string>
+    <string name="agenda_desc">Nell\'agenda le verifiche vengono indicate con dei pallini rossi, mentre i compiti con dei pallini gialli</string>
+    <string name="ultima_cosa_titolo">Un ultima cosa</string>
+    <string name="ultima_cosa_desc">Abbiamo bisogno dei permessi di archiviazione per scaricare le circolari e i file dalla didattica</string>
+    <string name="sei_pronto_titolo">Sei pronto!</string>
+    <string name="sei_pronto_desc">Ora sei pronto per utilizzare al meglio quest app. Ricorda, per qualsiasi problema contattaci a sharpdroidmail@gmail.com</string>
+    <string name="media_ipotetica_desc">oppure tieni premuto per visualizzare la media ipotetica</string>
+    <string name="intro_app_desc">Verrai introdotto ad alcune funzionalità dell\'app.</string>
+    <string name="dettagli_medie_titolo">Dettaglio medie</string>
+    <string name="dettaglio_media_desc">Nei primi tre tab premi sulla scheda di una materia per visualizzare il dettaglio delle medie</string>
+    <string name="media_ipotetica_titolo">Media ipotetica</string>
+    <string name="benvenuto">Benvenuto!</string>
+    <string name="login">Login</string>
+    <string name="login_msg">Login riuscito</string>
+    <string name="mail">Mail</string>
+    <string name="password">Password</string>
+    <string name="caricamento">Caricamento…</string>
 </resources>
