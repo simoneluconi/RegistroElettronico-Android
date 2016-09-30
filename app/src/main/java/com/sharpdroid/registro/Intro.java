@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import com.heinrichreimersoftware.materialintro.app.IntroActivity;
+import com.heinrichreimersoftware.materialintro.slide.FragmentSlide;
 import com.heinrichreimersoftware.materialintro.slide.SimpleSlide;
 
 public class Intro extends IntroActivity {
@@ -52,6 +53,12 @@ public class Intro extends IntroActivity {
                     .permissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE})
                     .build());
         }
+        addSlide(new FragmentSlide.Builder()
+                .background(R.color.intro_blue)
+                .backgroundDark(R.color.intro_blue_dark)
+                .fragment(LoginFragment.newInstance())
+                .build());
+
         addSlide(new SimpleSlide.Builder()
                 .title(R.string.sei_pronto_titolo)
                 .description(R.string.sei_pronto_desc)

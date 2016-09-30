@@ -23,6 +23,8 @@ public class LoginFragment extends SlideFragment {
     private Runnable loginRunnable = new Runnable() {
         @Override
         public void run() {
+            // TODO: Login :P
+
             loginbtn.setText(R.string.login);
             Toast.makeText(getContext(), R.string.login_msg, Toast.LENGTH_SHORT).show();
 
@@ -60,6 +62,8 @@ public class LoginFragment extends SlideFragment {
                 loginbtn.setEnabled(false);
                 loginbtn.setText(R.string.caricamento);
 
+                // TODO: Remove when ready
+                loginHandler.postDelayed(loginRunnable, 2000);
             }
         });
 
