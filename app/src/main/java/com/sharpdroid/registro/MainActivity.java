@@ -51,8 +51,7 @@ public class MainActivity extends AppCompatActivity
                 PreferenceManager.getDefaultSharedPreferences(this).edit()
                         .putBoolean("primo_avvio", false)
                         .apply();
-            }
-            else {
+            } else {
                 PreferenceManager.getDefaultSharedPreferences(this).edit()
                         .putBoolean("primo_avvio", true)
                         .apply();

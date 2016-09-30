@@ -33,4 +33,5 @@
     <string name="mail">Mail</string>
     <string name="password">Password</string>
     <string name="caricamento">Caricamento…</string>
+    <string name="login_msg_failer">Login fallito</string>
 </resources>
