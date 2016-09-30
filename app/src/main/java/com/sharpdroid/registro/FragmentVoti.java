@@ -3,6 +3,8 @@ package com.sharpdroid.registro;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.UiThread;
+import android.support.annotation.WorkerThread;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -165,6 +167,7 @@ public class FragmentVoti extends Fragment implements SwipeRefreshLayout.OnRefre
 
     public class VotiTask extends AsyncTask<Void, Void, List<Voto>> {
         // Runs on UI thread
+        @UiThread
         @Override
         protected void onPreExecute() {
             /* Start refreshing circle animation.
@@ -179,6 +182,7 @@ public class FragmentVoti extends Fragment implements SwipeRefreshLayout.OnRefre
             });
         }
 
+        @WorkerThread
         @Override
         protected List<Voto> doInBackground(Void... params) {
             List<Voto> voti = new LinkedList<>();
@@ -212,6 +216,7 @@ public class FragmentVoti extends Fragment implements SwipeRefreshLayout.OnRefre
         }
 
         // Runs on the UI thread
+        @UiThread
         @Override
         protected void onPostExecute(List<Voto> voti) {
             if (voti != null) {

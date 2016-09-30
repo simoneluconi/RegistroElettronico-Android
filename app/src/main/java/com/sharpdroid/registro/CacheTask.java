@@ -11,7 +11,7 @@ import java.io.ObjectOutputStream;
 import java.util.List;
 
 
-public class CacheTask extends AsyncTask<List, Void, Void> {
+class CacheTask extends AsyncTask<List, Void, Void> {
 
     /**
      * Logcat tag.
@@ -26,7 +26,7 @@ public class CacheTask extends AsyncTask<List, Void, Void> {
     /**
      * @param cacheDir the directory in which the data will be stored.
      */
-    public CacheTask(File cacheDir) {
+    CacheTask(File cacheDir) {
         this.cacheDir = cacheDir;
     }
 
