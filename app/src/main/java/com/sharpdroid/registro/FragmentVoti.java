@@ -24,10 +24,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.StreamCorruptedException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -190,26 +186,9 @@ public class FragmentVoti extends Fragment implements SwipeRefreshLayout.OnRefre
             long time = System.currentTimeMillis();
             String url = "https://gist.githubusercontent.com/luca020400/ddf60baa2de3d5d4b8ab98f58f21571d/raw";
             try {
-                Log.d(TAG, "Sending GET request to \"" + url + "\"");
-                HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-                try {
-                    connection.setRequestProperty("Accept", "application/json");
-                    connection.setRequestMethod("GET");
-                    Log.d(TAG, "Response: " + connection.getResponseCode() + ", " + connection.getResponseMessage());
-                    // Parse JSON
-                    voti.addAll(parser.parseJSON(connection.getInputStream()));
-                } catch (ProtocolException e) {
-                    Log.e(TAG, e.getMessage());
-                    return null;
-                } finally {
-                    connection.disconnect();
-                }
-            } catch (MalformedURLException e) {
-                Log.e(TAG, "Malformed URL!");
-                return null;
-            } catch (IOException e) {
-                Log.e(TAG, "Error while connecting to " + url);
-                return null;
+                voti.addAll(parser.parseJSON(url));
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             Log.v(TAG, "Successfully parsed " + voti.size() + " changes in " + (System.currentTimeMillis() - time) + "ms");
             return voti;
@@ -219,7 +198,7 @@ public class FragmentVoti extends Fragment implements SwipeRefreshLayout.OnRefre
         @UiThread
         @Override
         protected void onPostExecute(List<Voto> voti) {
-            if (voti != null) {
+            if (voti != null && voti.size() != 0) {
                 mRVAdapter.clear();
                 mRVAdapter.addAll(voti);
 

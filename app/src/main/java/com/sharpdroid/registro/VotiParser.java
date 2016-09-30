@@ -1,51 +1,38 @@
 package com.sharpdroid.registro;
 
-import android.util.JsonReader;
+import android.util.Log;
 
-import java.io.IOException;
-import java.io.InputStream;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
+import java.net.URL;
 import java.util.List;
 
 class VotiParser {
-    List<Voto> parseJSON(InputStream inputStream) throws IOException {
-        List<Voto> voti = new LinkedList<>();
-        /* Parse JSON */
-        JsonReader reader = new JsonReader(new InputStreamReader(inputStream, "UTF-8"));
-        reader.setLenient(true); // strip XSSI protection
-        reader.beginArray();
-        while (reader.hasNext()) {
-            reader.beginObject();
-            Voto nuovoVoto = new Voto();
-            while (reader.hasNext()) {
-                switch (reader.nextName()) {
-                    case "q":
-                        nuovoVoto.setQ(reader.nextString());
-                        break;
-                    case "ns":
-                        nuovoVoto.setBlu(reader.nextBoolean());
-                        break;
-                    case "type":
-                        nuovoVoto.setTipo(reader.nextString());
-                        break;
-                    case "date":
-                        nuovoVoto.setData(reader.nextString());
-                        break;
-                    case "mark":
-                        nuovoVoto.setVoto(reader.nextDouble());
-                        break;
-                    case "desc":
-                        nuovoVoto.setCommento(reader.nextString());
-                        break;
-                    default:
-                        reader.skipValue();
-                }
-            }
-            reader.endObject();
-            voti.add(nuovoVoto);
+    List<Voto> parseJSON(String url) throws Exception {
+        Gson gson = new Gson();
+        String json = readUrl(url);
+        return gson.fromJson(json, new TypeToken<List<Voto>>() {
+        }.getType());
+    }
+
+    private static String readUrl(String urlString) throws Exception {
+        BufferedReader reader = null;
+        try {
+            URL url = new URL(urlString);
+            reader = new BufferedReader(new InputStreamReader(url.openStream()));
+            StringBuilder buffer = new StringBuilder();
+            int read;
+            char[] chars = new char[1024];
+            while ((read = reader.read(chars)) != -1)
+                buffer.append(chars, 0, read);
+
+            return buffer.toString();
+        } finally {
+            if (reader != null)
+                reader.close();
         }
-        reader.endArray();
-        return voti;
     }
 }

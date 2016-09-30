@@ -1,15 +1,22 @@
 package com.sharpdroid.registro;
 
-import java.io.Serializable;
+import com.google.gson.annotations.SerializedName;
 
-class Voto implements Serializable {
+class Voto {
+    @SerializedName("q")
     private String q;
-    private String materia;
-    private String tipo;
-    private String data;
-    private String commento;
+    @SerializedName("ns")
     private boolean blu;
+    @SerializedName("type")
+    private String tipo;
+    @SerializedName("date")
+    private String data;
+    @SerializedName("mark")
     private double voto;
+    @SerializedName("desc")
+    private String commento;
+    @SerializedName("materia")
+    private String materia;
 
     static final String orale = "Orale";
     static final String scritto = "Scritto";
