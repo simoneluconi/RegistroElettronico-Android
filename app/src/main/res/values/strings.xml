@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Registro</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="voti">Voti</string>
+    <string name="share">Share</string>
+    <string name="send">Send</string>
+    <string name="communicate">Communicate</string>
+
+    <string name="sufficiente">Sei sufficiente</string>
+    <string name="non_sufficiente">Non sei sufficiente</string>
+    <string name="nointernet">Non sei connesso ad internet!</string>
+
+</resources>
