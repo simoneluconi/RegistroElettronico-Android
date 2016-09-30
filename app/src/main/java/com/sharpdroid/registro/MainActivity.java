@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setCheckedItem(0);
     }
 
     @Override
@@ -77,7 +76,6 @@ public class MainActivity extends AppCompatActivity
             case R.id.voti:
                 fragment = new FragmentVoti();
                 break;
-            case R.id.action_settings:
             case R.id.nav_share:
             case R.id.nav_send:
             default:

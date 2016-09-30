@@ -16,7 +16,7 @@ class CacheTask extends AsyncTask<List, Void, Void> {
     /**
      * Logcat tag.
      */
-    private static final String TAG = "CacheChangelogTask";
+    private static final String TAG = "CacheTask";
 
     /**
      * File representing the directory in which the data will be stored.

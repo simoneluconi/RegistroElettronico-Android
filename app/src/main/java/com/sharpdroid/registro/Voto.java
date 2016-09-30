@@ -2,7 +2,9 @@ package com.sharpdroid.registro;
 
 import com.google.gson.annotations.SerializedName;
 
-class Voto {
+import java.io.Serializable;
+
+class Voto implements Serializable {
     @SerializedName("q")
     private String q;
     @SerializedName("ns")
