@@ -10,15 +10,32 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center_vertical"
-        android:padding="16dp">
+        android:baselineAligned="false"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/materia"
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:textSize="18sp" />
+            android:layout_gravity="center_vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/materia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/material_blue_grey"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/descrizione"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/materia"
+                android:layout_marginBottom="3dp"
+                android:textColor="@color/textcolorgrey"
+                android:textSize="13sp" />
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="0dp"
@@ -31,15 +48,19 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_centerInParent="true"
+                android:layout_marginEnd="18dp"
+                android:layout_marginRight="18dp"
                 app:cpv_animAutostart="true"
-                app:cpv_indeterminate="false"
-                app:cpv_progress="80" />
+                app:cpv_indeterminate="false" />
 
             <TextView
                 android:id="@+id/media"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="20dp"
+                android:textColor="@color/textcolorgrey"
                 android:textSize="15sp" />
         </RelativeLayout>
 

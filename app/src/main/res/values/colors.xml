@@ -8,6 +8,11 @@
     <color name="greenmaterial">#43A047</color>
     <color name="redmaterial">#F44336</color>
     <color name="orangematerial">#FDD835</color>
+    <color name="material_blue_grey">#37474f</color>
+
+    <color name="textcolor">#FFFFFF</color>
+    <color name="textcolorgrey">#737373</color>
+    <color name="textcolorbittitle">#000000</color>
 
     <color name="intro_blue">#03A9F4</color>
     <color name="intro_blue_dark">#0288D1</color>

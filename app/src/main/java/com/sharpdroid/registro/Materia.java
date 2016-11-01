@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Materia implements Serializable {
+class Materia implements Serializable {
     @SerializedName("name")
     private String materia;
     @SerializedName("marks")

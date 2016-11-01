@@ -122,6 +122,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
             } else {
                 ViewHolder.CircularMedia.setColor(ContextCompat.getColor(getContext(), R.color.redmaterial));
             }
+            ViewHolder.Desc.setText("Devi prendere almeno 2");
         }
 
         @Override
@@ -132,12 +133,14 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
         class ViewHolder extends RecyclerView.ViewHolder {
             final TextView Materia;
             final TextView Media;
+            final TextView Desc;
             final CircularProgressView CircularMedia;
 
             ViewHolder(View itemView) {
                 super(itemView);
                 Materia = (TextView) itemView.findViewById(R.id.materia);
                 Media = (TextView) itemView.findViewById(R.id.media);
+                Desc = (TextView) itemView.findViewById(R.id.descrizione);
                 CircularMedia = (CircularProgressView) itemView.findViewById(R.id.progressvoti);
             }
         }

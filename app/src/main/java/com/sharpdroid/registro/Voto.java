@@ -39,7 +39,7 @@ class Voto implements Serializable {
         return tipo;
     }
 
-    public void setTipo(String materia) {
+    public void setTipo(String tipo) {
         this.tipo = tipo;
     }
 

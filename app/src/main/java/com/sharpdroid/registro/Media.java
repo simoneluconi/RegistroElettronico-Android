@@ -70,7 +70,7 @@ class Media implements Serializable {
         }
     }
 
-    public boolean isSufficiente(String tipo) {
+    private boolean isSufficiente(String tipo) {
         switch (tipo) {
             case Voto.orale:
                 return this.media_orale > 6;
