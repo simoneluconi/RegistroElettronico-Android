@@ -20,6 +20,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.PersistentCookieStore;
+import com.loopj.android.http.TextHttpResponseHandler;
 
 import java.io.EOFException;
 import java.io.File;
@@ -31,6 +36,8 @@ import java.io.StreamCorruptedException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+
+import cz.msebera.android.httpclient.Header;
 
 import static com.sharpdroid.registro.Metodi.isNetworkAvailable;
 
@@ -44,6 +51,47 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
     public FragmentMedie() {
 
     }
+
+    final Runnable Medie = new Runnable() {
+        public void run() {
+            List<Materia> materie = new LinkedList<>();
+            long time = System.currentTimeMillis();
+            String url = "https://api.daniele.ml/marks";
+
+            AsyncHttpClient client = new AsyncHttpClient();
+            PersistentCookieStore myCookieStore = new PersistentCookieStore(getContext());
+            client.setCookieStore(myCookieStore);
+
+            client.get(url, new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                    try {
+                        materie.addAll(new Gson().fromJson(responseString, new TypeToken<List<Materia>>() {
+                        }.getType()));
+                        Log.v(TAG, "Successfully parsed " + materie.size() + " changes in " + (System.currentTimeMillis() - time) + "ms");
+
+                        if (materie.size() != 0) {
+                            mRVAdapter.clear();
+                            mRVAdapter.addAll(materie);
+
+                            // Update cache
+                            new CacheTask(getContext().getCacheDir()).execute((List) materie);
+
+                            // Delay refreshing animation just for the show
+                            new Handler().postDelayed(() -> mSwipeRefreshLayout.setRefreshing(false), 300);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    };
 
     @Override
     public View onCreateView(final LayoutInflater inflater,
@@ -67,7 +115,9 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
         mRecyclerView.setAdapter(mRVAdapter);
 
         bindVotiCache();
-        new VotiTask().execute();
+
+        Handler handler = new Handler();
+        handler.post(Medie);
 
         return layout;
     }
@@ -75,7 +125,8 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onRefresh() {
         if (isNetworkAvailable(getContext())) {
-            new VotiTask().execute();
+            Handler handler = new Handler();
+            handler.post(Medie);
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);
@@ -175,62 +226,6 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
             Log.e(TAG, "Error while reading cache!");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-        }
-    }
-
-    private class VotiTask extends AsyncTask<Void, Void, List<Materia>> {
-        // Runs on UI thread
-        @UiThread
-        @Override
-        protected void onPreExecute() {
-            /* Start refreshing circle animation.
-             * Wrap in runnable to workaround SwipeRefreshLayout bug.
-             * View: https://code.google.com/p/android/issues/detail?id=77712
-             */
-            mSwipeRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    mSwipeRefreshLayout.setRefreshing(true);
-                }
-            });
-        }
-
-        @WorkerThread
-        @Override
-        protected List<Materia> doInBackground(Void... params) {
-            List<Materia> materie = new LinkedList<>();
-            MaterieParser parser = new MaterieParser();
-            long time = System.currentTimeMillis();
-            String url = "https://gist.githubusercontent.com/luca020400/ee7ecf8b0dac048ae9091ec8256ff303/raw";
-            //TODO: String url = "https://api.daniele.ml/marks";
-            try {
-                materie.addAll(parser.parseJSON(url));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            Log.v(TAG, "Successfully parsed " + materie.size() + " changes in " + (System.currentTimeMillis() - time) + "ms");
-            return materie;
-        }
-
-        // Runs on the UI thread
-        @UiThread
-        @Override
-        protected void onPostExecute(List<Materia> materie) {
-            if (materie != null && materie.size() != 0) {
-                mRVAdapter.clear();
-                mRVAdapter.addAll(materie);
-
-                // Update cache
-                new CacheTask(getContext().getCacheDir()).execute((List) materie);
-            }
-
-            // Delay refreshing animation just for the show
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mSwipeRefreshLayout.setRefreshing(false);
-                }
-            }, 300);
         }
     }
 }

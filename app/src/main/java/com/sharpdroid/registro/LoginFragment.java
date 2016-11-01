@@ -2,9 +2,11 @@ package com.sharpdroid.registro;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +14,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.heinrichreimersoftware.materialintro.app.SlideFragment;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.PersistentCookieStore;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -21,8 +29,12 @@ import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
+
+import cz.msebera.android.httpclient.Header;
 
 public class LoginFragment extends SlideFragment {
 
@@ -58,19 +70,17 @@ public class LoginFragment extends SlideFragment {
 
         mEditTextMail.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
 
-        mButtonLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mEmail = mEditTextMail.getText().toString();
-                mPassword = mEditTextPassword.getText().toString();
+        mButtonLogin.setOnClickListener(v -> {
+            mEmail = mEditTextMail.getText().toString();
+            mPassword = mEditTextPassword.getText().toString();
 
-                mEditTextMail.setEnabled(false);
-                mEditTextPassword.setEnabled(false);
-                mButtonLogin.setEnabled(false);
-                mButtonLogin.setText(R.string.caricamento);
+            mEditTextMail.setEnabled(false);
+            mEditTextPassword.setEnabled(false);
+            mButtonLogin.setEnabled(false);
+            mButtonLogin.setText(R.string.caricamento);
 
-                new UserLoginTask(mEmail, mPassword).execute();
-            }
+            Handler handler = new Handler();
+            handler.post(Login);
         });
 
         return root;
@@ -81,61 +91,39 @@ public class LoginFragment extends SlideFragment {
         return loggedIn;
     }
 
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-        private final String mEmail;
-        private final String mPassword;
+    final Runnable Login = new Runnable() {
+        public void run() {
+            String url = "https://api.daniele.ml/login";
 
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
+            AsyncHttpClient client = new AsyncHttpClient();
+            PersistentCookieStore myCookieStore = new PersistentCookieStore(getContext());
+            client.setCookieStore(myCookieStore);
 
-        @WorkerThread
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            HttpURLConnection conn = null;
+            RequestParams params = new RequestParams();
 
-            try {
-                URL url = new URL("https://api.daniele.ml/login");
-                conn = (HttpURLConnection) url.openConnection();
+            params.put("login", mEmail);
+            params.put("password", mPassword);
+            params.put("key", new DeviceUuidFactory(getContext()).getDeviceUuid().toString());
 
-                CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                conn.setDoOutput(true);
+            client.post(url, params, new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    mButtonLogin.setText(R.string.login);
+                    Toast.makeText(getContext(), R.string.login_msg_failer, Toast.LENGTH_SHORT).show();
 
-                PrintWriter out = new PrintWriter(conn.getOutputStream());
-                out.print(String.format("login=%1$s&password=%2$s&key=%3$s", mEmail, mPassword, new DeviceUuidFactory(getContext()).getDeviceUuid().toString()));
-                out.close();
-
-                return conn.getResponseCode() == HttpsURLConnection.HTTP_OK;
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (conn != null) {
-                    conn.disconnect();
+                    mEditTextMail.setEnabled(true);
+                    mEditTextPassword.setEnabled(true);
+                    mButtonLogin.setEnabled(true);
                 }
-            }
 
-            return false;
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                    Toast.makeText(getContext(), R.string.login_msg, Toast.LENGTH_SHORT).show();
+
+                    loggedIn = true;
+                    updateNavigation();
+                }
+            });
         }
-
-        @UiThread
-        @Override
-        protected void onPostExecute(Boolean loggato) {
-            if (loggato) {
-                Toast.makeText(getContext(), R.string.login_msg, Toast.LENGTH_SHORT).show();
-
-                loggedIn = true;
-                updateNavigation();
-            } else {
-                mButtonLogin.setText(R.string.login);
-                Toast.makeText(getContext(), R.string.login_msg_failer, Toast.LENGTH_SHORT).show();
-
-                mEditTextMail.setEnabled(true);
-                mEditTextPassword.setEnabled(true);
-                mButtonLogin.setEnabled(true);
-            }
-        }
-    }
+    };
 }
