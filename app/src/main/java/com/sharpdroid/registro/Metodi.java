@@ -2,11 +2,8 @@ package com.sharpdroid.registro;
 
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.text.SpannableString;
-import android.text.style.StyleSpan;
 
 class Metodi {
     static boolean isNetworkAvailable(Context context) {

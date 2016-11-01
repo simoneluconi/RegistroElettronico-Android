@@ -31,7 +31,6 @@ import java.io.StreamCorruptedException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 
 import static com.sharpdroid.registro.Metodi.isNetworkAvailable;
 
