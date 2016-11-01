@@ -6,10 +6,10 @@ import java.io.Serializable;
 
 class Media implements Serializable {
     private String materia;
-    private float media_generale;
-    private float media_orale;
-    private float media_pratico;
-    private float media_scritto;
+    private float somma_generale;
+    private float somma_orale;
+    private float somma_pratico;
+    private float somma_scritto;
     private int numero_voti_generale;
     private int numero_voti_orale;
     private int numero_voti_pratico;
@@ -27,43 +27,72 @@ class Media implements Serializable {
         this.materia = materia;
     }
 
-    public float getMediaGenerale() {
-        return media_generale / numero_voti_generale;
-    }
 
-    public float getNumeroVoti() {
+    public int getNumeroVoti() {
         return this.numero_voti_generale;
     }
 
+    public int getNumeroVotiOrale() {
+        return this.numero_voti_orale;
+    }
+
+    public int getNumeroVotiPratico() {
+        return this.numero_voti_pratico;
+    }
+
+    public int getNumeroVotiScritto() {
+        return this.numero_voti_scritto;
+    }
+
+    public float getMediaGenerale() {
+        return somma_generale / numero_voti_generale;
+    }
+
     public float getMediaOrale() {
-        return media_orale / numero_voti_orale;
+        return somma_orale / numero_voti_orale;
     }
 
     public float getMediaScritto() {
-        return media_scritto / numero_voti_scritto;
+        return somma_scritto / numero_voti_scritto;
     }
 
     public float getMediaPratico() {
-        return media_pratico / numero_voti_pratico;
+        return somma_pratico / numero_voti_pratico;
+    }
+
+    public float getSommaGenerale() {
+        return somma_generale;
+    }
+
+    public float getSommaOrale() {
+        return somma_orale;
+    }
+
+    public float getSommaScritto() {
+        return somma_scritto;
+    }
+
+    public float getSommaPratico() {
+        return somma_pratico;
     }
 
     public void addVoto(Voto voto) {
         if (voto.getVoto() > 0) {
             switch (voto.getTipo()) {
                 case Voto.orale:
-                    this.media_orale += voto.getVoto();
+                    this.somma_orale += voto.getVoto();
                     this.numero_voti_orale++;
                     break;
                 case Voto.pratico:
-                    this.media_pratico += voto.getVoto();
+                    this.somma_pratico += voto.getVoto();
                     this.numero_voti_pratico++;
                     break;
                 case Voto.scritto:
-                    this.media_scritto += voto.getVoto();
+                    this.somma_scritto += voto.getVoto();
                     this.numero_voti_scritto++;
                     break;
             }
-            this.media_generale += voto.getVoto();
+            this.somma_generale += voto.getVoto();
             this.numero_voti_generale++;
         } else {
             Log.e(Media.class.getCanonicalName(), "Voto inferiore a 0");
@@ -73,13 +102,13 @@ class Media implements Serializable {
     private boolean isSufficiente(String tipo) {
         switch (tipo) {
             case Voto.orale:
-                return this.media_orale > 6;
+                return getMediaOrale() > 6;
             case Voto.pratico:
-                return this.media_pratico > 6;
+                return getMediaPratico() > 6;
             case Voto.scritto:
-                return this.media_scritto > 6;
+                return getMediaScritto() > 6;
             default:
-                return this.media_generale > 6;
+                return getMediaGenerale() > 6;
         }
     }
 

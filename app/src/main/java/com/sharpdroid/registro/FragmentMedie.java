@@ -3,6 +3,7 @@ package com.sharpdroid.registro;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
 import android.support.design.widget.CoordinatorLayout;
@@ -30,6 +31,7 @@ import java.io.StreamCorruptedException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import static com.sharpdroid.registro.Metodi.isNetworkAvailable;
 
@@ -122,7 +124,12 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
             } else {
                 ViewHolder.CircularMedia.setColor(ContextCompat.getColor(getContext(), R.color.redmaterial));
             }
-            ViewHolder.Desc.setText("Devi prendere almeno 2");
+
+            float obbiettivo_voto = PreferenceManager.getDefaultSharedPreferences(getContext())
+                    .getFloat("obbiettivo_voto", 8);
+
+            String obbiettivo_string = Metodi.MessaggioVoto(obbiettivo_voto, media.getMediaGenerale(), media.getSommaGenerale(), media.getNumeroVoti());
+            ViewHolder.Desc.setText(obbiettivo_string);
         }
 
         @Override
