@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,21 +14,24 @@ import android.widget.Toast;
 
 import com.heinrichreimersoftware.materialintro.app.SlideFragment;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.InputStreamReader;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
+import java.util.UUID;
 
 import javax.net.ssl.HttpsURLConnection;
 
 public class LoginFragment extends SlideFragment {
-    private final String api_login_url = "";
+    private final String api_login_url = "https://api.daniele.ml/login";
 
     private EditText mEditTextMail;
     private EditText mEditTextPassword;
@@ -59,12 +63,14 @@ public class LoginFragment extends SlideFragment {
         mEditTextPassword.setEnabled(!loggedIn);
         mButtonLogin.setEnabled(!loggedIn);
 
-        mEmail = mEditTextMail.getText().toString();
-        mPassword = mEditTextPassword.getText().toString();
+        mEditTextMail.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
 
         mButtonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mEmail = mEditTextMail.getText().toString();
+                mPassword = mEditTextPassword.getText().toString();
+
                 mEditTextMail.setEnabled(false);
                 mEditTextPassword.setEnabled(false);
                 mButtonLogin.setEnabled(false);
@@ -94,41 +100,30 @@ public class LoginFragment extends SlideFragment {
         @WorkerThread
         @Override
         protected Boolean doInBackground(Void... params) {
+            HttpURLConnection conn = null;
+
             try {
                 URL url = new URL(api_login_url);
+                conn = (HttpURLConnection) url.openConnection();
 
                 CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                conn.setRequestProperty("charset", "utf-8");
-                conn.setDoInput(true);
                 conn.setDoOutput(true);
 
-                OutputStream os = conn.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(
-                        new OutputStreamWriter(os, "UTF-8"));
-                writer.write(mEmail + mPassword);
+                PrintWriter out = new PrintWriter(conn.getOutputStream());
+                out.print(String.format("login=%1$s&password=%2$s&key=%3$s", mEmail, mPassword, UUID.randomUUID().toString()));
+                out.close();
 
-                int responseCode = conn.getResponseCode();
-
-                if (responseCode == HttpsURLConnection.HTTP_OK) {
-                    String line;
-                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                    StringBuilder sb = new StringBuilder();
-                    while ((line = br.readLine()) != null) {
-                        sb.append(line);
-                    }
-                    return true;
-                } else {
-                    return false;
-
-                }
-            } catch (Exception e) {
+                return conn.getResponseCode() == HttpsURLConnection.HTTP_OK;
+            } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                if (conn != null) {
+                    conn.disconnect();
+                }
             }
-
-            return false;
+            return true;
         }
 
         @UiThread
