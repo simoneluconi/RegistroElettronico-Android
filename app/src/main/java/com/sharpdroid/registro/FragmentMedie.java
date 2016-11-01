@@ -121,8 +121,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onRefresh() {
         if (isNetworkAvailable(getContext())) {
-            Handler handler = new Handler();
-            handler.post(Medie);
+            new Handler().post(Medie);
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);
