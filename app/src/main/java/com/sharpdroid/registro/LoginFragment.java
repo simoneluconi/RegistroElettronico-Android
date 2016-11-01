@@ -21,7 +21,6 @@ import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.UUID;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -106,7 +105,7 @@ public class LoginFragment extends SlideFragment {
                 conn.setDoOutput(true);
 
                 PrintWriter out = new PrintWriter(conn.getOutputStream());
-                out.print(String.format("login=%1$s&password=%2$s&key=%3$s", mEmail, mPassword, UUID.randomUUID().toString()));
+                out.print(String.format("login=%1$s&password=%2$s&key=%3$s", mEmail, mPassword, new DeviceUuidFactory(getContext()).getDeviceUuid().toString()));
                 out.close();
 
                 return conn.getResponseCode() == HttpsURLConnection.HTTP_OK;
