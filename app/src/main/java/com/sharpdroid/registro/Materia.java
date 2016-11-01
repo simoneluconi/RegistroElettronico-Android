@@ -12,7 +12,6 @@ public class Materia implements Serializable {
     @SerializedName("marks")
     private List<Voto> voti = new ArrayList<>();
 
-
     public Materia() {
 
     }

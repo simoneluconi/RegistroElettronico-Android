@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity
 
         switch (id) {
             case R.id.voti:
-                fragment = new FragmentVoti();
+                fragment = new FragmentMedie();
                 break;
             case R.id.nav_share:
             case R.id.nav_send:

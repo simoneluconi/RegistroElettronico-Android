@@ -30,14 +30,14 @@ import java.util.List;
 
 import static com.sharpdroid.registro.Metodi.isNetworkAvailable;
 
-public class FragmentVoti extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-    final private String TAG = FragmentVoti.class.getSimpleName();
+public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+    final private String TAG = FragmentMedie.class.getSimpleName();
 
     private CoordinatorLayout mCoordinatorLayout;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RVAdapter mRVAdapter;
 
-    public FragmentVoti() {
+    public FragmentMedie() {
 
     }
 
@@ -58,7 +58,7 @@ public class FragmentVoti extends Fragment implements SwipeRefreshLayout.OnRefre
         RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.cardlist_voti);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        List<Voto> CVDataList = new LinkedList<>();
+        List<Materia> CVDataList = new LinkedList<>();
         mRVAdapter = new RVAdapter(CVDataList);
         mRecyclerView.setAdapter(mRVAdapter);
 
@@ -79,13 +79,13 @@ public class FragmentVoti extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
-        final List<Voto> CVDataList;
+        final List<Materia> CVDataList;
 
-        RVAdapter(List<Voto> CVDataList) {
+        RVAdapter(List<Materia> CVDataList) {
             this.CVDataList = CVDataList;
         }
 
-        void addAll(Collection<Voto> list) {
+        void addAll(Collection<Materia> list) {
             CVDataList.addAll(list);
             notifyDataSetChanged();
         }
@@ -98,18 +98,21 @@ public class FragmentVoti extends Fragment implements SwipeRefreshLayout.OnRefre
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.adapter_voti, parent, false);
+                    .inflate(R.layout.adapter_medie, parent, false);
             return new ViewHolder(v);
         }
 
         @Override
         public void onBindViewHolder(ViewHolder ViewHolder, int i) {
-            final Voto voto = CVDataList.get(ViewHolder.getAdapterPosition());
-            ViewHolder.Materia.setText(voto.getMateria());
-            ViewHolder.Data.setText(voto.getData());
-            ViewHolder.Tipo.setText(voto.getTipo());
-            ViewHolder.Commento.setText(voto.getCommento());
-            ViewHolder.Voto.setText(String.valueOf(voto.getVoto()));
+            final Materia materia = CVDataList.get(ViewHolder.getAdapterPosition());
+            final List<Voto> voti = materia.getVoti();
+            Media media = new Media();
+            media.setMateria(materia.getMateria());
+            for (Voto voto: voti) {
+                media.addVoto(voto);
+            }
+            ViewHolder.Materia.setText(media.getMateria());
+            ViewHolder.Media.setText(String.valueOf(media.getMediaGenerale()));
         }
 
         @Override
@@ -119,18 +122,12 @@ public class FragmentVoti extends Fragment implements SwipeRefreshLayout.OnRefre
 
         class ViewHolder extends RecyclerView.ViewHolder {
             final TextView Materia;
-            final TextView Voto;
-            final TextView Data;
-            final TextView Tipo;
-            final TextView Commento;
+            final TextView Media;
 
             ViewHolder(View itemView) {
                 super(itemView);
                 Materia = (TextView) itemView.findViewById(R.id.materia);
-                Voto = (TextView) itemView.findViewById(R.id.voto);
-                Data = (TextView) itemView.findViewById(R.id.data);
-                Commento = (TextView) itemView.findViewById(R.id.commento);
-                Tipo = (TextView) itemView.findViewById(R.id.tipo);
+                Media = (TextView) itemView.findViewById(R.id.media);
             }
         }
     }
@@ -139,9 +136,9 @@ public class FragmentVoti extends Fragment implements SwipeRefreshLayout.OnRefre
         try {
             FileInputStream fileInputStream = new FileInputStream(new File(getContext().getCacheDir(), "cache"));
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            List<Voto> cachedData = new LinkedList<>();
-            Voto temp;
-            while ((temp = (Voto) objectInputStream.readObject()) != null) {
+            List<Materia> cachedData = new LinkedList<>();
+            Materia temp;
+            while ((temp = (Materia) objectInputStream.readObject()) != null) {
                 cachedData.add(temp);
             }
             objectInputStream.close();
@@ -161,7 +158,7 @@ public class FragmentVoti extends Fragment implements SwipeRefreshLayout.OnRefre
         }
     }
 
-    private class VotiTask extends AsyncTask<Void, Void, List<Voto>> {
+    private class VotiTask extends AsyncTask<Void, Void, List<Materia>> {
         // Runs on UI thread
         @UiThread
         @Override
@@ -180,30 +177,31 @@ public class FragmentVoti extends Fragment implements SwipeRefreshLayout.OnRefre
 
         @WorkerThread
         @Override
-        protected List<Voto> doInBackground(Void... params) {
-            List<Voto> voti = new LinkedList<>();
-            VotiParser parser = new VotiParser();
+        protected List<Materia> doInBackground(Void... params) {
+            List<Materia> materie = new LinkedList<>();
+            MaterieParser parser = new MaterieParser();
             long time = System.currentTimeMillis();
-            String url = "https://gist.githubusercontent.com/luca020400/ddf60baa2de3d5d4b8ab98f58f21571d/raw";
+            String url = "https://gist.githubusercontent.com/luca020400/ee7ecf8b0dac048ae9091ec8256ff303/raw";
+            //TODO: String url = "https://api.daniele.ml/marks";
             try {
-                voti.addAll(parser.parseJSON(url));
+                materie.addAll(parser.parseJSON(url));
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            Log.v(TAG, "Successfully parsed " + voti.size() + " changes in " + (System.currentTimeMillis() - time) + "ms");
-            return voti;
+            Log.v(TAG, "Successfully parsed " + materie.size() + " changes in " + (System.currentTimeMillis() - time) + "ms");
+            return materie;
         }
 
         // Runs on the UI thread
         @UiThread
         @Override
-        protected void onPostExecute(List<Voto> voti) {
-            if (voti != null && voti.size() != 0) {
+        protected void onPostExecute(List<Materia> materie) {
+            if (materie != null && materie.size() != 0) {
                 mRVAdapter.clear();
-                mRVAdapter.addAll(voti);
+                mRVAdapter.addAll(materie);
 
                 // Update cache
-                new CacheTask(getContext().getCacheDir()).execute((List) voti);
+                new CacheTask(getContext().getCacheDir()).execute((List) materie);
             }
 
             // Delay refreshing animation just for the show
