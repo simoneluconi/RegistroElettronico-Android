@@ -17,8 +17,6 @@ class Voto implements Serializable {
     private double voto;
     @SerializedName("desc")
     private String commento;
-    @SerializedName("materia")
-    private String materia;
 
     static final String orale = "Orale";
     static final String scritto = "Scritto";
@@ -28,22 +26,13 @@ class Voto implements Serializable {
 
     }
 
-    Voto(String materia, String tipo, String data, String commento, String q, boolean blu, double voto) {
-        this.materia = materia;
+    Voto(String tipo, String data, String commento, String q, boolean blu, double voto) {
         this.tipo = tipo;
         this.data = data;
         this.commento = commento;
         this.q = q;
         this.blu = blu;
         this.voto = voto;
-    }
-
-    String getMateria() {
-        return materia;
-    }
-
-    public void setMateria(String materia) {
-        this.materia = materia;
     }
 
     String getTipo() {
@@ -67,7 +56,7 @@ class Voto implements Serializable {
     }
 
     public void setCommento(String commento) {
-        this.materia = commento;
+        this.commento = commento;
     }
 
     String getQ() {
