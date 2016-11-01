@@ -19,7 +19,7 @@ class Voto implements Serializable {
     private String commento;
 
     static final String orale = "Orale";
-    static final String scritto = "Scritto";
+    static final String scritto = "Scritto/Grafico";
     static final String pratico = "Pratico";
 
     public Voto() {
