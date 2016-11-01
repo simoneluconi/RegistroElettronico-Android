@@ -161,7 +161,7 @@ public class FragmentVoti extends Fragment implements SwipeRefreshLayout.OnRefre
         }
     }
 
-    public class VotiTask extends AsyncTask<Void, Void, List<Voto>> {
+    private class VotiTask extends AsyncTask<Void, Void, List<Voto>> {
         // Runs on UI thread
         @UiThread
         @Override
