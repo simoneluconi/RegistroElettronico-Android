@@ -8,6 +8,7 @@ import android.support.annotation.WorkerThread;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +17,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.github.rahatarmanahmed.cpv.CircularProgressView;
 
 import java.io.EOFException;
 import java.io.File;
@@ -108,11 +111,17 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
             final List<Voto> voti = materia.getVoti();
             Media media = new Media();
             media.setMateria(materia.getMateria());
-            for (Voto voto: voti) {
+            for (Voto voto : voti) {
                 media.addVoto(voto);
             }
             ViewHolder.Materia.setText(media.getMateria());
             ViewHolder.Media.setText(String.valueOf(media.getMediaGenerale()));
+            ViewHolder.CircularMedia.setProgress((float) (media.getMediaGenerale() * 10));
+            if (media.isSufficiente()) {
+                ViewHolder.CircularMedia.setColor(ContextCompat.getColor(getContext(), R.color.greenmaterial));
+            } else {
+                ViewHolder.CircularMedia.setColor(ContextCompat.getColor(getContext(), R.color.redmaterial));
+            }
         }
 
         @Override
@@ -123,11 +132,13 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
         class ViewHolder extends RecyclerView.ViewHolder {
             final TextView Materia;
             final TextView Media;
+            final CircularProgressView CircularMedia;
 
             ViewHolder(View itemView) {
                 super(itemView);
                 Materia = (TextView) itemView.findViewById(R.id.materia);
                 Media = (TextView) itemView.findViewById(R.id.media);
+                CircularMedia = (CircularProgressView) itemView.findViewById(R.id.progressvoti);
             }
         }
     }

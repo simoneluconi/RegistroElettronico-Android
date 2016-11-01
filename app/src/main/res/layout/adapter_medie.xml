@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="10dp"
@@ -17,16 +18,30 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/media"
-            android:layout_width="fill_parent"
+        <RelativeLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="end"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:layout_weight="1"
+            android:gravity="end">
+
+            <com.github.rahatarmanahmed.cpv.CircularProgressView
+                android:id="@+id/progressvoti"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerInParent="true"
+                app:cpv_animAutostart="true"
+                app:cpv_indeterminate="false"
+                app:cpv_progress="80" />
+
+            <TextView
+                android:id="@+id/media"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textSize="15sp" />
+        </RelativeLayout>
 
     </LinearLayout>
 </android.support.v7.widget.CardView>
