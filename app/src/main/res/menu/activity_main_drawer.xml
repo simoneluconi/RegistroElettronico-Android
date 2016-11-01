@@ -3,9 +3,9 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/voti"
+            android:id="@+id/medie"
             android:icon="@drawable/ic_menu_camera"
-            android:title="@string/voti" />
+            android:title="@string/medie" />
     </group>
 
     <item android:title="@string/communicate">

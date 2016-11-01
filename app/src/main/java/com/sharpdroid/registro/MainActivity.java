@@ -41,6 +41,20 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        // Programmatically start a fragment
+        if (savedInstanceState == null) {
+            int tabdaaprire = PreferenceManager.getDefaultSharedPreferences(this)
+                    .getInt("drawer_to_open", 0);
+
+            Bundle extras = getIntent().getExtras();
+            if (extras != null) {
+                tabdaaprire = extras.getInt("drawer_to_open", tabdaaprire);
+            }
+
+            navigationView.getMenu().getItem(tabdaaprire).setChecked(true);
+            onNavigationItemSelected(navigationView.getMenu().getItem(tabdaaprire));
+        }
     }
 
     @Override
@@ -93,15 +107,13 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
         Fragment fragment = null;
 
-        switch (id) {
-            case R.id.voti:
+        switch (item.getItemId()) {
+            case R.id.medie:
                 fragment = new FragmentMedie();
                 break;
             case R.id.nav_share:
@@ -114,7 +126,6 @@ public class MainActivity extends AppCompatActivity
         // Replace whatever is in the fragment_container view with this fragment,
         // and add the transaction to the back stack so the user can navigate back
         transaction.replace(R.id.fragment_container, fragment);
-        transaction.addToBackStack(null);
 
         // Commit the transaction
         transaction.commit();
@@ -126,5 +137,4 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
 }
