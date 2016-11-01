@@ -26,7 +26,6 @@ import java.util.UUID;
 import javax.net.ssl.HttpsURLConnection;
 
 public class LoginFragment extends SlideFragment {
-    private final String api_login_url = "https://api.daniele.ml/login";
 
     private EditText mEditTextMail;
     private EditText mEditTextPassword;
@@ -98,7 +97,7 @@ public class LoginFragment extends SlideFragment {
             HttpURLConnection conn = null;
 
             try {
-                URL url = new URL(api_login_url);
+                URL url = new URL("https://api.daniele.ml/login");
                 conn = (HttpURLConnection) url.openConnection();
 
                 CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
@@ -118,7 +117,8 @@ public class LoginFragment extends SlideFragment {
                     conn.disconnect();
                 }
             }
-            return true;
+
+            return false;
         }
 
         @UiThread
