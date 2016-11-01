@@ -61,8 +61,7 @@ public class LoginFragment extends SlideFragment {
             mButtonLogin.setEnabled(false);
             mButtonLogin.setText(R.string.caricamento);
 
-            Handler handler = new Handler();
-            handler.post(Login);
+            new Handler().post(Login);
         });
 
         return root;

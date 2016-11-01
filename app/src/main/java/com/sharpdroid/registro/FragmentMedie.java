@@ -113,8 +113,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
 
         bindVotiCache();
 
-        Handler handler = new Handler();
-        handler.post(Medie);
+        new Handler().post(Medie);
 
         return layout;
     }
