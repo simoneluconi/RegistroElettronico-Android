@@ -1,12 +1,8 @@
 package com.sharpdroid.registro;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.UiThread;
-import android.support.annotation.WorkerThread;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,25 +10,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.heinrichreimersoftware.materialintro.app.SlideFragment;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.CookieHandler;
-import java.net.CookieManager;
-import java.net.CookiePolicy;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -91,7 +73,7 @@ public class LoginFragment extends SlideFragment {
         return loggedIn;
     }
 
-    final Runnable Login = new Runnable() {
+    private final Runnable Login = new Runnable() {
         public void run() {
             String url = "https://api.daniele.ml/login";
 

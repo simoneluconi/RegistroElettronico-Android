@@ -1,11 +1,8 @@
 package com.sharpdroid.registro;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.annotation.UiThread;
-import android.support.annotation.WorkerThread;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -52,7 +49,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
 
     }
 
-    final Runnable Medie = new Runnable() {
+    private final Runnable Medie = new Runnable() {
         public void run() {
             List<Materia> materie = new LinkedList<>();
             long time = System.currentTimeMillis();
