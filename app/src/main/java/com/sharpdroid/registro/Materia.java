@@ -25,9 +25,8 @@ public class Materia implements Serializable {
         this.materia = materia;
     }
 
-
     public String getMateria() {
-        return materia;
+        return materia.substring(0, 1).toUpperCase() + materia.substring(1);
     }
 
     public void setVoti(List<Voto> voti) {
