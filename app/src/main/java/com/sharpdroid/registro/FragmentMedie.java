@@ -116,7 +116,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
             }
             ViewHolder.Materia.setText(media.getMateria());
             ViewHolder.Media.setText(String.valueOf(media.getMediaGenerale()));
-            ViewHolder.CircularMedia.setProgress((float) (media.getMediaGenerale() * 10));
+            ViewHolder.CircularMedia.setProgress(media.getMediaGenerale() * 10);
             if (media.isSufficiente()) {
                 ViewHolder.CircularMedia.setColor(ContextCompat.getColor(getContext(), R.color.greenmaterial));
             } else {

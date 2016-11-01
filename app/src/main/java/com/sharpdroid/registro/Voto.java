@@ -14,7 +14,7 @@ class Voto implements Serializable {
     @SerializedName("date")
     private String data;
     @SerializedName("mark")
-    private double voto;
+    private float voto;
     @SerializedName("desc")
     private String commento;
 
@@ -26,7 +26,7 @@ class Voto implements Serializable {
 
     }
 
-    Voto(String tipo, String data, String commento, String q, boolean blu, double voto) {
+    Voto(String tipo, String data, String commento, String q, boolean blu, float voto) {
         this.tipo = tipo;
         this.data = data;
         this.commento = commento;
@@ -75,11 +75,11 @@ class Voto implements Serializable {
         this.blu = blu;
     }
 
-    double getVoto() {
+    float getVoto() {
         return voto;
     }
 
-    public void setVoto(double voto) {
+    public void setVoto(float voto) {
         this.voto = voto;
     }
 

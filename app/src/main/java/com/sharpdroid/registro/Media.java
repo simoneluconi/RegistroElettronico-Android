@@ -6,10 +6,10 @@ import java.io.Serializable;
 
 class Media implements Serializable {
     private String materia;
-    private double media_generale;
-    private double media_orale;
-    private double media_pratico;
-    private double media_scritto;
+    private float media_generale;
+    private float media_orale;
+    private float media_pratico;
+    private float media_scritto;
     private int numero_voti_generale;
     private int numero_voti_orale;
     private int numero_voti_pratico;
@@ -27,23 +27,23 @@ class Media implements Serializable {
         this.materia = materia;
     }
 
-    public double getMediaGenerale() {
+    public float getMediaGenerale() {
         return media_generale / numero_voti_generale;
     }
 
-    public double getNumeroVoti() {
+    public float getNumeroVoti() {
         return this.numero_voti_generale;
     }
 
-    public double getMediaOrale() {
+    public float getMediaOrale() {
         return media_orale / numero_voti_orale;
     }
 
-    public double getMediaScritto() {
+    public float getMediaScritto() {
         return media_scritto / numero_voti_scritto;
     }
 
-    public double getMediaPratico() {
+    public float getMediaPratico() {
         return media_pratico / numero_voti_pratico;
     }
 
