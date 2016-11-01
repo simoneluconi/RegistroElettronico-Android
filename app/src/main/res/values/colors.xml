@@ -16,4 +16,9 @@
 
     <color name="intro_blue">#03A9F4</color>
     <color name="intro_blue_dark">#0288D1</color>
+
+    <color name="gray">#D3D3D3</color>
+    <color name="light_gray">#F5F5F5</color>
+
+    <color name="md_white_1000">#ffffff</color>
 </resources>
