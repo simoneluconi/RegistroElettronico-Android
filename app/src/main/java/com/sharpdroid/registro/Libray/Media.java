@@ -76,23 +76,23 @@ public class Media implements Serializable {
         return somma_pratico;
     }
 
-    public void addVoto(Voto voto) {
-        if (voto.getVoto() > 0) {
-            switch (voto.getTipo()) {
-                case Voto.orale:
-                    this.somma_orale += voto.getVoto();
+    public void addMark(Mark mark) {
+        if (mark.getMark() > 0) {
+            switch (mark.getType()) {
+                case RESTFulAPI.ORALE:
+                    this.somma_orale += mark.getMark();
                     this.numero_voti_orale++;
                     break;
-                case Voto.pratico:
-                    this.somma_pratico += voto.getVoto();
+                case RESTFulAPI.PRATICO:
+                    this.somma_pratico += mark.getMark();
                     this.numero_voti_pratico++;
                     break;
-                case Voto.scritto:
-                    this.somma_scritto += voto.getVoto();
+                case RESTFulAPI.SCRITTO:
+                    this.somma_scritto += mark.getMark();
                     this.numero_voti_scritto++;
                     break;
             }
-            this.somma_generale += voto.getVoto();
+            this.somma_generale += mark.getMark();
             this.numero_voti_generale++;
         } else {
             Log.e(Media.class.getCanonicalName(), "Voto inferiore a 0");
@@ -101,11 +101,11 @@ public class Media implements Serializable {
 
     private boolean isSufficiente(String tipo) {
         switch (tipo) {
-            case Voto.orale:
+            case RESTFulAPI.ORALE:
                 return getMediaOrale() > 6;
-            case Voto.pratico:
+            case RESTFulAPI.PRATICO:
                 return getMediaPratico() > 6;
-            case Voto.scritto:
+            case RESTFulAPI.SCRITTO:
                 return getMediaScritto() > 6;
             default:
                 return getMediaGenerale() > 6;

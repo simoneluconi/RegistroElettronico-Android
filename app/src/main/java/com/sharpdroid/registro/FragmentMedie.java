@@ -22,11 +22,11 @@ import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.TextHttpResponseHandler;
-import com.sharpdroid.registro.Libray.Materia;
+import com.sharpdroid.registro.Libray.Mark;
+import com.sharpdroid.registro.Libray.MarkSubject;
 import com.sharpdroid.registro.Libray.Media;
 import com.sharpdroid.registro.Libray.Metodi;
 import com.sharpdroid.registro.Libray.RESTFulAPI;
-import com.sharpdroid.registro.Libray.Voto;
 
 import java.io.EOFException;
 import java.io.File;
@@ -57,14 +57,14 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
 
     private final Runnable Medie = new Runnable() {
         public void run() {
-            List<Materia> materie = new LinkedList<>();
+            List<MarkSubject> materie = new LinkedList<>();
             long time = System.currentTimeMillis();
 
             AsyncHttpClient client = new AsyncHttpClient();
             PersistentCookieStore myCookieStore = new PersistentCookieStore(getContext());
             client.setCookieStore(myCookieStore);
 
-            client.get(new RESTFulAPI().MARKS_URL, new TextHttpResponseHandler() {
+            client.get(RESTFulAPI.MARKS_URL, new TextHttpResponseHandler() {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
 
@@ -73,7 +73,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, String responseString) {
                     try {
-                        materie.addAll(new Gson().fromJson(responseString, new TypeToken<List<Materia>>() {
+                        materie.addAll(new Gson().fromJson(responseString, new TypeToken<List<MarkSubject>>() {
                         }.getType()));
                         Log.v(TAG, "Successfully parsed " + materie.size() + " changes in " + (System.currentTimeMillis() - time) + "ms");
 
@@ -112,7 +112,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
         RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.cardlist_voti);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        List<Materia> CVDataList = new LinkedList<>();
+        List<MarkSubject> CVDataList = new LinkedList<>();
         mRVAdapter = new RVAdapter(CVDataList);
         mRecyclerView.setAdapter(mRVAdapter);
 
@@ -134,13 +134,13 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
-        final List<Materia> CVDataList;
+        final List<MarkSubject> CVDataList;
 
-        RVAdapter(List<Materia> CVDataList) {
+        RVAdapter(List<MarkSubject> CVDataList) {
             this.CVDataList = CVDataList;
         }
 
-        void addAll(Collection<Materia> list) {
+        void addAll(Collection<MarkSubject> list) {
             CVDataList.addAll(list);
             notifyDataSetChanged();
         }
@@ -159,12 +159,12 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
 
         @Override
         public void onBindViewHolder(ViewHolder ViewHolder, int i) {
-            final Materia materia = CVDataList.get(ViewHolder.getAdapterPosition());
-            final List<Voto> voti = materia.getVoti();
+            final MarkSubject marksubject = CVDataList.get(ViewHolder.getAdapterPosition());
+            final List<Mark> marks = marksubject.getMarks();
             Media media = new Media();
-            media.setMateria(materia.getMateria());
-            for (Voto voto : voti) {
-                media.addVoto(voto);
+            media.setMateria(marksubject.getName());
+            for (Mark mark : marks) {
+                media.addMark(mark);
             }
             ViewHolder.Materia.setText(media.getMateria());
             ViewHolder.Media.setText(String.format(Locale.getDefault(), "%.2f", media.getMediaGenerale()));
@@ -207,9 +207,9 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
         try {
             FileInputStream fileInputStream = new FileInputStream(new File(getContext().getCacheDir(), TAG));
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            List<Materia> cachedData = new LinkedList<>();
-            Materia temp;
-            while ((temp = (Materia) objectInputStream.readObject()) != null) {
+            List<MarkSubject> cachedData = new LinkedList<>();
+            MarkSubject temp;
+            while ((temp = (MarkSubject) objectInputStream.readObject()) != null) {
                 cachedData.add(temp);
             }
             objectInputStream.close();

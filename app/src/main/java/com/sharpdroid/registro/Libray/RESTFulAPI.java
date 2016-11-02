@@ -1,25 +1,29 @@
 package com.sharpdroid.registro.Libray;
 
 public class RESTFulAPI {
-    private final String BASE_URL = "https://api.daniele.ml/";
+    static private final String BASE_URL = "https://api.daniele.ml/";
 
-    final String LOGIN_URL = BASE_URL + "login";
+    public static final String LOGIN_URL = BASE_URL + "login";
 
-    final String MARKS_URL = BASE_URL + "marks";
+    public static final String MARKS_URL = BASE_URL + "marks";
 
-    final String FILES_URL = BASE_URL + "file";
+    public static final String FILES_URL = BASE_URL + "file";
 
-    final String ABSANCES_URL = BASE_URL + "absences";
+    public static final String ABSANCES_URL = BASE_URL + "absences";
 
-    final String SUBJECTS_URL = BASE_URL + "subjects";
+    public static final String SUBJECTS_URL = BASE_URL + "subjects";
 
-    final String NOTES_URL = BASE_URL + "notes";
+    public static final String NOTES_URL = BASE_URL + "notes";
 
-    final String COMMUNICATIONS_URL = BASE_URL + "communications";
+    public static final String COMMUNICATIONS_URL = BASE_URL + "communications";
 
-    final String SCRUTINIES_URL = BASE_URL + "scrutinies";
+    public static final String SCRUTINIES_URL = BASE_URL + "scrutinies";
 
-    RESTFulAPI() {
+    public static final String ORALE = "Orale";
+    public static final String SCRITTO = "Scritto/Grafico";
+    public static final String PRATICO = "Pratico";
+
+    public RESTFulAPI() {
 
     }
 
