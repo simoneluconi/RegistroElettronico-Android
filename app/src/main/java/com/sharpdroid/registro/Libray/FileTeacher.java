@@ -6,7 +6,7 @@ import java.util.List;
 
 public class FileTeacher implements Serializable {
     private String name;
-    private List<Folder> folders = new ArrayList<>();
+    private List<Folder> folders;
 
     public FileTeacher(String name, List<Folder> folders) {
         this.name = name;
