@@ -60,10 +60,22 @@ public class RESTFulAPI {
         return String.format("%s/%s/download", BASE_URL, id);
     }
 
+    private static void get(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        PersistentCookieStore myCookieStore = new PersistentCookieStore(context);
+        client.setCookieStore(myCookieStore);
+        client.get(url, params, responseHandler);
+    }
+    
+    public static void post(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        PersistentCookieStore myCookieStore = new PersistentCookieStore(context);
+        client.setCookieStore(myCookieStore);
+        client.post(url, params, responseHandler);
+    }
+
     public static abstract class Marks implements Runnable {
         private Context context;
 
-        public Marks(Context context) {
+        protected Marks(Context context) {
             this.context = context;
         }
 
@@ -71,9 +83,7 @@ public class RESTFulAPI {
 
         @Override
         public void run() {
-            PersistentCookieStore cookieStore = new PersistentCookieStore(context);
-            client.setCookieStore(cookieStore);
-            client.get(MARKS_URL, null, new TextHttpResponseHandler() {
+            client.get(context, MARKS_URL, null, new TextHttpResponseHandler() {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 }
@@ -81,24 +91,13 @@ public class RESTFulAPI {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, String responseString) {
                     try {
-                        then(new Gson().fromJson(responseString, new TypeToken<List<MarkSubject>> () {}.getType()));
+                        then(new Gson().fromJson(responseString, new TypeToken<List<MarkSubject>>() {
+                        }.getType()));
                     } catch (JsonParseException exception) {
                         exception.printStackTrace();
                     }
                 }
             });
         }
-    }
-
-    public static void get(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        PersistentCookieStore myCookieStore = new PersistentCookieStore(context);
-        client.setCookieStore(myCookieStore);
-        client.get(url, params, responseHandler);
-    }
-
-    public static void post(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        PersistentCookieStore myCookieStore = new PersistentCookieStore(context);
-        client.setCookieStore(myCookieStore);
-        client.post(url, params, responseHandler);
     }
 }
