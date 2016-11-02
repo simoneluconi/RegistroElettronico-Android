@@ -71,8 +71,7 @@ public class Mark implements Serializable {
         this.desc = desc;
     }
 
-    boolean isSufficiente() {
+    public boolean isSufficiente() {
         return this.mark > 6;
     }
 }
-

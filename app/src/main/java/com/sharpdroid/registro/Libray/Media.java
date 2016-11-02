@@ -99,7 +99,7 @@ public class Media implements Serializable {
         }
     }
 
-    private boolean isSufficiente(String tipo) {
+    public boolean isSufficiente(String tipo) {
         switch (tipo) {
             case RESTFulAPI.ORALE:
                 return getMediaOrale() > 6;

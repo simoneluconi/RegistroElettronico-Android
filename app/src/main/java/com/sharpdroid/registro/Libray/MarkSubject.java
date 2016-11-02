@@ -13,7 +13,7 @@ public class MarkSubject implements Serializable {
 
     }
 
-    MarkSubject(String name, List<Mark> marks) {
+    public MarkSubject(String name, List<Mark> marks) {
         this.name = name;
         this.marks = marks;
     }
