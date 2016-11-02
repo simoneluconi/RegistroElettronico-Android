@@ -1,4 +1,4 @@
-package com.sharpdroid.registro;
+package com.sharpdroid.registro.Fragments;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,7 +13,9 @@ import android.widget.Toast;
 import com.heinrichreimersoftware.materialintro.app.SlideFragment;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.sharpdroid.registro.Libray.RESTFulAPI;
+import com.sharpdroid.registro.Library.RESTFulAPI;
+import com.sharpdroid.registro.R;
+import com.sharpdroid.registro.Utils.DeviceUuidFactory;
 
 import cz.msebera.android.httpclient.Header;
 

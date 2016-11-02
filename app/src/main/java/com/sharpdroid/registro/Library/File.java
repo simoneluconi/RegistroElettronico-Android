@@ -1,6 +1,6 @@
-package com.sharpdroid.registro.Libray;
+package com.sharpdroid.registro.Library;
 
-public class File {
+class File {
     private String id;
     private String name;
     private String type;

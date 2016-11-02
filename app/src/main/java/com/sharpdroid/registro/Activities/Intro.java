@@ -1,4 +1,4 @@
-package com.sharpdroid.registro;
+package com.sharpdroid.registro.Activities;
 
 import android.Manifest;
 import android.os.Build;
@@ -7,6 +7,8 @@ import android.os.Bundle;
 import com.heinrichreimersoftware.materialintro.app.IntroActivity;
 import com.heinrichreimersoftware.materialintro.slide.FragmentSlide;
 import com.heinrichreimersoftware.materialintro.slide.SimpleSlide;
+import com.sharpdroid.registro.Fragments.LoginFragment;
+import com.sharpdroid.registro.R;
 
 public class Intro extends IntroActivity {
     @Override

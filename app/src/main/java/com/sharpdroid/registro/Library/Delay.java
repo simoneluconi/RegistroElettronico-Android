@@ -1,8 +1,8 @@
-package com.sharpdroid.registro.Libray;
+package com.sharpdroid.registro.Library;
 
 import java.io.Serializable;
 
-public class Delay implements Serializable {
+class Delay implements Serializable {
     private int id;
     private String day;
     private String hours;

@@ -1,4 +1,4 @@
-package com.sharpdroid.registro.Libray;
+package com.sharpdroid.registro.Library;
 
 import android.util.Log;
 
@@ -48,15 +48,15 @@ public class Media implements Serializable {
         return somma_generale / numero_voti_generale;
     }
 
-    public float getMediaOrale() {
+    private float getMediaOrale() {
         return somma_orale / numero_voti_orale;
     }
 
-    public float getMediaScritto() {
+    private float getMediaScritto() {
         return somma_scritto / numero_voti_scritto;
     }
 
-    public float getMediaPratico() {
+    private float getMediaPratico() {
         return somma_pratico / numero_voti_pratico;
     }
 
@@ -99,7 +99,7 @@ public class Media implements Serializable {
         }
     }
 
-    public boolean isSufficiente(String tipo) {
+    private boolean isSufficiente(String tipo) {
         switch (tipo) {
             case RESTFulAPI.ORALE:
                 return getMediaOrale() > 6;

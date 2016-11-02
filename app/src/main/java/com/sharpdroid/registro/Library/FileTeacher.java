@@ -1,9 +1,9 @@
-package com.sharpdroid.registro.Libray;
+package com.sharpdroid.registro.Library;
 
 import java.io.Serializable;
 import java.util.List;
 
-public class FileTeacher implements Serializable {
+class FileTeacher implements Serializable {
     private String name;
     private List<Folder> folders;
 

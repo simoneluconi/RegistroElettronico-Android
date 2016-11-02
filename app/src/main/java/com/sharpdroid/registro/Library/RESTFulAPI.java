@@ -1,4 +1,4 @@
-package com.sharpdroid.registro.Libray;
+package com.sharpdroid.registro.Library;
 
 import android.content.Context;
 
@@ -20,17 +20,17 @@ public class RESTFulAPI {
 
     public static final String LOGIN_URL = BASE_URL + "login";
 
-    public static final String MARKS_URL = BASE_URL + "marks";
+    private static final String MARKS_URL = BASE_URL + "marks";
 
     public static final String FILES_URL = BASE_URL + "files";
 
     public static final String ABSENCES_URL = BASE_URL + "absences";
 
-    public static final String SUBJECTS_URL = BASE_URL + "subjects";
+    private static final String SUBJECTS_URL = BASE_URL + "subjects";
 
     public static final String NOTES_URL = BASE_URL + "notes";
 
-    public static final String COMMUNICATIONS_URL = BASE_URL + "communications";
+    private static final String COMMUNICATIONS_URL = BASE_URL + "communications";
 
     public static final String SCRUTINIES_URL = BASE_URL + "scrutinies";
 
@@ -38,7 +38,7 @@ public class RESTFulAPI {
     public static final String SCRITTO = "Scritto/Grafico";
     public static final String PRATICO = "Pratico";
 
-    private static AsyncHttpClient client = new AsyncHttpClient();
+    private static final AsyncHttpClient client = new AsyncHttpClient();
 
     public RESTFulAPI() {
 
@@ -73,7 +73,7 @@ public class RESTFulAPI {
     }
 
     public static abstract class Marks implements Runnable {
-        private Context context;
+        private final Context context;
 
         protected Marks(Context context) {
             this.context = context;
@@ -84,6 +84,35 @@ public class RESTFulAPI {
         @Override
         public void run() {
             get(context, MARKS_URL, null, new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                    try {
+                        then(new Gson().fromJson(responseString, new TypeToken<List<MarkSubject>>() {
+                        }.getType()));
+                    } catch (JsonParseException exception) {
+                        exception.printStackTrace();
+                    }
+                }
+            });
+        }
+    }
+
+    public static abstract class Communications implements Runnable {
+        private final Context context;
+
+        protected Communications(Context context) {
+            this.context = context;
+        }
+
+        public abstract void then(List<Communication> subjects);
+
+        @Override
+        public void run() {
+            get(context, COMMUNICATIONS_URL, null, new TextHttpResponseHandler() {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 }

@@ -1,4 +1,4 @@
-package com.sharpdroid.registro;
+package com.sharpdroid.registro.Fragments;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,11 +17,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
-import com.sharpdroid.registro.Libray.Mark;
-import com.sharpdroid.registro.Libray.MarkSubject;
-import com.sharpdroid.registro.Libray.Media;
-import com.sharpdroid.registro.Libray.Metodi;
-import com.sharpdroid.registro.Libray.RESTFulAPI;
+import com.sharpdroid.registro.Library.CacheTask;
+import com.sharpdroid.registro.Library.Mark;
+import com.sharpdroid.registro.Library.MarkSubject;
+import com.sharpdroid.registro.Library.Media;
+import com.sharpdroid.registro.Library.Metodi;
+import com.sharpdroid.registro.Library.RESTFulAPI;
+import com.sharpdroid.registro.R;
 
 import java.io.EOFException;
 import java.io.File;
@@ -35,7 +37,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
-import static com.sharpdroid.registro.Libray.Metodi.isNetworkAvailable;
+import static com.sharpdroid.registro.Library.Metodi.isNetworkAvailable;
 
 public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     final private String TAG = FragmentMedie.class.getSimpleName();

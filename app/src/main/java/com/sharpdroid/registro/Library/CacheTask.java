@@ -1,4 +1,4 @@
-package com.sharpdroid.registro;
+package com.sharpdroid.registro.Library;
 
 import android.os.AsyncTask;
 import android.support.annotation.WorkerThread;
@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
-class CacheTask extends AsyncTask<List, Void, Void> {
+public class CacheTask extends AsyncTask<List, Void, Void> {
 
     /**
      * Logcat tag.
@@ -31,7 +31,7 @@ class CacheTask extends AsyncTask<List, Void, Void> {
      * @param cacheDir    the directory in which the data will be stored.
      * @param cacheSubDir the subdirectory in which the data will be stored.
      */
-    CacheTask(File cacheDir, String cacheSubDir) {
+    public CacheTask(File cacheDir, String cacheSubDir) {
         this.cacheDir = cacheDir;
         this.cacheSubDir = cacheSubDir;
     }

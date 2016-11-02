@@ -1,4 +1,4 @@
-package com.sharpdroid.registro;
+package com.sharpdroid.registro.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +13,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+
+import com.sharpdroid.registro.Fragments.FragmentMedie;
+import com.sharpdroid.registro.R;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {

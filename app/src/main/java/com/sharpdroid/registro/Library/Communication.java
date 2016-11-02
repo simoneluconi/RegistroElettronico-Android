@@ -1,8 +1,8 @@
-package com.sharpdroid.registro.Libray;
+package com.sharpdroid.registro.Library;
 
 import java.io.Serializable;
 
-public class Communication implements Serializable {
+class Communication implements Serializable {
     private String title;
     private String type;
     private String date;

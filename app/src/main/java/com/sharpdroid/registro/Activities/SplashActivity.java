@@ -1,4 +1,4 @@
-package com.sharpdroid.registro;
+package com.sharpdroid.registro.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;

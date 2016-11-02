@@ -1,8 +1,8 @@
-package com.sharpdroid.registro.Libray;
+package com.sharpdroid.registro.Library;
 
 import java.util.List;
 
-public class Folder {
+class Folder {
     private String name;
     private String last;
     private List<File> elements;

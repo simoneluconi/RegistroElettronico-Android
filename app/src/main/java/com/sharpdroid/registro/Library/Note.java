@@ -1,16 +1,18 @@
-package com.sharpdroid.registro.Libray;
+package com.sharpdroid.registro.Library;
 
 import java.io.Serializable;
 
-public class Lesson implements Serializable {
+class Note implements Serializable {
     private String teacher;
     private String date;
     private String content;
+    private String type;
 
-    public Lesson(String teacher, String date, String content) {
+    public Note(String teacher, String date, String content, String type) {
         this.teacher = teacher;
         this.date = date;
         this.content = content;
+        this.type = type;
     }
 
     public String getTeacher() {
@@ -35,5 +37,13 @@ public class Lesson implements Serializable {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

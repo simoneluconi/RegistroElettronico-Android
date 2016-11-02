@@ -1,4 +1,4 @@
-package com.sharpdroid.registro;
+package com.sharpdroid.registro.Utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -8,13 +8,13 @@ import android.telephony.TelephonyManager;
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
-class DeviceUuidFactory {
+public class DeviceUuidFactory {
     private static final String PREFS_FILE = "device_id.xml";
     private static final String PREFS_DEVICE_ID = "device_id";
 
     private static UUID uuid;
 
-    DeviceUuidFactory(Context context) {
+    public DeviceUuidFactory(Context context) {
         if (uuid == null) {
             synchronized (DeviceUuidFactory.class) {
                 if (uuid == null) {
@@ -71,7 +71,7 @@ class DeviceUuidFactory {
      * @return a UUID that may be used to uniquely identify your device for most purposes.
      * @see "http://code.google.com/p/android/issues/detail?id=10603"
      */
-    UUID getDeviceUuid() {
+    public UUID getDeviceUuid() {
         return uuid;
     }
 }

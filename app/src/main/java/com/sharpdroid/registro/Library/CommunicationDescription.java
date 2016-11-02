@@ -1,8 +1,8 @@
-package com.sharpdroid.registro.Libray;
+package com.sharpdroid.registro.Library;
 
 import java.io.Serializable;
 
-public class CommunicationDescription implements Serializable {
+class CommunicationDescription implements Serializable {
     private String longTitle;
     private String desc;
     private boolean attachment;

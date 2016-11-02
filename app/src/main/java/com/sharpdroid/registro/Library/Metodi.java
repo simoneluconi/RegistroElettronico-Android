@@ -1,4 +1,4 @@
-package com.sharpdroid.registro.Libray;
+package com.sharpdroid.registro.Library;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
