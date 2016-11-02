@@ -23,7 +23,7 @@ public class Mark implements Serializable {
         this.desc = desc;
     }
 
-    String getQ() {
+    public String getQ() {
         return q;
     }
 
@@ -31,7 +31,7 @@ public class Mark implements Serializable {
         this.q = q;
     }
 
-    boolean isNS() {
+    public boolean isNS() {
         return ns;
     }
 
@@ -39,7 +39,7 @@ public class Mark implements Serializable {
         this.ns = ns;
     }
 
-    String getType() {
+    public String getType() {
         return type;
     }
 
@@ -47,7 +47,7 @@ public class Mark implements Serializable {
         this.type = type;
     }
 
-    String getDate() {
+    public String getDate() {
         return date;
     }
 
@@ -55,7 +55,7 @@ public class Mark implements Serializable {
         this.date = date;
     }
 
-    float getMark() {
+    public float getMark() {
         return mark;
     }
 
@@ -63,7 +63,7 @@ public class Mark implements Serializable {
         this.mark = mark;
     }
 
-    String getDesc() {
+    public String getDesc() {
         return desc;
     }
 
