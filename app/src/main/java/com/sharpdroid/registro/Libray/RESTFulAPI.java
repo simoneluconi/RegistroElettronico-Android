@@ -3,6 +3,7 @@ package com.sharpdroid.registro.Libray;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -81,7 +82,7 @@ public class RESTFulAPI {
                 public void onSuccess(int statusCode, Header[] headers, String responseString) {
                     try {
                         then(new Gson().fromJson(responseString, new TypeToken<List<MarkSubject>> () {}.getType()));
-                    } catch (Exception exception) {
+                    } catch (JsonParseException exception) {
                         exception.printStackTrace();
                     }
                 }
