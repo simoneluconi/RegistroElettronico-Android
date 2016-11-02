@@ -11,8 +11,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.heinrichreimersoftware.materialintro.app.SlideFragment;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.loopj.android.http.TextHttpResponseHandler;
 import com.sharpdroid.registro.Libray.RESTFulAPI;
 
 import cz.msebera.android.httpclient.Header;
@@ -79,23 +79,23 @@ public class LoginFragment extends SlideFragment {
             params.put("password", mPassword);
             params.put("key", new DeviceUuidFactory(getContext()).getDeviceUuid().toString());
 
-            RESTFulAPI.post(getContext(), RESTFulAPI.LOGIN_URL, params, new TextHttpResponseHandler() {
+            RESTFulAPI.post(getContext(), RESTFulAPI.LOGIN_URL, params, new AsyncHttpResponseHandler() {
                 @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    Toast.makeText(getContext(), R.string.login_msg, Toast.LENGTH_SHORT).show();
+
+                    loggedIn = true;
+                    updateNavigation();
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                     mButtonLogin.setText(R.string.login);
                     Toast.makeText(getContext(), R.string.login_msg_failer, Toast.LENGTH_SHORT).show();
 
                     mEditTextMail.setEnabled(true);
                     mEditTextPassword.setEnabled(true);
                     mButtonLogin.setEnabled(true);
-                }
-
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                    Toast.makeText(getContext(), R.string.login_msg, Toast.LENGTH_SHORT).show();
-
-                    loggedIn = true;
-                    updateNavigation();
                 }
             });
         }

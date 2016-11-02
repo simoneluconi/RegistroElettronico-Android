@@ -59,7 +59,7 @@ public class RESTFulAPI {
         client.get(url, params, responseHandler);
     }
 
-    public static void post(Context context, String url, RequestParams params, TextHttpResponseHandler responseHandler) {
+    public static void post(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         PersistentCookieStore myCookieStore = new PersistentCookieStore(context);
         client.setCookieStore(myCookieStore);
         client.post(url, params, responseHandler);
