@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.sharpdroid.registro.Libray.Mark;
@@ -80,7 +81,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
 
                             mSwipeRefreshLayout.setRefreshing(false);
                         }
-                    } catch (Exception e) {
+                    } catch (JsonParseException e) {
                         e.printStackTrace();
                     }
                 }
