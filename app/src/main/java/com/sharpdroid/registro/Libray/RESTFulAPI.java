@@ -7,9 +7,9 @@ public class RESTFulAPI {
 
     public static final String MARKS_URL = BASE_URL + "marks";
 
-    public static final String FILES_URL = BASE_URL + "file";
+    public static final String FILE_URL = BASE_URL + "file";
 
-    public static final String ABSANCES_URL = BASE_URL + "absences";
+    public static final String ABSENCES_URL = BASE_URL + "absences";
 
     public static final String SUBJECTS_URL = BASE_URL + "subjects";
 
@@ -28,7 +28,7 @@ public class RESTFulAPI {
     }
 
     public String FILE_DOWNLOAD_URL(String id, String cksum) {
-        return String.format("%s/%s/%s/download", FILES_URL, id, cksum);
+        return String.format("%s/%s/%s/download", FILE_URL, id, cksum);
     }
 
     public String SUBJECT_LESSONS_URL(String id) {
