@@ -108,7 +108,7 @@ public class RESTFulAPI {
             this.context = context;
         }
 
-        public abstract void then(List<Communication> subjects);
+        public abstract void then(List<Communication> communications);
 
         @Override
         public void run() {
@@ -120,7 +120,7 @@ public class RESTFulAPI {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, String responseString) {
                     try {
-                        then(new Gson().fromJson(responseString, new TypeToken<List<MarkSubject>>() {
+                        then(new Gson().fromJson(responseString, new TypeToken<List<Communication>>() {
                         }.getType()));
                     } catch (JsonParseException exception) {
                         exception.printStackTrace();
