@@ -34,4 +34,5 @@
     <string name="password">Password</string>
     <string name="caricamento">Caricamento…</string>
     <string name="login_msg_failer">Login fallito</string>
+    <string name="new_marks">Voti aggiornati</string>
 </resources>
