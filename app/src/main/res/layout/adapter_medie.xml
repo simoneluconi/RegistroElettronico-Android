@@ -50,9 +50,8 @@
                 android:layout_centerInParent="true"
                 android:layout_marginEnd="18dp"
                 android:layout_marginRight="18dp"
-                app:cpv_animAutostart="true"
-                app:cpv_indeterminate="false"
-                app:cpv_animSwoopDuration="200" />
+                app:cpv_animSwoopDuration="200"
+                app:cpv_indeterminate="false" />
 
             <TextView
                 android:id="@+id/media"

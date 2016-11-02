@@ -84,7 +84,6 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
                             // Update cache
                             new CacheTask(getContext().getCacheDir(), TAG).execute((List) materie);
 
-                            // Delay refreshing animation just for the show
                             mSwipeRefreshLayout.setRefreshing(false);
                         }
                     } catch (Exception e) {
@@ -174,6 +173,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
             } else {
                 ViewHolder.CircularMedia.setColor(ContextCompat.getColor(getContext(), R.color.redmaterial));
             }
+            ViewHolder.CircularMedia.startAnimation();
 
             float obbiettivo_voto = PreferenceManager.getDefaultSharedPreferences(getContext())
                     .getFloat("obbiettivo_voto", 8);
