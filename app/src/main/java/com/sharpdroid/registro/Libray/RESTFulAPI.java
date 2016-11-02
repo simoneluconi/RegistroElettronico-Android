@@ -1,6 +1,6 @@
-package com.sharpdroid.registro;
+package com.sharpdroid.registro.Libray;
 
-class RESTFulAPI {
+public class RESTFulAPI {
     private final String BASE_URL = "https://api.daniele.ml/";
 
     final String LOGIN_URL = BASE_URL + "login";
@@ -31,7 +31,11 @@ class RESTFulAPI {
         return String.format("%s/%s/lessons", SUBJECTS_URL, id);
     }
 
-    public String COMMUNICATION_URL(String id) {
+    public String COMMUNICATION_DESC_URL(String id) {
         return String.format("%s/%s/desc", COMMUNICATIONS_URL, id);
+    }
+
+    public String COMMUNICATION_DOWNLOAD_URL(String id) {
+        return String.format("%s/%s/download", COMMUNICATIONS_URL, id);
     }
 }

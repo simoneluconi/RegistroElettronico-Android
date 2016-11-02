@@ -25,6 +25,7 @@ import com.loopj.android.http.TextHttpResponseHandler;
 import com.sharpdroid.registro.Libray.Materia;
 import com.sharpdroid.registro.Libray.Media;
 import com.sharpdroid.registro.Libray.Metodi;
+import com.sharpdroid.registro.Libray.RESTFulAPI;
 import com.sharpdroid.registro.Libray.Voto;
 
 import java.io.EOFException;

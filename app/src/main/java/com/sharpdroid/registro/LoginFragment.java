@@ -15,6 +15,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.sharpdroid.registro.Libray.RESTFulAPI;
 
 import cz.msebera.android.httpclient.Header;
 
