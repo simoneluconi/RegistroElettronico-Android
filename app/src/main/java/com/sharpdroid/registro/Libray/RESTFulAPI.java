@@ -75,7 +75,7 @@ public class RESTFulAPI {
     public static abstract class Marks implements Runnable {
         private Context context;
 
-        protected Marks(Context context) {
+        public Marks(Context context) {
             this.context = context;
         }
 
