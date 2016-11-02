@@ -33,6 +33,7 @@ import java.io.StreamCorruptedException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -77,7 +78,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
                             mRVAdapter.addAll(materie);
 
                             // Update cache
-                            new CacheTask(getContext().getCacheDir()).execute((List) materie);
+                            new CacheTask(getContext().getCacheDir(), TAG).execute((List) materie);
 
                             // Delay refreshing animation just for the show
                             mSwipeRefreshLayout.setRefreshing(false);
@@ -162,7 +163,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
                 media.addVoto(voto);
             }
             ViewHolder.Materia.setText(media.getMateria());
-            ViewHolder.Media.setText(String.format("%.2f", media.getMediaGenerale()));
+            ViewHolder.Media.setText(String.format(Locale.getDefault(), "%.2f", media.getMediaGenerale()));
             ViewHolder.CircularMedia.setProgress(media.getMediaGenerale() * 10);
             if (media.isSufficiente()) {
                 ViewHolder.CircularMedia.setColor(ContextCompat.getColor(getContext(), R.color.greenmaterial));
@@ -200,7 +201,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
 
     private void bindVotiCache() {
         try {
-            FileInputStream fileInputStream = new FileInputStream(new File(getContext().getCacheDir(), "cache"));
+            FileInputStream fileInputStream = new FileInputStream(new File(getContext().getCacheDir(), TAG));
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             List<Materia> cachedData = new LinkedList<>();
             Materia temp;
