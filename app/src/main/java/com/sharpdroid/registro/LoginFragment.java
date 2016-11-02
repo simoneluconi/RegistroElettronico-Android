@@ -85,7 +85,7 @@ public class LoginFragment extends SlideFragment {
             params.put("password", mPassword);
             params.put("key", new DeviceUuidFactory(getContext()).getDeviceUuid().toString());
 
-            client.post(RESTFulAPI.MARKS_URL, params, new TextHttpResponseHandler() {
+            client.post(RESTFulAPI.LOGIN_URL, params, new TextHttpResponseHandler() {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                     mButtonLogin.setText(R.string.login);
