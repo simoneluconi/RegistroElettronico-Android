@@ -31,11 +31,11 @@ public class Mark implements Serializable {
         this.q = q;
     }
 
-    public boolean isNS() {
+    public boolean isNs() {
         return ns;
     }
 
-    public void setNS(boolean ns) {
+    public void setNs(boolean ns) {
         this.ns = ns;
     }
 
