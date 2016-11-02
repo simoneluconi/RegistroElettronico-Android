@@ -9,10 +9,6 @@ public class MarkSubject implements Serializable {
     private String name;
     private List<Mark> marks = new ArrayList<>();
 
-    public MarkSubject() {
-
-    }
-
     public MarkSubject(String name, List<Mark> marks) {
         this.name = name;
         this.marks = marks;

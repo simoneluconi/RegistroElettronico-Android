@@ -10,10 +10,6 @@ public class Mark implements Serializable {
     private float mark;
     private String desc;
 
-    public Mark() {
-
-    }
-
     Mark(String q, boolean ns, String type, String date, float mark, String desc) {
         this.q = q;
         this.ns = ns;

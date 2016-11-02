@@ -6,10 +6,6 @@ public class LessonSubject implements Serializable {
     private String name;
     private int code;
 
-    LessonSubject() {
-
-    }
-
     public LessonSubject(String name, int code) {
         this.name = name;
         this.code = code;

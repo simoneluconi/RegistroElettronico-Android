@@ -9,10 +9,6 @@ public class Absence implements Serializable {
     private int days;
     private String justification;
 
-    Absence() {
-
-    }
-
     public Absence(int id, String from, String to, int days, String justification) {
         this.id = id;
         this.from = from;

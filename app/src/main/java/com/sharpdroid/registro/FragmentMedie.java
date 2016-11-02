@@ -163,7 +163,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
             Media media = new Media();
             media.setMateria(marksubject.getName());
             for (Mark mark : marks) {
-                if (!mark.isNS()) {
+                if (!mark.isNs()) {
                     media.addMark(mark);
                 } else {
                     Log.d(TAG, "Voto non significativo");

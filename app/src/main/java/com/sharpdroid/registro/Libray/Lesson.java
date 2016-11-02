@@ -7,10 +7,6 @@ public class Lesson implements Serializable {
     private String date;
     private String content;
 
-    Lesson() {
-
-    }
-
     public Lesson(String teacher, String date, String content) {
         this.teacher = teacher;
         this.date = date;
