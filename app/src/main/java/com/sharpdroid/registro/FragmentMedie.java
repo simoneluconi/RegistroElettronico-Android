@@ -90,8 +90,6 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
             }
         });
 
-//        new Handler().post(Medie);
-
         return layout;
     }
 
