@@ -1,6 +1,5 @@
 package com.sharpdroid.registro.Libray;
 
-
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;

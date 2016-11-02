@@ -1,7 +1,6 @@
 package com.sharpdroid.registro.Libray;
 
 import com.google.gson.annotations.SerializedName;
-import com.sharpdroid.registro.Libray.Voto;
 
 import java.io.Serializable;
 import java.util.ArrayList;
