@@ -81,7 +81,6 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
 
                             // Delay refreshing animation just for the show
                             mSwipeRefreshLayout.setRefreshing(false);
-//                            new Handler().postDelayed(() -> mSwipeRefreshLayout.setRefreshing(false), 300);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
