@@ -74,8 +74,6 @@ public class LoginFragment extends SlideFragment {
 
     private final Runnable Login = new Runnable() {
         public void run() {
-            String url = "https://api.daniele.ml/login";
-
             AsyncHttpClient client = new AsyncHttpClient();
             PersistentCookieStore myCookieStore = new PersistentCookieStore(getContext());
             client.setCookieStore(myCookieStore);
@@ -86,7 +84,7 @@ public class LoginFragment extends SlideFragment {
             params.put("password", mPassword);
             params.put("key", new DeviceUuidFactory(getContext()).getDeviceUuid().toString());
 
-            client.post(url, params, new TextHttpResponseHandler() {
+            client.post(new RESTFulAPI().LOGIN_URL, params, new TextHttpResponseHandler() {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                     mButtonLogin.setText(R.string.login);

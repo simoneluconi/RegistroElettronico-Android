@@ -54,13 +54,12 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
         public void run() {
             List<Materia> materie = new LinkedList<>();
             long time = System.currentTimeMillis();
-            String url = "https://api.daniele.ml/marks";
 
             AsyncHttpClient client = new AsyncHttpClient();
             PersistentCookieStore myCookieStore = new PersistentCookieStore(getContext());
             client.setCookieStore(myCookieStore);
 
-            client.get(url, new TextHttpResponseHandler() {
+            client.get(new RESTFulAPI().MARKS_URL, new TextHttpResponseHandler() {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
 

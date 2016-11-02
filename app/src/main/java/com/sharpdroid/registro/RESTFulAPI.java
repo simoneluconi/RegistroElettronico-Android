@@ -1,8 +1,13 @@
 package com.sharpdroid.registro;
 
-/**
- * Created by daniele on 01/11/2016.
- */
+class RESTFulAPI {
+    private final String BASE_URL = "https://api.daniele.ml/";
 
-public class RESTFulAPI {
+    final String LOGIN_URL = BASE_URL + "login";
+
+    final String MARKS_URL = BASE_URL + "marks";
+
+    RESTFulAPI() {
+
+    }
 }

@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
-
 class CacheTask extends AsyncTask<List, Void, Void> {
 
     /**
