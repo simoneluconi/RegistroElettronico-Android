@@ -2,7 +2,7 @@ package com.sharpdroid.registro.Library;
 
 import java.io.Serializable;
 
-class LessonSubject implements Serializable {
+public class LessonSubject implements Serializable {
     private String name;
     private int code;
 

@@ -3,7 +3,7 @@ package com.sharpdroid.registro.Library;
 import java.io.Serializable;
 import java.util.List;
 
-class Absences implements Serializable {
+public class Absences implements Serializable {
     private List<Absence> absences;
     private List<Delay> delays;
     private List<Exit> exits;

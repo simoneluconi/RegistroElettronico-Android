@@ -2,7 +2,7 @@ package com.sharpdroid.registro.Library;
 
 import java.io.Serializable;
 
-class Note implements Serializable {
+public class Note implements Serializable {
     private String teacher;
     private String date;
     private String content;

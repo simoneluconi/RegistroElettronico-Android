@@ -2,7 +2,7 @@ package com.sharpdroid.registro.Library;
 
 import java.util.List;
 
-class Folder {
+public class Folder {
     private String name;
     private String last;
     private List<File> elements;
