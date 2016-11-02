@@ -17,13 +17,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
-import com.sharpdroid.registro.Utils.CacheTask;
+import com.sharpdroid.registro.API.RESTFulAPI;
 import com.sharpdroid.registro.Library.Mark;
 import com.sharpdroid.registro.Library.MarkSubject;
 import com.sharpdroid.registro.Library.Media;
 import com.sharpdroid.registro.Library.Metodi;
-import com.sharpdroid.registro.API.RESTFulAPI;
 import com.sharpdroid.registro.R;
+import com.sharpdroid.registro.Utils.CacheTask;
 
 import java.io.EOFException;
 import java.io.File;
