@@ -17,9 +17,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.loopj.android.http.TextHttpResponseHandler;
 import com.sharpdroid.registro.Libray.Mark;
 import com.sharpdroid.registro.Libray.MarkSubject;
 import com.sharpdroid.registro.Libray.Media;
@@ -38,8 +35,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
-import cz.msebera.android.httpclient.Header;
-
 import static com.sharpdroid.registro.Libray.Metodi.isNetworkAvailable;
 
 public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -53,40 +48,17 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
 
     }
 
-    private final Runnable Medie = new Runnable() {
-        public void run() {
-            List<MarkSubject> materie = new LinkedList<>();
-            long time = System.currentTimeMillis();
+    private void addSubjects(List<MarkSubject> markSubjects) {
+        if (markSubjects.size() != 0) {
+            mRVAdapter.clear();
+            mRVAdapter.addAll(markSubjects);
 
-            RESTFulAPI.get(getContext(), RESTFulAPI.MARKS_URL, null, new TextHttpResponseHandler() {
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+            // Update cache
+            new CacheTask(getContext().getCacheDir(), TAG).execute((List) markSubjects);
 
-                }
-
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                    try {
-                        materie.addAll(new Gson().fromJson(responseString, new TypeToken<List<MarkSubject>>() {
-                        }.getType()));
-                        Log.v(TAG, "Successfully parsed " + materie.size() + " changes in " + (System.currentTimeMillis() - time) + "ms");
-
-                        if (materie.size() != 0) {
-                            mRVAdapter.clear();
-                            mRVAdapter.addAll(materie);
-
-                            // Update cache
-                            new CacheTask(getContext().getCacheDir(), TAG).execute((List) materie);
-
-                            mSwipeRefreshLayout.setRefreshing(false);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
+            mSwipeRefreshLayout.setRefreshing(false);
         }
-    };
+    }
 
     @Override
     public View onCreateView(final LayoutInflater inflater,
@@ -111,7 +83,14 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
 
         bindVotiCache();
 
-        new Handler().post(Medie);
+        new Handler().post(new RESTFulAPI.Marks(getContext()) {
+            @Override
+            public void then(List<MarkSubject> markSubjects) {
+                addSubjects(markSubjects);
+            }
+        });
+
+//        new Handler().post(Medie);
 
         return layout;
     }
@@ -119,7 +98,12 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onRefresh() {
         if (isNetworkAvailable(getContext())) {
-            new Handler().post(Medie);
+            new Handler().post(new RESTFulAPI.Marks(getContext()) {
+                @Override
+                public void then(List<MarkSubject> markSubjects) {
+                    addSubjects(markSubjects);
+                }
+            });
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);

@@ -2,10 +2,17 @@ package com.sharpdroid.registro.Libray;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
+
+import java.util.List;
+
+import cz.msebera.android.httpclient.Header;
 
 public class RESTFulAPI {
     static private final String BASE_URL = "https://api.daniele.ml/";
@@ -50,6 +57,36 @@ public class RESTFulAPI {
 
     public String COMMUNICATION_DOWNLOAD_URL(String id) {
         return String.format("%s/%s/download", BASE_URL, id);
+    }
+
+    public static abstract class Marks implements Runnable {
+        private Context context;
+
+        public Marks(Context context) {
+            this.context = context;
+        }
+
+        public abstract void then(List<MarkSubject> subjects);
+
+        @Override
+        public void run() {
+            PersistentCookieStore cookieStore = new PersistentCookieStore(context);
+            client.setCookieStore(cookieStore);
+            client.get(MARKS_URL, null, new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                    try {
+                        then(new Gson().fromJson(responseString, new TypeToken<List<MarkSubject>> () {}.getType()));
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                }
+            });
+        }
     }
 
     public static void get(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
