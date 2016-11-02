@@ -1,4 +1,4 @@
-package com.sharpdroid.registro.Library;
+package com.sharpdroid.registro.Utils;
 
 import android.os.AsyncTask;
 import android.support.annotation.WorkerThread;

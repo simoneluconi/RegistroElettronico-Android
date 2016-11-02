@@ -13,13 +13,13 @@ import android.widget.Toast;
 import com.heinrichreimersoftware.materialintro.app.SlideFragment;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.sharpdroid.registro.Library.RESTFulAPI;
+import com.sharpdroid.registro.API.RESTFulAPI;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Utils.DeviceUuidFactory;
 
 import cz.msebera.android.httpclient.Header;
 
-public class LoginFragment extends SlideFragment {
+public class FragmentLogin extends SlideFragment {
 
     private EditText mEditTextMail;
     private EditText mEditTextPassword;
@@ -29,12 +29,12 @@ public class LoginFragment extends SlideFragment {
 
     private boolean loggedIn = false;
 
-    public LoginFragment() {
+    public FragmentLogin() {
         // Required empty public constructor
     }
 
-    public static LoginFragment newInstance() {
-        return new LoginFragment();
+    public static FragmentLogin newInstance() {
+        return new FragmentLogin();
     }
 
     @Override

@@ -7,7 +7,7 @@ import android.os.Bundle;
 import com.heinrichreimersoftware.materialintro.app.IntroActivity;
 import com.heinrichreimersoftware.materialintro.slide.FragmentSlide;
 import com.heinrichreimersoftware.materialintro.slide.SimpleSlide;
-import com.sharpdroid.registro.Fragments.LoginFragment;
+import com.sharpdroid.registro.Fragments.FragmentLogin;
 import com.sharpdroid.registro.R;
 
 public class Intro extends IntroActivity {
@@ -58,7 +58,7 @@ public class Intro extends IntroActivity {
         addSlide(new FragmentSlide.Builder()
                 .background(R.color.intro_blue)
                 .backgroundDark(R.color.intro_blue_dark)
-                .fragment(LoginFragment.newInstance())
+                .fragment(FragmentLogin.newInstance())
                 .build());
 
         addSlide(new SimpleSlide.Builder()

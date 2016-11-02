@@ -2,6 +2,8 @@ package com.sharpdroid.registro.Library;
 
 import android.util.Log;
 
+import com.sharpdroid.registro.API.RESTFulAPI;
+
 import java.io.Serializable;
 
 public class Media implements Serializable {

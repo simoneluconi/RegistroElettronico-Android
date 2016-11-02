@@ -1,4 +1,4 @@
-package com.sharpdroid.registro.Library;
+package com.sharpdroid.registro.API;
 
 import android.content.Context;
 
@@ -10,6 +10,8 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.sharpdroid.registro.Library.Communication;
+import com.sharpdroid.registro.Library.MarkSubject;
 
 import java.util.List;
 
