@@ -153,7 +153,6 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
             } else {
                 ViewHolder.CircularMedia.setColor(ContextCompat.getColor(getContext(), R.color.redmaterial));
             }
-            ViewHolder.CircularMedia.startAnimation();
 
             float obbiettivo_voto = PreferenceManager.getDefaultSharedPreferences(getContext())
                     .getFloat("obbiettivo_voto", 8);
