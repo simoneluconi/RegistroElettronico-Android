@@ -19,8 +19,6 @@ import android.widget.TextView;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.sharpdroid.registro.Libray.Mark;
 import com.sharpdroid.registro.Libray.MarkSubject;
@@ -60,11 +58,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
             List<MarkSubject> materie = new LinkedList<>();
             long time = System.currentTimeMillis();
 
-            AsyncHttpClient client = new AsyncHttpClient();
-            PersistentCookieStore myCookieStore = new PersistentCookieStore(getContext());
-            client.setCookieStore(myCookieStore);
-
-            client.get(RESTFulAPI.MARKS_URL, new TextHttpResponseHandler() {
+            RESTFulAPI.get(getContext(), RESTFulAPI.MARKS_URL, null, new TextHttpResponseHandler() {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
 

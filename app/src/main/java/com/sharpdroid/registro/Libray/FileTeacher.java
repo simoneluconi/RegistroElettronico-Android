@@ -1,7 +1,6 @@
 package com.sharpdroid.registro.Libray;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 public class FileTeacher implements Serializable {

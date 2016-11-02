@@ -1,5 +1,13 @@
 package com.sharpdroid.registro.Libray;
 
+import android.content.Context;
+
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.PersistentCookieStore;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
+
 public class RESTFulAPI {
     static private final String BASE_URL = "https://api.daniele.ml/";
 
@@ -23,6 +31,8 @@ public class RESTFulAPI {
     public static final String SCRITTO = "Scritto/Grafico";
     public static final String PRATICO = "Pratico";
 
+    private static AsyncHttpClient client = new AsyncHttpClient();
+
     public RESTFulAPI() {
 
     }
@@ -41,5 +51,17 @@ public class RESTFulAPI {
 
     public String COMMUNICATION_DOWNLOAD_URL(String id) {
         return String.format("%s/%s/download", BASE_URL, id);
+    }
+
+    public static void get(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        PersistentCookieStore myCookieStore = new PersistentCookieStore(context);
+        client.setCookieStore(myCookieStore);
+        client.get(url, params, responseHandler);
+    }
+
+    public static void post(Context context, String url, RequestParams params, TextHttpResponseHandler responseHandler) {
+        PersistentCookieStore myCookieStore = new PersistentCookieStore(context);
+        client.setCookieStore(myCookieStore);
+        client.post(url, params, responseHandler);
     }
 }

@@ -11,8 +11,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.heinrichreimersoftware.materialintro.app.SlideFragment;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.sharpdroid.registro.Libray.RESTFulAPI;
@@ -75,17 +73,13 @@ public class LoginFragment extends SlideFragment {
 
     private final Runnable Login = new Runnable() {
         public void run() {
-            AsyncHttpClient client = new AsyncHttpClient();
-            PersistentCookieStore myCookieStore = new PersistentCookieStore(getContext());
-            client.setCookieStore(myCookieStore);
-
             RequestParams params = new RequestParams();
 
             params.put("login", mEmail);
             params.put("password", mPassword);
             params.put("key", new DeviceUuidFactory(getContext()).getDeviceUuid().toString());
 
-            client.post(RESTFulAPI.LOGIN_URL, params, new TextHttpResponseHandler() {
+            RESTFulAPI.post(getContext(), RESTFulAPI.LOGIN_URL, params, new TextHttpResponseHandler() {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                     mButtonLogin.setText(R.string.login);
