@@ -80,7 +80,8 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
                             new CacheTask(getContext().getCacheDir()).execute((List) materie);
 
                             // Delay refreshing animation just for the show
-                            new Handler().postDelayed(() -> mSwipeRefreshLayout.setRefreshing(false), 300);
+                            mSwipeRefreshLayout.setRefreshing(false);
+//                            new Handler().postDelayed(() -> mSwipeRefreshLayout.setRefreshing(false), 300);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -162,7 +163,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
                 media.addVoto(voto);
             }
             ViewHolder.Materia.setText(media.getMateria());
-            ViewHolder.Media.setText(String.valueOf(media.getMediaGenerale()));
+            ViewHolder.Media.setText(String.format("%.2f", media.getMediaGenerale()));
             ViewHolder.CircularMedia.setProgress(media.getMediaGenerale() * 10);
             if (media.isSufficiente()) {
                 ViewHolder.CircularMedia.setColor(ContextCompat.getColor(getContext(), R.color.greenmaterial));
