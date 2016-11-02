@@ -1,19 +1,19 @@
-package com.sharpdroid.registro;
+package com.sharpdroid.registro.Libray;
 
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-class Metodi {
-    static boolean isNetworkAvailable(Context context) {
+public class Metodi {
+    public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null;
     }
 
-    static String MessaggioVoto(float Obb, float media, float somma, int voti) {
+    public static String MessaggioVoto(float Obb, float media, float somma, int voti) {
         float backups = somma, newvoto = 6;
         int contavoti = voti;
         if (media < Obb) {

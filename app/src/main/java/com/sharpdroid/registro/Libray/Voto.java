@@ -1,10 +1,10 @@
-package com.sharpdroid.registro;
+package com.sharpdroid.registro.Libray;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-class Voto implements Serializable {
+public class Voto implements Serializable {
     @SerializedName("q")
     private String q;
     @SerializedName("ns")

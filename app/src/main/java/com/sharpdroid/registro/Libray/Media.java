@@ -1,10 +1,10 @@
-package com.sharpdroid.registro;
+package com.sharpdroid.registro.Libray;
 
 import android.util.Log;
 
 import java.io.Serializable;
 
-class Media implements Serializable {
+public class Media implements Serializable {
     private String materia;
     private float somma_generale;
     private float somma_orale;
@@ -112,7 +112,7 @@ class Media implements Serializable {
         }
     }
 
-    boolean isSufficiente() {
+    public boolean isSufficiente() {
         return isSufficiente("Generale");
     }
 }

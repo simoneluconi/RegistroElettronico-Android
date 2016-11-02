@@ -1,12 +1,13 @@
-package com.sharpdroid.registro;
+package com.sharpdroid.registro.Libray;
 
 import com.google.gson.annotations.SerializedName;
+import com.sharpdroid.registro.Libray.Voto;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-class Materia implements Serializable {
+public class Materia implements Serializable {
     @SerializedName("name")
     private String materia;
     @SerializedName("marks")

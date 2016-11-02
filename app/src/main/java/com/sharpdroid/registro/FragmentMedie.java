@@ -22,6 +22,10 @@ import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.sharpdroid.registro.Libray.Materia;
+import com.sharpdroid.registro.Libray.Media;
+import com.sharpdroid.registro.Libray.Metodi;
+import com.sharpdroid.registro.Libray.Voto;
 
 import java.io.EOFException;
 import java.io.File;
@@ -37,7 +41,7 @@ import java.util.Locale;
 
 import cz.msebera.android.httpclient.Header;
 
-import static com.sharpdroid.registro.Metodi.isNetworkAvailable;
+import static com.sharpdroid.registro.Libray.Metodi.isNetworkAvailable;
 
 public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     final private String TAG = FragmentMedie.class.getSimpleName();
