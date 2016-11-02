@@ -65,7 +65,7 @@ public class RESTFulAPI {
         client.setCookieStore(myCookieStore);
         client.get(url, params, responseHandler);
     }
-    
+
     public static void post(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         PersistentCookieStore myCookieStore = new PersistentCookieStore(context);
         client.setCookieStore(myCookieStore);
@@ -75,7 +75,7 @@ public class RESTFulAPI {
     public static abstract class Marks implements Runnable {
         private Context context;
 
-        public Marks(Context context) {
+        protected Marks(Context context) {
             this.context = context;
         }
 
@@ -83,7 +83,7 @@ public class RESTFulAPI {
 
         @Override
         public void run() {
-            client.get(context, MARKS_URL, null, new TextHttpResponseHandler() {
+            get(context, MARKS_URL, null, new TextHttpResponseHandler() {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 }
