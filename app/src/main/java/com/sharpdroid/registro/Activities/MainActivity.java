@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.sharpdroid.registro.Fragments.FragmentCommunications;
 import com.sharpdroid.registro.Fragments.FragmentMedie;
 import com.sharpdroid.registro.R;
 
@@ -95,6 +96,9 @@ public class MainActivity extends AppCompatActivity
         switch (item.getItemId()) {
             case R.id.medie:
                 fragment = new FragmentMedie();
+                break;
+            case R.id.communications:
+                fragment = new FragmentCommunications();
                 break;
             case R.id.nav_share:
             case R.id.nav_send:

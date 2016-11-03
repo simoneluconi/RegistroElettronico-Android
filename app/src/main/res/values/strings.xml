@@ -35,4 +35,6 @@
     <string name="caricamento">Caricamento…</string>
     <string name="login_msg_failer">Login fallito</string>
     <string name="new_marks">Voti aggiornati</string>
+    <string name="communications">Comunicazioni</string>
+    <string name="new_communications">Circolari aggiornate</string>
 </resources>

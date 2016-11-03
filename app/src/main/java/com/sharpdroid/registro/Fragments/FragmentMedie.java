@@ -67,7 +67,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public View onCreateView(final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.fragment_voti, container, false);
+        View layout = inflater.inflate(R.layout.fragment_marks, container, false);
         mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swiperefresh_voti);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(
@@ -85,7 +85,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
         mRVAdapter = new RVAdapter(CVDataList);
         mRecyclerView.setAdapter(mRVAdapter);
 
-        bindVotiCache();
+        bindMarksCache();
 
         new Handler().post(new RESTFulAPI.Marks(getContext()) {
             @Override
@@ -186,7 +186,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
         }
     }
 
-    private void bindVotiCache() {
+    private void bindMarksCache() {
         try {
             FileInputStream fileInputStream = new FileInputStream(new File(getContext().getCacheDir(), TAG));
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);

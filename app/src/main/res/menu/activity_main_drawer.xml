@@ -6,6 +6,11 @@
             android:id="@+id/medie"
             android:icon="@drawable/ic_menu_camera"
             android:title="@string/medie" />
+
+        <item
+            android:id="@+id/communications"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="@string/communications" />
     </group>
 
     <item android:title="@string/communicate">
