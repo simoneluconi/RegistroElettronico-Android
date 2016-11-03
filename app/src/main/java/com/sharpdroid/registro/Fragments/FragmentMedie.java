@@ -8,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -149,20 +150,24 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
                     Log.d(TAG, "Voto non significativo");
                 }
             }
-            ViewHolder.Materia.setText(media.getMateria());
-            ViewHolder.Media.setText(String.format(Locale.getDefault(), "%.2f", media.getMediaGenerale()));
-            ViewHolder.CircularMedia.setProgress(media.getMediaGenerale() * 10);
+            ViewHolder.mTextViewMateria.setText(media.getMateria());
+            ViewHolder.mTextViewMedia.setText(String.format(Locale.getDefault(), "%.2f", media.getMediaGenerale()));
+            ViewHolder.mCircularProgressViewMedia.setProgress(media.getMediaGenerale() * 10);
             if (media.isSufficiente()) {
-                ViewHolder.CircularMedia.setColor(ContextCompat.getColor(getContext(), R.color.greenmaterial));
+                ViewHolder.mCircularProgressViewMedia.setColor(ContextCompat.getColor(getContext(), R.color.greenmaterial));
             } else {
-                ViewHolder.CircularMedia.setColor(ContextCompat.getColor(getContext(), R.color.redmaterial));
+                ViewHolder.mCircularProgressViewMedia.setColor(ContextCompat.getColor(getContext(), R.color.redmaterial));
             }
 
             float obbiettivo_voto = PreferenceManager.getDefaultSharedPreferences(getContext())
                     .getFloat("obbiettivo_voto", 8);
 
             String obbiettivo_string = Metodi.MessaggioVoto(obbiettivo_voto, media.getMediaGenerale(), media.getSommaGenerale(), media.getNumeroVoti());
-            ViewHolder.Desc.setText(obbiettivo_string);
+            ViewHolder.mTextViewDesc.setText(obbiettivo_string);
+
+            ViewHolder.mCardViewMedia.setOnClickListener(v -> {
+                // Perform action on click
+            });
         }
 
         @Override
@@ -171,17 +176,19 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            final TextView Materia;
-            final TextView Media;
-            final TextView Desc;
-            final CircularProgressView CircularMedia;
+            final CardView mCardViewMedia;
+            final CircularProgressView mCircularProgressViewMedia;
+            final TextView mTextViewMateria;
+            final TextView mTextViewMedia;
+            final TextView mTextViewDesc;
 
             ViewHolder(View itemView) {
                 super(itemView);
-                Materia = (TextView) itemView.findViewById(R.id.materia);
-                Media = (TextView) itemView.findViewById(R.id.media);
-                Desc = (TextView) itemView.findViewById(R.id.descrizione);
-                CircularMedia = (CircularProgressView) itemView.findViewById(R.id.progressvoti);
+                mCardViewMedia = (CardView) itemView.findViewById(R.id.cardview_medie);
+                mCircularProgressViewMedia = (CircularProgressView) itemView.findViewById(R.id.progressvoti);
+                mTextViewMateria = (TextView) itemView.findViewById(R.id.materia);
+                mTextViewMedia = (TextView) itemView.findViewById(R.id.media);
+                mTextViewDesc = (TextView) itemView.findViewById(R.id.descrizione);
             }
         }
     }
