@@ -60,8 +60,6 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
             new CacheTask(getContext().getCacheDir(), TAG).execute((List) markSubjects);
 
             mSwipeRefreshLayout.setRefreshing(false);
-
-            Snackbar.make(mCoordinatorLayout, R.string.new_marks, Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -87,6 +85,8 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
         mRecyclerView.setAdapter(mRVAdapter);
 
         bindMarksCache();
+
+        mSwipeRefreshLayout.setRefreshing(true);
 
         new Handler().post(new RESTFulAPI.Marks(getContext()) {
             @Override

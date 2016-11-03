@@ -70,6 +70,8 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
 
         bindCommunicationsCache();
 
+        mSwipeRefreshLayout.setRefreshing(true);
+
         new Handler().post(new RESTFulAPI.Communications(getContext()) {
             @Override
             public void then(List<Communication> communications) {
@@ -89,8 +91,6 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
             new CacheTask(getContext().getCacheDir(), TAG).execute((List) communications);
 
             mSwipeRefreshLayout.setRefreshing(false);
-
-            Snackbar.make(mCoordinatorLayout, R.string.new_communications, Snackbar.LENGTH_LONG).show();
         }
     }
 
