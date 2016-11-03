@@ -26,9 +26,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.StreamCorruptedException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import static com.sharpdroid.registro.Library.Metodi.isNetworkAvailable;
 
@@ -134,13 +138,14 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
             final Communication communication = CVDataList.get(ViewHolder.getAdapterPosition());
             ViewHolder.Title.setText(communication.getTitle());
             String datestring = communication.getDate().split("T")[0];
-            /*try {
-                SimpleDateFormat formatter = new SimpleDateFormat("YYYY-MM-DD", Locale.ITALIAN);
+            try {
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ITALIAN);
                 Date convertedCommitDate = formatter.parse(datestring);
+                formatter = new SimpleDateFormat("dd/MM/yy", Locale.ITALIAN);
                 ViewHolder.Date.setText(formatter.format(convertedCommitDate));
-            } catch (ParseException e) {*/
+            } catch (ParseException e) {
                 ViewHolder.Date.setText(datestring);
-            /*}*/
+            }
             ViewHolder.Type.setText(communication.getType());
         }
 
