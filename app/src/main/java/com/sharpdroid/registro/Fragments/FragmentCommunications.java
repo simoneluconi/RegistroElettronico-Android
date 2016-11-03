@@ -141,7 +141,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
             try {
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ITALIAN);
                 Date convertedCommitDate = formatter.parse(datestring);
-                formatter = new SimpleDateFormat("dd/MM/yy", Locale.ITALIAN);
+                formatter = new SimpleDateFormat("dd/MM/YYYY", Locale.ITALIAN);
                 ViewHolder.Date.setText(formatter.format(convertedCommitDate));
             } catch (ParseException e) {
                 ViewHolder.Date.setText(datestring);
