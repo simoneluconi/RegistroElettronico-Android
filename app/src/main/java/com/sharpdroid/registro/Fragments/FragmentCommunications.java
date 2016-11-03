@@ -37,7 +37,7 @@ import java.util.Locale;
 import static com.sharpdroid.registro.Library.Metodi.isNetworkAvailable;
 
 public class FragmentCommunications extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-    final private String TAG = FragmentCommunications.class.getCanonicalName();
+    final private String TAG = FragmentCommunications.class.getSimpleName();
 
     private CoordinatorLayout mCoordinatorLayout;
     private SwipeRefreshLayout mSwipeRefreshLayout;
