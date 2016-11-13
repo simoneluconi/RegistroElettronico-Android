@@ -43,4 +43,5 @@ dependencies {
     compile 'com.google.code.gson:gson:2.7'
     compile 'com.heinrichreimersoftware:material-intro:1.6'
     compile 'com.loopj.android:android-async-http:1.4.9'
+    compile 'com.dinuscxj:recyclerrefreshlayout:2.0.3'
 }

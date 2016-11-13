@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.dinuscxj.refresh.RecyclerRefreshLayout;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.sharpdroid.registro.API.RESTFulAPI;
 import com.sharpdroid.registro.Library.Mark;
@@ -40,11 +41,11 @@ import java.util.Locale;
 
 import static com.sharpdroid.registro.Library.Metodi.isNetworkAvailable;
 
-public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class FragmentMedie extends Fragment implements RecyclerRefreshLayout.OnRefreshListener {
     final private String TAG = FragmentMedie.class.getSimpleName();
 
     private CoordinatorLayout mCoordinatorLayout;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private RecyclerRefreshLayout mSwipeRefreshLayout;
     private RVAdapter mRVAdapter;
 
     public FragmentMedie() {
@@ -67,14 +68,15 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
     public View onCreateView(final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_marks, container, false);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swiperefresh_voti);
+        mSwipeRefreshLayout = (RecyclerRefreshLayout) layout.findViewById(R.id.swiperefresh_voti);
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        mSwipeRefreshLayout.setColorSchemeResources(
+
+  /*      mSwipeRefreshLayout.setColorSchemeResources(
                 R.color.bluematerial,
                 R.color.redmaterial,
                 R.color.greenmaterial,
                 R.color.orangematerial);
-
+*/
         mCoordinatorLayout = (CoordinatorLayout) layout.findViewById(R.id.coordinatorlayout_voti);
 
         RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.cardlist_voti);

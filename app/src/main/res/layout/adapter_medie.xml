@@ -55,6 +55,7 @@
                 android:layout_marginEnd="18dp"
                 android:layout_marginRight="18dp"
                 app:cpv_animSwoopDuration="200"
+
                 app:cpv_animSyncDuration="0"
                 app:cpv_indeterminate="false" />
 
