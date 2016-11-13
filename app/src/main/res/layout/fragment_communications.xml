@@ -5,9 +5,10 @@
     android:layout_height="match_parent"
     android:layout_gravity="center_horizontal">
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <com.dinuscxj.refresh.RecyclerRefreshLayout
         android:id="@+id/swiperefresh_communications"
         android:layout_width="match_parent"
+
         android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView
@@ -19,5 +20,5 @@
             android:scrollbars="vertical">
 
         </android.support.v7.widget.RecyclerView>
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </com.dinuscxj.refresh.RecyclerRefreshLayout>
 </android.support.design.widget.CoordinatorLayout>

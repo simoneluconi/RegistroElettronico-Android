@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.dinuscxj.refresh.RecyclerRefreshLayout;
 import com.sharpdroid.registro.API.RESTFulAPI;
 import com.sharpdroid.registro.Library.Communication;
 import com.sharpdroid.registro.R;
@@ -36,11 +37,11 @@ import java.util.Locale;
 
 import static com.sharpdroid.registro.Library.Metodi.isNetworkAvailable;
 
-public class FragmentCommunications extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class FragmentCommunications extends Fragment implements RecyclerRefreshLayout.OnRefreshListener {
     final private String TAG = FragmentCommunications.class.getSimpleName();
 
     private CoordinatorLayout mCoordinatorLayout;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private RecyclerRefreshLayout mSwipeRefreshLayout;
     private RVAdapter mRVAdapter;
 
     public FragmentCommunications() {
@@ -51,14 +52,15 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
     public View onCreateView(final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_communications, container, false);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swiperefresh_communications);
+        mSwipeRefreshLayout = (RecyclerRefreshLayout) layout.findViewById(R.id.swiperefresh_communications);
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        mSwipeRefreshLayout.setColorSchemeResources(
+
+/*        mSwipeRefreshLayout.setColorSchemeResources(
                 R.color.bluematerial,
                 R.color.redmaterial,
                 R.color.greenmaterial,
                 R.color.orangematerial);
-
+*/
         mCoordinatorLayout = (CoordinatorLayout) layout.findViewById(R.id.coordinatorlayout_communications);
 
         RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.cardlist_communications);
