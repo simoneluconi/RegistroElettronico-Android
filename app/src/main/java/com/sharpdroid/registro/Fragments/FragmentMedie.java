@@ -60,6 +60,7 @@ public class FragmentMedie extends Fragment implements RecyclerRefreshLayout.OnR
         View layout = inflater.inflate(R.layout.fragment_marks, container, false);
         mRecyclerRefreshLayout = (RecyclerRefreshLayout) layout.findViewById(R.id.swiperefresh_voti);
         mRecyclerRefreshLayout.setOnRefreshListener(this);
+
         mCoordinatorLayout = (CoordinatorLayout) layout.findViewById(R.id.coordinatorlayout_voti);
 
         RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.cardlist_voti);
