@@ -1,8 +1,8 @@
-package com.sharpdroid.registro.user.Entry;
+package com.sharpdroid.registro.Interfaces;
 
 import java.io.Serializable;
 
-public class Scrutiny implements Serializable {
+class Scrutiny implements Serializable {
     private String icon;
     private String desc;
     private String type;

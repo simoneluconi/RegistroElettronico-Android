@@ -1,8 +1,8 @@
-package com.sharpdroid.registro.user.Entry;
+package com.sharpdroid.registro.Interfaces;
 
 import java.io.Serializable;
 
-public class LessonSubject implements Serializable {
+class LessonSubject implements Serializable {
     private String name;
     private int code;
 

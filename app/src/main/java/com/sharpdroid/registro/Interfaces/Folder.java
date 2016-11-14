@@ -1,8 +1,8 @@
-package com.sharpdroid.registro.user.Entry;
+package com.sharpdroid.registro.Interfaces;
 
 import java.util.List;
 
-public class Folder {
+class Folder {
     private String name;
     private String last;
     private List<File> elements;

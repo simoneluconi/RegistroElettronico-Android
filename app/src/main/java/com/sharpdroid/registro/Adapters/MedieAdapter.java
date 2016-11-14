@@ -1,4 +1,4 @@
-package com.sharpdroid.registro.user.Adapters;
+package com.sharpdroid.registro.Adapters;
 
 import android.content.Context;
 import android.preference.PreferenceManager;
@@ -13,24 +13,20 @@ import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.sharpdroid.registro.R;
-import com.sharpdroid.registro.user.Entry.Mark;
-import com.sharpdroid.registro.user.Entry.MarkSubject;
-import com.sharpdroid.registro.user.Entry.Media;
-import com.sharpdroid.registro.user.Entry.Metodi;
+import com.sharpdroid.registro.Interfaces.Mark;
+import com.sharpdroid.registro.Interfaces.MarkSubject;
+import com.sharpdroid.registro.Interfaces.Media;
+import com.sharpdroid.registro.Interfaces.Metodi;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Created by Marco on 14/11/2016.
- */
-
 public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder> {
     final private String TAG = MedieAdapter.class.getSimpleName();
 
-    final List<MarkSubject> CVDataList;
-    Context c;
+    private final List<MarkSubject> CVDataList;
+    private final Context c;
 
     public MedieAdapter(Context c, List<MarkSubject> CVDataList) {
         this.c=c;

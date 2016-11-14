@@ -13,54 +13,50 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-
         android:layout_height="wrap_content"
         android:padding="12dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="vertical"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true"
             android:layout_toLeftOf="@+id/relativeLayout"
-            android:layout_toStartOf="@+id/relativeLayout">
+            android:layout_toStartOf="@+id/relativeLayout"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/materia"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Materia Materia Materia Materia Materia Materia "
-                android:textColor="@color/material_blue_grey"
-                android:maxLines="1"
                 android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/material_blue_grey"
                 android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/descrizione"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/materia"
                 android:layout_marginBottom="3dp"
-                android:text="Descrizione Descrizione Descrizione Descrizione Descrizione "
-                android:maxLines="1"
                 android:ellipsize="end"
+                android:maxLines="1"
                 android:textColor="@color/textcolorgrey"
                 android:textSize="13sp" />
         </LinearLayout>
 
         <RelativeLayout
+            android:id="@+id/relativeLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="end"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:id="@+id/relativeLayout">
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:gravity="end">
 
             <com.github.rahatarmanahmed.cpv.CircularProgressView
                 android:id="@+id/progressvoti"

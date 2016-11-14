@@ -1,4 +1,4 @@
-package com.sharpdroid.registro.user.Entry;
+package com.sharpdroid.registro.Interfaces;
 
 import android.util.Log;
 

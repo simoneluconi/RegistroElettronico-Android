@@ -1,6 +1,6 @@
-package com.sharpdroid.registro.user.Entry;
+package com.sharpdroid.registro.Interfaces;
 
-public class File {
+class File {
     private String id;
     private String name;
     private String type;

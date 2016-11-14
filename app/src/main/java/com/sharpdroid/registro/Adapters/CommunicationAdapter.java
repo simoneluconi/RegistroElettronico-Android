@@ -1,4 +1,4 @@
-package com.sharpdroid.registro.user.Adapters;
+package com.sharpdroid.registro.Adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,8 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.sharpdroid.registro.Interfaces.Communication;
 import com.sharpdroid.registro.R;
-import com.sharpdroid.registro.user.Entry.Communication;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,12 +16,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Created by Marco on 14/11/2016.
- */
-
 public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdapter.CommunicationHolder> {
-    final List<Communication> CVDataList;
+    private final List<Communication> CVDataList;
 
     public CommunicationAdapter(List<Communication> CVDataList) {
         this.CVDataList = CVDataList;

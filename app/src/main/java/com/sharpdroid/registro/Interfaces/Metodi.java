@@ -1,4 +1,4 @@
-package com.sharpdroid.registro.user.Entry;
+package com.sharpdroid.registro.Interfaces;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

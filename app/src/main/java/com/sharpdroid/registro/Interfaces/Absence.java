@@ -1,8 +1,8 @@
-package com.sharpdroid.registro.user.Entry;
+package com.sharpdroid.registro.Interfaces;
 
 import java.io.Serializable;
 
-public class Absence implements Serializable {
+class Absence implements Serializable {
     private int id;
     private String from;
     private String to;

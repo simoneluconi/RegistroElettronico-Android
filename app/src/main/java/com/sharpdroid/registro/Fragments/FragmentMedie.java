@@ -2,28 +2,20 @@ package com.sharpdroid.registro.Fragments;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.dinuscxj.refresh.RecyclerRefreshLayout;
-import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.sharpdroid.registro.API.RESTFulAPI;
-import com.sharpdroid.registro.user.Adapters.MedieAdapter;
-import com.sharpdroid.registro.user.Entry.Mark;
-import com.sharpdroid.registro.user.Entry.MarkSubject;
-import com.sharpdroid.registro.user.Entry.Media;
-import com.sharpdroid.registro.user.Entry.Metodi;
+import com.sharpdroid.registro.Adapters.MedieAdapter;
+import com.sharpdroid.registro.Interfaces.MarkSubject;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Utils.CacheTask;
 
@@ -34,12 +26,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.StreamCorruptedException;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 
-import static com.sharpdroid.registro.user.Entry.Metodi.isNetworkAvailable;
+import static com.sharpdroid.registro.Interfaces.Metodi.isNetworkAvailable;
 
 public class FragmentMedie extends Fragment implements RecyclerRefreshLayout.OnRefreshListener {
     final private String TAG = FragmentMedie.class.getSimpleName();

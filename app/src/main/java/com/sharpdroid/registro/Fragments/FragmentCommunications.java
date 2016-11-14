@@ -16,8 +16,8 @@ import com.dinuscxj.refresh.RecyclerRefreshLayout;
 import com.sharpdroid.registro.API.RESTFulAPI;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Utils.CacheTask;
-import com.sharpdroid.registro.user.Entry.Communication;
-import com.sharpdroid.registro.user.Adapters.CommunicationAdapter;
+import com.sharpdroid.registro.Interfaces.Communication;
+import com.sharpdroid.registro.Adapters.CommunicationAdapter;
 
 import java.io.EOFException;
 import java.io.File;
@@ -29,7 +29,7 @@ import java.io.StreamCorruptedException;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.sharpdroid.registro.user.Entry.Metodi.isNetworkAvailable;
+import static com.sharpdroid.registro.Interfaces.Metodi.isNetworkAvailable;
 
 public class FragmentCommunications extends Fragment implements RecyclerRefreshLayout.OnRefreshListener {
     final private String TAG = FragmentCommunications.class.getSimpleName();
