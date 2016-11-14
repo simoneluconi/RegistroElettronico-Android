@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.dinuscxj.refresh.RecyclerRefreshLayout;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.sharpdroid.registro.API.RESTFulAPI;
+import com.sharpdroid.registro.user.Adapters.MedieAdapter;
 import com.sharpdroid.registro.user.Entry.Mark;
 import com.sharpdroid.registro.user.Entry.MarkSubject;
 import com.sharpdroid.registro.user.Entry.Media;
@@ -45,7 +46,7 @@ public class FragmentMedie extends Fragment implements RecyclerRefreshLayout.OnR
 
     private CoordinatorLayout mCoordinatorLayout;
     private RecyclerRefreshLayout mSwipeRefreshLayout;
-    private  mRVAdapter;
+    private MedieAdapter mRVAdapter;
 
     public FragmentMedie() {
 
@@ -82,7 +83,7 @@ public class FragmentMedie extends Fragment implements RecyclerRefreshLayout.OnR
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         List<MarkSubject> CVDataList = new LinkedList<>();
-        mRVAdapter = new RVAdapter(CVDataList);
+        mRVAdapter = new MedieAdapter(getContext(), CVDataList);
         mRecyclerView.setAdapter(mRVAdapter);
 
         bindMarksCache();

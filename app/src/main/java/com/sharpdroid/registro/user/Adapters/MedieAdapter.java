@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
-import com.sharpdroid.registro.Fragments.FragmentMedie;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.user.Entry.Mark;
 import com.sharpdroid.registro.user.Entry.MarkSubject;
@@ -27,23 +26,23 @@ import java.util.Locale;
  * Created by Marco on 14/11/2016.
  */
 
-class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder> {
+public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder> {
     final private String TAG = MedieAdapter.class.getSimpleName();
 
     final List<MarkSubject> CVDataList;
     Context c;
 
-    MedieAdapter(Context c, List<MarkSubject> CVDataList) {
+    public MedieAdapter(Context c, List<MarkSubject> CVDataList) {
         this.c=c;
         this.CVDataList = CVDataList;
     }
 
-    void addAll(Collection<MarkSubject> list) {
+    public void addAll(Collection<MarkSubject> list) {
         CVDataList.addAll(list);
         notifyDataSetChanged();
     }
 
-    void clear() {
+    public void clear() {
         CVDataList.clear();
         notifyDataSetChanged();
     }
@@ -94,7 +93,7 @@ class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder> {
         return CVDataList.size();
     }
 
-    public class MedieHolder extends RecyclerView.ViewHolder {
+    class MedieHolder extends RecyclerView.ViewHolder {
         final CardView mCardViewMedia;
         final CircularProgressView mCircularProgressViewMedia;
         final TextView mTextViewMateria;
