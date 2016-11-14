@@ -1,6 +1,7 @@
 package com.sharpdroid.registro.Adapters;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,13 +64,13 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
          */
         h.type.setTextColor(
                 nota.getType().toLowerCase().contains("disciplinare") ?
-                        mContext.getResources().getColor(R.color.red_strong) :
-                        mContext.getResources().getColor(android.R.color.primary_text_dark)
+                        ContextCompat.getColor(mContext, R.color.red_strong) :
+                        ContextCompat.getColor(mContext, android.R.color.primary_text_dark)
         );
         h.teacher.setTextColor(
                 nota.getType().toLowerCase().contains("disciplinare") ?
-                        mContext.getResources().getColor(R.color.red_strong) :
-                        mContext.getResources().getColor(android.R.color.primary_text_dark)
+                        ContextCompat.getColor(mContext, R.color.red_strong) :
+                        ContextCompat.getColor(mContext, android.R.color.primary_text_dark)
         );
 
     }
