@@ -20,19 +20,19 @@ import java.util.Locale;
  * Created by Marco on 14/11/2016.
  */
 
-class CommuicationAdapter extends RecyclerView.Adapter<CommuicationAdapter.CommunicationHolder> {
+public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdapter.CommunicationHolder> {
     final List<Communication> CVDataList;
 
-    CommuicationAdapter(List<Communication> CVDataList) {
+    public CommunicationAdapter(List<Communication> CVDataList) {
         this.CVDataList = CVDataList;
     }
 
-    void addAll(Collection<Communication> list) {
+    public void addAll(Collection<Communication> list) {
         CVDataList.addAll(list);
         notifyDataSetChanged();
     }
 
-    void clear() {
+    public void clear() {
         CVDataList.clear();
         notifyDataSetChanged();
     }
@@ -52,7 +52,8 @@ class CommuicationAdapter extends RecyclerView.Adapter<CommuicationAdapter.Commu
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ITALIAN);
             Date convertedCommitDate = formatter.parse(datestring);
-            formatter = new SimpleDateFormat("dd/MM/YYYY", Locale.ITALIAN);
+            //formatter = new SimpleDateFormat("dd/MM/YYYY", Locale.ITALIAN);
+            formatter = new SimpleDateFormat("d MMMM", Locale.ITALIAN);
             ViewHolder.Date.setText(formatter.format(convertedCommitDate));
         } catch (ParseException e) {
             ViewHolder.Date.setText(datestring);

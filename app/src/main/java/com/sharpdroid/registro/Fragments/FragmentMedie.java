@@ -45,7 +45,7 @@ public class FragmentMedie extends Fragment implements RecyclerRefreshLayout.OnR
 
     private CoordinatorLayout mCoordinatorLayout;
     private RecyclerRefreshLayout mSwipeRefreshLayout;
-    private RVAdapter mRVAdapter;
+    private  mRVAdapter;
 
     public FragmentMedie() {
 
@@ -111,86 +111,6 @@ public class FragmentMedie extends Fragment implements RecyclerRefreshLayout.OnR
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);
-        }
-    }
-
-    public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
-        final List<MarkSubject> CVDataList;
-
-        RVAdapter(List<MarkSubject> CVDataList) {
-            this.CVDataList = CVDataList;
-        }
-
-        void addAll(Collection<MarkSubject> list) {
-            CVDataList.addAll(list);
-            notifyDataSetChanged();
-        }
-
-        void clear() {
-            CVDataList.clear();
-            notifyDataSetChanged();
-        }
-
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.adapter_medie, parent, false);
-            return new ViewHolder(v);
-        }
-
-        @Override
-        public void onBindViewHolder(ViewHolder ViewHolder, int i) {
-            final MarkSubject marksubject = CVDataList.get(ViewHolder.getAdapterPosition());
-            final List<Mark> marks = marksubject.getMarks();
-            Media media = new Media();
-            media.setMateria(marksubject.getName());
-            for (Mark mark : marks) {
-                if (!mark.isNs()) {
-                    media.addMark(mark);
-                } else {
-                    Log.d(TAG, "Voto non significativo");
-                }
-            }
-            ViewHolder.mTextViewMateria.setText(media.getMateria());
-            ViewHolder.mTextViewMedia.setText(String.format(Locale.getDefault(), "%.2f", media.getMediaGenerale()));
-            ViewHolder.mCircularProgressViewMedia.setProgress(media.getMediaGenerale() * 10);
-            if (media.isSufficiente()) {
-                ViewHolder.mCircularProgressViewMedia.setColor(ContextCompat.getColor(getContext(), R.color.greenmaterial));
-            } else {
-                ViewHolder.mCircularProgressViewMedia.setColor(ContextCompat.getColor(getContext(), R.color.redmaterial));
-            }
-
-            float obbiettivo_voto = PreferenceManager.getDefaultSharedPreferences(getContext())
-                    .getFloat("obbiettivo_voto", 8);
-
-            String obbiettivo_string = Metodi.MessaggioVoto(obbiettivo_voto, media.getMediaGenerale(), media.getSommaGenerale(), media.getNumeroVoti());
-            ViewHolder.mTextViewDesc.setText(obbiettivo_string);
-
-            ViewHolder.mCardViewMedia.setOnClickListener(v -> {
-                // Perform action on click
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return CVDataList.size();
-        }
-
-        class ViewHolder extends RecyclerView.ViewHolder {
-            final CardView mCardViewMedia;
-            final CircularProgressView mCircularProgressViewMedia;
-            final TextView mTextViewMateria;
-            final TextView mTextViewMedia;
-            final TextView mTextViewDesc;
-
-            ViewHolder(View itemView) {
-                super(itemView);
-                mCardViewMedia = (CardView) itemView.findViewById(R.id.cardview_medie);
-                mCircularProgressViewMedia = (CircularProgressView) itemView.findViewById(R.id.progressvoti);
-                mTextViewMateria = (TextView) itemView.findViewById(R.id.materia);
-                mTextViewMedia = (TextView) itemView.findViewById(R.id.media);
-                mTextViewDesc = (TextView) itemView.findViewById(R.id.descrizione);
-            }
         }
     }
 

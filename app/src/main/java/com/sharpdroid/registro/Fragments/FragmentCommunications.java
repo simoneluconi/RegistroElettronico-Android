@@ -49,19 +49,13 @@ public class FragmentCommunications extends Fragment implements RecyclerRefreshL
         mSwipeRefreshLayout = (RecyclerRefreshLayout) layout.findViewById(R.id.swiperefresh_communications);
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
-/*        mSwipeRefreshLayout.setColorSchemeResources(
-                R.color.bluematerial,
-                R.color.redmaterial,
-                R.color.greenmaterial,
-                R.color.orangematerial);
-*/
         mCoordinatorLayout = (CoordinatorLayout) layout.findViewById(R.id.coordinatorlayout_communications);
 
         RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.cardlist_communications);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         List<Communication> CVDataList = new LinkedList<>();
-        mRVAdapter = new RVAdapter(CVDataList);
+        mRVAdapter = new CommunicationAdapter(CVDataList);
         mRecyclerView.setAdapter(mRVAdapter);
 
         bindCommunicationsCache();
