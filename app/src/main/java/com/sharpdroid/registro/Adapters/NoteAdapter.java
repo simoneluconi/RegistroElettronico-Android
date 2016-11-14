@@ -38,13 +38,14 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
 
     @Override
     public NoteHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(mContext).inflate(R.layout.adapter_note, parent, false);
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.adapter_note, parent, false);
         return new NoteHolder(v);
     }
 
     @Override
     public void onBindViewHolder(NoteHolder h, int position) {
-        Note nota = CVDataList.get(position);
+        final Note nota = CVDataList.get(position);
 
         String date = nota.getDate().split("T")[0];
 
