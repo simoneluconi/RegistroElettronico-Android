@@ -45,7 +45,6 @@ public class FragmentNote extends Fragment implements RecyclerRefreshLayout.OnRe
     public FragmentNote() {
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

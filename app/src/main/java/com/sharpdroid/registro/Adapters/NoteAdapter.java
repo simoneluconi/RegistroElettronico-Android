@@ -18,8 +18,8 @@ import java.util.List;
  * Adapter per RecyclerView con Note disciplinari & Annotazioni
  */
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
-    private Context mContext;
     private final List<Note> CVDataList;
+    private Context mContext;
 
     public NoteAdapter(Context context, List<Note> CVDataList) {
         this.mContext = context;
@@ -71,6 +71,11 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
 
     }
 
+    @Override
+    public int getItemCount() {
+        return CVDataList.size();
+    }
+
     class NoteHolder extends RecyclerView.ViewHolder {
         TextView teacher, date, content, type;
 
@@ -82,10 +87,5 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
             content = (TextView) v.findViewById(R.id.content);
             type = (TextView) v.findViewById(R.id.type);
         }
-    }
-
-    @Override
-    public int getItemCount() {
-        return CVDataList.size();
     }
 }
