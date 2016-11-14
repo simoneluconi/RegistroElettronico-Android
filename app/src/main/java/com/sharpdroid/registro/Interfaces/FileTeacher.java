@@ -3,7 +3,7 @@ package com.sharpdroid.registro.Interfaces;
 import java.io.Serializable;
 import java.util.List;
 
-class FileTeacher implements Serializable {
+public class FileTeacher implements Serializable {
     private String name;
     private List<Folder> folders;
 

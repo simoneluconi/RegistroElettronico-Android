@@ -2,7 +2,7 @@ package com.sharpdroid.registro.Interfaces;
 
 import java.io.Serializable;
 
-class Delay implements Serializable {
+public class Delay implements Serializable {
     private int id;
     private String day;
     private String hours;

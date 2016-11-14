@@ -2,7 +2,7 @@ package com.sharpdroid.registro.Interfaces;
 
 import java.io.Serializable;
 
-class CommunicationDescription implements Serializable {
+public class CommunicationDescription implements Serializable {
     private String longTitle;
     private String desc;
     private boolean attachment;

@@ -2,7 +2,7 @@ package com.sharpdroid.registro.Interfaces;
 
 import java.io.Serializable;
 
-class Lesson implements Serializable {
+public class Lesson implements Serializable {
     private String teacher;
     private String date;
     private String content;
