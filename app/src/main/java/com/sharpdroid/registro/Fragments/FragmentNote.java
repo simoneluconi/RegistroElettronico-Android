@@ -27,10 +27,10 @@ import static com.sharpdroid.registro.Interfaces.Metodi.isNetworkAvailable;
 public class FragmentNote extends Fragment implements RecyclerRefreshLayout.OnRefreshListener {
     final private String TAG = FragmentNote.class.getSimpleName();
 
-    Context mContext;
-    RecyclerRefreshLayout mRecyclerRefreshLayout;
-    NoteAdapter mRVAdapter;
-    CoordinatorLayout mCoordinatorLayout;
+    private Context mContext;
+    private RecyclerRefreshLayout mRecyclerRefreshLayout;
+    private NoteAdapter mRVAdapter;
+    private CoordinatorLayout mCoordinatorLayout;
 
     public FragmentNote() {
     }
@@ -40,12 +40,14 @@ public class FragmentNote extends Fragment implements RecyclerRefreshLayout.OnRe
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mContext = getContext();
-        View v = inflater.inflate(R.layout.fragment_note, container, false);
+        View layout = inflater.inflate(R.layout.fragment_note, container, false);
 
-        mRecyclerRefreshLayout = (RecyclerRefreshLayout) v.findViewById(R.id.refresh_layout);
+        mRecyclerRefreshLayout = (RecyclerRefreshLayout) layout.findViewById(R.id.refresh_layout);
         mRecyclerRefreshLayout.setOnRefreshListener(this);
 
-        RecyclerView mRecyclerView = (RecyclerView) v.findViewById(R.id.recycler);
+        mCoordinatorLayout = (CoordinatorLayout) layout.findViewById(R.id.coordinator_layout);
+
+        RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
         mRVAdapter = new NoteAdapter(mContext);
@@ -59,7 +61,7 @@ public class FragmentNote extends Fragment implements RecyclerRefreshLayout.OnRe
             }
         });
 
-        return v;
+        return layout;
     }
 
     void addNotes(List<Note> notes) {
