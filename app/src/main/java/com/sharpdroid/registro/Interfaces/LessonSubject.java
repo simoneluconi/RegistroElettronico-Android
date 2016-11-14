@@ -11,19 +11,19 @@ public class LessonSubject implements Serializable {
         this.code = code;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     String getName() {
         return name;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public void setName(String name) {
+        this.name = name;
     }
 
     int getCode() {
         return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
     }
 }

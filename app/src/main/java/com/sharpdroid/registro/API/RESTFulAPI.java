@@ -19,32 +19,34 @@ import java.util.List;
 import cz.msebera.android.httpclient.Header;
 
 public class RESTFulAPI {
-    static private final String BASE_URL = "https://api.daniele.ml/";
-
-    public static final String LOGIN_URL = BASE_URL + "login";
-
-    private static final String MARKS_URL = BASE_URL + "marks";
-
-    public static final String FILES_URL = BASE_URL + "files";
-
-    public static final String ABSENCES_URL = BASE_URL + "absences";
-
-    private static final String SUBJECTS_URL = BASE_URL + "subjects";
-
-    public static final String NOTES_URL = BASE_URL + "notes";
-
-    private static final String COMMUNICATIONS_URL = BASE_URL + "communications";
-
-    public static final String SCRUTINIES_URL = BASE_URL + "scrutinies";
-
     public static final String ORALE = "Orale";
     public static final String SCRITTO = "Scritto/Grafico";
     public static final String PRATICO = "Pratico";
-
+    static private final String BASE_URL = "https://api.daniele.ml/";
+    public static final String LOGIN_URL = BASE_URL + "login";
+    public static final String FILES_URL = BASE_URL + "files";
+    public static final String ABSENCES_URL = BASE_URL + "absences";
+    public static final String NOTES_URL = BASE_URL + "notes";
+    public static final String SCRUTINIES_URL = BASE_URL + "scrutinies";
+    private static final String MARKS_URL = BASE_URL + "marks";
+    private static final String SUBJECTS_URL = BASE_URL + "subjects";
+    private static final String COMMUNICATIONS_URL = BASE_URL + "communications";
     private static final AsyncHttpClient client = new AsyncHttpClient();
 
     public RESTFulAPI() {
 
+    }
+
+    private static void get(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        PersistentCookieStore myCookieStore = new PersistentCookieStore(context);
+        client.setCookieStore(myCookieStore);
+        client.get(url, params, responseHandler);
+    }
+
+    public static void post(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        PersistentCookieStore myCookieStore = new PersistentCookieStore(context);
+        client.setCookieStore(myCookieStore);
+        client.post(url, params, responseHandler);
     }
 
     public String FILE_DOWNLOAD_URL(String id, String cksum) {
@@ -61,18 +63,6 @@ public class RESTFulAPI {
 
     public String COMMUNICATION_DOWNLOAD_URL(String id) {
         return String.format("%s/%s/download", BASE_URL, id);
-    }
-
-    private static void get(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        PersistentCookieStore myCookieStore = new PersistentCookieStore(context);
-        client.setCookieStore(myCookieStore);
-        client.get(url, params, responseHandler);
-    }
-
-    public static void post(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        PersistentCookieStore myCookieStore = new PersistentCookieStore(context);
-        client.setCookieStore(myCookieStore);
-        client.post(url, params, responseHandler);
     }
 
     public static abstract class Marks implements Runnable {
@@ -146,14 +136,15 @@ public class RESTFulAPI {
         public void run() {
             get(c, NOTES_URL, null, new TextHttpResponseHandler() {
                 @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {}
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                }
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, String responseString) {
                     try {
                         then(new Gson().fromJson(responseString, new TypeToken<List<Note>>() {
                         }.getType()));
-                    }catch (JsonParseException e){
+                    } catch (JsonParseException e) {
                         e.printStackTrace();
                     }
                 }

@@ -31,6 +31,35 @@ public class FragmentLogin extends SlideFragment {
     private boolean loggedIn = false;
 
     private Context mContext;
+    private final Runnable Login = new Runnable() {
+        public void run() {
+            RequestParams params = new RequestParams();
+
+            params.put("login", mEmail);
+            params.put("password", mPassword);
+            params.put("key", new DeviceUuidFactory(mContext).getDeviceUuid().toString());
+
+            RESTFulAPI.post(mContext, RESTFulAPI.LOGIN_URL, params, new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    Toast.makeText(mContext, R.string.login_msg, Toast.LENGTH_SHORT).show();
+
+                    loggedIn = true;
+                    updateNavigation();
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                    mButtonLogin.setText(R.string.login);
+                    Toast.makeText(mContext, R.string.login_msg_failer, Toast.LENGTH_SHORT).show();
+
+                    mEditTextMail.setEnabled(true);
+                    mEditTextPassword.setEnabled(true);
+                    mButtonLogin.setEnabled(true);
+                }
+            });
+        }
+    };
 
     public FragmentLogin() {
         // Required empty public constructor
@@ -76,34 +105,4 @@ public class FragmentLogin extends SlideFragment {
     public boolean canGoForward() {
         return loggedIn;
     }
-
-    private final Runnable Login = new Runnable() {
-        public void run() {
-            RequestParams params = new RequestParams();
-
-            params.put("login", mEmail);
-            params.put("password", mPassword);
-            params.put("key", new DeviceUuidFactory(mContext).getDeviceUuid().toString());
-
-            RESTFulAPI.post(mContext, RESTFulAPI.LOGIN_URL, params, new AsyncHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                    Toast.makeText(mContext, R.string.login_msg, Toast.LENGTH_SHORT).show();
-
-                    loggedIn = true;
-                    updateNavigation();
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                    mButtonLogin.setText(R.string.login);
-                    Toast.makeText(mContext, R.string.login_msg_failer, Toast.LENGTH_SHORT).show();
-
-                    mEditTextMail.setEnabled(true);
-                    mEditTextPassword.setEnabled(true);
-                    mButtonLogin.setEnabled(true);
-                }
-            });
-        }
-    };
 }
