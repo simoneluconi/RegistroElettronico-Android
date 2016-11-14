@@ -41,7 +41,7 @@ public class FragmentCommunications extends Fragment implements RecyclerRefreshL
 
     private CoordinatorLayout mCoordinatorLayout;
     private RecyclerRefreshLayout mSwipeRefreshLayout;
-    private RVAdapter mRVAdapter;
+    private CommunicationAdapter mRVAdapter;
 
     public FragmentCommunications() {
 
@@ -107,65 +107,6 @@ public class FragmentCommunications extends Fragment implements RecyclerRefreshL
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);
-        }
-    }
-
-    public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
-        final List<Communication> CVDataList;
-
-        RVAdapter(List<Communication> CVDataList) {
-            this.CVDataList = CVDataList;
-        }
-
-        void addAll(Collection<Communication> list) {
-            CVDataList.addAll(list);
-            notifyDataSetChanged();
-        }
-
-        void clear() {
-            CVDataList.clear();
-            notifyDataSetChanged();
-        }
-
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.adapter_communications, parent, false);
-            return new ViewHolder(v);
-        }
-
-        @Override
-        public void onBindViewHolder(ViewHolder ViewHolder, int i) {
-            final Communication communication = CVDataList.get(ViewHolder.getAdapterPosition());
-            ViewHolder.Title.setText(communication.getTitle());
-            String datestring = communication.getDate().split("T")[0];
-            try {
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ITALIAN);
-                Date convertedCommitDate = formatter.parse(datestring);
-                formatter = new SimpleDateFormat("dd/MM/YYYY", Locale.ITALIAN);
-                ViewHolder.Date.setText(formatter.format(convertedCommitDate));
-            } catch (ParseException e) {
-                ViewHolder.Date.setText(datestring);
-            }
-            ViewHolder.Type.setText(communication.getType());
-        }
-
-        @Override
-        public int getItemCount() {
-            return CVDataList.size();
-        }
-
-        class ViewHolder extends RecyclerView.ViewHolder {
-            final TextView Title;
-            final TextView Date;
-            final TextView Type;
-
-            ViewHolder(View itemView) {
-                super(itemView);
-                Title = (TextView) itemView.findViewById(R.id.communication_title);
-                Date = (TextView) itemView.findViewById(R.id.communication_date);
-                Type = (TextView) itemView.findViewById(R.id.communication_type);
-            }
         }
     }
 

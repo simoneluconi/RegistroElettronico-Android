@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/materia"
                 android:layout_marginBottom="3dp"
-                android:text="Descrizione"
+                android:text="Descrizione Descrizione Descrizione Descrizione Descrizione "
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:textColor="@color/textcolorgrey"
