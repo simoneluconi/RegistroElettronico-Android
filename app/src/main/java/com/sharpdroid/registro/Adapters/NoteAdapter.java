@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.sharpdroid.registro.Interfaces.Note;
 import com.sharpdroid.registro.R;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -19,26 +19,21 @@ import java.util.List;
  */
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
     private Context mContext;
-    private List<Note> CVDataList;
+    private final List<Note> CVDataList;
 
     public NoteAdapter(Context context, List<Note> CVDataList) {
         this.mContext = context;
         this.CVDataList = CVDataList;
     }
 
-    public void addAll(List<Note> note) {
-        CVDataList = new ArrayList<>(note);
+    public void addAll(Collection<Note> note) {
+        CVDataList.addAll(note);
         notifyDataSetChanged();
     }
 
     public void clear() {
-        CVDataList = new ArrayList<>();
+        CVDataList.clear();
         notifyDataSetChanged();
-    }
-
-    public NoteAdapter(Context c) {
-        this.mContext = c;
-        CVDataList = new ArrayList<>();
     }
 
     @Override
