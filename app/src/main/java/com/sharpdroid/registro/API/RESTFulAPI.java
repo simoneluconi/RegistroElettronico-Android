@@ -66,17 +66,17 @@ public class RESTFulAPI {
     }
 
     public static abstract class Marks implements Runnable {
-        private final Context context;
+        private final Context mContext;
 
         protected Marks(Context context) {
-            this.context = context;
+            this.mContext = context;
         }
 
         public abstract void then(List<MarkSubject> subjects);
 
         @Override
         public void run() {
-            get(context, MARKS_URL, null, new TextHttpResponseHandler() {
+            get(mContext, MARKS_URL, null, new TextHttpResponseHandler() {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 }
@@ -95,17 +95,17 @@ public class RESTFulAPI {
     }
 
     public static abstract class Communications implements Runnable {
-        private final Context context;
+        private final Context mContext;
 
         protected Communications(Context context) {
-            this.context = context;
+            this.mContext = context;
         }
 
         public abstract void then(List<Communication> communications);
 
         @Override
         public void run() {
-            get(context, COMMUNICATIONS_URL, null, new TextHttpResponseHandler() {
+            get(mContext, COMMUNICATIONS_URL, null, new TextHttpResponseHandler() {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 }
@@ -124,17 +124,17 @@ public class RESTFulAPI {
     }
 
     public static abstract class Notes implements Runnable {
-        private final Context c;
+        private final Context mContext;
 
         protected Notes(Context c) {
-            this.c = c;
+            this.mContext = c;
         }
 
         public abstract void then(List<Note> notes);
 
         @Override
         public void run() {
-            get(c, NOTES_URL, null, new TextHttpResponseHandler() {
+            get(mContext, NOTES_URL, null, new TextHttpResponseHandler() {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 }
