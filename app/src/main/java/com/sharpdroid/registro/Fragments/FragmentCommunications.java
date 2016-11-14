@@ -11,13 +11,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.dinuscxj.refresh.RecyclerRefreshLayout;
 import com.sharpdroid.registro.API.RESTFulAPI;
-import com.sharpdroid.registro.user.Entry.Communication;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Utils.CacheTask;
+import com.sharpdroid.registro.user.Entry.Communication;
+import com.sharpdroid.registro.user.Adapters.CommunicationAdapter;
 
 import java.io.EOFException;
 import java.io.File;
@@ -26,13 +26,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.StreamCorruptedException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 
 import static com.sharpdroid.registro.user.Entry.Metodi.isNetworkAvailable;
 
