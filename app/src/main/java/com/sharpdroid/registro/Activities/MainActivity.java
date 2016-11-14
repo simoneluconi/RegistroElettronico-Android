@@ -16,6 +16,7 @@ import android.view.MenuItem;
 
 import com.sharpdroid.registro.Fragments.FragmentCommunications;
 import com.sharpdroid.registro.Fragments.FragmentMedie;
+import com.sharpdroid.registro.Fragments.FragmentNote;
 import com.sharpdroid.registro.R;
 
 public class MainActivity extends AppCompatActivity
@@ -99,6 +100,9 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.communications:
                 fragment = new FragmentCommunications();
+                break;
+            case R.id.notes:
+                fragment = new FragmentNote();
                 break;
             case R.id.nav_share:
             case R.id.nav_send:

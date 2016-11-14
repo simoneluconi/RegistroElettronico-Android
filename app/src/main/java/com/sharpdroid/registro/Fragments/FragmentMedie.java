@@ -62,12 +62,12 @@ public class FragmentMedie extends Fragment implements RecyclerRefreshLayout.OnR
                              ViewGroup container, Bundle savedInstanceState) {
         mContext = getContext();
         View layout = inflater.inflate(R.layout.fragment_marks, container, false);
-        mRecyclerRefreshLayout = (RecyclerRefreshLayout) layout.findViewById(R.id.swiperefresh_voti);
+        mRecyclerRefreshLayout = (RecyclerRefreshLayout) layout.findViewById(R.id.refresh_layout);
         mRecyclerRefreshLayout.setOnRefreshListener(this);
 
-        mCoordinatorLayout = (CoordinatorLayout) layout.findViewById(R.id.coordinatorlayout_voti);
+        mCoordinatorLayout = (CoordinatorLayout) layout.findViewById(R.id.coordinator_layout);
 
-        RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.cardlist_voti);
+        RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRVAdapter = new MedieAdapter(mContext, new CopyOnWriteArrayList<>());

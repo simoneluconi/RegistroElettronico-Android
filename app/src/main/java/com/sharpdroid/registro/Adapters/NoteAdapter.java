@@ -10,8 +10,10 @@ import android.widget.TextView;
 import com.sharpdroid.registro.Interfaces.Note;
 import com.sharpdroid.registro.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Adapter per RecyclerView con Note disciplinari & Annotazioni
@@ -19,6 +21,7 @@ import java.util.List;
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
     Context c;
     List<Note> noteList;
+    SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM", Locale.getDefault());
 
     public void addAll(List<Note> note) {
         noteList = new ArrayList<>(note);
@@ -37,8 +40,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
 
     @Override
     public NoteHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // TODO: 14/11/2016 restyle adapter_note.xml
-        View v  = LayoutInflater.from(c).inflate(R.layout.adapter_note,parent,false);
+        View v = LayoutInflater.from(c).inflate(R.layout.adapter_note, parent, false);
         return new NoteHolder(v);
     }
 
@@ -46,11 +48,27 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
     public void onBindViewHolder(NoteHolder h, int position) {
         Note nota = noteList.get(position);
 
+        String date = nota.getDate().split("T")[0];
+
         h.teacher.setText(nota.getTeacher());
-        // TODO: 14/11/2016 format date
-        h.date.setText(nota.getDate());
+        h.date.setText(date);
         h.content.setText(nota.getContent());
         h.type.setText(nota.getType());
+
+        /**
+         * Rosso: nota disciplinare
+         * Dark: annotazione
+         */
+        h.type.setTextColor(
+                nota.getType().toLowerCase().contains("disciplinare") ?
+                        c.getResources().getColor(R.color.red_strong) :
+                        c.getResources().getColor(android.R.color.primary_text_dark)
+        );
+        h.teacher.setTextColor(
+                nota.getType().toLowerCase().contains("disciplinare") ?
+                        c.getResources().getColor(R.color.red_strong) :
+                        c.getResources().getColor(android.R.color.primary_text_dark)
+        );
 
     }
 

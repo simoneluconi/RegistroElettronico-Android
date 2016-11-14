@@ -3,14 +3,24 @@ package com.sharpdroid.registro.Interfaces;
 import java.io.Serializable;
 
 public class Lesson implements Serializable {
+    private String subject;
     private String teacher;
     private String date;
     private String content;
 
-    public Lesson(String teacher, String date, String content) {
+    public Lesson(String subject, String teacher, String date, String content) {
+        this.subject = subject;
         this.teacher = teacher;
         this.date = date;
         this.content = content;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
     public String getTeacher() {

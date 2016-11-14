@@ -50,12 +50,12 @@ public class FragmentCommunications extends Fragment implements RecyclerRefreshL
                              ViewGroup container, Bundle savedInstanceState) {
         mContext = getContext();
         View layout = inflater.inflate(R.layout.fragment_communications, container, false);
-        mSwipeRefreshLayout = (RecyclerRefreshLayout) layout.findViewById(R.id.swiperefresh_communications);
+        mSwipeRefreshLayout = (RecyclerRefreshLayout) layout.findViewById(R.id.refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
-        mCoordinatorLayout = (CoordinatorLayout) layout.findViewById(R.id.coordinatorlayout_communications);
+        mCoordinatorLayout = (CoordinatorLayout) layout.findViewById(R.id.coordinator_layout);
 
-        RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.cardlist_communications);
+        RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRVAdapter = new CommunicationAdapter(new CopyOnWriteArrayList<>());

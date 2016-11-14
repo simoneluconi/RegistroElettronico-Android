@@ -69,9 +69,9 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
 
         CommunicationHolder(View itemView) {
             super(itemView);
-            Title = (TextView) itemView.findViewById(R.id.communication_title);
-            Date = (TextView) itemView.findViewById(R.id.communication_date);
-            Type = (TextView) itemView.findViewById(R.id.communication_type);
+            Title = (TextView) itemView.findViewById(R.id.title);
+            Date = (TextView) itemView.findViewById(R.id.date);
+            Type = (TextView) itemView.findViewById(R.id.type);
         }
     }
 }

@@ -11,6 +11,10 @@
             android:id="@+id/communications"
             android:icon="@drawable/ic_menu_camera"
             android:title="@string/communications" />
+        <item
+            android:id="@+id/notes"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="@string/note" />
     </group>
 
     <item android:title="@string/communicate">

@@ -12,6 +12,7 @@ import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.sharpdroid.registro.Interfaces.Communication;
 import com.sharpdroid.registro.Interfaces.MarkSubject;
+import com.sharpdroid.registro.Interfaces.Note;
 
 import java.util.List;
 
@@ -126,6 +127,34 @@ public class RESTFulAPI {
                         }.getType()));
                     } catch (JsonParseException exception) {
                         exception.printStackTrace();
+                    }
+                }
+            });
+        }
+    }
+
+    public static abstract class Notes implements Runnable {
+        private final Context c;
+
+        protected Notes(Context c) {
+            this.c = c;
+        }
+
+        public abstract void then(List<Note> notes);
+
+        @Override
+        public void run() {
+            get(c, NOTES_URL, null, new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {}
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                    try {
+                        then(new Gson().fromJson(responseString, new TypeToken<List<Note>>() {
+                        }.getType()));
+                    }catch (JsonParseException e){
+                        e.printStackTrace();
                     }
                 }
             });
