@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import com.dinuscxj.refresh.RecyclerRefreshLayout;
 import com.sharpdroid.registro.API.RESTFulAPI;
 import com.sharpdroid.registro.Adapters.NoteAdapter;
-import com.sharpdroid.registro.Interfaces.MarkSubject;
 import com.sharpdroid.registro.Interfaces.Note;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Utils.CacheTask;
@@ -29,9 +28,8 @@ public class FragmentNote extends Fragment implements RecyclerRefreshLayout.OnRe
     final private String TAG = FragmentNote.class.getSimpleName();
 
     Context mContext;
-    RecyclerRefreshLayout refreshLayout;
-    RecyclerView recyclerView;
-    NoteAdapter adapter;
+    RecyclerRefreshLayout mRecyclerRefreshLayout;
+    NoteAdapter mRVAdapter;
     CoordinatorLayout mCoordinatorLayout;
 
     public FragmentNote() {
@@ -44,16 +42,16 @@ public class FragmentNote extends Fragment implements RecyclerRefreshLayout.OnRe
         mContext = getContext();
         View v = inflater.inflate(R.layout.fragment_note, container, false);
 
-        refreshLayout = (RecyclerRefreshLayout) v.findViewById(R.id.refresh_layout);
-        refreshLayout.setOnRefreshListener(this);
+        mRecyclerRefreshLayout = (RecyclerRefreshLayout) v.findViewById(R.id.refresh_layout);
+        mRecyclerRefreshLayout.setOnRefreshListener(this);
 
-        recyclerView = (RecyclerView) v.findViewById(R.id.recycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        RecyclerView mRecyclerView = (RecyclerView) v.findViewById(R.id.recycler);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
-        adapter = new NoteAdapter(mContext);
-        recyclerView.setAdapter(adapter);
+        mRVAdapter = new NoteAdapter(mContext);
+        mRecyclerView.setAdapter(mRVAdapter);
 
-        refreshLayout.setRefreshing(true);
+        mRecyclerRefreshLayout.setRefreshing(true);
         new Handler().post(new RESTFulAPI.Notes(mContext) {
             @Override
             public void then(List<Note> notes) {
@@ -61,14 +59,13 @@ public class FragmentNote extends Fragment implements RecyclerRefreshLayout.OnRe
             }
         });
 
-
         return v;
     }
 
     void addNotes(List<Note> notes) {
-        adapter.addAll(notes);
-        new CacheTask(mContext.getCacheDir(),TAG).execute((List) notes);
-        refreshLayout.setRefreshing(false);
+        mRVAdapter.addAll(notes);
+        new CacheTask(mContext.getCacheDir(), TAG).execute((List) notes);
+        mRecyclerRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -82,7 +79,7 @@ public class FragmentNote extends Fragment implements RecyclerRefreshLayout.OnRe
             });
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
-            refreshLayout.setRefreshing(false);
+            mRecyclerRefreshLayout.setRefreshing(false);
         }
     }
 }
