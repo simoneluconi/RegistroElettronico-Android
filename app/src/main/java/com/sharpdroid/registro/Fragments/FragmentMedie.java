@@ -28,6 +28,7 @@ import java.io.ObjectInputStream;
 import java.io.StreamCorruptedException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.sharpdroid.registro.Interfaces.Metodi.isNetworkAvailable;
 
@@ -66,8 +67,7 @@ public class FragmentMedie extends Fragment implements RecyclerRefreshLayout.OnR
         RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.cardlist_voti);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        List<MarkSubject> CVDataList = new LinkedList<>();
-        mRVAdapter = new MedieAdapter(getContext(), CVDataList);
+        mRVAdapter = new MedieAdapter(getContext(), new CopyOnWriteArrayList<>());
         mRecyclerView.setAdapter(mRVAdapter);
 
         bindMarksCache();

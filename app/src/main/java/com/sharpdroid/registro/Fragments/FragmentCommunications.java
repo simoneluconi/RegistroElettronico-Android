@@ -14,10 +14,10 @@ import android.view.ViewGroup;
 
 import com.dinuscxj.refresh.RecyclerRefreshLayout;
 import com.sharpdroid.registro.API.RESTFulAPI;
+import com.sharpdroid.registro.Adapters.CommunicationAdapter;
+import com.sharpdroid.registro.Interfaces.Communication;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Utils.CacheTask;
-import com.sharpdroid.registro.Interfaces.Communication;
-import com.sharpdroid.registro.Adapters.CommunicationAdapter;
 
 import java.io.EOFException;
 import java.io.File;
@@ -28,6 +28,7 @@ import java.io.ObjectInputStream;
 import java.io.StreamCorruptedException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.sharpdroid.registro.Interfaces.Metodi.isNetworkAvailable;
 
@@ -54,8 +55,7 @@ public class FragmentCommunications extends Fragment implements RecyclerRefreshL
         RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.cardlist_communications);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        List<Communication> CVDataList = new LinkedList<>();
-        mRVAdapter = new CommunicationAdapter(CVDataList);
+        mRVAdapter = new CommunicationAdapter(new CopyOnWriteArrayList<>());
         mRecyclerView.setAdapter(mRVAdapter);
 
         bindCommunicationsCache();
