@@ -7,7 +7,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,10 +19,10 @@ import android.widget.TextView;
 import com.dinuscxj.refresh.RecyclerRefreshLayout;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.sharpdroid.registro.API.RESTFulAPI;
-import com.sharpdroid.registro.Library.Mark;
-import com.sharpdroid.registro.Library.MarkSubject;
-import com.sharpdroid.registro.Library.Media;
-import com.sharpdroid.registro.Library.Metodi;
+import com.sharpdroid.registro.user.Entry.Mark;
+import com.sharpdroid.registro.user.Entry.MarkSubject;
+import com.sharpdroid.registro.user.Entry.Media;
+import com.sharpdroid.registro.user.Entry.Metodi;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Utils.CacheTask;
 
@@ -39,7 +38,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
-import static com.sharpdroid.registro.Library.Metodi.isNetworkAvailable;
+import static com.sharpdroid.registro.user.Entry.Metodi.isNetworkAvailable;
 
 public class FragmentMedie extends Fragment implements RecyclerRefreshLayout.OnRefreshListener {
     final private String TAG = FragmentMedie.class.getSimpleName();

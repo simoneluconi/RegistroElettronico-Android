@@ -10,8 +10,8 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
-import com.sharpdroid.registro.Library.Communication;
-import com.sharpdroid.registro.Library.MarkSubject;
+import com.sharpdroid.registro.user.Entry.Communication;
+import com.sharpdroid.registro.user.Entry.MarkSubject;
 
 import java.util.List;
 
