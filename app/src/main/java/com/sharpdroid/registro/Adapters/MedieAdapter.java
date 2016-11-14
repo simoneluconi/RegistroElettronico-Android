@@ -26,10 +26,10 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
     final private String TAG = MedieAdapter.class.getSimpleName();
 
     private final List<MarkSubject> CVDataList;
-    private final Context c;
+    private final Context mContext;
 
-    public MedieAdapter(Context c, List<MarkSubject> CVDataList) {
-        this.c = c;
+    public MedieAdapter(Context context, List<MarkSubject> CVDataList) {
+        this.mContext = context;
         this.CVDataList = CVDataList;
     }
 
@@ -68,12 +68,12 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
         ViewHolder.mTextViewMedia.setText(String.format(Locale.getDefault(), "%.2f", media.getMediaGenerale()));
         ViewHolder.mCircularProgressViewMedia.setProgress(media.getMediaGenerale() * 10);
         if (media.isSufficiente()) {
-            ViewHolder.mCircularProgressViewMedia.setColor(ContextCompat.getColor(c, R.color.greenmaterial));
+            ViewHolder.mCircularProgressViewMedia.setColor(ContextCompat.getColor(mContext, R.color.greenmaterial));
         } else {
-            ViewHolder.mCircularProgressViewMedia.setColor(ContextCompat.getColor(c, R.color.redmaterial));
+            ViewHolder.mCircularProgressViewMedia.setColor(ContextCompat.getColor(mContext, R.color.redmaterial));
         }
 
-        float obbiettivo_voto = PreferenceManager.getDefaultSharedPreferences(c)
+        float obbiettivo_voto = PreferenceManager.getDefaultSharedPreferences(mContext)
                 .getFloat("obbiettivo_voto", 8);
 
         String obbiettivo_string = Metodi.MessaggioVoto(obbiettivo_voto, media.getMediaGenerale(), media.getSommaGenerale(), media.getNumeroVoti());

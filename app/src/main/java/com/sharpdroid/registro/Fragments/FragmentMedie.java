@@ -52,9 +52,8 @@ public class FragmentMedie extends Fragment implements RecyclerRefreshLayout.OnR
 
             // Update cache
             new CacheTask(mContext.getCacheDir(), TAG).execute((List) markSubjects);
-
-            mRecyclerRefreshLayout.setRefreshing(false);
         }
+        mRecyclerRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -70,6 +69,7 @@ public class FragmentMedie extends Fragment implements RecyclerRefreshLayout.OnR
         RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+
         mRVAdapter = new MedieAdapter(mContext, new CopyOnWriteArrayList<>());
         mRecyclerView.setAdapter(mRVAdapter);
 

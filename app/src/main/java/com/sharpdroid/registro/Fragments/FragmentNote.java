@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,16 @@ import com.sharpdroid.registro.Interfaces.Note;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Utils.CacheTask;
 
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.StreamCorruptedException;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.sharpdroid.registro.Interfaces.Metodi.isNetworkAvailable;
 
@@ -49,9 +59,12 @@ public class FragmentNote extends Fragment implements RecyclerRefreshLayout.OnRe
 
         RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        mRecyclerView.setHasFixedSize(true);
 
-        mRVAdapter = new NoteAdapter(mContext);
+        mRVAdapter = new NoteAdapter(mContext, new CopyOnWriteArrayList<>());
         mRecyclerView.setAdapter(mRVAdapter);
+
+        bindNoteCache();
 
         mRecyclerRefreshLayout.setRefreshing(true);
         new Handler().post(new RESTFulAPI.Notes(mContext) {
@@ -65,8 +78,13 @@ public class FragmentNote extends Fragment implements RecyclerRefreshLayout.OnRe
     }
 
     void addNotes(List<Note> notes) {
-        mRVAdapter.addAll(notes);
-        new CacheTask(mContext.getCacheDir(), TAG).execute((List) notes);
+        if (notes.size() != 0) {
+            mRVAdapter.clear();
+            mRVAdapter.addAll(notes);
+
+            // Update cache
+            new CacheTask(mContext.getCacheDir(), TAG).execute((List) notes);
+        }
         mRecyclerRefreshLayout.setRefreshing(false);
     }
 
@@ -82,6 +100,32 @@ public class FragmentNote extends Fragment implements RecyclerRefreshLayout.OnRe
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mRecyclerRefreshLayout.setRefreshing(false);
+        }
+    }
+
+    private void bindNoteCache() {
+        try {
+            FileInputStream fileInputStream = new FileInputStream(new File(mContext.getCacheDir(), TAG));
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            List<Note> cachedData = new LinkedList<>();
+            Note temp;
+            while ((temp = (Note) objectInputStream.readObject()) != null) {
+                cachedData.add(temp);
+            }
+            objectInputStream.close();
+            mRVAdapter.clear();
+            mRVAdapter.addAll(cachedData);
+            Log.d(TAG, "Restored cache");
+        } catch (FileNotFoundException e) {
+            Log.w(TAG, "Cache not found.");
+        } catch (EOFException e) {
+            Log.e(TAG, "Error while reading cache! (EOF) ");
+        } catch (StreamCorruptedException e) {
+            Log.e(TAG, "Corrupted cache!");
+        } catch (IOException e) {
+            Log.e(TAG, "Error while reading cache!");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 }
