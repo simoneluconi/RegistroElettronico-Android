@@ -12,11 +12,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
-import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Interfaces.Mark;
 import com.sharpdroid.registro.Interfaces.MarkSubject;
 import com.sharpdroid.registro.Interfaces.Media;
 import com.sharpdroid.registro.Interfaces.Metodi;
+import com.sharpdroid.registro.R;
 
 import java.util.Collection;
 import java.util.List;
@@ -29,7 +29,7 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
     private final Context c;
 
     public MedieAdapter(Context c, List<MarkSubject> CVDataList) {
-        this.c=c;
+        this.c = c;
         this.CVDataList = CVDataList;
     }
 
