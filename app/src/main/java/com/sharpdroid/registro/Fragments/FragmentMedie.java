@@ -1,5 +1,6 @@
 package com.sharpdroid.registro.Fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
@@ -38,6 +39,7 @@ public class FragmentMedie extends Fragment implements RecyclerRefreshLayout.OnR
     private CoordinatorLayout mCoordinatorLayout;
     private RecyclerRefreshLayout mRecyclerRefreshLayout;
     private MedieAdapter mRVAdapter;
+    private Context mContext;
 
     public FragmentMedie() {
 
@@ -49,7 +51,7 @@ public class FragmentMedie extends Fragment implements RecyclerRefreshLayout.OnR
             mRVAdapter.addAll(markSubjects);
 
             // Update cache
-            new CacheTask(getContext().getCacheDir(), TAG).execute((List) markSubjects);
+            new CacheTask(mContext.getCacheDir(), TAG).execute((List) markSubjects);
 
             mRecyclerRefreshLayout.setRefreshing(false);
         }
@@ -58,6 +60,7 @@ public class FragmentMedie extends Fragment implements RecyclerRefreshLayout.OnR
     @Override
     public View onCreateView(final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        mContext = getContext();
         View layout = inflater.inflate(R.layout.fragment_marks, container, false);
         mRecyclerRefreshLayout = (RecyclerRefreshLayout) layout.findViewById(R.id.swiperefresh_voti);
         mRecyclerRefreshLayout.setOnRefreshListener(this);
@@ -66,15 +69,15 @@ public class FragmentMedie extends Fragment implements RecyclerRefreshLayout.OnR
 
         RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.cardlist_voti);
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRVAdapter = new MedieAdapter(getContext(), new CopyOnWriteArrayList<>());
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        mRVAdapter = new MedieAdapter(mContext, new CopyOnWriteArrayList<>());
         mRecyclerView.setAdapter(mRVAdapter);
 
         bindMarksCache();
 
         mRecyclerRefreshLayout.setRefreshing(true);
 
-        new Handler().post(new RESTFulAPI.Marks(getContext()) {
+        new Handler().post(new RESTFulAPI.Marks(mContext) {
             @Override
             public void then(List<MarkSubject> markSubjects) {
                 addSubjects(markSubjects);
@@ -86,8 +89,8 @@ public class FragmentMedie extends Fragment implements RecyclerRefreshLayout.OnR
 
     @Override
     public void onRefresh() {
-        if (isNetworkAvailable(getContext())) {
-            new Handler().post(new RESTFulAPI.Marks(getContext()) {
+        if (isNetworkAvailable(mContext)) {
+            new Handler().post(new RESTFulAPI.Marks(mContext) {
                 @Override
                 public void then(List<MarkSubject> markSubjects) {
                     addSubjects(markSubjects);
@@ -101,7 +104,7 @@ public class FragmentMedie extends Fragment implements RecyclerRefreshLayout.OnR
 
     private void bindMarksCache() {
         try {
-            FileInputStream fileInputStream = new FileInputStream(new File(getContext().getCacheDir(), TAG));
+            FileInputStream fileInputStream = new FileInputStream(new File(mContext.getCacheDir(), TAG));
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             List<MarkSubject> cachedData = new LinkedList<>();
             MarkSubject temp;

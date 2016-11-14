@@ -1,5 +1,6 @@
 package com.sharpdroid.registro.Fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
@@ -29,6 +30,8 @@ public class FragmentLogin extends SlideFragment {
 
     private boolean loggedIn = false;
 
+    private Context mContext;
+
     public FragmentLogin() {
         // Required empty public constructor
     }
@@ -40,6 +43,7 @@ public class FragmentLogin extends SlideFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        mContext = getContext();
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_login, container, false);
 
@@ -79,12 +83,12 @@ public class FragmentLogin extends SlideFragment {
 
             params.put("login", mEmail);
             params.put("password", mPassword);
-            params.put("key", new DeviceUuidFactory(getContext()).getDeviceUuid().toString());
+            params.put("key", new DeviceUuidFactory(mContext).getDeviceUuid().toString());
 
-            RESTFulAPI.post(getContext(), RESTFulAPI.LOGIN_URL, params, new AsyncHttpResponseHandler() {
+            RESTFulAPI.post(mContext, RESTFulAPI.LOGIN_URL, params, new AsyncHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                    Toast.makeText(getContext(), R.string.login_msg, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, R.string.login_msg, Toast.LENGTH_SHORT).show();
 
                     loggedIn = true;
                     updateNavigation();
@@ -93,7 +97,7 @@ public class FragmentLogin extends SlideFragment {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                     mButtonLogin.setText(R.string.login);
-                    Toast.makeText(getContext(), R.string.login_msg_failer, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, R.string.login_msg_failer, Toast.LENGTH_SHORT).show();
 
                     mEditTextMail.setEnabled(true);
                     mEditTextPassword.setEnabled(true);

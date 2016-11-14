@@ -1,5 +1,6 @@
 package com.sharpdroid.registro.Fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
@@ -38,6 +39,7 @@ public class FragmentCommunications extends Fragment implements RecyclerRefreshL
     private CoordinatorLayout mCoordinatorLayout;
     private RecyclerRefreshLayout mSwipeRefreshLayout;
     private CommunicationAdapter mRVAdapter;
+    private Context mContext;
 
     public FragmentCommunications() {
 
@@ -46,6 +48,7 @@ public class FragmentCommunications extends Fragment implements RecyclerRefreshL
     @Override
     public View onCreateView(final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        mContext = getContext();
         View layout = inflater.inflate(R.layout.fragment_communications, container, false);
         mSwipeRefreshLayout = (RecyclerRefreshLayout) layout.findViewById(R.id.swiperefresh_communications);
         mSwipeRefreshLayout.setOnRefreshListener(this);
@@ -54,7 +57,7 @@ public class FragmentCommunications extends Fragment implements RecyclerRefreshL
 
         RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.cardlist_communications);
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRVAdapter = new CommunicationAdapter(new CopyOnWriteArrayList<>());
         mRecyclerView.setAdapter(mRVAdapter);
 
@@ -62,7 +65,7 @@ public class FragmentCommunications extends Fragment implements RecyclerRefreshL
 
         mSwipeRefreshLayout.setRefreshing(true);
 
-        new Handler().post(new RESTFulAPI.Communications(getContext()) {
+        new Handler().post(new RESTFulAPI.Communications(mContext) {
             @Override
             public void then(List<Communication> communications) {
                 addCommunications(communications);
@@ -78,7 +81,7 @@ public class FragmentCommunications extends Fragment implements RecyclerRefreshL
             mRVAdapter.addAll(communications);
 
             // Update cache
-            new CacheTask(getContext().getCacheDir(), TAG).execute((List) communications);
+            new CacheTask(mContext.getCacheDir(), TAG).execute((List) communications);
 
             mSwipeRefreshLayout.setRefreshing(false);
         }
@@ -86,8 +89,8 @@ public class FragmentCommunications extends Fragment implements RecyclerRefreshL
 
     @Override
     public void onRefresh() {
-        if (isNetworkAvailable(getContext())) {
-            new Handler().post(new RESTFulAPI.Communications(getContext()) {
+        if (isNetworkAvailable(mContext)) {
+            new Handler().post(new RESTFulAPI.Communications(mContext) {
                 @Override
                 public void then(List<Communication> communications) {
                     addCommunications(communications);
@@ -101,7 +104,7 @@ public class FragmentCommunications extends Fragment implements RecyclerRefreshL
 
     private void bindCommunicationsCache() {
         try {
-            FileInputStream fileInputStream = new FileInputStream(new File(getContext().getCacheDir(), TAG));
+            FileInputStream fileInputStream = new FileInputStream(new File(mContext.getCacheDir(), TAG));
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             List<Communication> cachedData = new LinkedList<>();
             Communication temp;
