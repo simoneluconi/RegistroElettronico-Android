@@ -1,6 +1,5 @@
 package com.sharpdroid.registro.Fragments;
 
-
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -66,6 +65,7 @@ public class FragmentNote extends Fragment implements RecyclerRefreshLayout.OnRe
         bindNoteCache();
 
         mRecyclerRefreshLayout.setRefreshing(true);
+
         new Handler().post(new RESTFulAPI.Notes(mContext) {
             @Override
             public void then(List<Note> notes) {

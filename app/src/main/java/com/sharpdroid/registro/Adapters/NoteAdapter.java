@@ -68,7 +68,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
                         ContextCompat.getColor(mContext, R.color.red_strong) :
                         ContextCompat.getColor(mContext, android.R.color.primary_text_dark)
         );
-
     }
 
     @Override
