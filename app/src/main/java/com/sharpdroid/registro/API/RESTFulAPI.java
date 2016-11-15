@@ -6,6 +6,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.ResponseHandlerInterface;
 import com.loopj.android.http.SyncHttpClient;
 
 public class RESTFulAPI {
@@ -30,7 +31,7 @@ public class RESTFulAPI {
 
     }
 
-    public static void get(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+    public static void get(Context context, String url, RequestParams params, ResponseHandlerInterface responseHandler) {
         PersistentCookieStore myCookieStore = new PersistentCookieStore(context);
         syncHttpClient.setCookieStore(myCookieStore);
         syncHttpClient.get(url, params, responseHandler);

@@ -19,8 +19,8 @@ import com.dinuscxj.refresh.RecyclerRefreshLayout;
 import com.sharpdroid.registro.Adapters.CommunicationAdapter;
 import com.sharpdroid.registro.Interfaces.Communication;
 import com.sharpdroid.registro.R;
-import com.sharpdroid.registro.Tasks.CommunicationsTask;
-import com.sharpdroid.registro.Utils.CacheTask;
+import com.sharpdroid.registro.Tasks.CacheTask;
+import com.sharpdroid.registro.Tasks.CommunicationTask;
 
 import java.io.EOFException;
 import java.io.File;
@@ -67,7 +67,7 @@ public class FragmentCommunications extends Fragment implements RecyclerRefreshL
 
         mRecyclerRefreshLayout.setRefreshing(true);
 
-        new CommunicationTask().execute();
+        new CommunicationsTask().execute();
 
         return layout;
     }
@@ -85,7 +85,7 @@ public class FragmentCommunications extends Fragment implements RecyclerRefreshL
 
     public void onRefresh() {
         if (isNetworkAvailable(mContext)) {
-            new CommunicationTask().execute();
+            new CommunicationsTask().execute();
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mRecyclerRefreshLayout.setRefreshing(false);
@@ -118,13 +118,13 @@ public class FragmentCommunications extends Fragment implements RecyclerRefreshL
         }
     }
 
-    private class CommunicationTask extends AsyncTask<Void, Void, Void> {
-        private CommunicationsTask communicationstask;
+    private class CommunicationsTask extends AsyncTask<Void, Void, Void> {
+        private CommunicationTask communicationstask;
 
         @UiThread
         @Override
         protected void onPreExecute() {
-            communicationstask = new CommunicationsTask(mContext);
+            communicationstask = new CommunicationTask(mContext);
         }
 
         @WorkerThread

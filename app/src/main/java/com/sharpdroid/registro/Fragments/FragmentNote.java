@@ -19,8 +19,8 @@ import com.dinuscxj.refresh.RecyclerRefreshLayout;
 import com.sharpdroid.registro.Adapters.NoteAdapter;
 import com.sharpdroid.registro.Interfaces.Note;
 import com.sharpdroid.registro.R;
+import com.sharpdroid.registro.Tasks.CacheTask;
 import com.sharpdroid.registro.Tasks.NoteTask;
-import com.sharpdroid.registro.Utils.CacheTask;
 
 import java.io.EOFException;
 import java.io.File;
@@ -68,7 +68,7 @@ public class FragmentNote extends Fragment implements RecyclerRefreshLayout.OnRe
 
         mRecyclerRefreshLayout.setRefreshing(true);
 
-        new CommunicationTask().execute();
+        new NotesTask().execute();
 
         return layout;
     }
@@ -86,7 +86,7 @@ public class FragmentNote extends Fragment implements RecyclerRefreshLayout.OnRe
 
     public void onRefresh() {
         if (isNetworkAvailable(mContext)) {
-            new CommunicationTask().execute();
+            new NotesTask().execute();
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mRecyclerRefreshLayout.setRefreshing(false);
@@ -119,7 +119,7 @@ public class FragmentNote extends Fragment implements RecyclerRefreshLayout.OnRe
         }
     }
 
-    private class CommunicationTask extends AsyncTask<Void, Void, Void> {
+    private class NotesTask extends AsyncTask<Void, Void, Void> {
         private NoteTask notetask;
 
         @UiThread

@@ -19,8 +19,8 @@ import com.dinuscxj.refresh.RecyclerRefreshLayout;
 import com.sharpdroid.registro.Adapters.MedieAdapter;
 import com.sharpdroid.registro.Interfaces.MarkSubject;
 import com.sharpdroid.registro.R;
+import com.sharpdroid.registro.Tasks.CacheTask;
 import com.sharpdroid.registro.Tasks.MarkSubjectTask;
-import com.sharpdroid.registro.Utils.CacheTask;
 
 import java.io.EOFException;
 import java.io.File;

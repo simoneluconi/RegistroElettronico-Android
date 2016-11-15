@@ -15,12 +15,12 @@ import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
-public class CommunicationsTask {
-    private static final String TAG = CommunicationsTask.class.getSimpleName();
+public class CommunicationTask {
+    private static final String TAG = CommunicationTask.class.getSimpleName();
     private final Context mContext;
     private List<Communication> communications = new LinkedList<>();
 
-    public CommunicationsTask(Context context) {
+    public CommunicationTask(Context context) {
         this.mContext = context;
     }
 
