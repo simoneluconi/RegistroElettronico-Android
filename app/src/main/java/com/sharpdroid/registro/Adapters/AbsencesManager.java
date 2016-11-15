@@ -1,7 +1,5 @@
 package com.sharpdroid.registro.Adapters;
 
-import android.content.Context;
-
 import com.sharpdroid.registro.Interfaces.Absence;
 import com.sharpdroid.registro.Interfaces.Absences;
 import com.sharpdroid.registro.Interfaces.Delay;
@@ -11,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AbsencesManager {
-    private Context mContext;
     private Absences absences;
 
     public void set(Absences absences) {
@@ -21,10 +18,12 @@ public class AbsencesManager {
     public List<Absence> getAbsences() {
         return new ArrayList<>(absences.getAbsences());
     }
-    public List<Delay> getDelays(){
+
+    public List<Delay> getDelays() {
         return new ArrayList<>(absences.getDelays());
     }
-    public List<Exit> getExits(){
+
+    public List<Exit> getExits() {
         return new ArrayList<>(absences.getExits());
     }
 
@@ -32,7 +31,7 @@ public class AbsencesManager {
         absences.clear();
     }
 
-    public AbsencesManager(Context mContext) {
-        this.mContext = mContext;
+    public AbsencesManager(Absences absences) {
+        this.absences = absences;
     }
 }
