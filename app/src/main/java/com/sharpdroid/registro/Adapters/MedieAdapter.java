@@ -14,8 +14,8 @@ import android.widget.TextView;
 import com.sharpdroid.registro.Interfaces.Mark;
 import com.sharpdroid.registro.Interfaces.MarkSubject;
 import com.sharpdroid.registro.Interfaces.Media;
-import com.sharpdroid.registro.Utils.Metodi;
 import com.sharpdroid.registro.R;
+import com.sharpdroid.registro.Utils.Metodi;
 
 import java.util.ArrayList;
 import java.util.Collection;

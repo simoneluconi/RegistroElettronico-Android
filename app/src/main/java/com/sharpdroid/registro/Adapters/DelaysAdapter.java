@@ -4,8 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class DelaysAdapter extends RecyclerView.Adapter<DelaysAdapter.DelaysHolder>{
-
+public class DelaysAdapter extends RecyclerView.Adapter<DelaysAdapter.DelaysHolder> {
 
     @Override
     public DelaysHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -22,7 +21,7 @@ public class DelaysAdapter extends RecyclerView.Adapter<DelaysAdapter.DelaysHold
         return 0;
     }
 
-    class DelaysHolder extends RecyclerView.ViewHolder{
+    class DelaysHolder extends RecyclerView.ViewHolder {
 
         public DelaysHolder(View itemView) {
             super(itemView);

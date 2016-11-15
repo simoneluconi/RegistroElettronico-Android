@@ -121,7 +121,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
         } catch (ClassCastException | ClassNotFoundException e) {
             e.printStackTrace();
         } finally {
-            if (objectInputStream != null){
+            if (objectInputStream != null) {
                 try {
                     objectInputStream.close();
 
