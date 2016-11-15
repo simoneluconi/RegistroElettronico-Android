@@ -104,7 +104,6 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
             while ((temp = (Communication) objectInputStream.readObject()) != null) {
                 cachedData.add(temp);
             }
-            objectInputStream.close();
             mRVAdapter.clear();
             mRVAdapter.addAll(cachedData);
             Log.d(TAG, "Restored cache");

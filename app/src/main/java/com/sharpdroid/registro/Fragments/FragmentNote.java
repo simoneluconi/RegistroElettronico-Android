@@ -105,7 +105,6 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
             while ((temp = (Note) objectInputStream.readObject()) != null) {
                 cachedData.add(temp);
             }
-            objectInputStream.close();
             mRVAdapter.clear();
             mRVAdapter.addAll(cachedData);
             Log.d(TAG, "Restored cache");

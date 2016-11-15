@@ -30,7 +30,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
 
     public void clear() {
         CVDataList.clear();
-        //notifyDataSetChanged();  --> USELESS - Always called before addAll(){... notifyDataSetChanged();
+        notifyDataSetChanged();
     }
 
     @Override

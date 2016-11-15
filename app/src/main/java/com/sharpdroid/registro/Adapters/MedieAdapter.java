@@ -42,7 +42,7 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
 
     public void clear() {
         CVDataList.clear();
-        //notifyDataSetChanged();  --> USELESS - Always called before addAll(){... notifyDataSetChanged(); }
+        notifyDataSetChanged();
     }
 
     @Override

@@ -107,7 +107,6 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
             while ((temp = (MarkSubject) objectInputStream.readObject()) != null) {
                 cachedData.add(temp);
             }
-            objectInputStream.close();
             mRVAdapter.clear();
             mRVAdapter.addAll(cachedData);
             Log.d(TAG, "Restored cache");
@@ -125,6 +124,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
             if (objectInputStream != null){
                 try {
                     objectInputStream.close();
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

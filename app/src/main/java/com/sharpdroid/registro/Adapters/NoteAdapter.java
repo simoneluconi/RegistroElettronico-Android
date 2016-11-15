@@ -34,7 +34,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
 
     public void clear() {
         CVDataList.clear();
-        //notifyDataSetChanged();  --> USELESS - Always called before addAll(){... notifyDataSetChanged();
+        notifyDataSetChanged();
     }
 
     @Override
