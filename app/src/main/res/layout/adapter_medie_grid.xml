@@ -4,12 +4,9 @@
     android:id="@+id/cardview_medie"
     android:layout_width="wrap_content"
     android:layout_height="210dp"
-    android:layout_marginBottom="@dimen/cards_margin"
-    android:layout_marginLeft="@dimen/cards_margin"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground">
-    <!--android:layout_marginRight="@dimen/cards_margin"-->
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -21,13 +18,13 @@
             android:id="@+id/relativeLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentRight="true"
+            android:layout_above="@+id/linearLayout"
             android:layout_alignParentEnd="true"
-            android:layout_above="@+id/linearLayout">
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:gravity="center">
 
             <TextView
                 android:id="@+id/media"
@@ -44,23 +41,23 @@
                 android:id="@+id/progressvoti"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
+                android:layout_centerInParent="true"
                 app:apsv_draw_width="10dp"
                 app:apsv_rounded="true"
                 app:apsv_shadowed="false"
-                app:apsv_text_color="#00ffffff"
-                android:layout_centerInParent="true"/>
+                app:apsv_text_color="#00ffffff" />
         </RelativeLayout>
 
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:id="@+id/linearLayout">
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/materia"

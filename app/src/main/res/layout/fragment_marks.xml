@@ -15,10 +15,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingTop="10dp"
-            android:paddingRight="@dimen/cards_margin"
-            android:scrollbars="vertical">
-
-        </android.support.v7.widget.RecyclerView>
+            android:padding="@dimen/cards_margin" />
     </android.support.v4.widget.SwipeRefreshLayout>
 </android.support.design.widget.CoordinatorLayout>
