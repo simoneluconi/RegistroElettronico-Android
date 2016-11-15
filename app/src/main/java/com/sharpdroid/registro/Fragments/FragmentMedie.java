@@ -118,7 +118,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
             Log.e(TAG, "Corrupted cache!");
         } catch (IOException e) {
             Log.e(TAG, "Error while reading cache!");
-        } catch (ClassNotFoundException e) {
+        } catch (ClassCastException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

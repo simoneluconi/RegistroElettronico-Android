@@ -115,7 +115,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
             Log.e(TAG, "Corrupted cache!");
         } catch (IOException e) {
             Log.e(TAG, "Error while reading cache!");
-        } catch (ClassNotFoundException e) {
+        } catch (ClassCastException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
