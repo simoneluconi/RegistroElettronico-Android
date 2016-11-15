@@ -13,21 +13,21 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:text="@string/login"
-        android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
     <EditText
         android:id="@+id/mail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/mi_baseline"
-        android:hint="@string/mail"/>
+        android:hint="@string/mail" />
 
     <EditText
         android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/password"
-        android:inputType="textPassword"/>
+        android:inputType="textPassword" />
 
     <Button
         android:id="@+id/login_btn"
@@ -35,6 +35,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/mi_baseline"
         android:text="@string/login"
-        android:theme="@style/AppTheme"/>
+        android:theme="@style/AppTheme" />
 
 </LinearLayout>
