@@ -102,11 +102,9 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
             FileInputStream fileInputStream = new FileInputStream(new File(mContext.getCacheDir(), TAG));
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             List<MarkSubject> cachedData = new LinkedList<>();
-            Object temp;
-            while ((temp = objectInputStream.readObject()) != null) {
-                if (temp instanceof MarkSubject) {
-                    cachedData.add((MarkSubject) temp);
-                }
+            MarkSubject temp;
+            while ((temp = (MarkSubject) objectInputStream.readObject()) != null) {
+                cachedData.add(temp);
             }
             objectInputStream.close();
             mRVAdapter.clear();

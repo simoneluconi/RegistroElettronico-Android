@@ -99,11 +99,9 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
             FileInputStream fileInputStream = new FileInputStream(new File(mContext.getCacheDir(), TAG));
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             List<Communication> cachedData = new LinkedList<>();
-            Object temp;
-            while ((temp = objectInputStream.readObject()) != null) {
-                if (temp instanceof Communication) {
-                    cachedData.add((Communication) temp);
-                }
+            Communication temp;
+            while ((temp = (Communication) objectInputStream.readObject()) != null) {
+                cachedData.add(temp);
             }
             objectInputStream.close();
             mRVAdapter.clear();
