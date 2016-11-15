@@ -70,8 +70,6 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
 
         bindCommunicationsCache();
 
-        mSwipeRefreshLayout.setRefreshing(true);
-
         new CommunicationsTask().execute();
 
         return layout;
@@ -85,7 +83,6 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
             // Update cache
             new CacheTask(mContext.getCacheDir(), TAG).execute((List) communications);
         }
-        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     public void onRefresh() {
@@ -129,6 +126,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
         @UiThread
         @Override
         protected void onPreExecute() {
+            mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
             communicationstask = new CommunicationTask(mContext);
         }
 
@@ -142,6 +140,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
         @Override
         protected void onPostExecute(Void v) {
             addCommunications(communicationstask.getCommunications());
+            mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
         }
     }
 }

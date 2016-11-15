@@ -55,7 +55,6 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
             // Update cache
             new CacheTask(mContext.getCacheDir(), TAG).execute((List) markSubjects);
         }
-        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -81,8 +80,6 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
         mRecyclerView.setAdapter(mRVAdapter);
 
         bindMarksCache();
-
-        mSwipeRefreshLayout.setRefreshing(true);
 
         new MedieTask().execute();
 
@@ -130,6 +127,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
         @UiThread
         @Override
         protected void onPreExecute() {
+            mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
             markstask = new MarkSubjectTask(mContext);
         }
 
@@ -143,6 +141,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
         @Override
         protected void onPostExecute(Void v) {
             addSubjects(markstask.getMarkSubjects());
+            mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
         }
     }
 }

@@ -71,8 +71,6 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
 
         bindNoteCache();
 
-        mSwipeRefreshLayout.setRefreshing(true);
-
         new NotesTask().execute();
 
         return layout;
@@ -86,7 +84,6 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
             // Update cache
             new CacheTask(mContext.getCacheDir(), TAG).execute((List) notes);
         }
-        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     public void onRefresh() {
@@ -130,6 +127,7 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
         @UiThread
         @Override
         protected void onPreExecute() {
+            mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
             notetask = new NoteTask(mContext);
         }
 
@@ -143,6 +141,7 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
         @Override
         protected void onPostExecute(Void v) {
             addNotes(notetask.getNotes());
+            mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
         }
     }
 }
