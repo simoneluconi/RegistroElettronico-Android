@@ -96,9 +96,10 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void bindNoteCache() {
+        ObjectInputStream objectInputStream = null;
         try {
             FileInputStream fileInputStream = new FileInputStream(new File(mContext.getCacheDir(), TAG));
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            objectInputStream = new ObjectInputStream(fileInputStream);
             List<Note> cachedData = new LinkedList<>();
             Note temp;
             while ((temp = (Note) objectInputStream.readObject()) != null) {
@@ -118,6 +119,14 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
             Log.e(TAG, "Error while reading cache!");
         } catch (ClassCastException | ClassNotFoundException e) {
             e.printStackTrace();
+        } finally {
+            if (objectInputStream != null) {
+                try {
+                    objectInputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

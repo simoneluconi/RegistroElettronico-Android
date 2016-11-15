@@ -98,9 +98,10 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void bindMarksCache() {
+        ObjectInputStream objectInputStream = null;
         try {
             FileInputStream fileInputStream = new FileInputStream(new File(mContext.getCacheDir(), TAG));
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            objectInputStream = new ObjectInputStream(fileInputStream);
             List<MarkSubject> cachedData = new LinkedList<>();
             MarkSubject temp;
             while ((temp = (MarkSubject) objectInputStream.readObject()) != null) {
@@ -120,6 +121,14 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
             Log.e(TAG, "Error while reading cache!");
         } catch (ClassCastException | ClassNotFoundException e) {
             e.printStackTrace();
+        } finally {
+            if (objectInputStream != null){
+                try {
+                    objectInputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

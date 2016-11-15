@@ -95,9 +95,10 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
     }
 
     private void bindCommunicationsCache() {
+        ObjectInputStream objectInputStream = null;
         try {
             FileInputStream fileInputStream = new FileInputStream(new File(mContext.getCacheDir(), TAG));
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            objectInputStream = new ObjectInputStream(fileInputStream);
             List<Communication> cachedData = new LinkedList<>();
             Communication temp;
             while ((temp = (Communication) objectInputStream.readObject()) != null) {
@@ -117,6 +118,14 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
             Log.e(TAG, "Error while reading cache!");
         } catch (ClassCastException | ClassNotFoundException e) {
             e.printStackTrace();
+        } finally {
+            if (objectInputStream != null) {
+                try {
+                    objectInputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
