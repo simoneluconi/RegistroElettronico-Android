@@ -1,5 +1,6 @@
 package com.sharpdroid.registro.Utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.Settings.Secure;
@@ -25,6 +26,7 @@ public class DeviceUuidFactory {
                         // Use the ids previously computed and stored in the prefs file
                         uuid = UUID.fromString(id);
                     } else {
+                        @SuppressLint("HardwareIds")
                         final String androidId = Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
 
                         // Use the Android ID unless it's broken, in which case fallback on deviceId,
@@ -34,6 +36,7 @@ public class DeviceUuidFactory {
                             if (!"9774d56d682e549c".equals(androidId)) {
                                 uuid = UUID.nameUUIDFromBytes(androidId.getBytes("utf8"));
                             } else {
+                                @SuppressLint("HardwareIds")
                                 final String deviceId = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
                                 uuid = deviceId != null ? UUID.nameUUIDFromBytes(deviceId.getBytes("utf8")) : UUID.randomUUID();
                             }
