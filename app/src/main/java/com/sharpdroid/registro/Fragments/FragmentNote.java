@@ -100,9 +100,11 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
             FileInputStream fileInputStream = new FileInputStream(new File(mContext.getCacheDir(), TAG));
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             List<Note> cachedData = new LinkedList<>();
-            Note temp;
-            while ((temp = (Note) objectInputStream.readObject()) != null) {
-                cachedData.add(temp);
+            Object temp;
+            while ((temp = objectInputStream.readObject()) != null) {
+                if (temp instanceof Note) {
+                    cachedData.add((Note) temp);
+                }
             }
             objectInputStream.close();
             mRVAdapter.clear();
