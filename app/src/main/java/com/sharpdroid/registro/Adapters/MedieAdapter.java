@@ -48,7 +48,7 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
     @Override
     public MedieHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.adapter_medie, parent, false);
+                .inflate(R.layout.adapter_medie_grid, parent, false);
         return new MedieHolder(v);
     }
 
