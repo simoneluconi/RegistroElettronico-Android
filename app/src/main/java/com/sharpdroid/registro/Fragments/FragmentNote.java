@@ -87,7 +87,6 @@ public class FragmentNote extends Fragment implements RecyclerRefreshLayout.OnRe
         mRecyclerRefreshLayout.setRefreshing(false);
     }
 
-    @Override
     public void onRefresh() {
         if (isNetworkAvailable(mContext)) {
             new Handler().post(new RESTFulAPI.Notes(mContext) {

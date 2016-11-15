@@ -372,16 +372,13 @@ public class RecyclerRefreshLayout extends ViewGroup
         // if this is a List < L or another view that doesn't support nested
         // scrolling, ignore this request so that the vertical scroll event
         // isn't stolen
-        if ((android.os.Build.VERSION.SDK_INT < 21 && mTarget instanceof AbsListView)
-                || (mTarget != null && !ViewCompat.isNestedScrollingEnabled(mTarget))) {
-            // Nope.
-        } else {
+        if (!(android.os.Build.VERSION.SDK_INT < 21 && mTarget instanceof AbsListView)
+                || ViewCompat.isNestedScrollingEnabled(mTarget)) {
             super.requestDisallowInterceptTouchEvent(b);
         }
     }
 
     // NestedScrollingParent
-
     @Override
     public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes) {
         switch (mRefreshStyle) {
@@ -676,7 +673,7 @@ public class RecyclerRefreshLayout extends ViewGroup
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
+                mActivePointerId = ev.getPointerId(0);
                 mIsBeingDragged = false;
 
                 float initialDownY = getMotionEventY(ev, mActivePointerId);
@@ -868,8 +865,8 @@ public class RecyclerRefreshLayout extends ViewGroup
      * @param refreshing Whether or not the view should show refresh progress.
      */
     public void setRefreshing(boolean refreshing) {
-        if (refreshing && mIsRefreshing != refreshing) {
-            mIsRefreshing = refreshing;
+        if (refreshing && !mIsRefreshing) {
+            mIsRefreshing = true;
             mNotifyListener = false;
 
             animateToRefreshingPosition((int) mTargetOrRefreshViewOffsetY, mRefreshingListener);

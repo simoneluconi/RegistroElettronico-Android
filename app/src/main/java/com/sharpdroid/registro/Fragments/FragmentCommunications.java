@@ -82,12 +82,10 @@ public class FragmentCommunications extends Fragment implements RecyclerRefreshL
 
             // Update cache
             new CacheTask(mContext.getCacheDir(), TAG).execute((List) communications);
-
-            mSwipeRefreshLayout.setRefreshing(false);
         }
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
-    @Override
     public void onRefresh() {
         if (isNetworkAvailable(mContext)) {
             new Handler().post(new RESTFulAPI.Communications(mContext) {

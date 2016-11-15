@@ -87,7 +87,6 @@ public class FragmentMedie extends Fragment implements RecyclerRefreshLayout.OnR
         return layout;
     }
 
-    @Override
     public void onRefresh() {
         if (isNetworkAvailable(mContext)) {
             new Handler().post(new RESTFulAPI.Marks(mContext) {

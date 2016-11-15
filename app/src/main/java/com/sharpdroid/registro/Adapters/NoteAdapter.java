@@ -13,6 +13,7 @@ import com.sharpdroid.registro.R;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Adapter per RecyclerView con Note disciplinari & Annotazioni
@@ -58,16 +59,13 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
          * Rosso: nota disciplinare
          * Dark: annotazione
          */
-        h.type.setTextColor(
-                nota.getType().toLowerCase().contains("disciplinare") ?
-                        ContextCompat.getColor(mContext, R.color.red_strong) :
-                        ContextCompat.getColor(mContext, android.R.color.primary_text_dark)
-        );
-        h.teacher.setTextColor(
-                nota.getType().toLowerCase().contains("disciplinare") ?
-                        ContextCompat.getColor(mContext, R.color.red_strong) :
-                        ContextCompat.getColor(mContext, android.R.color.primary_text_dark)
-        );
+        if (nota.getType().toLowerCase(Locale.getDefault()).contains("disciplinare")) {
+            h.type.setTextColor(ContextCompat.getColor(mContext, R.color.red_strong));
+            h.teacher.setTextColor(ContextCompat.getColor(mContext, R.color.red_strong));
+        } else {
+            h.type.setTextColor(ContextCompat.getColor(mContext, android.R.color.primary_text_dark));
+            h.teacher.setTextColor(ContextCompat.getColor(mContext, android.R.color.primary_text_dark));
+        }
     }
 
     @Override

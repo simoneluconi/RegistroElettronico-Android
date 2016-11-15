@@ -42,6 +42,7 @@ public class FragmentLogin extends SlideFragment {
             RESTFulAPI.post(mContext, RESTFulAPI.LOGIN_URL, params, new AsyncHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    mButtonLogin.setText(R.string.login_riuscito);
                     Toast.makeText(mContext, R.string.login_msg, Toast.LENGTH_SHORT).show();
 
                     loggedIn = true;
