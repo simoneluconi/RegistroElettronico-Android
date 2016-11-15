@@ -70,9 +70,9 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
         ViewHolder.mTextViewMedia.setText(String.format(Locale.getDefault(), "%.2f", media.getMediaGenerale()));
         List<ArcProgressStackView.Model> models = new ArrayList<>();
         if (media.isSufficiente()) {
-            models.add(new ArcProgressStackView.Model("media",media.getMediaGenerale()*10, ContextCompat.getColor(mContext, R.color.greenmaterial)));
+            models.add(new ArcProgressStackView.Model("media", media.getMediaGenerale() * 10, ContextCompat.getColor(mContext, R.color.greenmaterial)));
         } else {
-            models.add(new ArcProgressStackView.Model("media",media.getMediaGenerale()*10, ContextCompat.getColor(mContext, R.color.redmaterial)));
+            models.add(new ArcProgressStackView.Model("media", media.getMediaGenerale() * 10, ContextCompat.getColor(mContext, R.color.redmaterial)));
         }
 
         ViewHolder.mCircularProgressViewMedia.setModels(models);

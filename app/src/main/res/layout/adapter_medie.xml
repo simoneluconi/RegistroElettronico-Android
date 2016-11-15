@@ -66,9 +66,9 @@
                 android:layout_marginEnd="18dp"
                 android:layout_marginRight="18dp"
                 app:apsv_draw_width="3dp"
-                app:apsv_shadowed="false"
                 app:apsv_rounded="true"
-                app:apsv_text_color="#00ffffff"/>
+                app:apsv_shadowed="false"
+                app:apsv_text_color="#00ffffff" />
 
             <TextView
                 android:id="@+id/media"
