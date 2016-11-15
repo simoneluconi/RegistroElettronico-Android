@@ -17,9 +17,8 @@ import cz.msebera.android.httpclient.Header;
 
 public class MarkSubjectTask {
     private static final String TAG = MarkSubjectTask.class.getSimpleName();
-
-    private List<MarkSubject> markSubjects = new LinkedList<>();
     private final Context mContext;
+    private List<MarkSubject> markSubjects = new LinkedList<>();
 
     public MarkSubjectTask(Context context) {
         this.mContext = context;

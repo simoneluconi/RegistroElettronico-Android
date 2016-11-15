@@ -18,9 +18,8 @@ import cz.msebera.android.httpclient.Header;
 
 public class NoteTask {
     private static final String TAG = NoteTask.class.getSimpleName();
-
-    private List<Note> notes = new LinkedList<>();
     private final Context mContext;
+    private List<Note> notes = new LinkedList<>();
 
     public NoteTask(Context context) {
         this.mContext = context;

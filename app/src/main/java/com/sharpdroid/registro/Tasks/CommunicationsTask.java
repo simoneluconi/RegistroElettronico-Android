@@ -17,9 +17,8 @@ import cz.msebera.android.httpclient.Header;
 
 public class CommunicationsTask {
     private static final String TAG = CommunicationsTask.class.getSimpleName();
-
-    private List<Communication> communications = new LinkedList<>();
     private final Context mContext;
+    private List<Communication> communications = new LinkedList<>();
 
     public CommunicationsTask(Context context) {
         this.mContext = context;

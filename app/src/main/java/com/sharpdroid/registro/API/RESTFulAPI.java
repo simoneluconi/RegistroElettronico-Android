@@ -12,6 +12,8 @@ public class RESTFulAPI {
     public static final String SCRITTO = "Scritto/Grafico";
     public static final String PRATICO = "Pratico";
 
+    public static final SyncHttpClient syncHttpClient = new SyncHttpClient();
+
     static private final String BASE_URL = "https://api.daniele.ml/";
     public static final String LOGIN_URL = BASE_URL + "login";
     public static final String FILES_URL = BASE_URL + "files";
@@ -21,8 +23,6 @@ public class RESTFulAPI {
     public static final String MARKS_URL = BASE_URL + "marks";
     public static final String SUBJECTS_URL = BASE_URL + "subjects";
     public static final String COMMUNICATIONS_URL = BASE_URL + "communications";
-
-    public static final SyncHttpClient syncHttpClient = new SyncHttpClient();
 
     public RESTFulAPI() {
 
