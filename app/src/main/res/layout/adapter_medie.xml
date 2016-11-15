@@ -58,16 +58,17 @@
             android:layout_alignParentTop="true"
             android:gravity="end">
 
-            <com.github.rahatarmanahmed.cpv.CircularProgressView
+            <devlight.io.library.ArcProgressStackView
                 android:id="@+id/progressvoti"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_centerInParent="true"
                 android:layout_marginEnd="18dp"
                 android:layout_marginRight="18dp"
-                app:cpv_animSwoopDuration="200"
-                app:cpv_animSyncDuration="0"
-                app:cpv_indeterminate="false" />
+                app:apsv_draw_width="3dp"
+                app:apsv_shadowed="false"
+                app:apsv_rounded="true"
+                app:apsv_text_color="#00ffffff"/>
 
             <TextView
                 android:id="@+id/media"

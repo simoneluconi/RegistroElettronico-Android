@@ -11,16 +11,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.sharpdroid.registro.Interfaces.Mark;
 import com.sharpdroid.registro.Interfaces.MarkSubject;
 import com.sharpdroid.registro.Interfaces.Media;
 import com.sharpdroid.registro.Interfaces.Metodi;
 import com.sharpdroid.registro.R;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+
+import devlight.io.library.ArcProgressStackView;
 
 public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder> {
     final private String TAG = MedieAdapter.class.getSimpleName();
@@ -66,12 +68,14 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
         }
         ViewHolder.mTextViewMateria.setText(media.getMateria());
         ViewHolder.mTextViewMedia.setText(String.format(Locale.getDefault(), "%.2f", media.getMediaGenerale()));
-        ViewHolder.mCircularProgressViewMedia.setProgress(media.getMediaGenerale() * 10);
+        List<ArcProgressStackView.Model> models = new ArrayList<>();
         if (media.isSufficiente()) {
-            ViewHolder.mCircularProgressViewMedia.setColor(ContextCompat.getColor(mContext, R.color.greenmaterial));
+            models.add(new ArcProgressStackView.Model("media",media.getMediaGenerale()*10, ContextCompat.getColor(mContext, R.color.greenmaterial)));
         } else {
-            ViewHolder.mCircularProgressViewMedia.setColor(ContextCompat.getColor(mContext, R.color.redmaterial));
+            models.add(new ArcProgressStackView.Model("media",media.getMediaGenerale()*10, ContextCompat.getColor(mContext, R.color.redmaterial)));
         }
+
+        ViewHolder.mCircularProgressViewMedia.setModels(models);
 
         float obbiettivo_voto = PreferenceManager.getDefaultSharedPreferences(mContext)
                 .getFloat("obbiettivo_voto", 8);
@@ -91,7 +95,7 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
 
     class MedieHolder extends RecyclerView.ViewHolder {
         final CardView mCardViewMedia;
-        final CircularProgressView mCircularProgressViewMedia;
+        final ArcProgressStackView mCircularProgressViewMedia;
         final TextView mTextViewMateria;
         final TextView mTextViewMedia;
         final TextView mTextViewDesc;
@@ -99,7 +103,7 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
         MedieHolder(View itemView) {
             super(itemView);
             mCardViewMedia = (CardView) itemView.findViewById(R.id.cardview_medie);
-            mCircularProgressViewMedia = (CircularProgressView) itemView.findViewById(R.id.progressvoti);
+            mCircularProgressViewMedia = (ArcProgressStackView) itemView.findViewById(R.id.progressvoti);
             mTextViewMateria = (TextView) itemView.findViewById(R.id.materia);
             mTextViewMedia = (TextView) itemView.findViewById(R.id.media);
             mTextViewDesc = (TextView) itemView.findViewById(R.id.descrizione);
