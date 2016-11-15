@@ -34,7 +34,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static com.sharpdroid.registro.Interfaces.Metodi.isNetworkAvailable;
+import static com.sharpdroid.registro.Utils.Metodi.isNetworkAvailable;
 
 public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     final private String TAG = FragmentMedie.class.getSimpleName();

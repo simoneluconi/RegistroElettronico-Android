@@ -1,4 +1,4 @@
-package com.sharpdroid.registro.Interfaces;
+package com.sharpdroid.registro.Utils;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -21,7 +21,7 @@ public class Metodi {
                 contavoti = contavoti + 1;
                 media = somma / contavoti;
                 if (media >= Obb) {
-                    return "Devi prendere " + newvoto + " per avere " + Obb;
+                    return "Devi prendere almeno " + newvoto;
                 } else if (newvoto >= 10) {
                     // TODO: 14/11/2016 Invece di "devi prendere più di 10" dire un paio di voti-> es. devi prendere un 9 e un 7 per la sufficienza
                     return "Devi prendere più di 10";
