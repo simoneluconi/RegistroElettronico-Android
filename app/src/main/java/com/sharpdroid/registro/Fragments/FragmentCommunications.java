@@ -8,6 +8,7 @@ import android.support.annotation.WorkerThread;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.dinuscxj.refresh.RecyclerRefreshLayout;
 import com.sharpdroid.registro.Adapters.CommunicationAdapter;
 import com.sharpdroid.registro.Interfaces.Communication;
 import com.sharpdroid.registro.R;
@@ -35,11 +35,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.sharpdroid.registro.Interfaces.Metodi.isNetworkAvailable;
 
-public class FragmentCommunications extends Fragment implements RecyclerRefreshLayout.OnRefreshListener {
+public class FragmentCommunications extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     final private String TAG = FragmentCommunications.class.getSimpleName();
 
     private CoordinatorLayout mCoordinatorLayout;
-    private RecyclerRefreshLayout mRecyclerRefreshLayout;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private CommunicationAdapter mRVAdapter;
     private Context mContext;
 
@@ -52,8 +52,13 @@ public class FragmentCommunications extends Fragment implements RecyclerRefreshL
                              ViewGroup container, Bundle savedInstanceState) {
         mContext = getContext();
         View layout = inflater.inflate(R.layout.fragment_communications, container, false);
-        mRecyclerRefreshLayout = (RecyclerRefreshLayout) layout.findViewById(R.id.refresh_layout);
-        mRecyclerRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swiperefresh);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeResources(
+                R.color.bluematerial,
+                R.color.redmaterial,
+                R.color.greenmaterial,
+                R.color.orangematerial);
 
         mCoordinatorLayout = (CoordinatorLayout) layout.findViewById(R.id.coordinator_layout);
 
@@ -65,7 +70,7 @@ public class FragmentCommunications extends Fragment implements RecyclerRefreshL
 
         bindCommunicationsCache();
 
-        mRecyclerRefreshLayout.setRefreshing(true);
+        mSwipeRefreshLayout.setRefreshing(true);
 
         new CommunicationsTask().execute();
 
@@ -80,7 +85,7 @@ public class FragmentCommunications extends Fragment implements RecyclerRefreshL
             // Update cache
             new CacheTask(mContext.getCacheDir(), TAG).execute((List) communications);
         }
-        mRecyclerRefreshLayout.setRefreshing(false);
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     public void onRefresh() {
@@ -88,7 +93,7 @@ public class FragmentCommunications extends Fragment implements RecyclerRefreshL
             new CommunicationsTask().execute();
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
-            mRecyclerRefreshLayout.setRefreshing(false);
+            mSwipeRefreshLayout.setRefreshing(false);
         }
     }
 
