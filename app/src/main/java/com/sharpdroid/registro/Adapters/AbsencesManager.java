@@ -11,8 +11,16 @@ import java.util.List;
 public class AbsencesManager {
     private Absences absences;
 
+    public AbsencesManager(Absences absences) {
+        this.absences.set(absences);
+    }
+
     public void set(Absences absences) {
-        this.absences = absences;
+        this.absences.set(absences);
+    }
+
+    public void clear() {
+        absences.clear();
     }
 
     public List<Absence> getAbsences() {
@@ -27,11 +35,5 @@ public class AbsencesManager {
         return new ArrayList<>(absences.getExits());
     }
 
-    public void clear() {
-        absences.clear();
-    }
 
-    public AbsencesManager(Absences absences) {
-        this.absences = absences;
-    }
 }
