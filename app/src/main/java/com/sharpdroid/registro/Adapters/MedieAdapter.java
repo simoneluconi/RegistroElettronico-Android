@@ -75,7 +75,7 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
             models.add(new ArcProgressStackView.Model("media", media.getMediaGenerale() * 10, ContextCompat.getColor(mContext, R.color.redmaterial)));
         }
 
-        ViewHolder.mCircularProgressViewMedia.setModels(models);
+        ViewHolder.mArcProgressStackView.setModels(models);
 
         float obbiettivo_voto = PreferenceManager.getDefaultSharedPreferences(mContext)
                 .getFloat("obbiettivo_voto", 8);
@@ -95,7 +95,7 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
 
     class MedieHolder extends RecyclerView.ViewHolder {
         final CardView mCardViewMedia;
-        final ArcProgressStackView mCircularProgressViewMedia;
+        final ArcProgressStackView mArcProgressStackView;
         final TextView mTextViewMateria;
         final TextView mTextViewMedia;
         final TextView mTextViewDesc;
@@ -103,7 +103,7 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
         MedieHolder(View itemView) {
             super(itemView);
             mCardViewMedia = (CardView) itemView.findViewById(R.id.cardview_medie);
-            mCircularProgressViewMedia = (ArcProgressStackView) itemView.findViewById(R.id.progressvoti);
+            mArcProgressStackView = (ArcProgressStackView) itemView.findViewById(R.id.progressvoti);
             mTextViewMateria = (TextView) itemView.findViewById(R.id.materia);
             mTextViewMedia = (TextView) itemView.findViewById(R.id.media);
             mTextViewDesc = (TextView) itemView.findViewById(R.id.descrizione);
