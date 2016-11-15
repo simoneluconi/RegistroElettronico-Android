@@ -2,6 +2,7 @@ package com.sharpdroid.registro.API;
 
 import android.content.Context;
 
+import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.RequestParams;
@@ -12,7 +13,8 @@ public class RESTFulAPI {
     public static final String SCRITTO = "Scritto/Grafico";
     public static final String PRATICO = "Pratico";
 
-    public static final SyncHttpClient syncHttpClient = new SyncHttpClient();
+    private static final AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
+    private static final SyncHttpClient syncHttpClient = new SyncHttpClient();
 
     static private final String BASE_URL = "https://api.daniele.ml/";
     public static final String LOGIN_URL = BASE_URL + "login";
@@ -36,8 +38,8 @@ public class RESTFulAPI {
 
     public static void post(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         PersistentCookieStore myCookieStore = new PersistentCookieStore(context);
-        syncHttpClient.setCookieStore(myCookieStore);
-        syncHttpClient.post(url, params, responseHandler);
+        asyncHttpClient.setCookieStore(myCookieStore);
+        asyncHttpClient.post(url, params, responseHandler);
     }
 
     public String FILE_DOWNLOAD_URL(String id, String cksum) {
