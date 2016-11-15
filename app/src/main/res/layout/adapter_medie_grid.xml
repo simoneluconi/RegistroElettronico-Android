@@ -31,11 +31,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:layout_marginEnd="20dp"
-                android:layout_marginRight="20dp"
                 android:text="7.5"
                 android:textColor="@color/textcolorgrey"
-                android:textSize="15sp" />
+                android:textSize="18sp" />
 
             <devlight.io.library.ArcProgressStackView
                 android:id="@+id/progressvoti"
