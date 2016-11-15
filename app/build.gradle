@@ -4,6 +4,7 @@ apply plugin: 'me.tatarka.retrolambda'
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.0"
+
     defaultConfig {
         applicationId "com.sharpdroid.registro"
         minSdkVersion 15
@@ -37,6 +38,8 @@ android {
             if (rootProject.file("keystore.properties").exists()) {
                 signingConfig signingConfigs.config
             }
+
+            return void
         }
 
         release {
@@ -48,6 +51,8 @@ android {
             if (rootProject.file("keystore.properties").exists()) {
                 signingConfig signingConfigs.config
             }
+
+            return void
         }
     }
 
