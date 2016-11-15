@@ -1,8 +1,10 @@
 package com.sharpdroid.registro.Fragments;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
+import android.support.annotation.UiThread;
+import android.support.annotation.WorkerThread;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -14,10 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.dinuscxj.refresh.RecyclerRefreshLayout;
-import com.sharpdroid.registro.API.RESTFulAPI;
 import com.sharpdroid.registro.Adapters.MedieAdapter;
 import com.sharpdroid.registro.Interfaces.MarkSubject;
 import com.sharpdroid.registro.R;
+import com.sharpdroid.registro.Tasks.MarkSubjectTask;
 import com.sharpdroid.registro.Utils.CacheTask;
 
 import java.io.EOFException;
@@ -46,7 +48,7 @@ public class FragmentMedie extends Fragment implements RecyclerRefreshLayout.OnR
     }
 
     private void addSubjects(List<MarkSubject> markSubjects) {
-        if (markSubjects.size() != 0) {
+        if (!markSubjects.isEmpty()) {
             mRVAdapter.clear();
             mRVAdapter.addAll(markSubjects);
 
@@ -77,24 +79,14 @@ public class FragmentMedie extends Fragment implements RecyclerRefreshLayout.OnR
 
         mRecyclerRefreshLayout.setRefreshing(true);
 
-        new Handler().post(new RESTFulAPI.Marks(mContext) {
-            @Override
-            public void then(List<MarkSubject> markSubjects) {
-                addSubjects(markSubjects);
-            }
-        });
+        new MedieTask().execute();
 
         return layout;
     }
 
     public void onRefresh() {
         if (isNetworkAvailable(mContext)) {
-            new Handler().post(new RESTFulAPI.Marks(mContext) {
-                @Override
-                public void then(List<MarkSubject> markSubjects) {
-                    addSubjects(markSubjects);
-                }
-            });
+            new MedieTask().execute();
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mRecyclerRefreshLayout.setRefreshing(false);
@@ -124,6 +116,28 @@ public class FragmentMedie extends Fragment implements RecyclerRefreshLayout.OnR
             Log.e(TAG, "Error while reading cache!");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        }
+    }
+
+    private class MedieTask extends AsyncTask<Void, Void, Void> {
+        private MarkSubjectTask markstask;
+
+        @UiThread
+        @Override
+        protected void onPreExecute() {
+            markstask = new MarkSubjectTask(mContext);
+        }
+
+        @WorkerThread
+        @Override
+        protected Void doInBackground(Void... voids) {
+            return markstask.update();
+        }
+
+        @UiThread
+        @Override
+        protected void onPostExecute(Void v) {
+            addSubjects(markstask.getMarkSubjects());
         }
     }
 }

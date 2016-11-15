@@ -1,8 +1,10 @@
 package com.sharpdroid.registro.Fragments;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
+import android.support.annotation.UiThread;
+import android.support.annotation.WorkerThread;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -14,10 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.dinuscxj.refresh.RecyclerRefreshLayout;
-import com.sharpdroid.registro.API.RESTFulAPI;
 import com.sharpdroid.registro.Adapters.NoteAdapter;
 import com.sharpdroid.registro.Interfaces.Note;
 import com.sharpdroid.registro.R;
+import com.sharpdroid.registro.Tasks.NoteTask;
 import com.sharpdroid.registro.Utils.CacheTask;
 
 import java.io.EOFException;
@@ -66,18 +68,13 @@ public class FragmentNote extends Fragment implements RecyclerRefreshLayout.OnRe
 
         mRecyclerRefreshLayout.setRefreshing(true);
 
-        new Handler().post(new RESTFulAPI.Notes(mContext) {
-            @Override
-            public void then(List<Note> notes) {
-                addNotes(notes);
-            }
-        });
+        new CommunicationTask().execute();
 
         return layout;
     }
 
     void addNotes(List<Note> notes) {
-        if (notes.size() != 0) {
+        if (!notes.isEmpty()) {
             mRVAdapter.clear();
             mRVAdapter.addAll(notes);
 
@@ -89,12 +86,7 @@ public class FragmentNote extends Fragment implements RecyclerRefreshLayout.OnRe
 
     public void onRefresh() {
         if (isNetworkAvailable(mContext)) {
-            new Handler().post(new RESTFulAPI.Notes(mContext) {
-                @Override
-                public void then(List<Note> notes) {
-                    addNotes(notes);
-                }
-            });
+            new CommunicationTask().execute();
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mRecyclerRefreshLayout.setRefreshing(false);
@@ -124,6 +116,28 @@ public class FragmentNote extends Fragment implements RecyclerRefreshLayout.OnRe
             Log.e(TAG, "Error while reading cache!");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        }
+    }
+
+    private class CommunicationTask extends AsyncTask<Void, Void, Void> {
+        private NoteTask notetask;
+
+        @UiThread
+        @Override
+        protected void onPreExecute() {
+            notetask = new NoteTask(mContext);
+        }
+
+        @WorkerThread
+        @Override
+        protected Void doInBackground(Void... voids) {
+            return notetask.update();
+        }
+
+        @UiThread
+        @Override
+        protected void onPostExecute(Void v) {
+            addNotes(notetask.getNotes());
         }
     }
 }

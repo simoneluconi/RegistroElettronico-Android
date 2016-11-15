@@ -1,8 +1,10 @@
 package com.sharpdroid.registro.Fragments;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
+import android.support.annotation.UiThread;
+import android.support.annotation.WorkerThread;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -14,10 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.dinuscxj.refresh.RecyclerRefreshLayout;
-import com.sharpdroid.registro.API.RESTFulAPI;
 import com.sharpdroid.registro.Adapters.CommunicationAdapter;
 import com.sharpdroid.registro.Interfaces.Communication;
 import com.sharpdroid.registro.R;
+import com.sharpdroid.registro.Tasks.CommunicationsTask;
 import com.sharpdroid.registro.Utils.CacheTask;
 
 import java.io.EOFException;
@@ -37,7 +39,7 @@ public class FragmentCommunications extends Fragment implements RecyclerRefreshL
     final private String TAG = FragmentCommunications.class.getSimpleName();
 
     private CoordinatorLayout mCoordinatorLayout;
-    private RecyclerRefreshLayout mSwipeRefreshLayout;
+    private RecyclerRefreshLayout mRecyclerRefreshLayout;
     private CommunicationAdapter mRVAdapter;
     private Context mContext;
 
@@ -50,8 +52,8 @@ public class FragmentCommunications extends Fragment implements RecyclerRefreshL
                              ViewGroup container, Bundle savedInstanceState) {
         mContext = getContext();
         View layout = inflater.inflate(R.layout.fragment_communications, container, false);
-        mSwipeRefreshLayout = (RecyclerRefreshLayout) layout.findViewById(R.id.refresh_layout);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mRecyclerRefreshLayout = (RecyclerRefreshLayout) layout.findViewById(R.id.refresh_layout);
+        mRecyclerRefreshLayout.setOnRefreshListener(this);
 
         mCoordinatorLayout = (CoordinatorLayout) layout.findViewById(R.id.coordinator_layout);
 
@@ -63,40 +65,30 @@ public class FragmentCommunications extends Fragment implements RecyclerRefreshL
 
         bindCommunicationsCache();
 
-        mSwipeRefreshLayout.setRefreshing(true);
+        mRecyclerRefreshLayout.setRefreshing(true);
 
-        new Handler().post(new RESTFulAPI.Communications(mContext) {
-            @Override
-            public void then(List<Communication> communications) {
-                addCommunications(communications);
-            }
-        });
+        new CommunicationTask().execute();
 
         return layout;
     }
 
     private void addCommunications(List<Communication> communications) {
-        if (communications.size() != 0) {
+        if (!communications.isEmpty()) {
             mRVAdapter.clear();
             mRVAdapter.addAll(communications);
 
             // Update cache
             new CacheTask(mContext.getCacheDir(), TAG).execute((List) communications);
         }
-        mSwipeRefreshLayout.setRefreshing(false);
+        mRecyclerRefreshLayout.setRefreshing(false);
     }
 
     public void onRefresh() {
         if (isNetworkAvailable(mContext)) {
-            new Handler().post(new RESTFulAPI.Communications(mContext) {
-                @Override
-                public void then(List<Communication> communications) {
-                    addCommunications(communications);
-                }
-            });
+            new CommunicationTask().execute();
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
-            mSwipeRefreshLayout.setRefreshing(false);
+            mRecyclerRefreshLayout.setRefreshing(false);
         }
     }
 
@@ -123,6 +115,28 @@ public class FragmentCommunications extends Fragment implements RecyclerRefreshL
             Log.e(TAG, "Error while reading cache!");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        }
+    }
+
+    private class CommunicationTask extends AsyncTask<Void, Void, Void> {
+        private CommunicationsTask communicationstask;
+
+        @UiThread
+        @Override
+        protected void onPreExecute() {
+            communicationstask = new CommunicationsTask(mContext);
+        }
+
+        @WorkerThread
+        @Override
+        protected Void doInBackground(Void... voids) {
+            return communicationstask.update();
+        }
+
+        @UiThread
+        @Override
+        protected void onPostExecute(Void v) {
+            addCommunications(communicationstask.getCommunications());
         }
     }
 }
