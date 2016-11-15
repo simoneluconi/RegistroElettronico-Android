@@ -20,7 +20,7 @@ import java.util.Locale;
  */
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
     private final List<Note> CVDataList;
-    private Context mContext;
+    private final Context mContext;
 
     public NoteAdapter(Context context, List<Note> CVDataList) {
         this.mContext = context;
@@ -74,7 +74,10 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
     }
 
     class NoteHolder extends RecyclerView.ViewHolder {
-        TextView teacher, date, content, type;
+        final TextView teacher;
+        final TextView date;
+        final TextView content;
+        final TextView type;
 
         NoteHolder(View v) {
             super(v);

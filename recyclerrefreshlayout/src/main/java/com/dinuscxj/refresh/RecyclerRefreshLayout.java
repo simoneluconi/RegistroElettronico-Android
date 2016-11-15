@@ -43,7 +43,7 @@ import android.widget.AbsListView;
 public class RecyclerRefreshLayout extends ViewGroup
         implements NestedScrollingParent, NestedScrollingChild {
 
-    private static boolean IS_DEBUG = false;
+    private static final boolean IS_DEBUG = false;
 
     private static final int INVALID_INDEX = -1;
     private static final int INVALID_POINTER = -1;
@@ -78,8 +78,8 @@ public class RecyclerRefreshLayout extends ViewGroup
     private int mAnimateToRefreshDuration = DEFAULT_ANIMATE_DURATION;
 
     private int mFrom;
-    private int mTouchSlop;
-    private int mRefreshViewSize;
+    private final int mTouchSlop;
+    private final int mRefreshViewSize;
 
     private float mInitialDownY;
     private float mInitialScrollY;
@@ -749,7 +749,7 @@ public class RecyclerRefreshLayout extends ViewGroup
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
+                mActivePointerId = ev.getPointerId(0);
                 mIsBeingDragged = false;
                 break;
 
@@ -1043,7 +1043,7 @@ public class RecyclerRefreshLayout extends ViewGroup
 
     private void onNewerPointerDown(MotionEvent ev) {
         final int index = MotionEventCompat.getActionIndex(ev);
-        mActivePointerId = MotionEventCompat.getPointerId(ev, index);
+        mActivePointerId = ev.getPointerId(index);
 
         mInitialMotionY = getMotionEventY(ev, mActivePointerId) - mCurrentTouchOffsetY;
 
@@ -1052,11 +1052,11 @@ public class RecyclerRefreshLayout extends ViewGroup
 
     private void onSecondaryPointerUp(MotionEvent ev) {
         int pointerIndex = MotionEventCompat.getActionIndex(ev);
-        int pointerId = MotionEventCompat.getPointerId(ev, pointerIndex);
+        int pointerId = ev.getPointerId(pointerIndex);
 
         if (pointerId == mActivePointerId) {
             final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
-            mActivePointerId = MotionEventCompat.getPointerId(ev, newPointerIndex);
+            mActivePointerId = ev.getPointerId(newPointerIndex);
         }
 
         mInitialMotionY = getMotionEventY(ev, mActivePointerId) - mCurrentTouchOffsetY;
@@ -1123,11 +1123,11 @@ public class RecyclerRefreshLayout extends ViewGroup
     }
 
     private float getMotionEventY(MotionEvent ev, int activePointerId) {
-        final int index = MotionEventCompat.findPointerIndex(ev, activePointerId);
+        final int index = ev.findPointerIndex(activePointerId);
         if (index < 0) {
             return -1;
         }
-        return MotionEventCompat.getY(ev, index);
+        return ev.getY(index);
     }
 
     private boolean canChildScrollUp(View mTarget) {
