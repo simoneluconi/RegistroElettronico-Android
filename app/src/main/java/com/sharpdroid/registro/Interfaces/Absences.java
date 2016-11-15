@@ -37,4 +37,10 @@ public class Absences implements Serializable {
     public void setExits(List<Exit> exits) {
         this.exits = exits;
     }
+
+    public void clear(){
+        absences.clear();
+        delays.clear();
+        exits.clear();
+    }
 }
