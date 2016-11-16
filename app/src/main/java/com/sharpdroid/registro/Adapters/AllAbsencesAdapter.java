@@ -1,6 +1,5 @@
 package com.sharpdroid.registro.Adapters;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,24 +85,22 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
         return false;
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public View getGroupView(int group_pos, boolean expanded, View view, ViewGroup viewGroup) {
-        if (group_pos == 0) {
-            if (view == null)
-                view = mInflater.inflate(R.layout.adapter_expandable_group, viewGroup, false);
-            FrameLayout attive =(FrameLayout) view.findViewById(R.id.attive);
-            TextView text = (TextView) view.findViewById(R.id.attive_text);
+        if (view == null)
+            view = mInflater.inflate(R.layout.adapter_expandable_group, viewGroup, false);
+        FrameLayout attive = (FrameLayout) view.findViewById(R.id.attive);
+        TextView text = (TextView) view.findViewById(R.id.attive_text);
 
-            int count = absences.getUndoneCount();
+        int count = absences.getUndoneCount();
 
-            if (count==0) attive.setVisibility(View.GONE);
-            else{
-                attive.setVisibility(View.VISIBLE);
-                text.setText(count + ((count>1)?" Attive" : " Attiva"));
-            }
-
+        if (count == 0) {
+            attive.setVisibility(View.GONE);
+        } else {
+            attive.setVisibility(View.VISIBLE);
+            text.setText(mContext.getResources().getQuantityString(R.plurals.attiva, count, count));
         }
+
         return view;
     }
 
@@ -114,7 +111,7 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
                 view = mInflater.inflate(R.layout.adapter_expandable_child, viewGroup, false);
             Absence absence = absences.getAbsences().get(child_pos);
 
-            FrameLayout attive =(FrameLayout) view.findViewById(R.id.attive);
+            FrameLayout attive = (FrameLayout) view.findViewById(R.id.attive);
             TextView from, to;
 
             from = (TextView) view.findViewById(R.id.from);

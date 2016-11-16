@@ -38,10 +38,10 @@ public class Absences implements Serializable {
         this.exits = exits;
     }
 
-    public int getUndoneCount(){
+    public int getUndoneCount() {
         int c = 0;
-        for(Absence a : absences){
-            if(!a.isDone()) c++;
+        for (Absence a : absences) {
+            if (!a.isDone()) c++;
         }
         return c;
     }
