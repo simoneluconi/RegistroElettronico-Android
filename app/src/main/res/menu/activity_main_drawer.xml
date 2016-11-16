@@ -15,6 +15,10 @@
             android:id="@+id/notes"
             android:icon="@drawable/ic_menu_camera"
             android:title="@string/note" />
+        <item
+            android:id="@+id/absences"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="@string/absences" />
     </group>
 
     <item android:title="@string/communicate">
