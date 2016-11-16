@@ -5,8 +5,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import com.sharpdroid.registro.API.RESTFulAPI;
+import com.sharpdroid.registro.Interfaces.Absence;
 import com.sharpdroid.registro.Interfaces.Media;
 import com.sharpdroid.registro.R;
+
+import java.util.List;
 
 public class Metodi {
     public static boolean isNetworkAvailable(Context context) {
@@ -22,10 +25,10 @@ public class Metodi {
             return "Errore";
         if (Obb >= 10 && media < Obb)
             return "Impossibile raggiungere la media del " + media;
-        double [] array = {0.75, 0.5, 0.25, 0};
+        double[] array = {0.75, 0.5, 0.25, 0};
         int index = 0;
         float sommaVotiDaPrendere;
-        double [] votiMinimi = new double [10];
+        double[] votiMinimi = new double[10];
         double diff;
         double diff2;
         double resto = 0;
@@ -34,7 +37,7 @@ public class Metodi {
         do {
             index = index + 1;
             sommaVotiDaPrendere = (Obb * (voti + index)) - (media * voti);
-        } while ((sommaVotiDaPrendere/index) > 10);
+        } while ((sommaVotiDaPrendere / index) > 10);
         for (int i = 0; i < index; i = i + 1) {
             votiMinimi[i] = (sommaVotiDaPrendere / index) + resto;
             resto = 0;
@@ -46,7 +49,7 @@ public class Metodi {
                     diff = votiMinimi[i] - (parteIntera + array[k]);
                     k++;
                 } while (diff < 0);
-                votiMinimi [i] = votiMinimi[i] - diff;
+                votiMinimi[i] = votiMinimi[i] - diff;
                 resto = diff;
             }
             if (votiMinimi[i] > 10) {
@@ -62,7 +65,9 @@ public class Metodi {
         else {
             toReturn = "Devi prendere almeno ";
             for (int a = 0; a < votiMinimi.length; a = a + 1) {
-                if (votiMinimi[a] != 0) { toReturn = toReturn + votiMinimi[a] + ", "; }
+                if (votiMinimi[a] != 0) {
+                    toReturn = toReturn + votiMinimi[a] + ", ";
+                }
             }
             toReturn = toReturn.substring(0, toReturn.length() - 2);
         }
@@ -134,5 +139,13 @@ public class Metodi {
     public static int getMediaColor(Media media, float obbiettivo_voto) {
         return getMediaColor(media, "Generale", obbiettivo_voto);
     }
-}
 
+    public static int getNumberDaysAbsences(List<Absence> absences) {
+        int days = 0;
+        for (Absence a :
+                absences) {
+            days += a.getDays();
+        }
+        return days;
+    }
+}

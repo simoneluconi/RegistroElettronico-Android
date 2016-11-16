@@ -37,13 +37,4 @@ public class Absences implements Serializable {
     public void setExits(List<Exit> exits) {
         this.exits = exits;
     }
-
-    public int getNumberDaysAbsences() {
-        int days = 0;
-        for (Absence a :
-                absences) {
-            days += a.getDays();
-        }
-        return days;
-    }
 }
