@@ -15,6 +15,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Adapter per RecyclerView con Note disciplinari & Annotazioni
  */
@@ -74,18 +77,18 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
     }
 
     class NoteHolder extends RecyclerView.ViewHolder {
-        final TextView teacher;
-        final TextView date;
-        final TextView content;
-        final TextView type;
+        @BindView(R.id.teacher)
+        TextView teacher;
+        @BindView(R.id.date)
+        TextView date;
+        @BindView(R.id.content)
+        TextView content;
+        @BindView(R.id.type)
+        TextView type;
 
-        NoteHolder(View v) {
-            super(v);
-
-            teacher = (TextView) v.findViewById(R.id.teacher);
-            date = (TextView) v.findViewById(R.id.date);
-            content = (TextView) v.findViewById(R.id.content);
-            type = (TextView) v.findViewById(R.id.type);
+        NoteHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

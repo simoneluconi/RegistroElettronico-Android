@@ -34,13 +34,19 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.sharpdroid.registro.Utils.Metodi.isNetworkAvailable;
 
 public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     final private String TAG = FragmentMedie.class.getSimpleName();
 
-    private CoordinatorLayout mCoordinatorLayout;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    @BindView(R.id.coordinator_layout)
+    CoordinatorLayout mCoordinatorLayout;
+    @BindView(R.id.swiperefresh)
+    SwipeRefreshLayout mSwipeRefreshLayout;
+
     private MedieAdapter mRVAdapter;
     private Context mContext;
 
@@ -48,13 +54,15 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
 
     }
 
-    private void addSubjects(List<MarkSubject> markSubjects) {
+    private void addSubjects(List<MarkSubject> markSubjects, boolean docache) {
         if (!markSubjects.isEmpty()) {
             mRVAdapter.clear();
             mRVAdapter.addAll(markSubjects);
 
-            // Update cache
-            new CacheTask(mContext.getCacheDir(), TAG).execute((List) markSubjects);
+            if (docache) {
+                // Update cache
+                new CacheTask(mContext.getCacheDir(), TAG).execute((List) markSubjects);
+            }
         }
     }
 
@@ -63,16 +71,15 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
                              ViewGroup container, Bundle savedInstanceState) {
         mContext = getContext();
         View layout = inflater.inflate(R.layout.fragment_marks, container, false);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swiperefresh);
+
+        ButterKnife.bind(this, layout);
+
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(
                 R.color.bluematerial,
                 R.color.redmaterial,
-                R.color.lightgreenmaterial,
                 R.color.greenmaterial,
                 R.color.orangematerial);
-
-        mCoordinatorLayout = (CoordinatorLayout) layout.findViewById(R.id.coordinator_layout);
 
         RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
         mRecyclerView.setHasFixedSize(true);
@@ -108,8 +115,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
             while ((temp = (MarkSubject) objectInputStream.readObject()) != null) {
                 cachedData.add(temp);
             }
-            mRVAdapter.clear();
-            mRVAdapter.addAll(cachedData);
+            addSubjects(cachedData, false);
             Log.d(TAG, "Restored cache");
         } catch (FileNotFoundException e) {
             Log.w(TAG, "Cache not found.");
@@ -125,7 +131,6 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
             if (objectInputStream != null) {
                 try {
                     objectInputStream.close();
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -152,7 +157,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
         @UiThread
         @Override
         protected void onPostExecute(Void v) {
-            addSubjects(markstask.getMarkSubjects());
+            addSubjects(markstask.getMarkSubjects(), true);
             mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
         }
     }

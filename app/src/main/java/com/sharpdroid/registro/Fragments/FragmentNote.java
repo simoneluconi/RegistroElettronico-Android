@@ -33,15 +33,21 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.sharpdroid.registro.Utils.Metodi.isNetworkAvailable;
 
 public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     final private String TAG = FragmentNote.class.getSimpleName();
 
-    private Context mContext;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    @BindView(R.id.coordinator_layout)
+    CoordinatorLayout mCoordinatorLayout;
+    @BindView(R.id.swiperefresh)
+    SwipeRefreshLayout mSwipeRefreshLayout;
+
     private NoteAdapter mRVAdapter;
-    private CoordinatorLayout mCoordinatorLayout;
+    private Context mContext;
 
     public FragmentNote() {
     }
@@ -52,15 +58,14 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
         mContext = getContext();
         View layout = inflater.inflate(R.layout.fragment_note, container, false);
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swiperefresh);
+        ButterKnife.bind(this, layout);
+
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(
                 R.color.bluematerial,
                 R.color.redmaterial,
                 R.color.greenmaterial,
                 R.color.orangematerial);
-
-        mCoordinatorLayout = (CoordinatorLayout) layout.findViewById(R.id.coordinator_layout);
 
         RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
@@ -76,13 +81,15 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
         return layout;
     }
 
-    void addNotes(List<Note> notes) {
+    void addNotes(List<Note> notes, boolean docache) {
         if (!notes.isEmpty()) {
             mRVAdapter.clear();
             mRVAdapter.addAll(notes);
 
-            // Update cache
-            new CacheTask(mContext.getCacheDir(), TAG).execute((List) notes);
+            if (docache) {
+                // Update cache
+                new CacheTask(mContext.getCacheDir(), TAG).execute((List) notes);
+            }
         }
     }
 
@@ -105,8 +112,7 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
             while ((temp = (Note) objectInputStream.readObject()) != null) {
                 cachedData.add(temp);
             }
-            mRVAdapter.clear();
-            mRVAdapter.addAll(cachedData);
+            addNotes(cachedData, false);
             Log.d(TAG, "Restored cache");
         } catch (FileNotFoundException e) {
             Log.w(TAG, "Cache not found.");
@@ -148,7 +154,7 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
         @UiThread
         @Override
         protected void onPostExecute(Void v) {
-            addNotes(notetask.getNotes());
+            addNotes(notetask.getNotes(), true);
             mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
         }
     }

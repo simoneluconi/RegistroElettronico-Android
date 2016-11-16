@@ -22,6 +22,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import devlight.io.library.ArcProgressStackView;
 
 public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder> {
@@ -63,7 +65,7 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
             if (!mark.isNs()) {
                 media.addMark(mark);
             } else {
-                Log.d(TAG, "Voto non significativo");
+                Log.d(TAG, String.format("%s %s non è significativo", marksubject.getName(), mark.getMark()));
             }
         }
 
@@ -92,19 +94,20 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
     }
 
     class MedieHolder extends RecyclerView.ViewHolder {
-        final CardView mCardViewMedia;
-        final ArcProgressStackView mArcProgressStackView;
-        final TextView mTextViewMateria;
-        final TextView mTextViewMedia;
-        final TextView mTextViewDesc;
+        @BindView(R.id.cardview_medie)
+        CardView mCardViewMedia;
+        @BindView(R.id.progressvoti)
+        ArcProgressStackView mArcProgressStackView;
+        @BindView(R.id.materia)
+        TextView mTextViewMateria;
+        @BindView(R.id.media)
+        TextView mTextViewMedia;
+        @BindView(R.id.descrizione)
+        TextView mTextViewDesc;
 
         MedieHolder(View itemView) {
             super(itemView);
-            mCardViewMedia = (CardView) itemView.findViewById(R.id.cardview_medie);
-            mArcProgressStackView = (ArcProgressStackView) itemView.findViewById(R.id.progressvoti);
-            mTextViewMateria = (TextView) itemView.findViewById(R.id.materia);
-            mTextViewMedia = (TextView) itemView.findViewById(R.id.media);
-            mTextViewDesc = (TextView) itemView.findViewById(R.id.descrizione);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

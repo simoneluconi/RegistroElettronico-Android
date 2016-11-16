@@ -79,5 +79,4 @@ dependencies {
     compile 'com.heinrichreimersoftware:material-intro:1.6'
     compile 'com.loopj.android:android-async-http:1.4.9'
     compile 'devlight.io:arcprogressstackview:1.0.4'
-    compile 'com.android.support:support-v4:25.0.1'
 }
