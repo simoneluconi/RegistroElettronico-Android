@@ -44,7 +44,7 @@ public class NoteTask {
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                 try {
                     notes.clear();
-                    notes.addAll(new Gson().fromJson(responseString, new TypeToken<List<Communication>>() {
+                    notes.addAll(new Gson().fromJson(responseString, new TypeToken<List<Note>>() {
                     }.getType()));
                 } catch (JsonParseException exception) {
                     exception.printStackTrace();
