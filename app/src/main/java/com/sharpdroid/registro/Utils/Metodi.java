@@ -17,40 +17,56 @@ public class Metodi {
     }
 
     public static String MessaggioVoto(float Obb, float media, float somma, int voti) {
-        float backups = somma, newvoto = 6;
-        int contavoti = voti;
-        if (media < Obb) {
-            while (true) {
-                somma = somma + newvoto;
-                contavoti = contavoti + 1;
-                media = somma / contavoti;
-                if (media >= Obb) {
-                    return "Devi prendere almeno " + newvoto;
-                } else if (newvoto >= 10) {
-                    // TODO: 14/11/2016 Invece di "devi prendere più di 10" dire un paio di voti-> es. devi prendere un 9 e un 7 per la sufficienza
-                    return "Devi prendere più di 10";
-                }
-                newvoto = newvoto + 0.25f;
-                contavoti = contavoti - 1;
-                somma = backups;
+        // Calcolo
+        if (Obb > 10 || media > 10)
+            return "Errore";
+        if (Obb >= 10 && media < Obb)
+            return "Impossibile raggiungere la media del " + media;
+        double [] array = {0.75, 0.5, 0.25, 0};
+        int index = 0;
+        float sommaVotiDaPrendere;
+        double [] votiMinimi = new double [10];
+        double diff;
+        double diff2;
+        double resto = 0;
+        double parteIntera;
+        double parteDecimale;
+        do {
+            index = index + 1;
+            sommaVotiDaPrendere = (Obb * (voti + index)) - (media * voti);
+        } while ((sommaVotiDaPrendere/index) > 10);
+        for (int i = 0; i < index; i = i + 1) {
+            votiMinimi[i] = (sommaVotiDaPrendere / index) + resto;
+            resto = 0;
+            parteIntera = Math.floor(votiMinimi[i]);
+            parteDecimale = (votiMinimi[i] - parteIntera) * 100;
+            if (parteDecimale != 25 && parteDecimale != 50 && parteDecimale != 75) {
+                int k = 0;
+                do {
+                    diff = votiMinimi[i] - (parteIntera + array[k]);
+                    k++;
+                } while (diff < 0);
+                votiMinimi [i] = votiMinimi[i] - diff;
+                resto = diff;
             }
-        } else {
-            newvoto = 10;
-            while (true) {
-                somma = somma + newvoto;
-                contavoti = contavoti + 1;
-                media = somma / contavoti;
-                if (media < Obb) {
-                    newvoto = newvoto + 0.25f;
-                    return "Non prendere meno di " + newvoto;
-                } else if (newvoto == 1) {
-                    return "Puoi stare tranquillo!";
-                }
-                newvoto = newvoto - 0.25f;
-                contavoti = contavoti - 1;
-                somma = backups;
+            if (votiMinimi[i] > 10) {
+                diff2 = votiMinimi[i] - 10;
+                votiMinimi[i] = 10;
+                resto = resto + diff2;
             }
         }
+        // Stampa
+        String toReturn;
+        if (votiMinimi[0] <= Obb)
+            toReturn = "Non prendere meno di " + votiMinimi[0];
+        else {
+            toReturn = "Devi prendere almeno ";
+            for (int a = 0; a < votiMinimi.length; a = a + 1) {
+                if (votiMinimi[a] != 0) { toReturn = toReturn + votiMinimi[a] + ", "; }
+            }
+            toReturn = toReturn.substring(0, toReturn.length() - 2);
+        }
+        return toReturn;
     }
 
     public static boolean isMediaSufficiente(Media media, String tipo) {
