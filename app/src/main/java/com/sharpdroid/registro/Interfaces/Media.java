@@ -50,15 +50,15 @@ public class Media implements Serializable {
         return somma_generale / numero_voti_generale;
     }
 
-    private float getMediaOrale() {
+    public float getMediaOrale() {
         return somma_orale / numero_voti_orale;
     }
 
-    private float getMediaScritto() {
+    public float getMediaScritto() {
         return somma_scritto / numero_voti_scritto;
     }
 
-    private float getMediaPratico() {
+    public float getMediaPratico() {
         return somma_pratico / numero_voti_pratico;
     }
 

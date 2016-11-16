@@ -68,7 +68,6 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
         mSwipeRefreshLayout.setColorSchemeResources(
                 R.color.bluematerial,
                 R.color.redmaterial,
-                R.color.lightgreenmaterial,
                 R.color.greenmaterial,
                 R.color.orangematerial);
 

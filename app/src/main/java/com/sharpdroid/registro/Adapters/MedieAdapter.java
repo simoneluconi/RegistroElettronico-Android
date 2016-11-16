@@ -63,7 +63,7 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
             if (!mark.isNs()) {
                 media.addMark(mark);
             } else {
-                Log.d(TAG, "Voto non significativo");
+                Log.d(TAG, String.format("%s %s non è significativo", marksubject.getName(), mark.getMark()));
             }
         }
 
