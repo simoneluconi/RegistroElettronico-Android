@@ -21,7 +21,7 @@ public class Metodi {
 
     public static String MessaggioVoto(float Obb, float media, float somma, int voti) {
         // Calcolo
-        if (Obb > 10 || media > 10 || Obb < 6)
+        if (Obb > 10 || media > 10)
             return "Errore";
         if (Obb >= 10 && media < Obb)
             return "Impossibile raggiungere la media del " + media;
