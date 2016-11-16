@@ -8,14 +8,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.List;
 
-public class CacheTask extends AsyncTask<List, Void, Void> {
+public class CacheObjectTask extends AsyncTask<Object, Void, Void> {
 
     /**
      * Logcat tag.
      */
-    private static final String TAG = "CacheTask";
+    private static final String TAG = "CacheObjectTask";
 
     /**
      * File representing the directory in which the data will be stored.
@@ -31,7 +30,7 @@ public class CacheTask extends AsyncTask<List, Void, Void> {
      * @param cacheDir    the directory in which the data will be stored.
      * @param cacheSubDir the subdirectory in which the data will be stored.
      */
-    public CacheTask(File cacheDir, String cacheSubDir) {
+    public CacheObjectTask(File cacheDir, String cacheSubDir) {
         this.cacheDir = cacheDir;
         this.cacheSubDir = cacheSubDir;
     }
@@ -39,18 +38,16 @@ public class CacheTask extends AsyncTask<List, Void, Void> {
     /**
      * Caches the specified set of Changes. Will execute in a separate Thread.
      *
-     * @param list to be cached.
+     * @param object to be cached.
      * @return null
      */
     @WorkerThread
     @Override
-    protected Void doInBackground(List... list) {
+    protected Void doInBackground(Object... object) {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(new File(cacheDir, cacheSubDir));
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            for (Object obj : list[0]) {
-                objectOutputStream.writeObject(obj);
-            }
+            objectOutputStream.writeObject(object);
             objectOutputStream.writeObject(null);
             objectOutputStream.close();
             Log.d(TAG, "Successfully cached data");

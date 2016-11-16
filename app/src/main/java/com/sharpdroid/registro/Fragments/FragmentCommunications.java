@@ -19,7 +19,7 @@ import android.view.ViewGroup;
 import com.sharpdroid.registro.Adapters.CommunicationAdapter;
 import com.sharpdroid.registro.Interfaces.Communication;
 import com.sharpdroid.registro.R;
-import com.sharpdroid.registro.Tasks.CacheTask;
+import com.sharpdroid.registro.Tasks.CacheListTask;
 import com.sharpdroid.registro.Tasks.CommunicationTask;
 
 import java.io.EOFException;
@@ -88,7 +88,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
 
             if (docache) {
                 // Update cache
-                new CacheTask(mContext.getCacheDir(), TAG).execute((List) communications);
+                new CacheListTask(mContext.getCacheDir(), TAG).execute((List) communications);
             }
         }
     }
