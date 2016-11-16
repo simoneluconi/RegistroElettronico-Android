@@ -47,8 +47,7 @@ public class CacheObjectTask extends AsyncTask<Object, Void, Void> {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(new File(cacheDir, cacheSubDir));
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(object);
-            objectOutputStream.writeObject(null);
+            objectOutputStream.writeObject(object[0]);
             objectOutputStream.close();
             Log.d(TAG, "Successfully cached data");
         } catch (IOException e) {
