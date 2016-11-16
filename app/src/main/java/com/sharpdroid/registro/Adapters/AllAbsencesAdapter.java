@@ -9,7 +9,6 @@ import android.widget.BaseExpandableListAdapter;
 import com.sharpdroid.registro.Interfaces.Absences;
 import com.sharpdroid.registro.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class AllAbsencesAdapter extends BaseExpandableListAdapter {
@@ -72,8 +71,6 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
 
         // TODO: 16/11/2016 views
         List groupData = (List) getGroup(group_pos);
-
-
 
 
         return view;
