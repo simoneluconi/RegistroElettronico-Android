@@ -10,7 +10,6 @@ import android.widget.ExpandableListView;
 
 import com.sharpdroid.registro.Adapters.AllAbsencesAdapter;
 import com.sharpdroid.registro.Interfaces.Absences;
-import com.sharpdroid.registro.Interfaces.Note;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Tasks.CacheTask;
 
