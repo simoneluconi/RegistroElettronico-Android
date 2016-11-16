@@ -16,13 +16,9 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
     private Absences absences;
     private LayoutInflater mInflater;
 
-    public AllAbsencesAdapter(Context mContext) {
-        this.mContext = mContext;
-        mInflater = LayoutInflater.from(mContext);
-    }
-
-    public Absences getAbsences() {
-        return absences;
+    public AllAbsencesAdapter(Context context) {
+        mContext = context;
+        mInflater = LayoutInflater.from(context);
     }
 
     public void setAbsences(Absences absences) {
@@ -31,7 +27,7 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
     }
 
     public void clear() {
-        absences = null;
+        this.absences = null;
     }
 
     @Override
