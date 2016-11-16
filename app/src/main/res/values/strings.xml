@@ -4,14 +4,11 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
     <string name="medie">Medie</string>
     <string name="share">Share</string>
     <string name="send">Send</string>
     <string name="communicate">Communicate</string>
 
-    <string name="sufficiente">Sei sufficiente</string>
-    <string name="non_sufficiente">Non sei sufficiente</string>
     <string name="nointernet">Non sei connesso ad internet!</string>
 
     <string name="dettaglio_voti_titolo">Dettaglio voti</string>
@@ -34,11 +31,10 @@
     <string name="password">Password</string>
     <string name="caricamento">Caricamento…</string>
     <string name="login_msg_failer">Login fallito</string>
-    <string name="new_marks">Voti aggiornati</string>
     <string name="communications">Comunicazioni</string>
-    <string name="new_communications">Circolari aggiornate</string>
     <string name="note">Note</string>
     <string name="absences">Assenze</string>
 
     <string name="login_riuscito">Login completato</string>
+    <string name="settings">Impostazioni</string>
 </resources>

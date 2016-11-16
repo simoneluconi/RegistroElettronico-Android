@@ -22,7 +22,7 @@
         <item
             android:id="@+id/settings"
             android:icon="@drawable/ic_menu_camera"
-            android:title="@string/absences" />
+            android:title="@string/settings" />
     </group>
 
     <item android:title="@string/communicate">

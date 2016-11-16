@@ -66,9 +66,9 @@ public class Metodi {
             toReturn = "Non prendere meno di " + votiMinimi[0];
         else {
             toReturn = "Devi prendere almeno ";
-            for (int a = 0; a < votiMinimi.length; a = a + 1) {
-                if (votiMinimi[a] != 0) {
-                    toReturn = toReturn + votiMinimi[a] + ", ";
+            for (double aVotiMinimi : votiMinimi) {
+                if (aVotiMinimi != 0) {
+                    toReturn = toReturn + aVotiMinimi + ", ";
                 }
             }
             toReturn = toReturn.substring(0, toReturn.length() - 2);
