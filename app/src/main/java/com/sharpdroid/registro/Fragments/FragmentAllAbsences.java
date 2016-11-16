@@ -46,9 +46,9 @@ public class FragmentAllAbsences extends Fragment {
         return root;
     }
 
-    void addNotes(Absences absences, boolean docache) {
+    void addAbsences(Absences absences, boolean docache) {
         adapter.clear();
-        adapter.setData(absences);
+        adapter.setAbsences(absences);
 
         if (docache) {
             // Update cache

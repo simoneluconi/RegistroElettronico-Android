@@ -15,7 +15,7 @@ import java.util.Locale;
 
 public class AllAbsencesAdapter extends BaseExpandableListAdapter {
     private Context mContext;
-    private Absences data;
+    private Absences absences;
     private LayoutInflater mInflater;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy", Locale.getDefault());
 
@@ -24,17 +24,17 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
         mInflater = LayoutInflater.from(mContext);
     }
 
-    public Absences getData() {
-        return data;
+    public Absences getAbsences() {
+        return absences;
     }
 
-    public void setData(Absences data) {
-        this.data = data;
+    public void setAbsences(Absences absences) {
+        this.absences = absences;
         notifyDataSetChanged();
     }
 
     public void clear() {
-        data = null;
+        absences = null;
         notifyDataSetChanged();
     }
 
@@ -47,11 +47,11 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
     public int getChildrenCount(int i) {
         switch (i) {
             case 0:
-                return data.getAbsences().size();
+                return absences.getAbsences().size();
             case 1:
-                return data.getDelays().size();
+                return absences.getDelays().size();
             case 2:
-                return data.getExits().size();
+                return absences.getExits().size();
         }
         return 0;
     }
@@ -60,11 +60,11 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
     public Object getGroup(int i) {
         switch (i) {
             case 0:
-                return data.getAbsences();
+                return absences.getAbsences();
             case 1:
-                return data.getDelays();
+                return absences.getDelays();
             case 2:
-                return data.getExits();
+                return absences.getExits();
             default:
                 return null;
         }
