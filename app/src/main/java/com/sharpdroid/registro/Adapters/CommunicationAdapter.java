@@ -16,6 +16,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdapter.CommunicationHolder> {
     private final List<Communication> CVDataList;
 
@@ -63,15 +66,16 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
     }
 
     class CommunicationHolder extends RecyclerView.ViewHolder {
-        final TextView Title;
-        final TextView Date;
-        final TextView Type;
+        @BindView(R.id.title)
+        TextView Title;
+        @BindView(R.id.date)
+        TextView Date;
+        @BindView(R.id.type)
+        TextView Type;
 
         CommunicationHolder(View itemView) {
             super(itemView);
-            Title = (TextView) itemView.findViewById(R.id.title);
-            Date = (TextView) itemView.findViewById(R.id.date);
-            Type = (TextView) itemView.findViewById(R.id.type);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

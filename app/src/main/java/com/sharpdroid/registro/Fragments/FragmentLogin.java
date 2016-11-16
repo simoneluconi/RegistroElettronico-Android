@@ -18,13 +18,18 @@ import com.sharpdroid.registro.API.RESTFulAPI;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Utils.DeviceUuidFactory;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
 public class FragmentLogin extends SlideFragment {
 
-    private EditText mEditTextMail;
-    private EditText mEditTextPassword;
-    private Button mButtonLogin;
+    @BindView(R.id.mail)
+    EditText mEditTextMail;
+    @BindView(R.id.password)
+    EditText mEditTextPassword;
+    @BindView(R.id.login_btn)
+    Button mButtonLogin;
     private String mEmail;
     private String mPassword;
 
@@ -77,9 +82,7 @@ public class FragmentLogin extends SlideFragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_login, container, false);
 
-        mEditTextMail = (EditText) root.findViewById(R.id.mail);
-        mEditTextPassword = (EditText) root.findViewById(R.id.password);
-        mButtonLogin = (Button) root.findViewById(R.id.login_btn);
+        ButterKnife.bind(this, root);
 
         mEditTextMail.setEnabled(!loggedIn);
         mEditTextPassword.setEnabled(!loggedIn);

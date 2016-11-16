@@ -33,13 +33,19 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.sharpdroid.registro.Utils.Metodi.isNetworkAvailable;
 
 public class FragmentCommunications extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     final private String TAG = FragmentCommunications.class.getSimpleName();
 
-    private CoordinatorLayout mCoordinatorLayout;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    @BindView(R.id.coordinator_layout)
+    CoordinatorLayout mCoordinatorLayout;
+    @BindView(R.id.swiperefresh)
+    SwipeRefreshLayout mSwipeRefreshLayout;
+
     private CommunicationAdapter mRVAdapter;
     private Context mContext;
 
@@ -52,15 +58,15 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
                              ViewGroup container, Bundle savedInstanceState) {
         mContext = getContext();
         View layout = inflater.inflate(R.layout.fragment_communications, container, false);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swiperefresh);
+
+        ButterKnife.bind(this, layout);
+
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(
                 R.color.bluematerial,
                 R.color.redmaterial,
                 R.color.greenmaterial,
                 R.color.orangematerial);
-
-        mCoordinatorLayout = (CoordinatorLayout) layout.findViewById(R.id.coordinator_layout);
 
         RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
         mRecyclerView.setHasFixedSize(true);
