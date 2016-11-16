@@ -29,7 +29,12 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
     }
 
     public void setAbsences(Absences absences) {
-        this.absences = absences;
+        // TODO: 16/11/2016 test
+        this.absences = new Absences(absences.getAbsences(),absences.getDelays(),absences.getExits());
+        /*
+        this.absences.setAbsences(absences.getAbsences());
+        this.absences.setDelays(absences.getDelays());
+        this.absences.setExits(absences.getExits());*/
         notifyDataSetChanged();
     }
 
@@ -57,22 +62,22 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public Object getGroup(int i) {
+    public List getGroup(int i) {
         switch (i) {
             case 0:
                 return absences.getAbsences();
             case 1:
-                return absences.getDelays();
+                //return absences.getDelays();
             case 2:
-                return absences.getExits();
+                //return absences.getExits();
             default:
                 return null;
         }
     }
 
     @Override
-    public Object getChild(int i, int i1) {
-        return ((List) getGroup(i)).get(i1);
+    public List getChild(int i, int i1) {
+        return (List) ((List) getGroup(i)).get(i1);
     }
 
     @Override
