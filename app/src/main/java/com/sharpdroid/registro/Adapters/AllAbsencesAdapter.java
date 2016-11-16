@@ -29,13 +29,12 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
     }
 
     public void setData(Absences data) {
-        //this.data.clear();
-        this.data.setData(data);
+        this.data = data;
         notifyDataSetChanged();
     }
 
     public void clear() {
-        data.clear();
+        data = null;
         notifyDataSetChanged();
     }
 
@@ -73,7 +72,7 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int i, int i1) {
-        return ((List)getGroup(i)).get(i1);
+        return ((List) getGroup(i)).get(i1);
     }
 
     @Override

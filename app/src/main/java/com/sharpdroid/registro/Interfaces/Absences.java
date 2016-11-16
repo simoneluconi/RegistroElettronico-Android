@@ -14,17 +14,6 @@ public class Absences implements Serializable {
         this.exits = exits;
     }
 
-    public void setData(Absences a){
-        absences.addAll(a.getAbsences());
-        delays.addAll(a.getDelays());
-        exits.addAll(a.getExits());
-    }
-    public void clear(){
-        absences.clear();
-        delays.clear();
-        exits.clear();
-    }
-
     public List<Absence> getAbsences() {
         return absences;
     }
