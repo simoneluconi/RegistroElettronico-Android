@@ -9,12 +9,15 @@ import android.widget.BaseExpandableListAdapter;
 import com.sharpdroid.registro.Interfaces.Absences;
 import com.sharpdroid.registro.R;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class AllAbsencesAdapter extends BaseExpandableListAdapter {
     private Context mContext;
     private Absences data;
     private LayoutInflater mInflater;
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy", Locale.getDefault());
 
     public AllAbsencesAdapter(Context mContext) {
         this.mContext = mContext;
@@ -43,17 +46,34 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int i) {
-        return data.getSize(i);
+        switch (i) {
+            case 0:
+                return data.getAbsences().size();
+            case 1:
+                return data.getDelays().size();
+            case 2:
+                return data.getExits().size();
+        }
+        return 0;
     }
 
     @Override
     public Object getGroup(int i) {
-        return data.getGroup(i);
+        switch (i) {
+            case 0:
+                return data.getAbsences();
+            case 1:
+                return data.getDelays();
+            case 2:
+                return data.getExits();
+            default:
+                return null;
+        }
     }
 
     @Override
     public Object getChild(int i, int i1) {
-        return data.getGroup(i).get(i1);
+        return ((List)getGroup(i)).get(i1);
     }
 
     @Override

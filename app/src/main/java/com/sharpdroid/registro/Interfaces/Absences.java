@@ -64,21 +64,4 @@ public class Absences implements Serializable {
         }
         return 0;
     }
-
-    /**
-     * @param i 0: absences 1: delays 2: exits
-     * @return Data of list
-     */
-    public List getGroup(int i) {
-        switch (i) {
-            case 0:
-                return absences;
-            case 1:
-                return delays;
-            case 2:
-                return exits;
-            default:
-                return null;
-        }
-    }
 }
