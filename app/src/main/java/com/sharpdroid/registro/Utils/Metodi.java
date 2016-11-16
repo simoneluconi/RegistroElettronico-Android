@@ -95,44 +95,44 @@ public class Metodi {
         switch (tipo) {
             case RESTFulAPI.ORALE:
                 final float media_orale = media.getMediaOrale();
-                if (media_orale < obbiettivo_voto)
-                    return R.color.lightgreenmaterial;
+                if (media_orale > obbiettivo_voto)
+                    return R.color.greenmaterial;
                 else if (media_orale < 5)
                     return R.color.redmaterial;
                 else if (media_orale >= 5 && media_orale < 6)
                     return R.color.orangematerial;
                 else
-                    return R.color.greenmaterial;
+                    return R.color.lightgreenmaterial;
             case RESTFulAPI.PRATICO:
                 final float media_pratico = media.getMediaPratico();
-                if (media_pratico < obbiettivo_voto)
-                    return R.color.lightgreenmaterial;
+                if (media_pratico > obbiettivo_voto)
+                    return R.color.greenmaterial;
                 else if (media_pratico < 5)
                     return R.color.redmaterial;
                 else if (media_pratico >= 5 && media_pratico < 6)
                     return R.color.orangematerial;
                 else
-                    return R.color.greenmaterial;
+                    return R.color.lightgreenmaterial;
             case RESTFulAPI.SCRITTO:
                 final float media_scritto = media.getMediaScritto();
-                if (media_scritto < obbiettivo_voto)
-                    return R.color.lightgreenmaterial;
+                if (media_scritto > obbiettivo_voto)
+                    return R.color.greenmaterial;
                 else if (media_scritto < 5)
                     return R.color.redmaterial;
                 else if (media_scritto >= 5 && media_scritto < 6)
                     return R.color.orangematerial;
                 else
-                    return R.color.greenmaterial;
+                    return R.color.lightgreenmaterial;
             default:
                 final float meadia_generale = media.getMediaGenerale();
-                if (meadia_generale < obbiettivo_voto)
-                    return R.color.lightgreenmaterial;
+                if (meadia_generale > obbiettivo_voto)
+                    return R.color.greenmaterial;
                 else if (meadia_generale < 5)
                     return R.color.redmaterial;
                 else if (meadia_generale >= 5 && meadia_generale < 6)
                     return R.color.orangematerial;
                 else
-                    return R.color.greenmaterial;
+                    return R.color.lightgreenmaterial;
         }
     }
 
