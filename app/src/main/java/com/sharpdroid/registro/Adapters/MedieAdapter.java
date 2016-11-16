@@ -74,15 +74,15 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
         ViewHolder.mTextViewMateria.setText(media.getMateria());
         ViewHolder.mTextViewMedia.setText(String.format(Locale.getDefault(), "%.2f", media.getMediaGenerale()));
 
-        final float obbiettivo_voto = PreferenceManager.getDefaultSharedPreferences(mContext)
-                .getFloat("obbiettivo_voto", 8);
+        final float voto_obiettivo = Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(mContext)
+                .getString("voto_obiettivo", "6"));
 
         List<ArcProgressStackView.Model> models = new ArrayList<>();
-        models.add(new ArcProgressStackView.Model("media", media.getMediaGenerale() * 10, ContextCompat.getColor(mContext, getMediaColor(media, obbiettivo_voto))));
+        models.add(new ArcProgressStackView.Model("media", media.getMediaGenerale() * 10, ContextCompat.getColor(mContext, getMediaColor(media, voto_obiettivo))));
 
         ViewHolder.mArcProgressStackView.setModels(models);
 
-        String obbiettivo_string = Metodi.MessaggioVoto(obbiettivo_voto, media.getMediaGenerale(), media.getSommaGenerale(), media.getNumeroVoti());
+        String obbiettivo_string = Metodi.MessaggioVoto(voto_obiettivo, media.getMediaGenerale(), media.getSommaGenerale(), media.getNumeroVoti());
         ViewHolder.mTextViewDesc.setText(obbiettivo_string);
 
         ViewHolder.mCardViewMedia.setOnClickListener(v -> {

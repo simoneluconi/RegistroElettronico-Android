@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:defaultValue="8"
+        android:entries="@array/voti_list"
+        android:entryValues="@array/voti_list"
+        android:key="voto_obiettivo"
+        android:summary="Seleziona il voto obiettivo"
+        android:title="Obiettivo" />
+</PreferenceScreen>

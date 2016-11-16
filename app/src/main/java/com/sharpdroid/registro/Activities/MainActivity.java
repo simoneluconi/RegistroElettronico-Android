@@ -18,6 +18,7 @@ import com.sharpdroid.registro.Fragments.FragmentAllAbsences;
 import com.sharpdroid.registro.Fragments.FragmentCommunications;
 import com.sharpdroid.registro.Fragments.FragmentMedie;
 import com.sharpdroid.registro.Fragments.FragmentNote;
+import com.sharpdroid.registro.Fragments.FragmentSettings;
 import com.sharpdroid.registro.R;
 
 public class MainActivity extends AppCompatActivity
@@ -107,6 +108,9 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.absences:
                 fragment = new FragmentAllAbsences();
+                break;
+            case R.id.settings:
+                fragment = new FragmentSettings();
                 break;
             case R.id.nav_share:
             case R.id.nav_send:
