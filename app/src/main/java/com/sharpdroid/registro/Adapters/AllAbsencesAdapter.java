@@ -32,7 +32,7 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
 
     public void clear() {
         absences = null;
-        notifyDataSetChanged();
+        notifyDataSetInvalidated();
     }
 
     @Override
