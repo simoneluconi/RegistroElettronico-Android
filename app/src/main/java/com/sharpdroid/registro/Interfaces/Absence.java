@@ -8,13 +8,15 @@ public class Absence implements Serializable {
     private String to;
     private int days;
     private String justification;
+    private boolean done;
 
-    public Absence(int id, String from, String to, int days, String justification) {
+    public Absence(int id, String from, String to, int days, String justification, boolean done) {
         this.id = id;
         this.from = from;
         this.to = to;
         this.days = days;
         this.justification = justification;
+        this.done = done;
     }
 
     public int getId() {
@@ -55,5 +57,13 @@ public class Absence implements Serializable {
 
     public void setJustification(String justification) {
         this.justification = justification;
+    }
+
+    public boolean isDone() {
+        return done;
+    }
+
+    public void setDone(boolean done) {
+        this.done = done;
     }
 }

@@ -7,12 +7,14 @@ public class Delay implements Serializable {
     private String day;
     private String hours;
     private String justification;
+    private boolean done;
 
-    public Delay(int id, String day, String hours, String justification) {
+    public Delay(int id, String day, String hours, String justification, boolean done) {
         this.id = id;
         this.day = day;
         this.hours = hours;
         this.justification = justification;
+        this.done = done;
     }
 
     public int getId() {
@@ -45,5 +47,13 @@ public class Delay implements Serializable {
 
     public void setJustification(String justification) {
         this.justification = justification;
+    }
+
+    public boolean isDone() {
+        return done;
+    }
+
+    public void setDone(boolean done) {
+        this.done = done;
     }
 }
