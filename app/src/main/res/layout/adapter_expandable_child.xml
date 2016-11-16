@@ -47,7 +47,7 @@
                 android:layout_height="16dp"
                 android:layout_marginLeft="@dimen/cards_margin"
                 android:layout_marginRight="@dimen/cards_margin"
-                android:contentDescription="from - to"
+                android:contentDescription="@string/from_to"
                 android:src="@drawable/ic_arrow_forward" />
 
             <TextView

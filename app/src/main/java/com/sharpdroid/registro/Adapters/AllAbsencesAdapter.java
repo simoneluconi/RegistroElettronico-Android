@@ -122,7 +122,7 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
 
             from.setText(absence.getFrom());
             to.setText(absence.getTo());
-            if (absence.getJustification() != null && !absence.getJustification().trim().isEmpty())
+            if (absence.getJustification() != null && !absence.getJustification().isEmpty())
                 justification.setText(absence.getJustification());
 
             if (absence.isDone()) attive.setVisibility(View.GONE);

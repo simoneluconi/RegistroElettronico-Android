@@ -37,6 +37,7 @@
 
     <string name="login_riuscito">Login completato</string>
     <string name="settings">Impostazioni</string>
+    <string name="from_to">from - to</string>
 
     <plurals name="attiva">
         <item quantity="one">%d Attiva</item>
