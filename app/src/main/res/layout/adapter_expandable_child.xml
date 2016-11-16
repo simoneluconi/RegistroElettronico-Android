@@ -2,33 +2,34 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="8dp"
+    android:background="#f1f1f1"
     android:paddingBottom="8dp"
-    android:paddingRight="16dp"
     android:paddingLeft="16dp"
-    >
+    android:paddingRight="16dp"
+    android:paddingTop="8dp">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:orientation="vertical"
-        android:layout_toLeftOf="@+id/attive"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/attive"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/justification"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nessuna giustificazione"
+            android:ellipsize="end"
             android:maxLines="1"
-            android:ellipsize="end"/>
+            android:text="Nessuna giustificazione" />
 
         <LinearLayout
             android:id="@+id/linearLayout2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <TextView
