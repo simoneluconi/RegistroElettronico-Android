@@ -3,7 +3,6 @@ package com.sharpdroid.registro.Interfaces;
 import android.util.Log;
 
 import com.sharpdroid.registro.API.RESTFulAPI;
-import com.sharpdroid.registro.R;
 
 import java.io.Serializable;
 
@@ -99,67 +98,5 @@ public class Media implements Serializable {
         } else {
             Log.e(Media.class.getCanonicalName(), "Voto inferiore a 0");
         }
-    }
-
-    public boolean isSufficiente(String tipo) {
-        switch (tipo) {
-            case RESTFulAPI.ORALE:
-                return getMediaOrale() > 6;
-            case RESTFulAPI.PRATICO:
-                return getMediaPratico() > 6;
-            case RESTFulAPI.SCRITTO:
-                return getMediaScritto() > 6;
-            default:
-                return getMediaGenerale() > 6;
-        }
-    }
-
-    public int getColoreVoti(String tipo, float obbiettivo_voto) {
-        switch (tipo) {
-            case RESTFulAPI.ORALE:
-                if (getMediaOrale() < obbiettivo_voto)
-                    return R.color.lightgreenmaterial;
-                else if (getMediaOrale() < 5)
-                    return R.color.redmaterial;
-                else if (getMediaOrale() >= 5 && getMediaOrale() < 6)
-                    return R.color.orangematerial;
-                else
-                    return R.color.greenmaterial;
-            case RESTFulAPI.PRATICO:
-                if (getMediaPratico() < obbiettivo_voto)
-                    return R.color.lightgreenmaterial;
-                else if (getMediaPratico() < 5)
-                    return R.color.redmaterial;
-                else if (getMediaPratico() >= 5 && getMediaPratico() < 6)
-                    return R.color.orangematerial;
-                else
-                    return R.color.greenmaterial;
-            case RESTFulAPI.SCRITTO:
-                if (getMediaScritto() < obbiettivo_voto)
-                    return R.color.lightgreenmaterial;
-                else if (getMediaScritto() < 5)
-                    return R.color.redmaterial;
-                else if (getMediaScritto() >= 5 && getMediaScritto() < 6)
-                    return R.color.orangematerial;
-                else
-                    return R.color.greenmaterial;
-            default:
-                if (getMediaGenerale() < obbiettivo_voto)
-                    return R.color.lightgreenmaterial;
-                else if (getMediaGenerale() < 5)
-                    return R.color.redmaterial;
-                else if (getMediaGenerale() >= 5 && getMediaGenerale() < 6)
-                    return R.color.orangematerial;
-                else
-                    return R.color.greenmaterial;
-        }
-    }
-
-    public boolean isSufficiente() {
-        return isSufficiente("Generale");
-    }
-
-    public int getMediaColor(float obbiettivo_voto) {
-        return getColoreVoti("Generale", obbiettivo_voto);
     }
 }
