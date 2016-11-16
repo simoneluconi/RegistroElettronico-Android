@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'me.tatarka:gradle-retrolambda:3.3.1'
+    }
+}
+
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 
@@ -77,6 +86,10 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.0.1'
     compile 'com.google.code.gson:gson:2.7'
     compile 'com.heinrichreimersoftware:material-intro:1.6'
+    compile 'com.jakewharton:butterknife:8.4.0'
     compile 'com.loopj.android:android-async-http:1.4.9'
     compile 'devlight.io:arcprogressstackview:1.0.4'
+
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+
 }

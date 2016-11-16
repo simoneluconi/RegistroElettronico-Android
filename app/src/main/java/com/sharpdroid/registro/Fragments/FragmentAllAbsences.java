@@ -10,6 +10,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 
+import com.sharpdroid.registro.Adapters.AllAbsencesAdapter;
 import com.sharpdroid.registro.R;
 
 public class FragmentAllAbsences extends Fragment {
@@ -29,7 +30,9 @@ public class FragmentAllAbsences extends Fragment {
 
         expandableListView = (ExpandableListView) layout.findViewById(R.id.expandable_list);
 
-        adapter
+
+
+        return layout;
     }
 
 }

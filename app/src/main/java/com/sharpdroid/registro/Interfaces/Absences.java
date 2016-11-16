@@ -51,5 +51,20 @@ public class Absences implements Serializable {
             case 2:
                 return exits.size();
         }
+
+        return -1;
+    }
+
+    public List getGroup(int i) {
+        switch (i) {
+            case 0:
+                return absences;
+            case 1:
+                return delays;
+            case 2:
+                return exits;
+            default:
+                return null;
+        }
     }
 }

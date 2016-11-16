@@ -1,18 +1,22 @@
 package com.sharpdroid.registro.Adapters;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 
 import com.sharpdroid.registro.Interfaces.Absences;
+import com.sharpdroid.registro.R;
 
 public class AllAbsencesAdapter extends BaseExpandableListAdapter {
     Context mContext;
     Absences data;
+    LayoutInflater mInflater;
 
     public AllAbsencesAdapter(Context mContext) {
         this.mContext = mContext;
+        mInflater = LayoutInflater.from(mContext);
     }
 
     public Absences getData() {
@@ -30,27 +34,27 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int i) {
-        return 0;
+        return data.getSize(i);
     }
 
     @Override
     public Object getGroup(int i) {
-        return null;
+        return data.getGroup(i);
     }
 
     @Override
     public Object getChild(int i, int i1) {
-        return null;
+        return data.getGroup(i).get(i1);
     }
 
     @Override
     public long getGroupId(int i) {
-        return 0;
+        return i;
     }
 
     @Override
-    public long getChildId(int i, int i1) {
-        return 0;
+    public long getChildId(int p_parent, int p_child) {
+        return p_child;
     }
 
     @Override
@@ -60,16 +64,26 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
-        return null;
+        if (view == null)
+            view = mInflater.inflate(R.layout.adapter_expandable_group, viewGroup, false);
+
+        // TODO: 16/11/2016 views
+
+        return view;
     }
 
     @Override
     public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
-        return null;
+        if (view == null)
+            view = mInflater.inflate(R.layout.adapter_expandable_child, viewGroup, false);
+
+        // TODO: 16/11/2016 views
+
+        return view;
     }
 
     @Override
     public boolean isChildSelectable(int i, int i1) {
-        return false;
+        return true;
     }
 }
