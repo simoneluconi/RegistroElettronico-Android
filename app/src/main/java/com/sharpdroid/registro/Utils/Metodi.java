@@ -97,7 +97,7 @@ public class Metodi {
         switch (tipo) {
             case RESTFulAPI.ORALE:
                 final float media_orale = media.getMediaOrale();
-                if (media_orale > voto_obiettivo)
+                if (media_orale >= voto_obiettivo)
                     return R.color.greenmaterial;
                 else if (media_orale < 5)
                     return R.color.redmaterial;
@@ -107,7 +107,7 @@ public class Metodi {
                     return R.color.lightgreenmaterial;
             case RESTFulAPI.PRATICO:
                 final float media_pratico = media.getMediaPratico();
-                if (media_pratico > voto_obiettivo)
+                if (media_pratico >= voto_obiettivo)
                     return R.color.greenmaterial;
                 else if (media_pratico < 5)
                     return R.color.redmaterial;
@@ -117,7 +117,7 @@ public class Metodi {
                     return R.color.lightgreenmaterial;
             case RESTFulAPI.SCRITTO:
                 final float media_scritto = media.getMediaScritto();
-                if (media_scritto > voto_obiettivo)
+                if (media_scritto >= voto_obiettivo)
                     return R.color.greenmaterial;
                 else if (media_scritto < 5)
                     return R.color.redmaterial;
@@ -127,7 +127,7 @@ public class Metodi {
                     return R.color.lightgreenmaterial;
             default:
                 final float meadia_generale = media.getMediaGenerale();
-                if (meadia_generale > voto_obiettivo)
+                if (meadia_generale >= voto_obiettivo)
                     return R.color.greenmaterial;
                 else if (meadia_generale < 5)
                     return R.color.redmaterial;
