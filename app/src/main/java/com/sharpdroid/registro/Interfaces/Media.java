@@ -3,6 +3,7 @@ package com.sharpdroid.registro.Interfaces;
 import android.util.Log;
 
 import com.sharpdroid.registro.API.RESTFulAPI;
+import com.sharpdroid.registro.R;
 
 import java.io.Serializable;
 
@@ -28,7 +29,6 @@ public class Media implements Serializable {
     public void setMateria(String materia) {
         this.materia = materia;
     }
-
 
     public int getNumeroVoti() {
         return this.numero_voti_generale;
@@ -101,7 +101,7 @@ public class Media implements Serializable {
         }
     }
 
-    private boolean isSufficiente(String tipo) {
+    public boolean isSufficiente(String tipo) {
         switch (tipo) {
             case RESTFulAPI.ORALE:
                 return getMediaOrale() > 6;
@@ -114,44 +114,44 @@ public class Media implements Serializable {
         }
     }
 
-    private int getColoreVoti(String tipo, float obbiettivo_voto) {
-        switch (tipo){
+    public int getColoreVoti(String tipo, float obbiettivo_voto) {
+        switch (tipo) {
             case RESTFulAPI.ORALE:
-                if (getMediaOrale()<=obbiettivo_voto)
-                    return 0;
-                else if (getMediaOrale()<5)
-                    return 1;
-                else if (getMediaOrale()>=5 && getMediaOrale()<6)
-                    return 2;
+                if (getMediaOrale() < obbiettivo_voto)
+                    return R.color.lightgreenmaterial;
+                else if (getMediaOrale() < 5)
+                    return R.color.redmaterial;
+                else if (getMediaOrale() >= 5 && getMediaOrale() < 6)
+                    return R.color.orangematerial;
                 else
-                    return 3;
+                    return R.color.greenmaterial;
             case RESTFulAPI.PRATICO:
-                if (getMediaPratico()<=obbiettivo_voto)
-                    return 0;
-                else if (getMediaPratico()<5)
-                    return 1;
-                else if (getMediaPratico()>=5 && getMediaPratico()<6)
-                    return 2;
+                if (getMediaPratico() < obbiettivo_voto)
+                    return R.color.lightgreenmaterial;
+                else if (getMediaPratico() < 5)
+                    return R.color.redmaterial;
+                else if (getMediaPratico() >= 5 && getMediaPratico() < 6)
+                    return R.color.orangematerial;
                 else
-                    return 3;
+                    return R.color.greenmaterial;
             case RESTFulAPI.SCRITTO:
-                if (getMediaScritto()<=obbiettivo_voto)
-                    return 0;
-                else if (getMediaScritto()<5)
-                    return 1;
-                else if (getMediaScritto()>=5 && getMediaScritto()<6)
-                    return 2;
+                if (getMediaScritto() < obbiettivo_voto)
+                    return R.color.lightgreenmaterial;
+                else if (getMediaScritto() < 5)
+                    return R.color.redmaterial;
+                else if (getMediaScritto() >= 5 && getMediaScritto() < 6)
+                    return R.color.orangematerial;
                 else
-                    return 3;
+                    return R.color.greenmaterial;
             default:
-                if (getMediaGenerale()<=obbiettivo_voto)
-                    return 0;
-                else if (getMediaGenerale()<5)
-                    return 1;
-                else if (getMediaGenerale()>=5 && getMediaGenerale()<6)
-                    return 2;
+                if (getMediaGenerale() < obbiettivo_voto)
+                    return R.color.lightgreenmaterial;
+                else if (getMediaGenerale() < 5)
+                    return R.color.redmaterial;
+                else if (getMediaGenerale() >= 5 && getMediaGenerale() < 6)
+                    return R.color.orangematerial;
                 else
-                    return 3;
+                    return R.color.greenmaterial;
         }
     }
 
@@ -159,5 +159,7 @@ public class Media implements Serializable {
         return isSufficiente("Generale");
     }
 
-    public int getColoreVoti(float obbiettivo_voto) { return getColoreVoti("Generale", obbiettivo_voto); }
+    public int getMediaColor(float obbiettivo_voto) {
+        return getColoreVoti("Generale", obbiettivo_voto);
+    }
 }

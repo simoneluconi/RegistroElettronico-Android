@@ -67,25 +67,14 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
             }
         }
 
-        float obbiettivo_voto = PreferenceManager.getDefaultSharedPreferences(mContext)
-                .getFloat("obbiettivo_voto", 8);
-
         ViewHolder.mTextViewMateria.setText(media.getMateria());
         ViewHolder.mTextViewMedia.setText(String.format(Locale.getDefault(), "%.2f", media.getMediaGenerale()));
+
+        final float obbiettivo_voto = PreferenceManager.getDefaultSharedPreferences(mContext)
+                .getFloat("obbiettivo_voto", 8);
+
         List<ArcProgressStackView.Model> models = new ArrayList<>();
-        if (media.getColoreVoti(obbiettivo_voto)==0)
-            models.add(new ArcProgressStackView.Model("media", media.getMediaGenerale() * 10, ContextCompat.getColor(mContext, R.color.greenmaterial)));
-        else if (media.getColoreVoti(obbiettivo_voto)==1)
-            models.add(new ArcProgressStackView.Model("media", media.getMediaGenerale() * 10, ContextCompat.getColor(mContext, R.color.redmaterial)));
-        else if (media.getColoreVoti(obbiettivo_voto)==2)
-            models.add(new ArcProgressStackView.Model("media", media.getMediaGenerale() * 10, ContextCompat.getColor(mContext, R.color.orangematerial)));
-        else
-            models.add(new ArcProgressStackView.Model("media", media.getMediaGenerale() * 10, ContextCompat.getColor(mContext, R.color.lightgreenmaterial)));
-        /*if (media.isSufficiente()) {
-            models.add(new ArcProgressStackView.Model("media", media.getMediaGenerale() * 10, ContextCompat.getColor(mContext, R.color.greenmaterial)));
-        } else {
-            models.add(new ArcProgressStackView.Model("media", media.getMediaGenerale() * 10, ContextCompat.getColor(mContext, R.color.redmaterial)));
-        }*/
+        models.add(new ArcProgressStackView.Model("media", media.getMediaGenerale() * 10, ContextCompat.getColor(mContext, media.getMediaColor(obbiettivo_voto))));
 
         ViewHolder.mArcProgressStackView.setModels(models);
 
