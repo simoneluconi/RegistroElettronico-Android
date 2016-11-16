@@ -19,6 +19,7 @@ import com.sharpdroid.registro.Adapters.AllAbsencesAdapter;
 import com.sharpdroid.registro.Interfaces.Absences;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Tasks.AbsencesTask;
+import com.sharpdroid.registro.Tasks.CacheObjectTask;
 
 import java.io.EOFException;
 import java.io.File;
@@ -74,7 +75,7 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
         expandableListView.setAdapter(adapter);
 
         if (docache) {
-            //new CacheTask(mContext.getCacheDir(), TAG).execute(absences);
+            new CacheObjectTask(mContext.getCacheDir(), TAG).execute(absences);
         }
     }
 
