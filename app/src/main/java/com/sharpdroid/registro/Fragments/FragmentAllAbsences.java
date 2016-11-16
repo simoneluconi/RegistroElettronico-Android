@@ -11,30 +11,33 @@ import android.widget.ExpandableListView;
 import com.sharpdroid.registro.Adapters.AllAbsencesAdapter;
 import com.sharpdroid.registro.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class FragmentAllAbsences extends Fragment {
+    @BindView(R.id.expandable_list)
     ExpandableListView expandableListView;
     AllAbsencesAdapter adapter;
 
     Context mContext;
 
     public FragmentAllAbsences() {
-        // Required empty public constructor
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View layout = inflater.inflate(R.layout.fragment_all_absences, container, false);
+        View root = inflater.inflate(R.layout.fragment_all_absences, container, false);
         mContext = getContext();
+        ButterKnife.bind(this, root);
 
-        expandableListView = (ExpandableListView) layout.findViewById(R.id.expandable_list);
         adapter = new AllAbsencesAdapter(mContext);
 
-        //// TODO: 16/11/2016 adapter.setData();
+        // TODO: 16/11/2016 adapter.setData();
 
         expandableListView.setAdapter(adapter);
 
-        return layout;
+        return root;
     }
 }
