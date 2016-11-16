@@ -6,6 +6,8 @@ import android.net.NetworkInfo;
 
 import com.sharpdroid.registro.API.RESTFulAPI;
 import com.sharpdroid.registro.Interfaces.Absence;
+import com.sharpdroid.registro.Interfaces.Delay;
+import com.sharpdroid.registro.Interfaces.Exit;
 import com.sharpdroid.registro.Interfaces.Media;
 import com.sharpdroid.registro.R;
 
@@ -151,10 +153,26 @@ public class Metodi {
         return days;
     }
 
-    public static int getUndoneCount(List<Absence> absences) {
+    public static int getUndoneCountAbsences(List<Absence> absences) {
         int c = 0;
         for (Absence a : absences) {
             if (!a.isDone()) c++;
+        }
+        return c;
+    }
+
+    public static int getUndoneCountDelays(List<Delay> delays) {
+        int c = 0;
+        for (Delay d : delays) {
+            if (!d.isDone()) c++;
+        }
+        return c;
+    }
+
+    public static int getUndoneCountExits(List<Exit> exits) {
+        int c = 0;
+        for (Exit e : exits) {
+            if (!e.isDone()) c++;
         }
         return c;
     }

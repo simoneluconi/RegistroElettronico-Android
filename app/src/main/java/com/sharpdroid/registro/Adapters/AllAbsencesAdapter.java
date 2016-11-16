@@ -14,7 +14,9 @@ import com.sharpdroid.registro.R;
 
 import java.util.List;
 
-import static com.sharpdroid.registro.Utils.Metodi.getUndoneCount;
+import static com.sharpdroid.registro.Utils.Metodi.getUndoneCountAbsences;
+import static com.sharpdroid.registro.Utils.Metodi.getUndoneCountDelays;
+import static com.sharpdroid.registro.Utils.Metodi.getUndoneCountExits;
 
 public class AllAbsencesAdapter extends BaseExpandableListAdapter {
     private Context mContext;
@@ -94,7 +96,19 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
         FrameLayout attive = (FrameLayout) view.findViewById(R.id.attive);
         TextView text = (TextView) view.findViewById(R.id.attive_text);
 
-        int count = getUndoneCount(absences.getAbsences());
+        int count = 0;
+
+        switch (group_pos) {
+            case 0:
+                count = getUndoneCountAbsences(absences.getAbsences());
+                break;
+            case 1:
+                count = getUndoneCountDelays(absences.getDelays());
+                break;
+            case 2:
+                //count = getUndoneCountExits(absences.getExits());
+                break;
+        }
 
         if (count == 0) {
             attive.setVisibility(View.GONE);
@@ -108,36 +122,25 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(int group_pos, int child_pos, boolean last, View view, ViewGroup viewGroup) {
-        if (group_pos == 0) {   //Assenze
-            if (view == null)
-                view = mInflater.inflate(R.layout.adapter_expandable_child, viewGroup, false);
-            Absence absence = absences.getAbsences().get(child_pos);
+        if (view == null)
+            view = mInflater.inflate(R.layout.adapter_expandable_child, viewGroup, false);
 
-            FrameLayout attive = (FrameLayout) view.findViewById(R.id.attive);
-            TextView from, to, justification;
+        Absence absence = absences.getAbsences().get(child_pos);
 
-            from = (TextView) view.findViewById(R.id.from);
-            to = (TextView) view.findViewById(R.id.to);
-            justification = (TextView) view.findViewById(R.id.justification);
+        FrameLayout attive = (FrameLayout) view.findViewById(R.id.attive);
+        TextView from, to, justification;
 
-            from.setText(absence.getFrom());
-            to.setText(absence.getTo());
-            if (absence.getJustification() != null && !absence.getJustification().isEmpty())
-                justification.setText(absence.getJustification());
+        from = (TextView) view.findViewById(R.id.from);
+        to = (TextView) view.findViewById(R.id.to);
+        justification = (TextView) view.findViewById(R.id.justification);
 
-            if (absence.isDone()) attive.setVisibility(View.GONE);
-            else attive.setVisibility(View.VISIBLE);
+        from.setText(absence.getFrom());
+        to.setText(absence.getTo());
+        if (absence.getJustification() != null && !absence.getJustification().isEmpty())
+            justification.setText(absence.getJustification());
 
-        } else if (group_pos == 1) {  //Ritardi
-
-            if (view == null)
-                view = mInflater.inflate(R.layout.adapter_expandable_child, viewGroup, false);
-
-        } else {      //Uscite
-
-            if (view == null)
-                view = mInflater.inflate(R.layout.adapter_expandable_child, viewGroup, false);
-        }
+        if (absence.isDone()) attive.setVisibility(View.GONE);
+        else attive.setVisibility(View.VISIBLE);
 
         return view;
     }
