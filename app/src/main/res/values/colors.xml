@@ -5,7 +5,8 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="bluematerial">#2196F3</color>
-    <color name="greenmaterial">#43A047</color>
+    <color name="greenmaterial">#4CAF50</color>
+    <color name="lightgreenmaterial">#8BC34A</color>
     <color name="redmaterial">#F44336</color>
     <color name="orangematerial">#FDD835</color>
     <color name="material_blue_grey">#37474f</color>

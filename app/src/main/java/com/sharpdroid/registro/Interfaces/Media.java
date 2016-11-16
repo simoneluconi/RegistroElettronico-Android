@@ -114,7 +114,50 @@ public class Media implements Serializable {
         }
     }
 
+    private int getColoreVoti(String tipo, float obbiettivo_voto) {
+        switch (tipo){
+            case RESTFulAPI.ORALE:
+                if (getMediaOrale()<=obbiettivo_voto)
+                    return 0;
+                else if (getMediaOrale()<5)
+                    return 1;
+                else if (getMediaOrale()>=5 && getMediaOrale()<6)
+                    return 2;
+                else
+                    return 3;
+            case RESTFulAPI.PRATICO:
+                if (getMediaPratico()<=obbiettivo_voto)
+                    return 0;
+                else if (getMediaPratico()<5)
+                    return 1;
+                else if (getMediaPratico()>=5 && getMediaPratico()<6)
+                    return 2;
+                else
+                    return 3;
+            case RESTFulAPI.SCRITTO:
+                if (getMediaScritto()<=obbiettivo_voto)
+                    return 0;
+                else if (getMediaScritto()<5)
+                    return 1;
+                else if (getMediaScritto()>=5 && getMediaScritto()<6)
+                    return 2;
+                else
+                    return 3;
+            default:
+                if (getMediaGenerale()<=obbiettivo_voto)
+                    return 0;
+                else if (getMediaGenerale()<5)
+                    return 1;
+                else if (getMediaGenerale()>=5 && getMediaGenerale()<6)
+                    return 2;
+                else
+                    return 3;
+        }
+    }
+
     public boolean isSufficiente() {
         return isSufficiente("Generale");
     }
+
+    public int getColoreVoti(float obbiettivo_voto) { return getColoreVoti("Generale", obbiettivo_voto); }
 }
