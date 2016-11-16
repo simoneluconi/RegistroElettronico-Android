@@ -10,9 +10,9 @@ import com.sharpdroid.registro.Interfaces.Absences;
 import com.sharpdroid.registro.R;
 
 public class AllAbsencesAdapter extends BaseExpandableListAdapter {
-    Context mContext;
-    Absences data;
-    LayoutInflater mInflater;
+    private Context mContext;
+    private Absences data;
+    private LayoutInflater mInflater;
 
     public AllAbsencesAdapter(Context mContext) {
         this.mContext = mContext;
