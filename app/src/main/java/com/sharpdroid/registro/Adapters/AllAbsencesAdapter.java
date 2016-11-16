@@ -1,11 +1,15 @@
 package com.sharpdroid.registro.Adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
+import com.sharpdroid.registro.Interfaces.Absence;
 import com.sharpdroid.registro.Interfaces.Absences;
 import com.sharpdroid.registro.R;
 
@@ -87,20 +91,56 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
         return false;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View getGroupView(int group_pos, boolean expanded, View view, ViewGroup viewGroup) {
-        if (view == null)
-            view = mInflater.inflate(R.layout.adapter_expandable_group, viewGroup, false);
+        if (group_pos == 0) {
+            if (view == null)
+                view = mInflater.inflate(R.layout.adapter_expandable_group, viewGroup, false);
+            FrameLayout attive =(FrameLayout) view.findViewById(R.id.attive);
+            TextView text = (TextView) view.findViewById(R.id.attive_text);
 
-        List groupData = getGroup(group_pos);
+            int count = absences.getUndoneCount();
 
+            if (count==0) attive.setVisibility(View.GONE);
+            else{
+                attive.setVisibility(View.VISIBLE);
+                text.setText(count + ((count>1)?" Attive" : " Attiva"));
+            }
+
+        }
         return view;
     }
 
     @Override
     public View getChildView(int group_pos, int child_pos, boolean last, View view, ViewGroup viewGroup) {
-        if (view == null)
-            view = mInflater.inflate(R.layout.adapter_expandable_child, viewGroup, false);
+        if (group_pos == 0) {   //Assenze
+            if (view == null)
+                view = mInflater.inflate(R.layout.adapter_expandable_child, viewGroup, false);
+            Absence absence = absences.getAbsences().get(child_pos);
+
+            FrameLayout attive =(FrameLayout) view.findViewById(R.id.attive);
+            TextView from, to;
+
+            from = (TextView) view.findViewById(R.id.from);
+            to = (TextView) view.findViewById(R.id.to);
+
+            from.setText(absence.getFrom());
+            to.setText(absence.getTo());
+
+            if (absence.isDone()) attive.setVisibility(View.GONE);
+            else attive.setVisibility(View.VISIBLE);
+
+        } else if (group_pos == 1) {  //Ritardi
+            /*
+            if (view == null)
+                view = mInflater.inflate(R.layout.adapter_expandable_child, viewGroup, false);*/
+
+        } else {      //Uscite
+            /*
+            if (view == null)
+                view = mInflater.inflate(R.layout.adapter_expandable_child, viewGroup, false);*/
+        }
 
         return view;
     }
