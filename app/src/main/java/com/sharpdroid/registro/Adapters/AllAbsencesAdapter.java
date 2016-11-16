@@ -106,7 +106,7 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
                 count = getUndoneCountDelays(absences.getDelays());
                 break;
             case 2:
-                //count = getUndoneCountExits(absences.getExits());
+                count = getUndoneCountExits(absences.getExits());
                 break;
         }
 
