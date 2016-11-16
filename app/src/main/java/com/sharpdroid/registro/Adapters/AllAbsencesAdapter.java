@@ -72,7 +72,6 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
         // TODO: 16/11/2016 views
         List groupData = (List) getGroup(group_pos);
 
-
         return view;
     }
 

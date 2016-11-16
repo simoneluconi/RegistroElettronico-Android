@@ -1,6 +1,5 @@
 package com.sharpdroid.registro.Fragments;
 
-
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,7 +21,6 @@ public class FragmentAllAbsences extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -39,5 +37,4 @@ public class FragmentAllAbsences extends Fragment {
 
         return layout;
     }
-
 }
