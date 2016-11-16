@@ -14,6 +14,8 @@ import com.sharpdroid.registro.R;
 
 import java.util.List;
 
+import static com.sharpdroid.registro.Utils.Metodi.getUndoneCount;
+
 public class AllAbsencesAdapter extends BaseExpandableListAdapter {
     private Context mContext;
     private Absences absences;
@@ -92,7 +94,7 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
         FrameLayout attive = (FrameLayout) view.findViewById(R.id.attive);
         TextView text = (TextView) view.findViewById(R.id.attive_text);
 
-        int count = absences.getUndoneCount();
+        int count = getUndoneCount(absences.getAbsences());
 
         if (count == 0) {
             attive.setVisibility(View.GONE);
