@@ -146,8 +146,7 @@ public class Metodi {
 
     public static int getNumberDaysAbsences(List<Absence> absences) {
         int days = 0;
-        for (Absence a :
-                absences) {
+        for (Absence a : absences) {
             days += a.getDays();
         }
         return days;
