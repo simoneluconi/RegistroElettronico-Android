@@ -26,7 +26,14 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
     }
 
     public void setData(Absences data) {
-        this.data = data;
+        //this.data.clear();
+        this.data.setData(data);
+        notifyDataSetChanged();
+    }
+
+    public void clear() {
+        data.clear();
+        notifyDataSetChanged();
     }
 
     @Override
@@ -89,4 +96,5 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
     public boolean isChildSelectable(int i, int i1) {
         return true;
     }
+
 }

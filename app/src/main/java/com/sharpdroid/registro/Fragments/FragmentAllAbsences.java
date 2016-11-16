@@ -9,12 +9,19 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
 import com.sharpdroid.registro.Adapters.AllAbsencesAdapter;
+import com.sharpdroid.registro.Interfaces.Absences;
+import com.sharpdroid.registro.Interfaces.Note;
 import com.sharpdroid.registro.R;
+import com.sharpdroid.registro.Tasks.CacheTask;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FragmentAllAbsences extends Fragment {
+    final private String TAG = FragmentAllAbsences.class.getSimpleName();
+
     @BindView(R.id.expandable_list)
     ExpandableListView expandableListView;
     AllAbsencesAdapter adapter;
@@ -34,10 +41,21 @@ public class FragmentAllAbsences extends Fragment {
 
         adapter = new AllAbsencesAdapter(mContext);
 
-        // TODO: 16/11/2016 adapter.setData();
 
         expandableListView.setAdapter(adapter);
 
         return root;
     }
+
+    void addNotes(Absences absences, boolean docache) {
+        adapter.clear();
+        adapter.setData(absences);
+
+        if (docache) {
+            // Update cache
+            new CacheTask(mContext.getCacheDir(), TAG).execute((List) absences);
+        }
+
+    }
+
 }
