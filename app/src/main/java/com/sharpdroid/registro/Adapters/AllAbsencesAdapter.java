@@ -9,6 +9,9 @@ import android.widget.BaseExpandableListAdapter;
 import com.sharpdroid.registro.Interfaces.Absences;
 import com.sharpdroid.registro.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AllAbsencesAdapter extends BaseExpandableListAdapter {
     private Context mContext;
     private Absences data;
@@ -63,17 +66,21 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
+    public View getGroupView(int group_pos, boolean expanded, View view, ViewGroup viewGroup) {
         if (view == null)
             view = mInflater.inflate(R.layout.adapter_expandable_group, viewGroup, false);
 
         // TODO: 16/11/2016 views
+        List groupData = (List) getGroup(group_pos);
+
+
+
 
         return view;
     }
 
     @Override
-    public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
+    public View getChildView(int group_pos, int child_pos, boolean last, View view, ViewGroup viewGroup) {
         if (view == null)
             view = mInflater.inflate(R.layout.adapter_expandable_child, viewGroup, false);
 

@@ -55,6 +55,10 @@ public class Absences implements Serializable {
         return -1;
     }
 
+    /**
+     * @param i 0: absences 1: delays 2: exits
+     * @return Data of list
+     */
     public List getGroup(int i) {
         switch (i) {
             case 0:
