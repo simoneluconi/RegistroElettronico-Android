@@ -10,12 +10,12 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
-public class CacheTask extends AsyncTask<List, Void, Void> {
+public class CacheListTask extends AsyncTask<List, Void, Void> {
 
     /**
      * Logcat tag.
      */
-    private static final String TAG = "CacheTask";
+    private static final String TAG = "CacheListTask";
 
     /**
      * File representing the directory in which the data will be stored.
@@ -31,7 +31,7 @@ public class CacheTask extends AsyncTask<List, Void, Void> {
      * @param cacheDir    the directory in which the data will be stored.
      * @param cacheSubDir the subdirectory in which the data will be stored.
      */
-    public CacheTask(File cacheDir, String cacheSubDir) {
+    public CacheListTask(File cacheDir, String cacheSubDir) {
         this.cacheDir = cacheDir;
         this.cacheSubDir = cacheSubDir;
     }

@@ -19,7 +19,7 @@ import android.view.ViewGroup;
 import com.sharpdroid.registro.Adapters.MedieAdapter;
 import com.sharpdroid.registro.Interfaces.MarkSubject;
 import com.sharpdroid.registro.R;
-import com.sharpdroid.registro.Tasks.CacheTask;
+import com.sharpdroid.registro.Tasks.CacheListTask;
 import com.sharpdroid.registro.Tasks.MarkSubjectTask;
 import com.sharpdroid.registro.Utils.ItemOffsetDecoration;
 
@@ -61,7 +61,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
 
             if (docache) {
                 // Update cache
-                new CacheTask(mContext.getCacheDir(), TAG).execute((List) markSubjects);
+                new CacheListTask(mContext.getCacheDir(), TAG).execute((List) markSubjects);
             }
         }
     }

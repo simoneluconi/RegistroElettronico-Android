@@ -19,7 +19,7 @@ import android.view.ViewGroup;
 import com.sharpdroid.registro.Adapters.NoteAdapter;
 import com.sharpdroid.registro.Interfaces.Note;
 import com.sharpdroid.registro.R;
-import com.sharpdroid.registro.Tasks.CacheTask;
+import com.sharpdroid.registro.Tasks.CacheListTask;
 import com.sharpdroid.registro.Tasks.NoteTask;
 
 import java.io.EOFException;
@@ -88,7 +88,7 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
 
             if (docache) {
                 // Update cache
-                new CacheTask(mContext.getCacheDir(), TAG).execute((List) notes);
+                new CacheListTask(mContext.getCacheDir(), TAG).execute((List) notes);
             }
         }
     }
