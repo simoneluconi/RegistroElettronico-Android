@@ -21,7 +21,7 @@ public class Metodi {
 
     public static String MessaggioVoto(float Obb, float media, float somma, int voti) {
         // Calcolo
-        if (Obb > 10 || media > 10)
+        if (Obb > 10 || media > 10 || Obb < 6)
             return "Errore";
         if (Obb >= 10 && media < Obb)
             return "Impossibile raggiungere la media del " + media;
@@ -60,6 +60,8 @@ public class Metodi {
         }
         // Stampa
         String toReturn;
+        if (votiMinimi[0] <= 0)
+            return "Errore";
         if (votiMinimi[0] <= Obb)
             toReturn = "Non prendere meno di " + votiMinimi[0];
         else {
