@@ -92,8 +92,7 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
         if (view == null)
             view = mInflater.inflate(R.layout.adapter_expandable_group, viewGroup, false);
 
-        // TODO: 16/11/2016 views
-        List groupData = (List) getGroup(group_pos);
+        List groupData = getGroup(group_pos);
 
         return view;
     }
@@ -102,8 +101,6 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
     public View getChildView(int group_pos, int child_pos, boolean last, View view, ViewGroup viewGroup) {
         if (view == null)
             view = mInflater.inflate(R.layout.adapter_expandable_child, viewGroup, false);
-
-        // TODO: 16/11/2016 views
 
         return view;
     }
