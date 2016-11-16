@@ -19,18 +19,19 @@ import cz.msebera.android.httpclient.Header;
 public class AbsencesTask {
     private static final String TAG = AbsencesTask.class.getSimpleName();
     private final Context mContext;
-    private List<Absences> absences = new LinkedList<>();
+    // TODO: 16/11/2016 Update with API
+    private Absences done;
 
     public AbsencesTask(Context context) {
         this.mContext = context;
     }
 
-    public List<Absences> getAbsences() {
-        return absences;
+    public Absences getAbsences() {
+        return done;
     }
 
-    public void setAbsences(List<Absences> absences) {
-        this.absences = absences;
+    public void setAbsences(Absences absences) {
+        this.done = absences;
     }
 
     @WorkerThread
@@ -43,9 +44,7 @@ public class AbsencesTask {
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                 try {
-                    absences.clear();
-                    absences.addAll(new Gson().fromJson(responseString, new TypeToken<List<Communication>>() {
-                    }.getType()));
+                    done = new Gson().fromJson(responseString, Absences.class);
                 } catch (JsonParseException exception) {
                     exception.printStackTrace();
                 }
