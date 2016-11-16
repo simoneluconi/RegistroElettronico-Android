@@ -150,4 +150,12 @@ public class Metodi {
         }
         return days;
     }
+
+    public static int getUndoneCount(List<Absence> absences) {
+        int c = 0;
+        for (Absence a : absences) {
+            if (!a.isDone()) c++;
+        }
+        return c;
+    }
 }
