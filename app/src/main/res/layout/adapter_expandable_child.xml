@@ -14,7 +14,10 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:layout_toLeftOf="@+id/attive"
+        android:layout_toStartOf="@+id/attive"
         android:orientation="vertical">
 
         <TextView
@@ -44,6 +47,7 @@
                 android:layout_height="16dp"
                 android:layout_marginLeft="@dimen/cards_margin"
                 android:layout_marginRight="@dimen/cards_margin"
+                android:contentDescription="from - to"
                 android:src="@drawable/ic_arrow_forward" />
 
             <TextView
