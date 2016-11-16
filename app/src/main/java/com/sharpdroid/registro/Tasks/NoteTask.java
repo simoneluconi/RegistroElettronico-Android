@@ -8,7 +8,6 @@ import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.sharpdroid.registro.API.RESTFulAPI;
-import com.sharpdroid.registro.Interfaces.Communication;
 import com.sharpdroid.registro.Interfaces.Note;
 
 import java.util.LinkedList;
