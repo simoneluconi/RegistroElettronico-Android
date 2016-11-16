@@ -114,26 +114,29 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
             Absence absence = absences.getAbsences().get(child_pos);
 
             FrameLayout attive = (FrameLayout) view.findViewById(R.id.attive);
-            TextView from, to;
+            TextView from, to, justification;
 
             from = (TextView) view.findViewById(R.id.from);
             to = (TextView) view.findViewById(R.id.to);
+            justification = (TextView) view.findViewById(R.id.justification);
 
             from.setText(absence.getFrom());
             to.setText(absence.getTo());
+            if (absence.getJustification() != null && !absence.getJustification().trim().isEmpty())
+                justification.setText(absence.getJustification());
 
             if (absence.isDone()) attive.setVisibility(View.GONE);
             else attive.setVisibility(View.VISIBLE);
 
         } else if (group_pos == 1) {  //Ritardi
-            /*
+
             if (view == null)
-                view = mInflater.inflate(R.layout.adapter_expandable_child, viewGroup, false);*/
+                view = mInflater.inflate(R.layout.adapter_expandable_child, viewGroup, false);
 
         } else {      //Uscite
-            /*
+
             if (view == null)
-                view = mInflater.inflate(R.layout.adapter_expandable_child, viewGroup, false);*/
+                view = mInflater.inflate(R.layout.adapter_expandable_child, viewGroup, false);
         }
 
         return view;
