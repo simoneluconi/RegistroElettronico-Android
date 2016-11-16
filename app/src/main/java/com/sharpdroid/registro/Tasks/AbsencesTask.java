@@ -5,33 +5,27 @@ import android.support.annotation.WorkerThread;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
-import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.sharpdroid.registro.API.RESTFulAPI;
 import com.sharpdroid.registro.Interfaces.Absences;
-import com.sharpdroid.registro.Interfaces.Communication;
-
-import java.util.LinkedList;
-import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
 public class AbsencesTask {
     private static final String TAG = AbsencesTask.class.getSimpleName();
     private final Context mContext;
-    // TODO: 16/11/2016 Update with API
-    private Absences done;
+    private Absences absences;
 
     public AbsencesTask(Context context) {
         this.mContext = context;
     }
 
     public Absences getAbsences() {
-        return done;
+        return absences;
     }
 
     public void setAbsences(Absences absences) {
-        this.done = absences;
+        this.absences = absences;
     }
 
     @WorkerThread
@@ -44,7 +38,7 @@ public class AbsencesTask {
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                 try {
-                    done = new Gson().fromJson(responseString, Absences.class);
+                    absences = new Gson().fromJson(responseString, Absences.class);
                 } catch (JsonParseException exception) {
                     exception.printStackTrace();
                 }
