@@ -39,7 +39,7 @@ public class CacheTask extends AsyncTask<List, Void, Void> {
     /**
      * Caches the specified set of Changes. Will execute in a separate Thread.
      *
-     * @param list the list of Changes to be cached.
+     * @param list to be cached.
      * @return null
      */
     @WorkerThread

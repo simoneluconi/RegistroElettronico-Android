@@ -15,14 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.sharpdroid.registro.Adapters.AllAbsencesAdapter;
-import com.sharpdroid.registro.Interfaces.Absence;
 import com.sharpdroid.registro.Interfaces.Absences;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Tasks.AbsencesTask;
-import com.sharpdroid.registro.Tasks.CacheTask;
 
 import java.io.EOFException;
 import java.io.File;
@@ -31,7 +27,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.StreamCorruptedException;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -65,22 +60,23 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
         adapter = new AllAbsencesAdapter(mContext);
-        expandableListView.setAdapter(adapter);
 
         bindAbsencesCache();
+
+        new AbsencesTaskLocal().execute();
+
         return root;
     }
 
     void addAbsences(Absences absences, boolean docache) {
         adapter.clear();
         adapter.setAbsences(absences);
+        expandableListView.setAdapter(adapter);
 
         if (docache) {
-            new CacheTask(mContext.getCacheDir(), TAG).execute((List) absences);
+            //new CacheTask(mContext.getCacheDir(), TAG).execute(absences);
         }
-
     }
-
 
     private void bindAbsencesCache() {
         ObjectInputStream objectInputStream = null;
@@ -89,9 +85,7 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
             objectInputStream = new ObjectInputStream(fileInputStream);
             Absences cachedData;
             cachedData = (Absences) objectInputStream.readObject();
-
             addAbsences(cachedData, false);
-
             Log.d(TAG, "Restored cache");
         } catch (FileNotFoundException e) {
             Log.w(TAG, "Cache not found.");
@@ -125,25 +119,25 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
     }
 
     private class AbsencesTaskLocal extends AsyncTask<Void, Void, Void> {
-        private AbsencesTask absencesTask;
+        private AbsencesTask mabsencesTask;
 
         @UiThread
         @Override
         protected void onPreExecute() {
             mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
-            absencesTask = new AbsencesTask(mContext);
+            mabsencesTask = new AbsencesTask(mContext);
         }
 
         @WorkerThread
         @Override
         protected Void doInBackground(Void... voids) {
-            return absencesTask.update();
+            return mabsencesTask.update();
         }
 
         @UiThread
         @Override
         protected void onPostExecute(Void v) {
-            addAbsences(absencesTask.getAbsences(), true);
+            addAbsences(mabsencesTask.getAbsences(), true);
             mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
         }
     }
