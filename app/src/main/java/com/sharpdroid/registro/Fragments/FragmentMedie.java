@@ -125,7 +125,6 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
             if (objectInputStream != null) {
                 try {
                     objectInputStream.close();
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
