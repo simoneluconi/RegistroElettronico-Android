@@ -75,13 +75,15 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
         return layout;
     }
 
-    private void addCommunications(List<Communication> communications) {
+    private void addCommunications(List<Communication> communications, boolean docache) {
         if (!communications.isEmpty()) {
             mRVAdapter.clear();
             mRVAdapter.addAll(communications);
 
-            // Update cache
-            new CacheTask(mContext.getCacheDir(), TAG).execute((List) communications);
+            if (docache) {
+                // Update cache
+                new CacheTask(mContext.getCacheDir(), TAG).execute((List) communications);
+            }
         }
     }
 
@@ -104,8 +106,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
             while ((temp = (Communication) objectInputStream.readObject()) != null) {
                 cachedData.add(temp);
             }
-            mRVAdapter.clear();
-            mRVAdapter.addAll(cachedData);
+            addCommunications(cachedData, false);
             Log.d(TAG, "Restored cache");
         } catch (FileNotFoundException e) {
             Log.w(TAG, "Cache not found.");
@@ -147,7 +148,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
         @UiThread
         @Override
         protected void onPostExecute(Void v) {
-            addCommunications(communicationstask.getCommunications());
+            addCommunications(communicationstask.getCommunications(), true);
             mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
         }
     }

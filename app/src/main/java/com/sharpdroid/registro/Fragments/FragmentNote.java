@@ -76,13 +76,15 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
         return layout;
     }
 
-    void addNotes(List<Note> notes) {
+    void addNotes(List<Note> notes, boolean docache) {
         if (!notes.isEmpty()) {
             mRVAdapter.clear();
             mRVAdapter.addAll(notes);
 
-            // Update cache
-            new CacheTask(mContext.getCacheDir(), TAG).execute((List) notes);
+            if (docache) {
+                // Update cache
+                new CacheTask(mContext.getCacheDir(), TAG).execute((List) notes);
+            }
         }
     }
 
@@ -105,8 +107,7 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
             while ((temp = (Note) objectInputStream.readObject()) != null) {
                 cachedData.add(temp);
             }
-            mRVAdapter.clear();
-            mRVAdapter.addAll(cachedData);
+            addNotes(cachedData, false);
             Log.d(TAG, "Restored cache");
         } catch (FileNotFoundException e) {
             Log.w(TAG, "Cache not found.");
@@ -148,7 +149,7 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
         @UiThread
         @Override
         protected void onPostExecute(Void v) {
-            addNotes(notetask.getNotes());
+            addNotes(notetask.getNotes(), true);
             mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
         }
     }

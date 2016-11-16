@@ -48,13 +48,15 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
 
     }
 
-    private void addSubjects(List<MarkSubject> markSubjects) {
+    private void addSubjects(List<MarkSubject> markSubjects, boolean docache) {
         if (!markSubjects.isEmpty()) {
             mRVAdapter.clear();
             mRVAdapter.addAll(markSubjects);
 
-            // Update cache
-            new CacheTask(mContext.getCacheDir(), TAG).execute((List) markSubjects);
+            if (docache) {
+                // Update cache
+                new CacheTask(mContext.getCacheDir(), TAG).execute((List) markSubjects);
+            }
         }
     }
 
@@ -107,8 +109,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
             while ((temp = (MarkSubject) objectInputStream.readObject()) != null) {
                 cachedData.add(temp);
             }
-            mRVAdapter.clear();
-            mRVAdapter.addAll(cachedData);
+            addSubjects(cachedData, false);
             Log.d(TAG, "Restored cache");
         } catch (FileNotFoundException e) {
             Log.w(TAG, "Cache not found.");
@@ -151,7 +152,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
         @UiThread
         @Override
         protected void onPostExecute(Void v) {
-            addSubjects(markstask.getMarkSubjects());
+            addSubjects(markstask.getMarkSubjects(), true);
             mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
         }
     }
