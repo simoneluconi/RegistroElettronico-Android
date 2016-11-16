@@ -6,8 +6,7 @@
     android:layout_height="210dp"
     android:clickable="true"
     android:focusable="true"
-    android:foreground="?android:attr/selectableItemBackground"
-    android:padding="@dimen/cards_margin">
+    android:foreground="?android:attr/selectableItemBackground">
 
     <RelativeLayout
         android:layout_width="wrap_content"
