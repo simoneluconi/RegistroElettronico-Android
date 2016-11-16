@@ -59,6 +59,11 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
         ButterKnife.bind(this, root);
 
         mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeResources(
+                R.color.bluematerial,
+                R.color.redmaterial,
+                R.color.greenmaterial,
+                R.color.orangematerial);
 
         adapter = new AllAbsencesAdapter(mContext);
 
