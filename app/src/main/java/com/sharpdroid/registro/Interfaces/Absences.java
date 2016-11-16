@@ -14,6 +14,18 @@ public class Absences implements Serializable {
         this.exits = exits;
     }
 
+    public void setData(Absences a) {
+        absences.addAll(a.getAbsences());
+        delays.addAll(a.getDelays());
+        exits.addAll(a.getExits());
+    }
+
+    public void clear() {
+        absences.clear();
+        delays.clear();
+        exits.clear();
+    }
+
     public List<Absence> getAbsences() {
         return absences;
     }
@@ -36,5 +48,14 @@ public class Absences implements Serializable {
 
     public void setExits(List<Exit> exits) {
         this.exits = exits;
+    }
+
+    public int getNumberDaysAbsences() {
+        int days = 0;
+        for (Absence a :
+                absences) {
+            days += a.getDays();
+        }
+        return days;
     }
 }
