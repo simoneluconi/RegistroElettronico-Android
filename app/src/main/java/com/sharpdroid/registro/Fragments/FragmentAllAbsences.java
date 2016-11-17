@@ -126,7 +126,7 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
     }
 
     private void UpdateAllAbsences() {
-        mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
+        mSwipeRefreshLayout.setRefreshing(true);
         Ion.with(mContext)
                 .load(/*RESTFulAPI.ABSENCES_URL*/ "https://gist.githubusercontent.com/luca020400/55f65db6a685dc2413f9ba7252c20cbf/raw/absences.json")
                 .as(new TypeToken<Absences>() {
@@ -136,7 +136,7 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
                     if (result.getHeaders().code() == 200) {
                         addAbsences(result.getResult(), true);
                     }
-                    mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
+                    mSwipeRefreshLayout.setRefreshing(false);
                 });
     }
 }

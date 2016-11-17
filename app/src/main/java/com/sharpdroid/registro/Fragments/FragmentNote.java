@@ -138,7 +138,7 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void UpdateNotes() {
-        mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
+        mSwipeRefreshLayout.setRefreshing(true);
         Ion.with(mContext)
                 .load(RESTFulAPI.NOTES_URL)
                 .as(new TypeToken<List<Note>>() {
@@ -148,7 +148,7 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
                     if (result.getHeaders().code() == 200) {
                         addNotes(result.getResult(), true);
                     }
-                    mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
+                    mSwipeRefreshLayout.setRefreshing(false);
                 });
     }
 }
