@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity
         // Programmatically start a fragment
         if (savedInstanceState == null) {
             int drawer_to_open = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this)
-                    .getString("drawer_to_open", ""));
+                    .getString("drawer_to_open", "0"));
 
             Bundle extras = getIntent().getExtras();
             if (extras != null) {
