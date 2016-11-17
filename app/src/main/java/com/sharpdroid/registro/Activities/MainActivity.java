@@ -50,16 +50,16 @@ public class MainActivity extends AppCompatActivity
 
         // Programmatically start a fragment
         if (savedInstanceState == null) {
-            int tabdaaprire = PreferenceManager.getDefaultSharedPreferences(this)
-                    .getInt("drawer_to_open", 0);
+            int drawer_to_open = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this)
+                    .getString("drawer_to_open", ""));
 
             Bundle extras = getIntent().getExtras();
             if (extras != null) {
-                tabdaaprire = extras.getInt("drawer_to_open", tabdaaprire);
+                drawer_to_open = extras.getInt("drawer_to_open", drawer_to_open);
             }
 
-            navigationView.getMenu().getItem(tabdaaprire).setChecked(true);
-            onNavigationItemSelected(navigationView.getMenu().getItem(tabdaaprire));
+            navigationView.getMenu().getItem(drawer_to_open).setChecked(true);
+            onNavigationItemSelected(navigationView.getMenu().getItem(drawer_to_open));
         }
     }
 

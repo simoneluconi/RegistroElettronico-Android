@@ -25,6 +25,7 @@ public class FragmentSettings extends PreferenceFragmentCompat implements Shared
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         onSharedPreferenceChanged(sharedPreferences, "voto_obiettivo");
+        onSharedPreferenceChanged(sharedPreferences, "drawer_to_open");
     }
 
     @Override
@@ -40,12 +41,12 @@ public class FragmentSettings extends PreferenceFragmentCompat implements Shared
         Preference preference = findPreference(key);
         if (preference instanceof ListPreference) {
             ListPreference listPreference = (ListPreference) preference;
-            int prefIndex = listPreference.findIndexOfValue(sharedPreferences.getString(key, "6"));
+            int prefIndex = listPreference.findIndexOfValue(sharedPreferences.getString(key, ""));
             if (prefIndex >= 0) {
                 preference.setSummary(listPreference.getEntries()[prefIndex]);
             }
         } else {
-            preference.setSummary(sharedPreferences.getString(key, "6"));
+            preference.setSummary(sharedPreferences.getString(key, ""));
         }
     }
 

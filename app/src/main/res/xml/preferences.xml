@@ -7,4 +7,12 @@
         android:key="voto_obiettivo"
         android:summary="Seleziona il voto obiettivo"
         android:title="Obiettivo" />
+
+    <ListPreference
+        android:defaultValue="0"
+        android:entries="@array/tab_list"
+        android:entryValues="@array/tab_list_n"
+        android:key="drawer_to_open"
+        android:summary="Seleziona il tab di partenza"
+        android:title="Tab di partenza" />
 </PreferenceScreen>
