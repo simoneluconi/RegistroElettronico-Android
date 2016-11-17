@@ -24,13 +24,13 @@ public class Metodi {
     public static String MessaggioVoto(float Obb, float media, float somma, int voti) {
         // Calcolo
         if (Obb > 10 || media > 10)
-            return "Errore";
+            return "Errore"; // Quando l'obiettivo o la media sono > 10
         if (Obb >= 10 && media < Obb)
-            return "Impossibile raggiungere la media del " + media;
+            return "Impossibile raggiungere la media del " + media; // Quando l'obiettivo è 10 (o più) e la media è < 10 (non si potrà mai raggiungere)
         double[] array = {0.75, 0.5, 0.25, 0};
         int index = 0;
         float sommaVotiDaPrendere;
-        double[] votiMinimi = new double[10];
+        double[] votiMinimi = new double[20];
         double diff;
         double diff2;
         double resto = 0;
@@ -63,7 +63,7 @@ public class Metodi {
         // Stampa
         String toReturn;
         if (votiMinimi[0] <= 0)
-            return "Errore";
+            return "Puoi stare tranquillo"; // Quando i voti da prendere sono negativi
         if (votiMinimi[0] <= Obb)
             toReturn = "Non prendere meno di " + votiMinimi[0];
         else {
