@@ -14,11 +14,11 @@
     </string-array>
 
     <string-array name="tab_list">
-        <item>Medie</item>
-        <item>Materiale didattico</item>
-        <item>Giustificazioni</item>
-        <item>Note</item>
-        <item>Comunicazioni</item>
+        <item>@string/medie</item>
+        <item>@string/files</item>
+        <item>@string/justifications</item>
+        <item>@string/note</item>
+        <item>@string/communications</item>
     </string-array>
 
     <string-array name="tab_list_n">
