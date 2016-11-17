@@ -1,10 +1,7 @@
 package com.sharpdroid.registro.Fragments;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.UiThread;
-import android.support.annotation.WorkerThread;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -16,11 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.reflect.TypeToken;
+import com.koushikdutta.ion.Ion;
+import com.sharpdroid.registro.API.RESTFulAPI;
 import com.sharpdroid.registro.Adapters.MedieAdapter;
 import com.sharpdroid.registro.Interfaces.MarkSubject;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Tasks.CacheListTask;
-import com.sharpdroid.registro.Tasks.MarkSubjectTask;
 import com.sharpdroid.registro.Utils.ItemOffsetDecoration;
 
 import java.io.EOFException;
@@ -91,14 +90,14 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
 
         bindMarksCache();
 
-        new MedieTask().execute();
+        UpdateMedie();
 
         return layout;
     }
 
     public void onRefresh() {
         if (isNetworkAvailable(mContext)) {
-            new MedieTask().execute();
+            UpdateMedie();
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);
@@ -138,27 +137,18 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
         }
     }
 
-    private class MedieTask extends AsyncTask<Void, Void, Void> {
-        private MarkSubjectTask markstask;
-
-        @UiThread
-        @Override
-        protected void onPreExecute() {
-            mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
-            markstask = new MarkSubjectTask(mContext);
-        }
-
-        @WorkerThread
-        @Override
-        protected Void doInBackground(Void... voids) {
-            return markstask.update();
-        }
-
-        @UiThread
-        @Override
-        protected void onPostExecute(Void v) {
-            addSubjects(markstask.getMarkSubjects(), true);
-            mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
-        }
+    private void UpdateMedie() {
+        mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
+        Ion.with(mContext)
+                .load(RESTFulAPI.MARKS_URL)
+                .as(new TypeToken<List<MarkSubject>>() {
+                })
+                .withResponse()
+                .setCallback((e, result) -> {
+                    if (result.getHeaders().code() == 200) {
+                        addSubjects(result.getResult(), true);
+                    }
+                    mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
+                });
     }
 }

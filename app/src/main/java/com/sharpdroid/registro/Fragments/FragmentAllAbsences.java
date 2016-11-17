@@ -1,10 +1,7 @@
 package com.sharpdroid.registro.Fragments;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.UiThread;
-import android.support.annotation.WorkerThread;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -15,10 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
+import com.google.gson.reflect.TypeToken;
+import com.koushikdutta.ion.Ion;
 import com.sharpdroid.registro.Adapters.AllAbsencesAdapter;
 import com.sharpdroid.registro.Interfaces.Absences;
 import com.sharpdroid.registro.R;
-import com.sharpdroid.registro.Tasks.AbsencesTask;
 import com.sharpdroid.registro.Tasks.CacheObjectTask;
 
 import java.io.EOFException;
@@ -69,7 +67,7 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
 
         bindAbsencesCache();
 
-        new AbsencesTaskLocal().execute();
+        UpdateAllAbsences();
 
         return root;
     }
@@ -120,34 +118,25 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
     @Override
     public void onRefresh() {
         if (isNetworkAvailable(mContext)) {
-            new AbsencesTaskLocal().execute();
+            UpdateAllAbsences();
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);
         }
     }
 
-    private class AbsencesTaskLocal extends AsyncTask<Void, Void, Void> {
-        private AbsencesTask mabsencesTask;
-
-        @UiThread
-        @Override
-        protected void onPreExecute() {
-            mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
-            mabsencesTask = new AbsencesTask(mContext);
-        }
-
-        @WorkerThread
-        @Override
-        protected Void doInBackground(Void... voids) {
-            return mabsencesTask.update();
-        }
-
-        @UiThread
-        @Override
-        protected void onPostExecute(Void v) {
-            addAbsences(mabsencesTask.getAbsences(), true);
-            mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
-        }
+    private void UpdateAllAbsences() {
+        mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
+        Ion.with(mContext)
+                .load(/*RESTFulAPI.ABSENCES_URL*/ "https://gist.githubusercontent.com/luca020400/55f65db6a685dc2413f9ba7252c20cbf/raw/absences.json")
+                .as(new TypeToken<Absences>() {
+                })
+                .withResponse()
+                .setCallback((e, result) -> {
+                    if (result.getHeaders().code() == 200) {
+                        addAbsences(result.getResult(), true);
+                    }
+                    mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
+                });
     }
 }
