@@ -11,12 +11,14 @@ import android.widget.TextView;
 import com.sharpdroid.registro.Interfaces.Absence;
 import com.sharpdroid.registro.Interfaces.Absences;
 import com.sharpdroid.registro.R;
+import com.sharpdroid.registro.Utils.Metodi;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import static com.sharpdroid.registro.Utils.Metodi.getNumberDaysAbsences;
 import static com.sharpdroid.registro.Utils.Metodi.getUndoneCountAbsences;
 import static com.sharpdroid.registro.Utils.Metodi.getUndoneCountDelays;
 import static com.sharpdroid.registro.Utils.Metodi.getUndoneCountExits;
@@ -101,6 +103,7 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
         FrameLayout
                 attive = (FrameLayout) view.findViewById(R.id.attive);
         TextView
+                days = (TextView) view.findViewById(R.id.days),
                 title = (TextView) view.findViewById(R.id.type),
                 text = (TextView) view.findViewById(R.id.attive_text);
 
@@ -110,6 +113,7 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
             case 0:
                 count = getUndoneCountAbsences(absences.getAbsences());
                 title.setText("Assenze");
+                days.setText(String.valueOf(getNumberDaysAbsences(absences.getAbsences())));
                 break;
             case 1:
                 count = getUndoneCountDelays(absences.getDelays());
@@ -149,15 +153,15 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
         //endregion
 
         Absence absence = absences.getAbsences().get(child_pos);
-
         FrameLayout attive = (FrameLayout) view.findViewById(R.id.attive);
-        TextView from, to, justification;
-
-        from = (TextView) view.findViewById(R.id.from);
-        to = (TextView) view.findViewById(R.id.to);
-        justification = (TextView) view.findViewById(R.id.justification);
+        TextView
+                from = (TextView) view.findViewById(R.id.from),
+                to = (TextView) view.findViewById(R.id.to),
+                justification = (TextView) view.findViewById(R.id.justification),
+                days = (TextView) view.findViewById(R.id.days);
 
         //region TEXTS
+        days.setText(String.valueOf(absence.getDays()));
         from.setText(absence.getFrom());
         if (absence.getTo().trim().equals(format.format(new Date())))
             to.setText("Oggi");
