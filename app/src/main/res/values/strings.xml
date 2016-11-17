@@ -14,6 +14,7 @@
     <string name="communications">Comunicazioni</string>
     <string name="note">Note</string>
     <string name="settings">Impostazioni</string>
+    <string name="files">Materiale didattico</string>
 
     <!--ERRORI-->
     <string name="nointernet">Non sei connesso ad internet!</string>

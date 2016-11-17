@@ -7,17 +7,21 @@
             android:icon="@drawable/ic_timeline_"
             android:title="@string/medie" />
         <item
-            android:id="@+id/communications"
-            android:icon="@drawable/ic_assignment"
-            android:title="@string/communications" />
+            android:id="@+id/files"
+            android:icon="@drawable/ic_supervisor"
+            android:title="@string/files" />
+        <item
+            android:id="@+id/absences"
+            android:icon="@drawable/ic_supervisor"
+            android:title="@string/justifications" />
         <item
             android:id="@+id/notes"
             android:icon="@drawable/ic_error"
             android:title="@string/note" />
         <item
-            android:id="@+id/absences"
-            android:icon="@drawable/ic_supervisor"
-            android:title="@string/justifications" />
+            android:id="@+id/communications"
+            android:icon="@drawable/ic_assignment"
+            android:title="@string/communications" />
         <item
             android:id="@+id/settings"
             android:icon="@drawable/ic_settings"
