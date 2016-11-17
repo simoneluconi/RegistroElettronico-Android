@@ -138,7 +138,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void UpdateMedie() {
-        mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
+        mSwipeRefreshLayout.setRefreshing(true);
         Ion.with(mContext)
                 .load(RESTFulAPI.MARKS_URL)
                 .as(new TypeToken<List<MarkSubject>>() {
@@ -148,7 +148,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
                     if (result.getHeaders().code() == 200) {
                         addSubjects(result.getResult(), true);
                     }
-                    mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
+                    mSwipeRefreshLayout.setRefreshing(false);
                 });
     }
 }

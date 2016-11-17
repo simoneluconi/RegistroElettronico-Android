@@ -25,22 +25,28 @@ import com.sharpdroid.registro.Fragments.FragmentNote;
 import com.sharpdroid.registro.Fragments.FragmentSettings;
 import com.sharpdroid.registro.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    @BindView(R.id.nav_view)
+    NavigationView mNavigationView;
+    private int drawer_to_open;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ButterKnife.bind(this);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        boolean firstStart = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean("primo_avvio", true);
-
-        if (firstStart) {
-            Intent intent = new Intent(this, Intro.class);
-            startActivityForResult(intent, 1);
+        if (PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean("primo_avvio", true)) {
+            startActivityForResult(new Intent(this, Intro.class), 1);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -49,12 +55,11 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        mNavigationView.setNavigationItemSelectedListener(this);
 
         SharedPreferences settings = getSharedPreferences("REGISTRO", MODE_PRIVATE);
 
-        View header = navigationView.getHeaderView(0);
+        View header = mNavigationView.getHeaderView(0);
         TextView text = (TextView) header.findViewById(R.id.name);
 
         String value = settings.getString("name", getString(R.string.app_name));
@@ -62,7 +67,7 @@ public class MainActivity extends AppCompatActivity
 
         // Programmatically start a fragment
         if (savedInstanceState == null) {
-            int drawer_to_open = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this)
+            drawer_to_open = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this)
                     .getString("drawer_to_open", "0"));
 
             Bundle extras = getIntent().getExtras();
@@ -70,8 +75,8 @@ public class MainActivity extends AppCompatActivity
                 drawer_to_open = extras.getInt("drawer_to_open", drawer_to_open);
             }
 
-            navigationView.getMenu().getItem(drawer_to_open).setChecked(true);
-            onNavigationItemSelected(navigationView.getMenu().getItem(drawer_to_open));
+            mNavigationView.getMenu().getItem(drawer_to_open).setChecked(true);
+            onNavigationItemSelected(mNavigationView.getMenu().getItem(drawer_to_open));
         }
     }
 
@@ -83,6 +88,8 @@ public class MainActivity extends AppCompatActivity
                 PreferenceManager.getDefaultSharedPreferences(this).edit()
                         .putBoolean("primo_avvio", false)
                         .apply();
+
+                onNavigationItemSelected(mNavigationView.getMenu().getItem(drawer_to_open));
             } else {
                 PreferenceManager.getDefaultSharedPreferences(this).edit()
                         .putBoolean("primo_avvio", true)
