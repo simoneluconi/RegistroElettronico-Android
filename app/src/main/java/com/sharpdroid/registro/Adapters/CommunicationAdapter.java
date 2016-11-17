@@ -46,7 +46,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
     @Override
     public void onBindViewHolder(CommunicationHolder ViewHolder, int i) {
         final Communication communication = CVDataList.get(ViewHolder.getAdapterPosition());
-        ViewHolder.Title.setText(communication.getTitle());
+        ViewHolder.Title.setText(communication.getTitle().trim());
         String datestring = communication.getDate().split("T")[0];
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ITALIAN);
