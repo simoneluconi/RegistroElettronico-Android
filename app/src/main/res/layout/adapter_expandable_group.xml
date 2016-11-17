@@ -3,8 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="16dp"
+    android:paddingEnd="16dp"
     android:paddingLeft="32dp"
     android:paddingRight="16dp"
+    android:paddingStart="32dp"
     android:paddingTop="16dp">
 
     <TextView
@@ -18,11 +20,9 @@
         android:id="@+id/attive"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_toEndOf="@+id/type"
-        android:layout_toRightOf="@+id/type"
         android:background="@color/redmaterial">
 
         <TextView
