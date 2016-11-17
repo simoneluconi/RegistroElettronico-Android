@@ -1,10 +1,7 @@
 package com.sharpdroid.registro.Fragments;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.UiThread;
-import android.support.annotation.WorkerThread;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -16,11 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.reflect.TypeToken;
+import com.koushikdutta.ion.Ion;
+import com.sharpdroid.registro.API.RESTFulAPI;
 import com.sharpdroid.registro.Adapters.NoteAdapter;
 import com.sharpdroid.registro.Interfaces.Note;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Tasks.CacheListTask;
-import com.sharpdroid.registro.Tasks.NoteTask;
 import com.sharpdroid.registro.Utils.Divider;
 
 import java.io.EOFException;
@@ -79,7 +78,7 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
 
         bindNoteCache();
 
-        new NotesTask().execute();
+        UpdateNotes();
 
         return layout;
     }
@@ -98,7 +97,7 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
 
     public void onRefresh() {
         if (isNetworkAvailable(mContext)) {
-            new NotesTask().execute();
+            UpdateNotes();
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);
@@ -138,27 +137,18 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
         }
     }
 
-    private class NotesTask extends AsyncTask<Void, Void, Void> {
-        private NoteTask notetask;
-
-        @UiThread
-        @Override
-        protected void onPreExecute() {
-            mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
-            notetask = new NoteTask(mContext);
-        }
-
-        @WorkerThread
-        @Override
-        protected Void doInBackground(Void... voids) {
-            return notetask.update();
-        }
-
-        @UiThread
-        @Override
-        protected void onPostExecute(Void v) {
-            addNotes(notetask.getNotes(), true);
-            mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
-        }
+    private void UpdateNotes() {
+        mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
+        Ion.with(mContext)
+                .load(RESTFulAPI.NOTES_URL)
+                .as(new TypeToken<List<Note>>() {
+                })
+                .withResponse()
+                .setCallback((e, result) -> {
+                    if (result.getHeaders().code() == 200) {
+                        addNotes(result.getResult(), true);
+                    }
+                    mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
+                });
     }
 }

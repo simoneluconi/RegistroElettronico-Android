@@ -1,10 +1,7 @@
 package com.sharpdroid.registro.Fragments;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.UiThread;
-import android.support.annotation.WorkerThread;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -16,11 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.reflect.TypeToken;
+import com.koushikdutta.ion.Ion;
+import com.sharpdroid.registro.API.RESTFulAPI;
 import com.sharpdroid.registro.Adapters.CommunicationAdapter;
 import com.sharpdroid.registro.Interfaces.Communication;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Tasks.CacheListTask;
-import com.sharpdroid.registro.Tasks.CommunicationTask;
 import com.sharpdroid.registro.Utils.Divider;
 
 import java.io.EOFException;
@@ -80,7 +79,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
 
         bindCommunicationsCache();
 
-        new CommunicationsTask().execute();
+        UpdateCommunications();
 
         return layout;
     }
@@ -99,7 +98,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
 
     public void onRefresh() {
         if (isNetworkAvailable(mContext)) {
-            new CommunicationsTask().execute();
+            UpdateCommunications();
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);
@@ -139,27 +138,18 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
         }
     }
 
-    private class CommunicationsTask extends AsyncTask<Void, Void, Void> {
-        private CommunicationTask communicationstask;
-
-        @UiThread
-        @Override
-        protected void onPreExecute() {
-            mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
-            communicationstask = new CommunicationTask(mContext);
-        }
-
-        @WorkerThread
-        @Override
-        protected Void doInBackground(Void... voids) {
-            return communicationstask.update();
-        }
-
-        @UiThread
-        @Override
-        protected void onPostExecute(Void v) {
-            addCommunications(communicationstask.getCommunications(), true);
-            mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
-        }
+    private void UpdateCommunications() {
+        mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
+        Ion.with(mContext)
+                .load(RESTFulAPI.COMMUNICATIONS_URL)
+                .as(new TypeToken<List<Communication>>() {
+                })
+                .withResponse()
+                .setCallback((e, result) -> {
+                    if (result.getHeaders().code() == 200) {
+                        addCommunications(result.getResult(), true);
+                    }
+                    mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
+                });
     }
 }

@@ -3,7 +3,6 @@ package com.sharpdroid.registro.Fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +11,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.heinrichreimersoftware.materialintro.app.SlideFragment;
-import com.loopj.android.http.RequestParams;
-import com.loopj.android.http.TextHttpResponseHandler;
+import com.koushikdutta.ion.Ion;
 import com.sharpdroid.registro.API.RESTFulAPI;
 import com.sharpdroid.registro.Interfaces.Login;
 import com.sharpdroid.registro.R;
@@ -23,7 +21,6 @@ import com.sharpdroid.registro.Utils.DeviceUuidFactory;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import cz.msebera.android.httpclient.Header;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.sharpdroid.registro.Utils.Metodi.NomeDecente;
@@ -41,46 +38,6 @@ public class FragmentLogin extends SlideFragment {
     private String mPassword;
     private boolean loggedIn = false;
     private Context mContext;
-
-    private final Runnable LoginRunnable = new Runnable() {
-        public void run() {
-            RequestParams params = new RequestParams();
-
-            params.put("login", mEmail);
-            params.put("password", mPassword);
-            params.put("key", new DeviceUuidFactory(mContext).getDeviceUuid().toString());
-
-            RESTFulAPI.post(mContext, RESTFulAPI.LOGIN_URL, params, new TextHttpResponseHandler() {
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    mButtonLogin.setText(R.string.login);
-                    Toast.makeText(mContext, R.string.login_msg_failer, Toast.LENGTH_SHORT).show();
-
-                    mEditTextMail.setEnabled(true);
-                    mEditTextPassword.setEnabled(true);
-                    mButtonLogin.setEnabled(true);
-                }
-
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                    Login login = new Gson().fromJson(responseString, Login.class);
-
-                    SharedPreferences settings = mContext.getSharedPreferences("REGISTRO", MODE_PRIVATE);
-
-                    // Writing data to SharedPreferences
-                    SharedPreferences.Editor editor = settings.edit();
-                    editor.putString("name", NomeDecente(login.getName()));
-                    editor.apply();
-
-                    mButtonLogin.setText(R.string.login_riuscito);
-                    Toast.makeText(mContext, R.string.login_msg, Toast.LENGTH_SHORT).show();
-
-                    loggedIn = true;
-                    updateNavigation();
-                }
-            });
-        }
-    };
 
     public FragmentLogin() {
         // Required empty public constructor
@@ -114,7 +71,7 @@ public class FragmentLogin extends SlideFragment {
             mButtonLogin.setEnabled(false);
             mButtonLogin.setText(R.string.caricamento);
 
-            new Handler().post(LoginRunnable);
+            Login();
         });
 
         return root;
@@ -123,5 +80,39 @@ public class FragmentLogin extends SlideFragment {
     @Override
     public boolean canGoForward() {
         return loggedIn;
+    }
+
+    private void Login() {
+        Ion.with(getContext())
+                .load(RESTFulAPI.LOGIN_URL)
+                .setBodyParameter("login", mEmail)
+                .setBodyParameter("password", mPassword)
+                .setBodyParameter("key", new DeviceUuidFactory(mContext).getDeviceUuid().toString())
+                .as(new TypeToken<Login>() {
+                })
+                .withResponse()
+                .setCallback((e, result) -> {
+                    if (result.getHeaders().code() == 200) {
+                        SharedPreferences settings = mContext.getSharedPreferences("REGISTRO", MODE_PRIVATE);
+
+                        // Writing data to SharedPreferences
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putString("name", NomeDecente(result.getResult().getName()).trim());
+                        editor.apply();
+
+                        mButtonLogin.setText(R.string.login_riuscito);
+                        Toast.makeText(mContext, R.string.login_msg, Toast.LENGTH_SHORT).show();
+
+                        loggedIn = true;
+                        updateNavigation();
+                    } else {
+                        mButtonLogin.setText(R.string.login);
+                        Toast.makeText(mContext, R.string.login_msg_failer, Toast.LENGTH_SHORT).show();
+
+                        mEditTextMail.setEnabled(true);
+                        mEditTextPassword.setEnabled(true);
+                        mButtonLogin.setEnabled(true);
+                    }
+                });
     }
 }
