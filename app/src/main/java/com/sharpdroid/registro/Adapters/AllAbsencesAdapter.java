@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.sharpdroid.registro.Interfaces.Absence;
 import com.sharpdroid.registro.Interfaces.Absences;
 import com.sharpdroid.registro.R;
-import com.sharpdroid.registro.Utils.Metodi;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,7 +26,7 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
     private Context mContext;
     private Absences absences;
     private LayoutInflater mInflater;
-    SimpleDateFormat format = new SimpleDateFormat("dd MMM", Locale.getDefault());
+    private SimpleDateFormat format = new SimpleDateFormat("dd MMM", Locale.getDefault());
 
     public AllAbsencesAdapter(Context context) {
         mContext = context;
@@ -100,28 +99,27 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
         if (view == null)
             view = mInflater.inflate(R.layout.adapter_expandable_group, viewGroup, false);
 
-        FrameLayout
-                attive = (FrameLayout) view.findViewById(R.id.attive);
-        TextView
-                days = (TextView) view.findViewById(R.id.days),
-                title = (TextView) view.findViewById(R.id.type),
-                text = (TextView) view.findViewById(R.id.attive_text);
+        FrameLayout attive = (FrameLayout) view.findViewById(R.id.attive);
+
+        TextView days = (TextView) view.findViewById(R.id.days);
+        TextView title = (TextView) view.findViewById(R.id.type);
+        TextView text = (TextView) view.findViewById(R.id.attive_text);
 
         int count = 0;
 
         switch (group_pos) {
             case 0:
                 count = getUndoneCountAbsences(absences.getAbsences());
-                title.setText("Assenze");
+                title.setText(R.string.assenze);
                 days.setText(String.valueOf(getNumberDaysAbsences(absences.getAbsences())));
                 break;
             case 1:
                 count = getUndoneCountDelays(absences.getDelays());
-                title.setText("Ritardi");
+                title.setText(R.string.ritardi);
                 break;
             case 2:
                 count = getUndoneCountExits(absences.getExits());
-                title.setText("Uscite anticipate");
+                title.setText(R.string.uscite_anticipate);
                 break;
         }
 
@@ -137,8 +135,6 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(int group_pos, int child_pos, boolean last, View view, ViewGroup viewGroup) {
-
-        //region seleziona layout in base a sezione
         switch (group_pos) {
             case 0:
                 view = mInflater.inflate(R.layout.adapter_expandable_child, viewGroup, false);
@@ -150,29 +146,28 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
                 view = mInflater.inflate(R.layout.adapter_expandable_child, viewGroup, false);
                 break;
         }
-        //endregion
+
+        FrameLayout attive = (FrameLayout) view.findViewById(R.id.attive);
+
+        TextView from = (TextView) view.findViewById(R.id.from);
+        TextView to = (TextView) view.findViewById(R.id.to);
+        TextView justification = (TextView) view.findViewById(R.id.justification);
+        TextView days = (TextView) view.findViewById(R.id.days);
 
         Absence absence = absences.getAbsences().get(child_pos);
-        FrameLayout attive = (FrameLayout) view.findViewById(R.id.attive);
-        TextView
-                from = (TextView) view.findViewById(R.id.from),
-                to = (TextView) view.findViewById(R.id.to),
-                justification = (TextView) view.findViewById(R.id.justification),
-                days = (TextView) view.findViewById(R.id.days);
 
-        //region TEXTS
         days.setText(String.valueOf(absence.getDays()));
         from.setText(absence.getFrom());
-        if (absence.getTo().trim().equals(format.format(new Date())))
-            to.setText("Oggi");
-        else
+        if (absence.getTo().trim().equals(format.format(new Date()))) {
+            to.setText(R.string.oggi);
+        } else {
             to.setText(absence.getTo());
+        }
+
         if (absence.getJustification() != null && !absence.getJustification().isEmpty())
             justification.setText(absence.getJustification());
-        //endregion
 
-        if (absence.isDone()) attive.setVisibility(View.GONE);
-        else attive.setVisibility(View.VISIBLE);
+        attive.setVisibility(absence.isDone() ? View.GONE : View.VISIBLE);
 
         return view;
     }

@@ -42,6 +42,10 @@
 
     <string name="login_riuscito">Login completato</string>
     <string name="from_to">from - to</string>
+    <string name="assenze">Assenze</string>
+    <string name="ritardi">Ritardi</string>
+    <string name="uscite_anticipate">Uscite anticipate</string>
+    <string name="oggi">Oggi</string>
 
     <plurals name="attiva">
         <item quantity="one">%d Attiva</item>
