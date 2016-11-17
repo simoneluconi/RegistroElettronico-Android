@@ -4,11 +4,18 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+
+    <!-- DRAWER -->
     <string name="medie">Medie</string>
     <string name="share">Share</string>
     <string name="send">Send</string>
     <string name="communicate">Communicate</string>
+    <string name="justifications">Giustificazioni</string>
+    <string name="communications">Comunicazioni</string>
+    <string name="note">Note</string>
+    <string name="settings">Impostazioni</string>
 
+    <!--ERRORI-->
     <string name="nointernet">Non sei connesso ad internet!</string>
 
     <string name="dettaglio_voti_titolo">Dettaglio voti</string>
@@ -31,12 +38,9 @@
     <string name="password">Password</string>
     <string name="caricamento">Caricamento…</string>
     <string name="login_msg_failer">Login fallito</string>
-    <string name="communications">Comunicazioni</string>
-    <string name="note">Note</string>
     <string name="absences">Assenze</string>
 
     <string name="login_riuscito">Login completato</string>
-    <string name="settings">Impostazioni</string>
     <string name="from_to">from - to</string>
 
     <plurals name="attiva">
