@@ -2,11 +2,12 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item>
-        <color android:color="@color/colorAccent"/>
+        <color android:color="@color/colorAccent" />
     </item>
 
-    <item android:drawable="@drawable/ic_file"
+    <item
         android:bottom="8dp"
+        android:drawable="@drawable/ic_file"
         android:left="8dp"
         android:right="8dp"
         android:top="8dp" />

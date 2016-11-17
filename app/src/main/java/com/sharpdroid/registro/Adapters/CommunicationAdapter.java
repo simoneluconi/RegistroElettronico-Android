@@ -88,19 +88,19 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
 
             String url = new RESTFulAPI().COMMUNICATION_DOWNLOAD_URL(communication.getId());
 
-            Ion.with(mContext)
-                    .load(url)
-                    .write(file)
-                    .withResponse()
-                    .setCallback((e, result) -> {
-                        if (result.getHeaders().code() == 200) {
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setDataAndType(FileProvider.getUriForFile(mContext, "com.sharpdroid.registro.fileprovider", file), "application/pdf");
-                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            mContext.startActivity(intent);
-                            DownloadProgressSnak.dismiss();
-                        }
-                    });
+            if (!file.exists()) {
+                Ion.with(mContext)
+                        .load(url)
+                        .write(file)
+                        .withResponse()
+                        .setCallback((e, result) -> {
+                            if (result.getHeaders().code() == 200) {
+                                openpdf(file, DownloadProgressSnak);
+                            }
+                        });
+            } else {
+                openpdf(file, DownloadProgressSnak);
+            }
         });
     }
 
@@ -123,5 +123,16 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    private void openpdf(File file, Snackbar DownloadProgressSnak) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(FileProvider.getUriForFile(mContext, "com.sharpdroid.registro.fileprovider", file), "application/pdf");
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+        DownloadProgressSnak.setText(R.string.click_to_open);
+        DownloadProgressSnak.setAction(R.string.open, v1 -> {
+            mContext.startActivity(intent);
+            DownloadProgressSnak.dismiss();
+        });
     }
 }
