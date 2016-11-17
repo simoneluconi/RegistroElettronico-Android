@@ -26,8 +26,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="gg"
-            android:textSize="10sp" />
+            android:text="@string/gg"
+            android:textSize="12sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -35,6 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         android:layout_toEndOf="@+id/linearLayout3"
         android:layout_toLeftOf="@+id/attive"
         android:layout_toRightOf="@+id/linearLayout3"
@@ -47,7 +48,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="Nessuna giustificazione" />
+            android:text="@string/nessuna_giustificazione" />
 
         <LinearLayout
             android:id="@+id/linearLayout2"
@@ -94,7 +95,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="3dp"
-            android:text="Attiva"
+            android:text="@string/attiva"
             android:textColor="#fff"
             android:textSize="12sp" />
     </FrameLayout>

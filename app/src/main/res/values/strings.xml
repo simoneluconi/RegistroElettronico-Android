@@ -46,6 +46,9 @@
     <string name="ritardi">Ritardi</string>
     <string name="uscite_anticipate">Uscite anticipate</string>
     <string name="oggi">Oggi</string>
+    <string name="nessuna_giustificazione">Nessuna giustificazione</string>
+    <string name="attiva">Attiva</string>
+    <string name="gg">gg</string>
 
     <plurals name="attiva">
         <item quantity="one">%d Attiva</item>
