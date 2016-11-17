@@ -1,6 +1,7 @@
 package com.sharpdroid.registro.Activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -13,6 +14,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.sharpdroid.registro.Fragments.FragmentAllAbsences;
 import com.sharpdroid.registro.Fragments.FragmentCommunications;
@@ -20,6 +23,8 @@ import com.sharpdroid.registro.Fragments.FragmentMedie;
 import com.sharpdroid.registro.Fragments.FragmentNote;
 import com.sharpdroid.registro.Fragments.FragmentSettings;
 import com.sharpdroid.registro.R;
+
+import static com.sharpdroid.registro.Utils.Metodi.NomeDecente;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -47,6 +52,14 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        SharedPreferences settings = getSharedPreferences("REGISTRO", MODE_PRIVATE);
+
+        View header = navigationView.getHeaderView(0);
+        TextView text = (TextView) header.findViewById(R.id.textview_name);
+
+        String value = settings.getString("name", getString(R.string.app_name));
+        text.setText(NomeDecente(value));
 
         // Programmatically start a fragment
         if (savedInstanceState == null) {

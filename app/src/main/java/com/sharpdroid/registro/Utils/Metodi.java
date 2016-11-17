@@ -178,4 +178,13 @@ public class Metodi {
         }
         return c;
     }
+
+    public static String NomeDecente(String name) {
+        String new_name = "";
+        String[] insV = name.trim().split("\\s+");
+        for (String ins : insV) {
+            new_name += ins.substring(0, 1).toUpperCase() + ins.substring(1).toLowerCase() + " ";
+        }
+        return new_name;
+    }
 }
