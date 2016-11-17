@@ -36,7 +36,7 @@ public class CacheObjectTask extends AsyncTask<Object, Void, Void> {
     }
 
     /**
-     * Caches the specified set of Changes. Will execute in a separate Thread.
+     * Caches the specified Object. Will execute in a separate Thread.
      *
      * @param object to be cached.
      * @return null
