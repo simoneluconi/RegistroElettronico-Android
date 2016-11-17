@@ -44,8 +44,10 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if (PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean("primo_avvio", true)) {
+        final boolean primo_avvio = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean("primo_avvio", true);
+
+        if (primo_avvio) {
             startActivityForResult(new Intent(this, Intro.class), 1);
         }
 
@@ -57,27 +59,7 @@ public class MainActivity extends AppCompatActivity
 
         mNavigationView.setNavigationItemSelectedListener(this);
 
-        SharedPreferences settings = getSharedPreferences("REGISTRO", MODE_PRIVATE);
-
-        View header = mNavigationView.getHeaderView(0);
-        TextView text = (TextView) header.findViewById(R.id.name);
-
-        String value = settings.getString("name", getString(R.string.app_name));
-        text.setText(value);
-
-        // Programmatically start a fragment
-        if (savedInstanceState == null) {
-            drawer_to_open = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this)
-                    .getString("drawer_to_open", "0"));
-
-            Bundle extras = getIntent().getExtras();
-            if (extras != null) {
-                drawer_to_open = extras.getInt("drawer_to_open", drawer_to_open);
-            }
-
-            mNavigationView.getMenu().getItem(drawer_to_open).setChecked(true);
-            onNavigationItemSelected(mNavigationView.getMenu().getItem(drawer_to_open));
-        }
+        init(savedInstanceState);
     }
 
     @Override
@@ -89,7 +71,7 @@ public class MainActivity extends AppCompatActivity
                         .putBoolean("primo_avvio", false)
                         .apply();
 
-                onNavigationItemSelected(mNavigationView.getMenu().getItem(drawer_to_open));
+                init(null);
             } else {
                 PreferenceManager.getDefaultSharedPreferences(this).edit()
                         .putBoolean("primo_avvio", true)
@@ -154,5 +136,28 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void init(Bundle savedInstanceState) {
+        View header = mNavigationView.getHeaderView(0);
+        TextView text = (TextView) header.findViewById(R.id.name);
+
+        SharedPreferences settings = getSharedPreferences("REGISTRO", MODE_PRIVATE);
+        String value = settings.getString("name", getString(R.string.app_name));
+        text.setText(value);
+
+        // Programmatically start a fragment
+        if (savedInstanceState == null) {
+            drawer_to_open = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this)
+                    .getString("drawer_to_open", "0"));
+
+            Bundle extras = getIntent().getExtras();
+            if (extras != null) {
+                drawer_to_open = extras.getInt("drawer_to_open", drawer_to_open);
+            }
+
+            mNavigationView.getMenu().getItem(drawer_to_open).setChecked(true);
+            onNavigationItemSelected(mNavigationView.getMenu().getItem(drawer_to_open));
+        }
     }
 }
