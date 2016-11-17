@@ -12,7 +12,10 @@ import com.sharpdroid.registro.Interfaces.Absence;
 import com.sharpdroid.registro.Interfaces.Absences;
 import com.sharpdroid.registro.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static com.sharpdroid.registro.Utils.Metodi.getUndoneCountAbsences;
 import static com.sharpdroid.registro.Utils.Metodi.getUndoneCountDelays;
@@ -22,6 +25,7 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
     private Context mContext;
     private Absences absences;
     private LayoutInflater mInflater;
+    SimpleDateFormat format = new SimpleDateFormat("dd MMM", Locale.getDefault());
 
     public AllAbsencesAdapter(Context context) {
         mContext = context;
@@ -93,20 +97,27 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
     public View getGroupView(int group_pos, boolean expanded, View view, ViewGroup viewGroup) {
         if (view == null)
             view = mInflater.inflate(R.layout.adapter_expandable_group, viewGroup, false);
-        FrameLayout attive = (FrameLayout) view.findViewById(R.id.attive);
-        TextView text = (TextView) view.findViewById(R.id.attive_text);
+
+        FrameLayout
+                attive = (FrameLayout) view.findViewById(R.id.attive);
+        TextView
+                title = (TextView) view.findViewById(R.id.type),
+                text = (TextView) view.findViewById(R.id.attive_text);
 
         int count = 0;
 
         switch (group_pos) {
             case 0:
                 count = getUndoneCountAbsences(absences.getAbsences());
+                title.setText("Assenze");
                 break;
             case 1:
                 count = getUndoneCountDelays(absences.getDelays());
+                title.setText("Ritardi");
                 break;
             case 2:
                 count = getUndoneCountExits(absences.getExits());
+                title.setText("Uscite anticipate");
                 break;
         }
 
@@ -122,8 +133,20 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(int group_pos, int child_pos, boolean last, View view, ViewGroup viewGroup) {
-        if (view == null)
-            view = mInflater.inflate(R.layout.adapter_expandable_child, viewGroup, false);
+
+        //region seleziona layout in base a sezione
+        switch (group_pos) {
+            case 0:
+                view = mInflater.inflate(R.layout.adapter_expandable_child, viewGroup, false);
+                break;
+            case 1:
+                view = mInflater.inflate(R.layout.adapter_expandable_child, viewGroup, false);
+                break;
+            case 2:
+                view = mInflater.inflate(R.layout.adapter_expandable_child, viewGroup, false);
+                break;
+        }
+        //endregion
 
         Absence absence = absences.getAbsences().get(child_pos);
 
@@ -134,10 +157,15 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
         to = (TextView) view.findViewById(R.id.to);
         justification = (TextView) view.findViewById(R.id.justification);
 
+        //region TEXTS
         from.setText(absence.getFrom());
-        to.setText(absence.getTo());
+        if (absence.getTo().trim().equals(format.format(new Date())))
+            to.setText("Oggi");
+        else
+            to.setText(absence.getTo());
         if (absence.getJustification() != null && !absence.getJustification().isEmpty())
             justification.setText(absence.getJustification());
+        //endregion
 
         if (absence.isDone()) attive.setVisibility(View.GONE);
         else attive.setVisibility(View.VISIBLE);
@@ -147,7 +175,7 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
 
     @Override
     public boolean isChildSelectable(int i, int i1) {
-        return true;
+        return false;
     }
 
 }
