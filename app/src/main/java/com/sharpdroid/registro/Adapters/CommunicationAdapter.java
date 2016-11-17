@@ -97,8 +97,11 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
                             Intent intent = new Intent(Intent.ACTION_VIEW);
                             intent.setDataAndType(FileProvider.getUriForFile(mContext, "com.sharpdroid.registro.fileprovider", file), "application/pdf");
                             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            mContext.startActivity(intent);
-                            DownloadProgressSnak.dismiss();
+                            DownloadProgressSnak.setText(R.string.click_to_open);
+                            DownloadProgressSnak.setAction(R.string.open, v1 -> {
+                                mContext.startActivity(intent);
+                                DownloadProgressSnak.dismiss();
+                            });
                         }
                     });
         });

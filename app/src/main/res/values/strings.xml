@@ -51,6 +51,8 @@
     <string name="attiva">Attiva</string>
     <string name="gg">gg</string>
     <string name="download_in_corso">Download in corso…</string>
+    <string name="click_to_open">Clicca per aprire</string>
+    <string name="open">Apri</string>
 
     <plurals name="attiva">
         <item quantity="one">%d Attiva</item>
