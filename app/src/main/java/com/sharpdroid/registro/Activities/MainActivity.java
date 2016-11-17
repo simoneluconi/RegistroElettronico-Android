@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences settings = getSharedPreferences("REGISTRO", MODE_PRIVATE);
 
         View header = navigationView.getHeaderView(0);
-        TextView text = (TextView) header.findViewById(R.id.textview_name);
+        TextView text = (TextView) header.findViewById(R.id.name);
 
         String value = settings.getString("name", getString(R.string.app_name));
         text.setText(value);
