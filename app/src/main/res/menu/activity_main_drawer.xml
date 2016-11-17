@@ -8,7 +8,7 @@
             android:title="@string/medie" />
         <item
             android:id="@+id/files"
-            android:icon="@drawable/ic_supervisor"
+            android:icon="@drawable/ic_folder"
             android:title="@string/files" />
         <item
             android:id="@+id/absences"
