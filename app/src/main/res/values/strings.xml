@@ -50,6 +50,7 @@
     <string name="nessuna_giustificazione">Nessuna giustificazione</string>
     <string name="attiva">Attiva</string>
     <string name="gg">gg</string>
+    <string name="download_in_corso">Download in corso…</string>
 
     <plurals name="attiva">
         <item quantity="one">%d Attiva</item>

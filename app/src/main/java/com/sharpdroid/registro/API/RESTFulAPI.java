@@ -20,18 +20,18 @@ public class RESTFulAPI {
     }
 
     public String FILE_DOWNLOAD_URL(String id, String cksum) {
-        return String.format("%s/%s/%s/%s/download", BASE_URL, "file", id, cksum);
+        return String.format("%s%s/%s/%s/download", BASE_URL, "file", id, cksum);
     }
 
-    public String SUBJECT_LESSONS_URL(String id) {
+    public String SUBJECT_LESSONS_URL(int id) {
         return String.format("%s/%s/lessons", SUBJECTS_URL, id);
     }
 
-    public String COMMUNICATION_DESC_URL(String id) {
-        return String.format("%s/%s/desc", COMMUNICATIONS_URL, id);
+    public String COMMUNICATION_DESC_URL(int id) {
+        return String.format("%s%s/%s/desc", BASE_URL, "communication", id);
     }
 
-    public String COMMUNICATION_DOWNLOAD_URL(String id) {
-        return String.format("%s/%s/download", BASE_URL, id);
+    public String COMMUNICATION_DOWNLOAD_URL(int id) {
+        return String.format("%s%s/%s/download", BASE_URL, "communication", id);
     }
 }
