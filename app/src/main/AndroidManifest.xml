@@ -32,6 +32,14 @@
             android:name=".Activities.Intro"
             tools:ignore="InnerclassSeparator" />
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.sharpdroid.registro.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
     </application>
-
 </manifest>
