@@ -89,9 +89,13 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
         try {
             FileInputStream fileInputStream = new FileInputStream(new File(mContext.getCacheDir(), TAG));
             objectInputStream = new ObjectInputStream(fileInputStream);
-            Absences cachedData = (Absences) objectInputStream.readObject();
-            addAbsences(cachedData, false);
-            Log.d(TAG, "Restored cache");
+            Object obj = objectInputStream.readObject();
+            if (obj instanceof Absences) {
+                addAbsences((Absences) obj, false);
+                Log.d(TAG, "Restored cache");
+            } else {
+                Log.e(TAG, "Corrupterd cache");
+            }
         } catch (FileNotFoundException e) {
             Log.w(TAG, "Cache not found.");
         } catch (EOFException e) {
