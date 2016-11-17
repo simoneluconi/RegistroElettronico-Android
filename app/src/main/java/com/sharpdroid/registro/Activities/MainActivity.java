@@ -24,8 +24,6 @@ import com.sharpdroid.registro.Fragments.FragmentNote;
 import com.sharpdroid.registro.Fragments.FragmentSettings;
 import com.sharpdroid.registro.R;
 
-import static com.sharpdroid.registro.Utils.Metodi.NomeDecente;
-
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -59,7 +57,7 @@ public class MainActivity extends AppCompatActivity
         TextView text = (TextView) header.findViewById(R.id.textview_name);
 
         String value = settings.getString("name", getString(R.string.app_name));
-        text.setText(NomeDecente(value));
+        text.setText(value);
 
         // Programmatically start a fragment
         if (savedInstanceState == null) {

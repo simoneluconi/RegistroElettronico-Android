@@ -26,6 +26,7 @@ import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.sharpdroid.registro.Utils.Metodi.NomeDecente;
 
 public class FragmentLogin extends SlideFragment {
 
@@ -68,7 +69,7 @@ public class FragmentLogin extends SlideFragment {
 
                     // Writing data to SharedPreferences
                     SharedPreferences.Editor editor = settings.edit();
-                    editor.putString("name", login.getName());
+                    editor.putString("name", NomeDecente(login.getName()));
                     editor.apply();
 
                     mButtonLogin.setText(R.string.login_riuscito);
