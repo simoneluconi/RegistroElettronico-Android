@@ -1,50 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/cards_margin"
-    android:layout_marginEnd="@dimen/cards_margin"
-    android:layout_marginLeft="@dimen/cards_margin"
-    android:layout_marginRight="@dimen/cards_margin"
-    android:layout_marginStart="@dimen/cards_margin"
     android:clickable="true"
     android:focusable="true"
-    android:foreground="?android:attr/selectableItemBackground">
+    android:foreground="?android:attr/selectableItemBackground"
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <RelativeLayout
+    <TextView
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:padding="16dp">
+        android:textColor="@color/material_blue_grey"
+        android:textSize="18sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/title"
+        android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/title"
+            android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/material_blue_grey"
-            android:textSize="18sp" />
+            android:textColor="@color/textcolorgrey"
+            android:textSize="13sp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/title"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/textcolorgrey"
-                android:textSize="13sp" />
-
-            <TextView
-                android:id="@+id/type"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp"
-                android:textColor="@color/textcolorgrey"
-                android:textSize="13sp" />
-        </LinearLayout>
-    </RelativeLayout>
-</android.support.v7.widget.CardView>
+        <TextView
+            android:id="@+id/type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/textcolorgrey"
+            android:textSize="13sp" />
+    </LinearLayout>
+</RelativeLayout>

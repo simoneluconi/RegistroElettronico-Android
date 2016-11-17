@@ -21,6 +21,7 @@ import com.sharpdroid.registro.Interfaces.Communication;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Tasks.CacheListTask;
 import com.sharpdroid.registro.Tasks.CommunicationTask;
+import com.sharpdroid.registro.Utils.Divider;
 
 import java.io.EOFException;
 import java.io.File;
@@ -71,6 +72,9 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
         RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        mRecyclerView.addItemDecoration(new Divider(mContext));
+        mRecyclerView.setItemAnimator(null);
+
         mRVAdapter = new CommunicationAdapter(new CopyOnWriteArrayList<>());
         mRecyclerView.setAdapter(mRVAdapter);
 

@@ -1,68 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="@dimen/cards_margin"
-    android:layout_marginLeft="@dimen/cards_margin"
-    android:layout_marginRight="@dimen/cards_margin"
-    android:layout_marginStart="@dimen/cards_margin"
-    android:layout_marginTop="@dimen/cards_margin">
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="12dp">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
-
-            <TextView
-                android:id="@+id/teacher"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:text="teacher"
-                android:textColor="@color/red_strong"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/type"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:text="type"
-                android:textColor="@color/red_strong"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-        </RelativeLayout>
+        android:layout_marginBottom="8dp">
 
         <TextView
-            android:id="@+id/content"
-            android:layout_width="match_parent"
+            android:id="@+id/teacher"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="content" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="8dp"
-            android:background="#E5E5E5" />
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:text="teacher"
+            android:textColor="@color/red_strong"
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/date"
-            android:layout_width="match_parent"
+            android:id="@+id/type"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="date"
-            android:textSize="12sp" />
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:text="type"
+            android:textColor="@color/red_strong"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
 
-    </LinearLayout>
-</android.support.v7.widget.CardView>
+    <TextView
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="content" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="8dp"
+        android:background="#E5E5E5" />
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="date"
+        android:textSize="12sp" />
+</LinearLayout>
