@@ -71,6 +71,7 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                 Folder folder = fileteachers.get(current_subheader - 1).getFolders().get(current_folder);
                 String last = folder.getLast();
+                // TODO: 18/11/2016 click listener
 
                 folderHolder.teacher.setText(NomeDecente(folder.getName().trim()));
                 try {
