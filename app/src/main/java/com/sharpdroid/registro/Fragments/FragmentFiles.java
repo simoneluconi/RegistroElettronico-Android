@@ -82,7 +82,7 @@ public class FragmentFiles extends Fragment implements SwipeRefreshLayout.OnRefr
     private void addFiles(List<FileTeacher> result, boolean docache) {
         if (!result.isEmpty()) {
             mRVAdapter.clear();
-            mRVAdapter.setAbsences(result);
+            mRVAdapter.setFileTeachers(result);
 
             if (docache) {
                 // Update cache

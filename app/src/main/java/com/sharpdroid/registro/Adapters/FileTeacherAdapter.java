@@ -26,7 +26,7 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private final Context mContext;
     private final LayoutInflater mInflater;
     private List<Integer> listLayouts = new ArrayList<>();
-    private List<FileTeacher> data = new ArrayList<>();
+    private List<FileTeacher> fileteachers = new ArrayList<>();
     private final SimpleDateFormat apiFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
 
@@ -56,7 +56,7 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             case R.layout.adapter_file_teacher:
                 SubheaderHolder subHolder = (SubheaderHolder) holder;
 
-                String profHeader = data.get(current_subheader).getName();
+                String profHeader = fileteachers.get(current_subheader).getName();
 
                 subHolder.teacher.setText(NomeDecente(profHeader));
 
@@ -69,7 +69,7 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             case R.layout.adapter_folder:
                 FileTeacherHolder folderHolder = (FileTeacherHolder) holder;
 
-                Folder folder = data.get(current_subheader - 1).getFolders().get(current_folder);
+                Folder folder = fileteachers.get(current_subheader - 1).getFolders().get(current_folder);
                 String last = folder.getLast();
 
                 folderHolder.teacher.setText(NomeDecente(folder.getName().trim()));
@@ -95,14 +95,14 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return listLayouts.size();
     }
 
-    public void setAbsences(List<FileTeacher> data) {
-        this.data = data;
-        listLayouts = getListLayouts(this.data);
+    public void setFileTeachers(List<FileTeacher> fileteachers) {
+        this.fileteachers = fileteachers;
+        listLayouts = getListLayouts(this.fileteachers);
         notifyDataSetChanged();
     }
 
     public void clear() {
-        data.clear();
+        fileteachers.clear();
         listLayouts.clear();
         current_subheader = current_folder = 0;
     }
