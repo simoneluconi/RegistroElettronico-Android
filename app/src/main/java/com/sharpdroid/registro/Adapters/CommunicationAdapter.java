@@ -1,5 +1,6 @@
 package com.sharpdroid.registro.Adapters;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
@@ -7,6 +8,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,7 +97,12 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
                         .withResponse()
                         .setCallback((e, result) -> {
                             if (result.getHeaders().code() == 200) {
+                                Log.d("ION", "Download completed");
                                 openpdf(file, DownloadProgressSnak);
+                            } else {
+                                Log.d("ION", "CODE: " + result.getHeaders().code() + "\tURL: " + url);
+                                DownloadProgressSnak.dismiss();
+                                Snackbar.make(mCoordinatorLayout, mContext.getResources().getString(R.string.download_fallito, result.getHeaders().code()), Snackbar.LENGTH_SHORT).show();
                             }
                         });
             } else {
@@ -126,13 +133,17 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
     }
 
     private void openpdf(File file, Snackbar DownloadProgressSnak) {
+        //DownloadProgressSnak.dismiss();
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(FileProvider.getUriForFile(mContext, "com.sharpdroid.registro.fileprovider", file), "application/pdf");
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
         DownloadProgressSnak.setText(R.string.click_to_open);
         DownloadProgressSnak.setAction(R.string.open, v1 -> {
-            mContext.startActivity(intent);
-            DownloadProgressSnak.dismiss();
+            try {
+                mContext.startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                Snackbar.make(mCoordinatorLayout, R.string.missing_pdf_app, Snackbar.LENGTH_SHORT).show();
+            }
         });
     }
 }

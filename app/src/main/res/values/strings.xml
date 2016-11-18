@@ -53,6 +53,8 @@
     <string name="download_in_corso">Download in corso…</string>
     <string name="click_to_open">Clicca per aprire</string>
     <string name="open">Apri</string>
+    <string name="missing_pdf_app">Nessuna app può aprire questo documento</string>
+    <string name="download_fallito">Download fallito (%1$d)</string>
 
     <plurals name="attiva">
         <item quantity="one">%d Attiva</item>
