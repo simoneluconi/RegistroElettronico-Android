@@ -70,7 +70,6 @@ public class FragmentFiles extends Fragment implements SwipeRefreshLayout.OnRefr
         RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-        mRecyclerView.addItemDecoration(new Divider(mContext));
         mRecyclerView.setItemAnimator(null);
 
         mRVAdapter = new FileTeacherAdapter(mContext);

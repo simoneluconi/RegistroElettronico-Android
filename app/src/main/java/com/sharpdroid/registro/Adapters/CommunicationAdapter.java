@@ -145,7 +145,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
                 DownloadProgressSnak.dismiss();
                 mContext.startActivity(intent);
             } catch (ActivityNotFoundException e) {
-                Snackbar.make(mCoordinatorLayout,mContext.getResources().getString(R.string.missing_pdf_app),Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(mCoordinatorLayout, mContext.getResources().getString(R.string.missing_pdf_app), Snackbar.LENGTH_SHORT).show();
             }
         });
         DownloadProgressSnak.show();
