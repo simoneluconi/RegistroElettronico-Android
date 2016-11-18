@@ -115,28 +115,27 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
         }
     }
 
-    @Override
     public void onRefresh() {
+        UpdateAllAbsences();
+    }
+
+    private void UpdateAllAbsences() {
         if (isNetworkAvailable(mContext)) {
-            UpdateAllAbsences();
+            mSwipeRefreshLayout.setRefreshing(true);
+            Ion.with(mContext)
+                    .load(/*RESTFulAPI.ABSENCES_URL*/ "https://gist.githubusercontent.com/luca020400/55f65db6a685dc2413f9ba7252c20cbf/raw/absences.json")
+                    .as(new TypeToken<Absences>() {
+                    })
+                    .withResponse()
+                    .setCallback((e, result) -> {
+                        if (result.getHeaders().code() == 200) {
+                            addAbsences(result.getResult(), true);
+                        }
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    });
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);
         }
-    }
-
-    private void UpdateAllAbsences() {
-        mSwipeRefreshLayout.setRefreshing(true);
-        Ion.with(mContext)
-                .load(/*RESTFulAPI.ABSENCES_URL*/ "https://gist.githubusercontent.com/luca020400/55f65db6a685dc2413f9ba7252c20cbf/raw/absences.json")
-                .as(new TypeToken<Absences>() {
-                })
-                .withResponse()
-                .setCallback((e, result) -> {
-                    if (result.getHeaders().code() == 200) {
-                        addAbsences(result.getResult(), true);
-                    }
-                    mSwipeRefreshLayout.setRefreshing(false);
-                });
     }
 }

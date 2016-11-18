@@ -83,6 +83,18 @@ public class FragmentFiles extends Fragment implements SwipeRefreshLayout.OnRefr
         return layout;
     }
 
+    private void addFiles(List<FileTeacher> result, boolean docache) {
+        if (!result.isEmpty()) {
+            mRVAdapter.clear();
+            mRVAdapter.setAbsences(result);
+
+            if (docache) {
+                // Update cache
+                new CacheListTask(mContext.getCacheDir(), TAG).execute((List) result);
+            }
+        }
+    }
+
     private void bindFileTeacherCache() {
         ObjectInputStream objectInputStream = null;
         try {
@@ -116,40 +128,27 @@ public class FragmentFiles extends Fragment implements SwipeRefreshLayout.OnRefr
         }
     }
 
-    @Override
     public void onRefresh() {
-        if (isNetworkAvailable(mContext)) {
-            UpdateFiles();
-        } else {
-            Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
-            mSwipeRefreshLayout.setRefreshing(false);
-        }
+        UpdateFiles();
     }
 
     private void UpdateFiles() {
-        mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
-        Ion.with(mContext)
-                .load(RESTFulAPI.FILES_URL)
-                .as(new TypeToken<List<FileTeacher>>() {
-                })
-                .withResponse()
-                .setCallback((e, result) -> {
-                    if (result.getHeaders().code() == 200) {
-                        addFiles(result.getResult(), true);
-                    }
-                    mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
-                });
-    }
-
-    private void addFiles(List<FileTeacher> result, boolean docache) {
-        if (!result.isEmpty()) {
-            mRVAdapter.clear();
-            mRVAdapter.setAbsences(result);
-
-            if (docache) {
-                // Update cache
-                new CacheListTask(mContext.getCacheDir(), TAG).execute((List) result);
-            }
+        if (isNetworkAvailable(mContext)) {
+            mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
+            Ion.with(mContext)
+                    .load(RESTFulAPI.FILES_URL)
+                    .as(new TypeToken<List<FileTeacher>>() {
+                    })
+                    .withResponse()
+                    .setCallback((e, result) -> {
+                        if (result.getHeaders().code() == 200) {
+                            addFiles(result.getResult(), true);
+                        }
+                        mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
+                    });
+        } else {
+            Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
+            mSwipeRefreshLayout.setRefreshing(false);
         }
     }
 }

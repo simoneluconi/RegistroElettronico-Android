@@ -53,18 +53,6 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
 
     }
 
-    private void addSubjects(List<MarkSubject> markSubjects, boolean docache) {
-        if (!markSubjects.isEmpty()) {
-            mRVAdapter.clear();
-            mRVAdapter.addAll(markSubjects);
-
-            if (docache) {
-                // Update cache
-                new CacheListTask(mContext.getCacheDir(), TAG).execute((List) markSubjects);
-            }
-        }
-    }
-
     @Override
     public View onCreateView(final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -95,12 +83,15 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
         return layout;
     }
 
-    public void onRefresh() {
-        if (isNetworkAvailable(mContext)) {
-            UpdateMedie();
-        } else {
-            Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
-            mSwipeRefreshLayout.setRefreshing(false);
+    private void addSubjects(List<MarkSubject> markSubjects, boolean docache) {
+        if (!markSubjects.isEmpty()) {
+            mRVAdapter.clear();
+            mRVAdapter.addAll(markSubjects);
+
+            if (docache) {
+                // Update cache
+                new CacheListTask(mContext.getCacheDir(), TAG).execute((List) markSubjects);
+            }
         }
     }
 
@@ -137,18 +128,27 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
         }
     }
 
+    public void onRefresh() {
+        UpdateMedie();
+    }
+
     private void UpdateMedie() {
-        mSwipeRefreshLayout.setRefreshing(true);
-        Ion.with(mContext)
-                .load(RESTFulAPI.MARKS_URL)
-                .as(new TypeToken<List<MarkSubject>>() {
-                })
-                .withResponse()
-                .setCallback((e, result) -> {
-                    if (result.getHeaders().code() == 200) {
-                        addSubjects(result.getResult(), true);
-                    }
-                    mSwipeRefreshLayout.setRefreshing(false);
-                });
+        if (isNetworkAvailable(mContext)) {
+            mSwipeRefreshLayout.setRefreshing(true);
+            Ion.with(mContext)
+                    .load(RESTFulAPI.MARKS_URL)
+                    .as(new TypeToken<List<MarkSubject>>() {
+                    })
+                    .withResponse()
+                    .setCallback((e, result) -> {
+                        if (result.getHeaders().code() == 200) {
+                            addSubjects(result.getResult(), true);
+                        }
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    });
+        } else {
+            Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
     }
 }
