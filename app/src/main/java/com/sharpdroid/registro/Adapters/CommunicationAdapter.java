@@ -75,6 +75,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
         }
         ViewHolder.Type.setText(communication.getType());
 
+        // TODO: 18/11/2016 aggiungere listener solo con allegati presenti
         ViewHolder.mRelativeLayout.setOnClickListener(v -> {
             Snackbar DownloadProgressSnak;
             DownloadProgressSnak = Snackbar.make(mCoordinatorLayout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE);
