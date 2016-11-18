@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 
 import com.google.gson.reflect.TypeToken;
 import com.koushikdutta.ion.Ion;
-import com.sharpdroid.registro.API.RESTFulAPI;
 import com.sharpdroid.registro.Adapters.FileTeacherAdapter;
 import com.sharpdroid.registro.Interfaces.FileTeacher;
 import com.sharpdroid.registro.R;
@@ -136,7 +135,7 @@ public class FragmentFiles extends Fragment implements SwipeRefreshLayout.OnRefr
         if (isNetworkAvailable(mContext)) {
             mSwipeRefreshLayout.setRefreshing(true);
             Ion.with(mContext)
-                    .load(RESTFulAPI.FILES_URL)
+                    .load(/*RESTFulAPI.FILES_URL*/ "https://gist.githubusercontent.com/luca020400/da76cedd586a5cec08788f7f9ffabe9a/raw/files.json")
                     .as(new TypeToken<List<FileTeacher>>() {
                     })
                     .withResponse()

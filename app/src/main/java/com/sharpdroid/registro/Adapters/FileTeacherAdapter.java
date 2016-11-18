@@ -18,7 +18,6 @@ import java.util.List;
 import static com.sharpdroid.registro.Utils.Metodi.getHashmapFromFileTeacher;
 import static com.sharpdroid.registro.Utils.Metodi.getListLayouts;
 
-
 public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
     private LayoutInflater mInflater;
@@ -33,7 +32,6 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         data = new HashMap<>();
         listLayouts = new ArrayList<>();
     }
-
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
