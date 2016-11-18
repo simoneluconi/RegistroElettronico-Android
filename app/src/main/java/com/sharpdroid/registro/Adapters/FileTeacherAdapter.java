@@ -11,6 +11,7 @@ import com.sharpdroid.registro.Interfaces.FileTeacher;
 import com.sharpdroid.registro.Interfaces.Folder;
 import com.sharpdroid.registro.R;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         this.mContext = mContext;
         mInflater = LayoutInflater.from(mContext);
         data = new HashMap<>();
+        listLayouts = new ArrayList<>();
     }
 
 
@@ -50,7 +52,6 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         switch (layout) {
             case R.layout.subheader:
-                current_subheader++;
                 current_folder = 0;
 
                 SubheaderHolder subHolder = (SubheaderHolder) holder;
@@ -58,10 +59,10 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 String profHeader = ((String) data.keySet().toArray()[current_subheader]).trim();
 
                 subHolder.teacher.setText(profHeader);
+                current_subheader++;
 
                 break;
             case R.layout.adapter_folder:
-                current_folder++;
 
                 FileTeacherHolder folderHolder = (FileTeacherHolder) holder;
 
@@ -71,6 +72,7 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 folderHolder.teacher.setText(prof);
                 folderHolder.date.setText(folder.getLast());
 
+                current_folder++;
                 break;
         }
 
