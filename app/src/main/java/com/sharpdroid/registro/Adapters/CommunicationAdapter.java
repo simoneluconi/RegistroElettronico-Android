@@ -8,6 +8,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,6 +101,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
                         .setCallback((e, result) -> {
                             if (result.getHeaders().code() == 200) {
                                 openpdf(result.getResult(), DownloadProgressSnak);
+                                Log.d("ADAPTER", result.getResult().getPath());
                             } else {
                                 DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, result.getHeaders().code()));
                                 DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT).show();
@@ -143,8 +145,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
                 DownloadProgressSnak.dismiss();
                 mContext.startActivity(intent);
             } catch (ActivityNotFoundException e) {
-                DownloadProgressSnak.setText(mContext.getResources().getString(R.string.missing_pdf_app));
-                DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(mCoordinatorLayout,mContext.getResources().getString(R.string.missing_pdf_app),Snackbar.LENGTH_SHORT).show();
             }
         });
     }
