@@ -92,20 +92,19 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
             String url = new RESTFulAPI().COMMUNICATION_DOWNLOAD_URL(communication.getId());
 
             if (!file.exists()) {
-                if (dir.mkdir()) {
-                    Ion.with(mContext)
-                            .load(url)
-                            .write(file)
-                            .withResponse()
-                            .setCallback((e, result) -> {
-                                if (result.getHeaders().code() == 200) {
-                                    openpdf(file, DownloadProgressSnak);
-                                } else {
-                                    DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, result.getHeaders().code()));
-                                    DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT);
-                                }
-                            });
-                }
+                if (!dir.exists()) dir.mkdir();
+                Ion.with(mContext)
+                        .load(url)
+                        .write(file)
+                        .withResponse()
+                        .setCallback((e, result) -> {
+                            if (result.getHeaders().code() == 200) {
+                                openpdf(file, DownloadProgressSnak);
+                            } else {
+                                DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, result.getHeaders().code()));
+                                DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT);
+                            }
+                        });
             } else {
                 openpdf(file, DownloadProgressSnak);
             }
