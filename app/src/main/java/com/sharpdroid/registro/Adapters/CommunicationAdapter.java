@@ -138,7 +138,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
         DownloadProgressSnak.setText(R.string.click_to_open);
-        DownloadProgressSnak.setAction(R.string.open, v1 -> {
+        DownloadProgressSnak.setAction(R.string.open, v -> {
             try {
                 DownloadProgressSnak.dismiss();
                 mContext.startActivity(intent);
