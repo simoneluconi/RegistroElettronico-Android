@@ -134,7 +134,7 @@ public class FragmentFiles extends Fragment implements SwipeRefreshLayout.OnRefr
 
     private void UpdateFiles() {
         if (isNetworkAvailable(mContext)) {
-            mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
+            mSwipeRefreshLayout.setRefreshing(true);
             Ion.with(mContext)
                     .load(RESTFulAPI.FILES_URL)
                     .as(new TypeToken<List<FileTeacher>>() {
@@ -144,7 +144,7 @@ public class FragmentFiles extends Fragment implements SwipeRefreshLayout.OnRefr
                         if (result.getHeaders().code() == 200) {
                             addFiles(result.getResult(), true);
                         }
-                        mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
+                        mSwipeRefreshLayout.setRefreshing(false);
                     });
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();

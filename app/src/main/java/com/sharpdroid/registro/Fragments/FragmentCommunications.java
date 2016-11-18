@@ -135,7 +135,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
 
     private void UpdateCommunications() {
         if (isNetworkAvailable(mContext)) {
-            mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
+            mSwipeRefreshLayout.setRefreshing(true);
             Ion.with(mContext)
                     .load(RESTFulAPI.COMMUNICATIONS_URL)
                     .as(new TypeToken<List<Communication>>() {
@@ -145,7 +145,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
                         if (result.getHeaders().code() == 200) {
                             addCommunications(result.getResult(), true);
                         }
-                        mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
+                        mSwipeRefreshLayout.setRefreshing(false);
                     });
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
