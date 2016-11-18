@@ -20,7 +20,6 @@ import com.sharpdroid.registro.Adapters.FileTeacherAdapter;
 import com.sharpdroid.registro.Interfaces.FileTeacher;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Tasks.CacheListTask;
-import com.sharpdroid.registro.Utils.Divider;
 
 import java.io.EOFException;
 import java.io.File;
@@ -50,7 +49,6 @@ public class FragmentFiles extends Fragment implements SwipeRefreshLayout.OnRefr
 
     public FragmentFiles() {
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

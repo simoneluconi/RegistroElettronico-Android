@@ -2,7 +2,6 @@ package com.sharpdroid.registro.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +14,10 @@ import com.sharpdroid.registro.R;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import static com.sharpdroid.registro.Utils.Metodi.getHashmapFromFileTeacher;
+import static com.sharpdroid.registro.Utils.Metodi.NomeDecente;
 import static com.sharpdroid.registro.Utils.Metodi.getListLayouts;
 
 public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -27,18 +25,16 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private Context mContext;
     private LayoutInflater mInflater;
-    private List<Integer> listLayouts;
-    private HashMap<String, List<Folder>> data; //  <Prof, <Cartelle>>
+    private List<Integer> listLayouts = new ArrayList<>();
+    private List<FileTeacher> data = new ArrayList<>();
     private SimpleDateFormat apiFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
     private SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
 
-    private int current_subheader = -1, current_folder = 0;
+    private int current_subheader, current_folder = 0;
 
     public FileTeacherAdapter(Context mContext) {
         this.mContext = mContext;
         mInflater = LayoutInflater.from(mContext);
-        data = new HashMap<>();
-        listLayouts = new ArrayList<>();
     }
 
     @Override
@@ -58,26 +54,22 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         switch (layout) {
             case R.layout.subheader:
-                current_subheader++;
-                current_folder = 0;
-
                 SubheaderHolder subHolder = (SubheaderHolder) holder;
 
+                String profHeader = data.get(current_subheader).getName();
 
-                String profHeader = new ArrayList<>(data.keySet()).get(current_subheader);
+                subHolder.teacher.setText(NomeDecente(profHeader));
 
-                subHolder.teacher.setText(profHeader);
-
+                current_folder = 0;
+                current_subheader++;
                 break;
             case R.layout.adapter_folder:
-
                 FileTeacherHolder folderHolder = (FileTeacherHolder) holder;
 
-                String prof = ((String) data.keySet().toArray()[current_subheader]).trim();
-                Folder folder = data.get(prof).get(current_folder);
+                Folder folder = data.get(current_subheader - 1).getFolders().get(current_folder);
                 String last = folder.getLast();
 
-                folderHolder.teacher.setText(folder.getName().trim());
+                folderHolder.teacher.setText(NomeDecente(folder.getName().trim()));
                 try {
                     folderHolder.date.setText(dateFormat.format(apiFormat.parse(last.split("T")[0])));
                 } catch (ParseException e) {
@@ -101,7 +93,7 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     public void setAbsences(List<FileTeacher> data) {
-        this.data = getHashmapFromFileTeacher(data);
+        this.data = data;
         listLayouts = getListLayouts(this.data);
         notifyDataSetChanged();
     }
@@ -110,23 +102,22 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void clear() {
         data.clear();
         listLayouts.clear();
-        current_subheader = -1;
-        current_folder = 0;
+        current_subheader = current_folder = 0;
     }
 
     private class SubheaderHolder extends RecyclerView.ViewHolder {
-        public TextView teacher;
+        TextView teacher;
 
-        public SubheaderHolder(View layout) {
+        SubheaderHolder(View layout) {
             super(layout);
             teacher = (TextView) layout.findViewById(R.id.title);
         }
     }
 
     private class FileTeacherHolder extends RecyclerView.ViewHolder {
-        public TextView teacher, date;
+        TextView teacher, date;
 
-        public FileTeacherHolder(View layout) {
+        FileTeacherHolder(View layout) {
             super(layout);
             teacher = (TextView) layout.findViewById(R.id.title);
             date = (TextView) layout.findViewById(R.id.date);

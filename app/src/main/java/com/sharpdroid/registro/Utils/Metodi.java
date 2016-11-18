@@ -14,7 +14,6 @@ import com.sharpdroid.registro.Interfaces.Media;
 import com.sharpdroid.registro.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class Metodi {
@@ -165,24 +164,16 @@ public class Metodi {
         return null;
     }
 
-    public static HashMap<String, List<Folder>> getHashmapFromFileTeacher(List<FileTeacher> list) {
-        HashMap<String, List<Folder>> data = new HashMap<>();
-        for (FileTeacher f : list) {
-            data.put(f.getName().trim(), f.getFolders());
-        }
-        return data;
-    }
-
-    public static List<Integer> getListLayouts(HashMap<String, List<Folder>> data) {
+    public static List<Integer> getListLayouts(List<FileTeacher> data) {
         List<Integer> list = new ArrayList<>();
 
-        for (String prof : data.keySet()) {
+        for (FileTeacher fileTeacher : data) {
+            String prof = fileTeacher.getName();
             list.add(R.layout.subheader);
-            for (Folder folder : data.get(prof)) {
+            for (Folder folder : fileTeacher.getFolders()) {
                 list.add(R.layout.adapter_folder);
             }
         }
-
         return list;
     }
 
