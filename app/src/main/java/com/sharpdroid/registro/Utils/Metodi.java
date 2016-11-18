@@ -24,7 +24,7 @@ public class Metodi {
         return activeNetworkInfo != null;
     }
 
-    public static String MessaggioVoto(float Obb, float media, float somma, int voti) {
+    public static String MessaggioVoto(float Obb, float media, int voti) {
         // Calcolo
         if (Obb > 10 || media > 10)
             return "Errore"; // Quando l'obiettivo o la media sono > 10
@@ -168,9 +168,8 @@ public class Metodi {
         List<Integer> list = new ArrayList<>();
 
         for (FileTeacher fileTeacher : data) {
-            String prof = fileTeacher.getName();
             list.add(R.layout.adapter_file_teacher);
-            for (Folder folder : fileTeacher.getFolders()) {
+            for (Folder ignored : fileTeacher.getFolders()) {
                 list.add(R.layout.adapter_folder);
             }
         }

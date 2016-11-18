@@ -82,7 +82,7 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
 
         ViewHolder.mArcProgressStackView.setModels(models);
 
-        String obbiettivo_string = Metodi.MessaggioVoto(voto_obiettivo, media.getMediaGenerale(), media.getSommaGenerale(), media.getNumeroVoti());
+        String obbiettivo_string = Metodi.MessaggioVoto(voto_obiettivo, media.getMediaGenerale(), media.getNumeroVoti());
         ViewHolder.mTextViewDesc.setText(obbiettivo_string);
 
         ViewHolder.mCardViewMedia.setOnClickListener(v -> {

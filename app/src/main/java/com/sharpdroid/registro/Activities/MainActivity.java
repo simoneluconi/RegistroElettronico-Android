@@ -32,7 +32,6 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     @BindView(R.id.nav_view)
     NavigationView mNavigationView;
-    private int drawer_to_open;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,7 +147,7 @@ public class MainActivity extends AppCompatActivity
 
         // Programmatically start a fragment
         if (savedInstanceState == null) {
-            drawer_to_open = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this)
+            int drawer_to_open = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this)
                     .getString("drawer_to_open", "0"));
 
             Bundle extras = getIntent().getExtras();

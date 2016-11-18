@@ -23,17 +23,17 @@ import static com.sharpdroid.registro.Utils.Metodi.getListLayouts;
 public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     final static String TAG = FileTeacherAdapter.class.getSimpleName();
 
-    private Context mContext;
-    private LayoutInflater mInflater;
+    private final Context mContext;
+    private final LayoutInflater mInflater;
     private List<Integer> listLayouts = new ArrayList<>();
     private List<FileTeacher> data = new ArrayList<>();
-    private SimpleDateFormat apiFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
+    private final SimpleDateFormat apiFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
 
     private int current_subheader, current_folder = 0;
 
-    public FileTeacherAdapter(Context mContext) {
-        this.mContext = mContext;
+    public FileTeacherAdapter(Context context) {
+        mContext = context;
         mInflater = LayoutInflater.from(mContext);
     }
 
@@ -108,8 +108,8 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     private class SubheaderHolder extends RecyclerView.ViewHolder {
-        TextView teacher;
-        View padding_view;
+        final TextView teacher;
+        final View padding_view;
 
         SubheaderHolder(View layout) {
             super(layout);
@@ -119,7 +119,8 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     private class FileTeacherHolder extends RecyclerView.ViewHolder {
-        TextView teacher, date;
+        final TextView teacher;
+        final TextView date;
 
         FileTeacherHolder(View layout) {
             super(layout);

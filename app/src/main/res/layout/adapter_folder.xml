@@ -2,7 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="60dp"
+    android:paddingEnd="16dp"
     android:paddingLeft="16dp"
+    android:paddingRight="16dp"
     android:paddingStart="16dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -23,7 +25,9 @@
         android:layout_toRightOf="@+id/circleImageView"
         android:orientation="vertical"
         android:paddingEnd="16dp"
-        android:paddingRight="16dp">
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingStart="16dp">
 
         <TextView
             android:id="@+id/title"

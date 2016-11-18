@@ -23,10 +23,10 @@ import static com.sharpdroid.registro.Utils.Metodi.getUndoneCountDelays;
 import static com.sharpdroid.registro.Utils.Metodi.getUndoneCountExits;
 
 public class AllAbsencesAdapter extends BaseExpandableListAdapter {
-    private Context mContext;
+    private final Context mContext;
     private Absences absences;
-    private LayoutInflater mInflater;
-    private SimpleDateFormat format = new SimpleDateFormat("dd MMM", Locale.getDefault());
+    private final LayoutInflater mInflater;
+    private final SimpleDateFormat format = new SimpleDateFormat("dd MMM", Locale.getDefault());
 
     public AllAbsencesAdapter(Context context) {
         mContext = context;
