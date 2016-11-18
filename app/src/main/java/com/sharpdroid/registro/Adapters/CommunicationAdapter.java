@@ -99,7 +99,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
                         .withResponse()
                         .setCallback((e, result) -> {
                             if (result.getHeaders().code() == 200) {
-                                openpdf(file, DownloadProgressSnak);
+                                openpdf(result.getResult(), DownloadProgressSnak);
                             } else {
                                 DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, result.getHeaders().code()));
                                 DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT);
