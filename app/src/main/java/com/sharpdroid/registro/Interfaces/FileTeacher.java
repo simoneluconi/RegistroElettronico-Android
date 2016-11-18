@@ -1,11 +1,12 @@
 package com.sharpdroid.registro.Interfaces;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FileTeacher implements Serializable {
     private String name;
-    private List<Folder> folders;
+    private List<Folder> folders = new ArrayList<>();
 
     public FileTeacher(String name, List<Folder> folders) {
         this.name = name;

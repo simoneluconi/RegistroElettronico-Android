@@ -1,12 +1,13 @@
 package com.sharpdroid.registro.Interfaces;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Absences implements Serializable {
-    private List<Absence> absences;
-    private List<Delay> delays;
-    private List<Exit> exits;
+    private List<Absence> absences = new ArrayList<>();
+    private List<Delay> delays = new ArrayList<>();
+    private List<Exit> exits = new ArrayList<>();
 
     public Absences(List<Absence> absences, List<Delay> delays, List<Exit> exits) {
         this.absences = absences;

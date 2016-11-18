@@ -1,11 +1,13 @@
 package com.sharpdroid.registro.Interfaces;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-public class Folder {
+public class Folder implements Serializable {
     private String name;
     private String last;
-    private List<File> elements;
+    private List<File> elements = new ArrayList<>();
 
     public Folder(String name, String last, List<File> elements) {
         this.name = name;

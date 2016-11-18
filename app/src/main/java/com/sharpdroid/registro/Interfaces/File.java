@@ -1,6 +1,8 @@
 package com.sharpdroid.registro.Interfaces;
 
-public class File {
+import java.io.Serializable;
+
+public class File implements Serializable {
     private String id;
     private String name;
     private String type;
