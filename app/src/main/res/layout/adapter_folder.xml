@@ -48,6 +48,8 @@
         android:layout_alignLeft="@+id/linearLayout"
         android:layout_alignParentBottom="true"
         android:layout_alignStart="@+id/linearLayout"
+        android:layout_marginEnd="12dp"
+        android:layout_marginRight="12dp"
         android:background="#e5e5e5" />
 
 </RelativeLayout>
