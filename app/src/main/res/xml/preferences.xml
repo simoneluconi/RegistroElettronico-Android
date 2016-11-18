@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <ListPreference
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <android.support.v7.preference.ListPreference
         android:defaultValue="8"
         android:entries="@array/voti_list"
         android:entryValues="@array/voti_list"
@@ -8,11 +8,11 @@
         android:summary="Seleziona il voto obiettivo"
         android:title="Obiettivo" />
 
-    <ListPreference
+    <android.support.v7.preference.ListPreference
         android:defaultValue="0"
         android:entries="@array/tab_list"
         android:entryValues="@array/tab_list_n"
         android:key="drawer_to_open"
         android:summary="Seleziona il tab di partenza"
         android:title="Tab di partenza" />
-</PreferenceScreen>
+</android.support.v7.preference.PreferenceScreen>
