@@ -95,15 +95,6 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
         }
     }
 
-    public void onRefresh() {
-        if (isNetworkAvailable(mContext)) {
-            UpdateNotes();
-        } else {
-            Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
-            mSwipeRefreshLayout.setRefreshing(false);
-        }
-    }
-
     private void bindNoteCache() {
         ObjectInputStream objectInputStream = null;
         try {
@@ -137,18 +128,28 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
         }
     }
 
+    public void onRefresh() {
+        UpdateNotes();
+
+    }
+
     private void UpdateNotes() {
-        mSwipeRefreshLayout.setRefreshing(true);
-        Ion.with(mContext)
-                .load(RESTFulAPI.NOTES_URL)
-                .as(new TypeToken<List<Note>>() {
-                })
-                .withResponse()
-                .setCallback((e, result) -> {
-                    if (result.getHeaders().code() == 200) {
-                        addNotes(result.getResult(), true);
-                    }
-                    mSwipeRefreshLayout.setRefreshing(false);
-                });
+        if (isNetworkAvailable(mContext)) {
+            mSwipeRefreshLayout.setRefreshing(true);
+            Ion.with(mContext)
+                    .load(RESTFulAPI.NOTES_URL)
+                    .as(new TypeToken<List<Note>>() {
+                    })
+                    .withResponse()
+                    .setCallback((e, result) -> {
+                        if (result.getHeaders().code() == 200) {
+                            addNotes(result.getResult(), true);
+                        }
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    });
+        } else {
+            Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
     }
 }

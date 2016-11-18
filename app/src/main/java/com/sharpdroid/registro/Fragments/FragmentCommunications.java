@@ -96,15 +96,6 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
         }
     }
 
-    public void onRefresh() {
-        if (isNetworkAvailable(mContext)) {
-            UpdateCommunications();
-        } else {
-            Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
-            mSwipeRefreshLayout.setRefreshing(false);
-        }
-    }
-
     private void bindCommunicationsCache() {
         ObjectInputStream objectInputStream = null;
         try {
@@ -138,18 +129,27 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
         }
     }
 
+    public void onRefresh() {
+        UpdateCommunications();
+    }
+
     private void UpdateCommunications() {
-        mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
-        Ion.with(mContext)
-                .load(RESTFulAPI.COMMUNICATIONS_URL)
-                .as(new TypeToken<List<Communication>>() {
-                })
-                .withResponse()
-                .setCallback((e, result) -> {
-                    if (result.getHeaders().code() == 200) {
-                        addCommunications(result.getResult(), true);
-                    }
-                    mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
-                });
+        if (isNetworkAvailable(mContext)) {
+            mSwipeRefreshLayout.setRefreshing(true);
+            Ion.with(mContext)
+                    .load(RESTFulAPI.COMMUNICATIONS_URL)
+                    .as(new TypeToken<List<Communication>>() {
+                    })
+                    .withResponse()
+                    .setCallback((e, result) -> {
+                        if (result.getHeaders().code() == 200) {
+                            addCommunications(result.getResult(), true);
+                        }
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    });
+        } else {
+            Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
     }
 }
