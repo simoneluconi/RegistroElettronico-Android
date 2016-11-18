@@ -77,9 +77,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
 
         // TODO: 18/11/2016 aggiungere listener solo con allegati presenti
         ViewHolder.mRelativeLayout.setOnClickListener(v -> {
-            Snackbar DownloadProgressSnak;
-            DownloadProgressSnak = Snackbar.make(mCoordinatorLayout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE);
-            DownloadProgressSnak.show();
+            Snackbar DownloadProgressSnak = Snackbar.make(mCoordinatorLayout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE);
 
             File dir = new File(
                     Environment.getExternalStoragePublicDirectory(
@@ -93,6 +91,8 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
             String url = new RESTFulAPI().COMMUNICATION_DOWNLOAD_URL(communication.getId());
 
             if (!file.exists()) {
+                DownloadProgressSnak.show();
+
                 if (!dir.exists()) dir.mkdir();
                 Ion.with(mContext)
                         .load(url)
@@ -140,7 +140,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
         DownloadProgressSnak.setText(R.string.click_to_open);
-        DownloadProgressSnak.setAction(R.string.open, v1 -> {
+        DownloadProgressSnak.setAction(R.string.open, v -> {
             try {
                 DownloadProgressSnak.dismiss();
                 mContext.startActivity(intent);
@@ -148,5 +148,6 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
                 Snackbar.make(mCoordinatorLayout,mContext.getResources().getString(R.string.missing_pdf_app),Snackbar.LENGTH_SHORT).show();
             }
         });
+        DownloadProgressSnak.show();
     }
 }
