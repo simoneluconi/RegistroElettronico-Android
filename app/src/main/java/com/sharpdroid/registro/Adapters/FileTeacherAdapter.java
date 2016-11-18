@@ -11,18 +11,25 @@ import com.sharpdroid.registro.Interfaces.FileTeacher;
 import com.sharpdroid.registro.Interfaces.Folder;
 import com.sharpdroid.registro.R;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import static com.sharpdroid.registro.Utils.Metodi.getHashmapFromFileTeacher;
+import static com.sharpdroid.registro.Utils.Metodi.getListLayouts;
+
 
 public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
     private LayoutInflater mInflater;
-    private List<FileTeacher> CVDataList;
-    List<Integer> listLayouts;
+    private List<Integer> listLayouts;
+    private HashMap<String, List<Folder>> data; //  <Prof, <Cartelle>>
+
+    private int current_subheader = 0, current_folder = 0;
 
     public FileTeacherAdapter(Context mContext) {
         this.mContext = mContext;
         mInflater = LayoutInflater.from(mContext);
+        data = new HashMap<>();
     }
 
 
@@ -31,7 +38,6 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         switch (viewType) {
             case R.layout.subheader:
                 return new SubheaderHolder(mInflater.inflate(viewType, parent, false));
-
             case R.layout.adapter_folder:
                 return new FileTeacherHolder(mInflater.inflate(viewType, parent, false));
         }
@@ -41,32 +47,33 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         int layout = getItemViewType(position);
+
         switch (layout) {
             case R.layout.subheader:
-                int position_headers = countHeadersBefore(position);
+                current_subheader++;
+                current_folder = 0;
 
-                SubheaderHolder subheaderHolder = (SubheaderHolder) holder;
+                SubheaderHolder subHolder = (SubheaderHolder) holder;
 
-                subheaderHolder.teacher.setText(CVDataList.get(position_headers).getName().trim());
+                String profHeader = ((String) data.keySet().toArray()[current_subheader]).trim();
+
+                subHolder.teacher.setText(profHeader);
 
                 break;
             case R.layout.adapter_folder:
-                // TODO: 17/11/2016 count dall'elemento dopo l'ultimo header
-                int position_folder;
+                current_folder++;
 
+                FileTeacherHolder folderHolder = (FileTeacherHolder) holder;
+
+                String prof = ((String) data.keySet().toArray()[current_subheader]).trim();
+                Folder folder = data.get(prof).get(current_folder);
+
+                folderHolder.teacher.setText(prof);
+                folderHolder.date.setText(folder.getLast());
 
                 break;
-
         }
 
-    }
-
-    int countHeadersBefore(int i) {
-        int acc = 0;
-        for (int j = 0; j < i; j++) {
-            if (listLayouts.get(j) == R.layout.subheader) acc++;
-        }
-        return acc;
     }
 
     @Override
@@ -74,39 +81,24 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return listLayouts.get(position);
     }
 
-    List<Integer> getListLayouts() {
-        List<Integer> list = new ArrayList<>();
-
-        for (FileTeacher fileTeacher : CVDataList) {
-            list.add(R.layout.subheader);
-            for (Folder folder : fileTeacher.getFolders()) {
-                list.add(R.layout.adapter_folder);
-            }
-        }
-        return list;
-    }
-
     @Override
     public int getItemCount() {
-        int acc = CVDataList.size();    //Numero di prof
-        for (FileTeacher f : CVDataList) //Numero di cartelle per ogni prof
-            acc += f.getFolders().size();
-
-        return acc;
+        return data.size();
     }
 
     public void setAbsences(List<FileTeacher> data) {
-        CVDataList = data;
-        listLayouts = getListLayouts();
+        this.data = getHashmapFromFileTeacher(data);
+        listLayouts = getListLayouts(this.data);
         notifyDataSetChanged();
     }
 
+
     public void clear() {
-        CVDataList = null;
+        data.clear();
         listLayouts.clear();
     }
 
-    class SubheaderHolder extends RecyclerView.ViewHolder {
+    private class SubheaderHolder extends RecyclerView.ViewHolder {
         public TextView teacher;
 
         public SubheaderHolder(View layout) {
@@ -115,7 +107,7 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    class FileTeacherHolder extends RecyclerView.ViewHolder {
+    private class FileTeacherHolder extends RecyclerView.ViewHolder {
         public TextView teacher, date;
 
         public FileTeacherHolder(View layout) {

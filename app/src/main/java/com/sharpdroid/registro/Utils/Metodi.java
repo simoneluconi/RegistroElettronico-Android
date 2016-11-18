@@ -8,9 +8,13 @@ import com.sharpdroid.registro.API.RESTFulAPI;
 import com.sharpdroid.registro.Interfaces.Absence;
 import com.sharpdroid.registro.Interfaces.Delay;
 import com.sharpdroid.registro.Interfaces.Exit;
+import com.sharpdroid.registro.Interfaces.FileTeacher;
+import com.sharpdroid.registro.Interfaces.Folder;
 import com.sharpdroid.registro.Interfaces.Media;
 import com.sharpdroid.registro.R;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Metodi {
@@ -150,6 +154,36 @@ public class Metodi {
             days += a.getDays();
         }
         return days;
+    }
+
+    public static FileTeacher getFileTeacherFromPositionInList(List<FileTeacher> list, int p) {
+        int acc = 0;
+        for (FileTeacher fileTeacher : list) {
+            acc += 1 + fileTeacher.getFolders().size();
+            if (p < acc) return fileTeacher;
+        }
+        return null;
+    }
+
+    public static HashMap<String, List<Folder>> getHashmapFromFileTeacher(List<FileTeacher> list) {
+        HashMap<String, List<Folder>> data = new HashMap<>();
+        for (FileTeacher f : list) {
+            data.put(f.getName().trim(), f.getFolders());
+        }
+        return data;
+    }
+
+    public static List<Integer> getListLayouts(HashMap<String, List<Folder>> data) {
+        List<Integer> list = new ArrayList<>();
+
+        for (String prof : data.keySet()) {
+            list.add(R.layout.subheader);
+            for (Folder folder : data.get(prof)) {
+                list.add(R.layout.adapter_folder);
+            }
+        }
+
+        return list;
     }
 
     public static int getUndoneCountAbsences(List<Absence> absences) {
