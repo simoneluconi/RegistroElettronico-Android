@@ -58,8 +58,10 @@ android {
         release {
             debuggable false
 
+            zipAlignEnabled true
             shrinkResources true
             minifyEnabled true
+            useProguard true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
             if (rootProject.file("keystore.properties").exists()) {
