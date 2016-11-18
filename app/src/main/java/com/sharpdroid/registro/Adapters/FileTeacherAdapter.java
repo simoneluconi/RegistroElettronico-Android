@@ -62,10 +62,6 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 current_folder = 0;
 
                 SubheaderHolder subHolder = (SubheaderHolder) holder;
-                if(current_subheader==0){
-                    subHolder.divider.setVisibility(View.GONE);
-                    subHolder.padding.setVisibility(View.GONE);
-                }
 
 
                 String profHeader = new ArrayList<>(data.keySet()).get(current_subheader);
@@ -120,13 +116,10 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private class SubheaderHolder extends RecyclerView.ViewHolder {
         public TextView teacher;
-        View divider, padding;
 
         public SubheaderHolder(View layout) {
             super(layout);
             teacher = (TextView) layout.findViewById(R.id.title);
-            padding = layout.findViewById(R.id.paddingTop);
-            divider = layout.findViewById(R.id.divider);
         }
     }
 
