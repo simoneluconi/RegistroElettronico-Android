@@ -60,6 +60,8 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                 subHolder.teacher.setText(NomeDecente(profHeader));
 
+                subHolder.padding_view.setVisibility((current_folder == 0) ? View.GONE : View.VISIBLE);
+
                 current_folder = 0;
                 current_subheader++;
                 break;
@@ -107,10 +109,12 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private class SubheaderHolder extends RecyclerView.ViewHolder {
         TextView teacher;
+        View padding_view;
 
         SubheaderHolder(View layout) {
             super(layout);
             teacher = (TextView) layout.findViewById(R.id.title);
+            padding_view = layout.findViewById(R.id.paddingTop);
         }
     }
 
