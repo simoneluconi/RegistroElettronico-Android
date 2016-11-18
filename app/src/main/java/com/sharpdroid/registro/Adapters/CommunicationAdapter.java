@@ -102,7 +102,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
                                 openpdf(result.getResult(), DownloadProgressSnak);
                             } else {
                                 DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, result.getHeaders().code()));
-                                DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT);
+                                DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT).show();
                             }
                         });
             } else {
@@ -136,6 +136,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(FileProvider.getUriForFile(mContext, "com.sharpdroid.registro.fileprovider", file), "application/pdf");
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
         DownloadProgressSnak.setText(R.string.click_to_open);
         DownloadProgressSnak.setAction(R.string.open, v1 -> {
             try {
@@ -143,7 +144,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
                 mContext.startActivity(intent);
             } catch (ActivityNotFoundException e) {
                 DownloadProgressSnak.setText(mContext.getResources().getString(R.string.missing_pdf_app));
-                DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT);
+                DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT).show();
             }
         });
     }
