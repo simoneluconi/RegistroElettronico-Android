@@ -2,9 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    android:paddingEnd="16dp"
     android:paddingLeft="16dp"
-    android:paddingRight="16dp"
     android:paddingStart="16dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -20,8 +18,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
+        android:id="@+id/linearLayout"
         android:layout_toEndOf="@+id/circleImageView"
         android:layout_toRightOf="@+id/circleImageView"
+        android:paddingEnd="16dp"
+        android:paddingRight="16dp"
         android:orientation="vertical">
 
         <TextView
@@ -39,5 +40,14 @@
             android:layout_height="wrap_content"
             android:textSize="13sp" />
     </LinearLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/linearLayout"
+        android:layout_alignLeft="@+id/linearLayout"
+        android:background="#e5e5e5"/>
 
 </RelativeLayout>
