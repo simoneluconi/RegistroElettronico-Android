@@ -40,7 +40,7 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
-            case R.layout.subheader:
+            case R.layout.adapter_file_teacher:
                 return new SubheaderHolder(mInflater.inflate(viewType, parent, false));
             case R.layout.adapter_folder:
                 return new FileTeacherHolder(mInflater.inflate(viewType, parent, false));
@@ -53,7 +53,7 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         int layout = getItemViewType(position);
 
         switch (layout) {
-            case R.layout.subheader:
+            case R.layout.adapter_file_teacher:
                 SubheaderHolder subHolder = (SubheaderHolder) holder;
 
                 String profHeader = data.get(current_subheader).getName();

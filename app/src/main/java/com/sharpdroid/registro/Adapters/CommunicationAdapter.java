@@ -118,22 +118,6 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
         return CVDataList.size();
     }
 
-    class CommunicationHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.relative_layout)
-        RelativeLayout mRelativeLayout;
-        @BindView(R.id.title)
-        TextView Title;
-        @BindView(R.id.date)
-        TextView Date;
-        @BindView(R.id.type)
-        TextView Type;
-
-        CommunicationHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-    }
-
     private void openpdf(File file, Snackbar DownloadProgressSnak) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(FileProvider.getUriForFile(mContext, "com.sharpdroid.registro.fileprovider", file), "application/pdf");
@@ -148,5 +132,21 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
             }
         });
         DownloadProgressSnak.show();
+    }
+
+    class CommunicationHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.relative_layout)
+        RelativeLayout mRelativeLayout;
+        @BindView(R.id.title)
+        TextView Title;
+        @BindView(R.id.date)
+        TextView Date;
+        @BindView(R.id.type)
+        TextView Type;
+
+        CommunicationHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
     }
 }

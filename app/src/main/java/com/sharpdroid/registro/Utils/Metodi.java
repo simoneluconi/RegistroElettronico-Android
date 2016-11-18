@@ -169,7 +169,7 @@ public class Metodi {
 
         for (FileTeacher fileTeacher : data) {
             String prof = fileTeacher.getName();
-            list.add(R.layout.subheader);
+            list.add(R.layout.adapter_file_teacher);
             for (Folder folder : fileTeacher.getFolders()) {
                 list.add(R.layout.adapter_folder);
             }
