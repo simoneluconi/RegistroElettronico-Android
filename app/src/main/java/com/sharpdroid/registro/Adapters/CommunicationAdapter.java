@@ -8,7 +8,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,30 +80,32 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
             DownloadProgressSnak = Snackbar.make(mCoordinatorLayout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE);
             DownloadProgressSnak.show();
 
-            File file = new File(
+            File dir = new File(
                     Environment.getExternalStoragePublicDirectory(
                             Environment.DIRECTORY_DOWNLOADS).toString() +
                             File.separator +
-                            "Registro Elettronico" +
-                            File.separator +
-                            communication.getId() + ".pdf");
-
+                            "Registro Elettronico");
+            File file = new File(dir +
+                    File.separator +
+                    communication.getId() + ".pdf");
 
             String url = new RESTFulAPI().COMMUNICATION_DOWNLOAD_URL(communication.getId());
 
             if (!file.exists()) {
-                Ion.with(mContext)
-                        .load(url)
-                        .write(file)
-                        .withResponse()
-                        .setCallback((e, result) -> {
-                            if (result.getHeaders().code() == 200) {
-                                openpdf(file, DownloadProgressSnak);
-                            } else {
-                                DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, result.getHeaders().code()));
-                                DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT);
-                            }
-                        });
+                if (dir.mkdir()) {
+                    Ion.with(mContext)
+                            .load(url)
+                            .write(file)
+                            .withResponse()
+                            .setCallback((e, result) -> {
+                                if (result.getHeaders().code() == 200) {
+                                    openpdf(file, DownloadProgressSnak);
+                                } else {
+                                    DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, result.getHeaders().code()));
+                                    DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT);
+                                }
+                            });
+                }
             } else {
                 openpdf(file, DownloadProgressSnak);
             }
