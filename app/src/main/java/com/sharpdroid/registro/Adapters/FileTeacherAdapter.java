@@ -60,7 +60,8 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                 subHolder.teacher.setText(NomeDecente(profHeader));
 
-                subHolder.padding_view.setVisibility((current_folder == 0) ? View.GONE : View.VISIBLE);
+                if (current_folder == 0)
+                    subHolder.padding_view.setVisibility(View.GONE);
 
                 current_folder = 0;
                 current_subheader++;
@@ -99,7 +100,6 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         listLayouts = getListLayouts(this.data);
         notifyDataSetChanged();
     }
-
 
     public void clear() {
         data.clear();
