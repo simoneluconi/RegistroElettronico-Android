@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="60dp"
     android:clickable="true"
+    android:id="@+id/relative_layout"
     android:foreground="?android:attr/selectableItemBackground"
     android:paddingEnd="16dp"
     android:paddingLeft="16dp"

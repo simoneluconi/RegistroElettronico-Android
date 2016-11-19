@@ -1,6 +1,8 @@
 package com.sharpdroid.registro.Adapters;
 
 import android.content.Context;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.sharpdroid.registro.Utils.Metodi.NomeDecente;
 import static com.sharpdroid.registro.Utils.Metodi.getListLayouts;
 
@@ -29,12 +34,15 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private List<FileTeacher> fileteachers = new ArrayList<>();
     private final SimpleDateFormat apiFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
+    private FragmentTransaction transaction;
 
     private int current_subheader, current_folder = 0;
 
-    public FileTeacherAdapter(Context context) {
+    public FileTeacherAdapter(Context context, FragmentManager fragmentManager) {
         mContext = context;
         mInflater = LayoutInflater.from(mContext);
+        transaction = fragmentManager.beginTransaction();
+
     }
 
     @Override
@@ -68,14 +76,16 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 break;
             case R.layout.adapter_folder:
                 FileTeacherHolder folderHolder = (FileTeacherHolder) holder;
-
                 Folder folder = fileteachers.get(current_subheader - 1).getFolders().get(current_folder);
-                String last = folder.getLast();
-                // TODO: 18/11/2016 click listener
+                String date = folder.getLast();
+
+                folderHolder.layout.setOnClickListener(view -> {
+                    // TODO: 19/11/2016 fragment transaction
+                });
 
                 folderHolder.teacher.setText(NomeDecente(folder.getName().trim()));
                 try {
-                    folderHolder.date.setText(dateFormat.format(apiFormat.parse(last.split("T")[0])));
+                    folderHolder.date.setText(dateFormat.format(apiFormat.parse(date.split("T")[0])));
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -109,24 +119,28 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     private class SubheaderHolder extends RecyclerView.ViewHolder {
-        final TextView teacher;
-        final View padding_view;
+        @BindView(R.id.title)
+        TextView teacher;
+        @BindView(R.id.paddingTop)
+        View padding_view;
 
         SubheaderHolder(View layout) {
             super(layout);
-            teacher = (TextView) layout.findViewById(R.id.title);
-            padding_view = layout.findViewById(R.id.paddingTop);
+            ButterKnife.bind(this, layout);
         }
     }
 
     private class FileTeacherHolder extends RecyclerView.ViewHolder {
-        final TextView teacher;
-        final TextView date;
+        @BindView(R.id.title)
+        TextView teacher;
+        @BindView(R.id.date)
+        TextView date;
+        @BindView(R.id.relative_layout)
+        View layout;
 
         FileTeacherHolder(View layout) {
             super(layout);
-            teacher = (TextView) layout.findViewById(R.id.title);
-            date = (TextView) layout.findViewById(R.id.date);
+            ButterKnife.bind(this, layout);
         }
     }
 
