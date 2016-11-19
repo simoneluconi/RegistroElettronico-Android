@@ -47,6 +47,8 @@ public class FragmentFiles extends Fragment {
         TextView folder_date = (TextView) folder_layout.findViewById(R.id.date);
         View folder_divider = folder_layout.findViewById(R.id.divider);
         folder_divider.setVisibility(View.GONE);
+        folder_layout.setClickable(false);
+        folder_layout.setFocusable(false);
 
         Folder data = null;
         try {
@@ -63,8 +65,8 @@ public class FragmentFiles extends Fragment {
                     Log.e(TAG, e.getMessage(), e);
                 }
                 mRVAdapter = new FileAdapter(mContext);
+                addSubjects(data);
             }
-            addSubjects(data);
         }
         //endregion
 
