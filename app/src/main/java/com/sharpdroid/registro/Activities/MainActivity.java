@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.sharpdroid.registro.Fragments.FragmentAllAbsences;
 import com.sharpdroid.registro.Fragments.FragmentCommunications;
-import com.sharpdroid.registro.Fragments.FragmentFiles;
+import com.sharpdroid.registro.Fragments.FragmentFolders;
 import com.sharpdroid.registro.Fragments.FragmentMedie;
 import com.sharpdroid.registro.Fragments.FragmentNote;
 import com.sharpdroid.registro.Fragments.FragmentSettings;
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = new FragmentSettings();
                 break;
             case R.id.files:
-                fragment = new FragmentFiles();
+                fragment = new FragmentFolders();
                 break;
             case R.id.nav_share:
             case R.id.nav_send:
