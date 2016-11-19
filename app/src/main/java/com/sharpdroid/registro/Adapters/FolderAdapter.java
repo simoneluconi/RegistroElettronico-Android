@@ -1,5 +1,6 @@
 package com.sharpdroid.registro.Adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -43,6 +44,7 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private int current_subheader, current_folder = 0;
 
+    @SuppressLint("CommitTransaction")
     public FolderAdapter(Context context, FragmentManager fragmentManager) {
         mContext = context;
         mInflater = LayoutInflater.from(mContext);
@@ -85,7 +87,6 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 String date = folder.getLast();
 
                 folderHolder.layout.setOnClickListener(view -> {
-                    // TODO: 19/11/2016 fragment transaction & INTENT(format json & then parse)
                     FragmentFiles fragment = new FragmentFiles();
                     Bundle intent_data = new Bundle();
                     intent_data.putString("folder", new Gson().toJson(folder));
@@ -95,7 +96,7 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         fragment.setSharedElementEnterTransition(TransitionInflater.from(mContext).inflateTransition(R.transition.shared_element));
                     }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        fragment.setEnterTransition(TransitionInflater.from(mContext).inflateTransition(android.R.transition.explode));
+                        fragment.setEnterTransition(TransitionInflater.from(mContext).inflateTransition(android.R.transition.move));
                     }
                     transaction
                             .addSharedElement(folderHolder.date, "folder_date")

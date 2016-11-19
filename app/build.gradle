@@ -98,5 +98,7 @@ dependencies {
     compile 'com.koushikdutta.ion:ion:2.1.9'
     compile 'devlight.io:arcprogressstackview:1.0.4'
     compile 'de.hdodenhof:circleimageview:2.1.0'
+    compile 'com.yqritc:recyclerview-flexibledivider:1.4.0'
+
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
 }
