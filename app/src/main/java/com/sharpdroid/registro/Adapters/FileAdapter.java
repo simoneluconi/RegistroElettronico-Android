@@ -61,9 +61,9 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
             Log.e(TAG, "Error parsing DATE");
         }
 
-        if(!file.getType().equals("link")){
+        if (!file.getType().equals("link")) {
             holder.image.setImageResource(R.drawable.file);
-        }else{
+        } else {
             holder.image.setImageResource(R.drawable.link);
         }
     }

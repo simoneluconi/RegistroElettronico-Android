@@ -8,9 +8,9 @@
     android:foreground="?android:attr/selectableItemBackground"
     android:paddingEnd="16dp"
     android:paddingLeft="16dp"
-    android:transitionName="folder_layout"
     android:paddingRight="16dp"
     android:paddingStart="16dp"
+    android:transitionName="folder_layout"
     tools:targetApi="lollipop">
 
     <de.hdodenhof.circleimageview.CircleImageView

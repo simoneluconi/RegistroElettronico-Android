@@ -32,14 +32,13 @@ import static com.sharpdroid.registro.Utils.Metodi.NomeDecente;
 import static com.sharpdroid.registro.Utils.Metodi.getListLayouts;
 
 public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    public static final SimpleDateFormat apiFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    public static final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
     final static String TAG = FolderAdapter.class.getSimpleName();
-
     private final Context mContext;
     private final LayoutInflater mInflater;
     private List<Integer> listLayouts = new ArrayList<>();
     private List<FileTeacher> fileteachers = new ArrayList<>();
-    public static final SimpleDateFormat apiFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-    public static final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
     private FragmentTransaction transaction;
 
     private int current_subheader, current_folder = 0;
