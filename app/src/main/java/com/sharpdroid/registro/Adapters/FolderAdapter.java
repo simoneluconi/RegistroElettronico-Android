@@ -32,9 +32,10 @@ import static com.sharpdroid.registro.Utils.Metodi.NomeDecente;
 import static com.sharpdroid.registro.Utils.Metodi.getListLayouts;
 
 public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    final static String TAG = FolderAdapter.class.getSimpleName();
+
     public static final SimpleDateFormat apiFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
     public static final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
-    final static String TAG = FolderAdapter.class.getSimpleName();
     private final Context mContext;
     private final LayoutInflater mInflater;
     private List<Integer> listLayouts = new ArrayList<>();
@@ -48,7 +49,6 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         mContext = context;
         mInflater = LayoutInflater.from(mContext);
         transaction = fragmentManager.beginTransaction();
-
     }
 
     @Override
@@ -93,10 +93,11 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         fragment.setSharedElementEnterTransition(TransitionInflater.from(mContext).inflateTransition(R.transition.shared_element));
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            fragment.setEnterTransition(TransitionInflater.from(mContext).inflateTransition(android.R.transition.move));
+                        }
                     }
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        fragment.setEnterTransition(TransitionInflater.from(mContext).inflateTransition(android.R.transition.move));
-                    }
+
                     transaction
                             .addSharedElement(folderHolder.date, "folder_date")
                             .addSharedElement(folderHolder.teacher, "folder_title")

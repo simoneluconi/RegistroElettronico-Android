@@ -1,6 +1,5 @@
 package com.sharpdroid.registro.Fragments;
 
-
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -33,7 +32,6 @@ public class FragmentFiles extends Fragment {
     public FragmentFiles() {
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -54,16 +52,15 @@ public class FragmentFiles extends Fragment {
         try {
             //GET DATA VIA JSON
             data = new Gson().getAdapter(Folder.class).fromJson(getArguments().getString("folder"));
-            Log.d(TAG + "/TRY", getArguments().getString("folder"));
         } catch (IOException e) {
-            Log.e(TAG + "/CATCH", "IOException: " + e.getMessage());
+            Log.e(TAG, e.getMessage(), e);
         } finally {
             if (data != null) {
                 folder_title.setText(data.getName().trim());
                 try {
                     folder_date.setText(dateFormat.format(apiFormat.parse(data.getLast().split("T")[0])));
                 } catch (ParseException e) {
-                    Log.e(TAG + "/FINALLY/CATCH", "Error parsing DATE from FOLDER");
+                    Log.e(TAG, e.getMessage(), e);
                 }
                 mRVAdapter = new FileAdapter(mContext);
             }
