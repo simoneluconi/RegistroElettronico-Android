@@ -63,6 +63,8 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
 
         if(!file.getType().equals("link")){
             holder.image.setImageResource(R.drawable.file);
+        }else{
+            holder.image.setImageResource(R.drawable.link);
         }
     }
 
