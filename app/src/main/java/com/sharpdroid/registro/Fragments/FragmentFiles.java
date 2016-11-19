@@ -16,13 +16,10 @@ import com.google.gson.Gson;
 import com.sharpdroid.registro.Adapters.FileAdapter;
 import com.sharpdroid.registro.Interfaces.Folder;
 import com.sharpdroid.registro.R;
-import com.sharpdroid.registro.Utils.Divider;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.io.IOException;
 import java.text.ParseException;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.sharpdroid.registro.Adapters.FolderAdapter.apiFormat;
 import static com.sharpdroid.registro.Adapters.FolderAdapter.dateFormat;
@@ -76,7 +73,17 @@ public class FragmentFiles extends Fragment {
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).size(1).build());
+        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).marginProvider(new HorizontalDividerItemDecoration.MarginProvider() {
+            @Override
+            public int dividerLeftMargin(int position, RecyclerView parent) {
+                return (int) getContext().getResources().getDimension(R.dimen.padding_left_divider);
+            }
+
+            @Override
+            public int dividerRightMargin(int position, RecyclerView parent) {
+                return 0;
+            }
+        }).size(1).build());
         mRecyclerView.setItemAnimator(null);
 
         mRecyclerView.setAdapter(mRVAdapter);
