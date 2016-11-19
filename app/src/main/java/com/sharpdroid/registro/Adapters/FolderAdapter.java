@@ -1,14 +1,19 @@
 package com.sharpdroid.registro.Adapters;
 
 import android.content.Context;
+import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.sharpdroid.registro.Fragments.FragmentFiles;
 import com.sharpdroid.registro.Interfaces.FileTeacher;
 import com.sharpdroid.registro.Interfaces.Folder;
 import com.sharpdroid.registro.R;
@@ -25,20 +30,20 @@ import butterknife.ButterKnife;
 import static com.sharpdroid.registro.Utils.Metodi.NomeDecente;
 import static com.sharpdroid.registro.Utils.Metodi.getListLayouts;
 
-public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    final static String TAG = FileTeacherAdapter.class.getSimpleName();
+public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    final static String TAG = FolderAdapter.class.getSimpleName();
 
     private final Context mContext;
     private final LayoutInflater mInflater;
     private List<Integer> listLayouts = new ArrayList<>();
     private List<FileTeacher> fileteachers = new ArrayList<>();
-    private final SimpleDateFormat apiFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
+    public static final SimpleDateFormat apiFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    public static final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
     private FragmentTransaction transaction;
 
     private int current_subheader, current_folder = 0;
 
-    public FileTeacherAdapter(Context context, FragmentManager fragmentManager) {
+    public FolderAdapter(Context context, FragmentManager fragmentManager) {
         mContext = context;
         mInflater = LayoutInflater.from(mContext);
         transaction = fragmentManager.beginTransaction();
@@ -80,7 +85,25 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 String date = folder.getLast();
 
                 folderHolder.layout.setOnClickListener(view -> {
-                    // TODO: 19/11/2016 fragment transaction
+                    // TODO: 19/11/2016 fragment transaction & INTENT(format json & then parse)
+                    FragmentFiles fragment = new FragmentFiles();
+                    Bundle intent_data = new Bundle();
+                    intent_data.putString("folder", new Gson().toJson(folder));
+                    fragment.setArguments(intent_data);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        fragment.setSharedElementEnterTransition(TransitionInflater.from(mContext).inflateTransition(R.transition.shared_element));
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        fragment.setEnterTransition(TransitionInflater.from(mContext).inflateTransition(android.R.transition.explode));
+                    }
+                    transaction
+                            .addSharedElement(folderHolder.date, "folder_date")
+                            .addSharedElement(folderHolder.teacher, "folder_title")
+                            .addSharedElement(folderHolder.layout, "folder_layout")
+                            .replace(R.id.fragment_container, fragment)
+                            .addToBackStack(null)
+                            .commit();
                 });
 
                 folderHolder.teacher.setText(NomeDecente(folder.getName().trim()));
@@ -118,7 +141,7 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         current_subheader = current_folder = 0;
     }
 
-    private class SubheaderHolder extends RecyclerView.ViewHolder {
+    class SubheaderHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.title)
         TextView teacher;
         @BindView(R.id.paddingTop)
@@ -130,7 +153,7 @@ public class FileTeacherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    private class FileTeacherHolder extends RecyclerView.ViewHolder {
+    class FileTeacherHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.title)
         TextView teacher;
         @BindView(R.id.date)

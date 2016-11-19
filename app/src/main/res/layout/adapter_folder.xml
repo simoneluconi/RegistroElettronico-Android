@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relative_layout"
     android:layout_width="match_parent"
     android:layout_height="60dp"
     android:clickable="true"
-    android:id="@+id/relative_layout"
     android:foreground="?android:attr/selectableItemBackground"
     android:paddingEnd="16dp"
     android:paddingLeft="16dp"
+    android:transitionName="folder_layout"
     android:paddingRight="16dp"
-    android:paddingStart="16dp">
+    android:paddingStart="16dp"
+    tools:targetApi="lollipop">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/circleImageView"
@@ -17,7 +20,9 @@
         android:layout_centerVertical="true"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:src="@drawable/folder" />
+        android:src="@drawable/folder"
+        android:transitionName="folder_image"
+        tools:targetApi="lollipop" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -39,13 +44,17 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="#222"
-            android:textSize="13sp" />
+            android:textSize="13sp"
+            android:transitionName="folder_title"
+            tools:targetApi="lollipop" />
 
         <TextView
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="13sp" />
+            android:textSize="13sp"
+            android:transitionName="folder_date"
+            tools:targetApi="lollipop" />
     </LinearLayout>
 
     <View
@@ -57,6 +66,7 @@
         android:layout_alignStart="@+id/linearLayout"
         android:layout_marginEnd="12dp"
         android:layout_marginRight="12dp"
-        android:background="#e5e5e5" />
+        android:background="#e5e5e5"
+        tools:targetApi="lollipop" />
 
 </RelativeLayout>

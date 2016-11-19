@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 
 import com.google.gson.reflect.TypeToken;
 import com.koushikdutta.ion.Ion;
-import com.sharpdroid.registro.Adapters.FileTeacherAdapter;
+import com.sharpdroid.registro.Adapters.FolderAdapter;
 import com.sharpdroid.registro.Interfaces.FileTeacher;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Tasks.CacheListTask;
@@ -45,7 +45,7 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
     SwipeRefreshLayout mSwipeRefreshLayout;
 
     Context mContext;
-    FileTeacherAdapter mRVAdapter;
+    FolderAdapter mRVAdapter;
 
     public FragmentFolders() {
     }
@@ -69,7 +69,7 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerView.setItemAnimator(null);
 
-        mRVAdapter = new FileTeacherAdapter(mContext, getFragmentManager());
+        mRVAdapter = new FolderAdapter(mContext, getFragmentManager());
         mRecyclerView.setAdapter(mRVAdapter);
 
         bindFileTeacherCache();
