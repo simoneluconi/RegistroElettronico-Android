@@ -23,7 +23,6 @@ import static com.sharpdroid.registro.Adapters.FolderAdapter.apiFormat;
 import static com.sharpdroid.registro.Adapters.FolderAdapter.dateFormat;
 
 public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
-
     final static String TAG = FileAdapter.class.getSimpleName();
 
     private Context mContext;
@@ -61,9 +60,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
             Log.e(TAG, "Error parsing DATE");
         }
 
-        if(!file.getType().equals("link")){
-            holder.image.setImageResource(R.drawable.file);
-        }else{
+        if (file.getType().equals("link")) {
             holder.image.setImageResource(R.drawable.link);
         }
     }
@@ -74,7 +71,6 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
     }
 
     class FileHolder extends RecyclerView.ViewHolder {
-
         @BindView(R.id.title)
         public TextView title;
         @BindView(R.id.date)
@@ -82,7 +78,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
         @BindView(R.id.circleImageView)
         public CircleImageView image;
 
-        public FileHolder(View layout) {
+        FileHolder(View layout) {
             super(layout);
             ButterKnife.bind(this, layout);
         }
