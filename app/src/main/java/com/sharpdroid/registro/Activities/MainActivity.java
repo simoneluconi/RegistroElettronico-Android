@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity
 
         mNavigationView.setNavigationItemSelectedListener(this);
 
-        init(savedInstanceState);
+        init(savedInstanceState, primo_avvio);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity
                         .putBoolean("primo_avvio", false)
                         .apply();
 
-                init(null);
+                init(null, false);
             } else {
                 PreferenceManager.getDefaultSharedPreferences(this).edit()
                         .putBoolean("primo_avvio", true)
@@ -137,26 +137,28 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void init(Bundle savedInstanceState) {
-        View header = mNavigationView.getHeaderView(0);
-        TextView text = (TextView) header.findViewById(R.id.name);
+    private void init(Bundle savedInstanceState, boolean primo_avvio) {
+        if (!primo_avvio) {
+            View header = mNavigationView.getHeaderView(0);
+            TextView text = (TextView) header.findViewById(R.id.name);
 
-        SharedPreferences settings = getSharedPreferences("REGISTRO", MODE_PRIVATE);
-        String value = settings.getString("name", getString(R.string.app_name));
-        text.setText(value);
+            SharedPreferences settings = getSharedPreferences("REGISTRO", MODE_PRIVATE);
+            String value = settings.getString("name", getString(R.string.app_name));
+            text.setText(value);
 
-        // Programmatically start a fragment
-        if (savedInstanceState == null) {
-            int drawer_to_open = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this)
-                    .getString("drawer_to_open", "0"));
+            // Programmatically start a fragment
+            if (savedInstanceState == null) {
+                int drawer_to_open = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this)
+                        .getString("drawer_to_open", "0"));
 
-            Bundle extras = getIntent().getExtras();
-            if (extras != null) {
-                drawer_to_open = extras.getInt("drawer_to_open", drawer_to_open);
+                Bundle extras = getIntent().getExtras();
+                if (extras != null) {
+                    drawer_to_open = extras.getInt("drawer_to_open", drawer_to_open);
+                }
+
+                mNavigationView.getMenu().getItem(drawer_to_open).setChecked(true);
+                onNavigationItemSelected(mNavigationView.getMenu().getItem(drawer_to_open));
             }
-
-            mNavigationView.getMenu().getItem(drawer_to_open).setChecked(true);
-            onNavigationItemSelected(mNavigationView.getMenu().getItem(drawer_to_open));
         }
     }
 }

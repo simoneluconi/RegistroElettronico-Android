@@ -128,7 +128,7 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
                     })
                     .withResponse()
                     .setCallback((e, result) -> {
-                        if (result.getHeaders().code() == 200) {
+                        if (e == null && result.getHeaders().code() == 200) {
                             addAbsences(result.getResult(), true);
                         }
                         mSwipeRefreshLayout.setRefreshing(false);

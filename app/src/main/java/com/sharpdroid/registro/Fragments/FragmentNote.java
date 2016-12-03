@@ -142,7 +142,7 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
                     })
                     .withResponse()
                     .setCallback((e, result) -> {
-                        if (result.getHeaders().code() == 200) {
+                        if (e == null && result.getHeaders().code() == 200) {
                             addNotes(result.getResult(), true);
                         }
                         mSwipeRefreshLayout.setRefreshing(false);

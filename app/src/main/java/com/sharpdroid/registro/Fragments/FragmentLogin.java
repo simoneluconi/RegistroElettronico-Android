@@ -36,8 +36,6 @@ public class FragmentLogin extends SlideFragment {
     @BindView(R.id.login_btn)
     Button mButtonLogin;
 
-    private String mEmail;
-    private String mPassword;
     private boolean loggedIn = false;
     private Context mContext;
 
@@ -83,8 +81,8 @@ public class FragmentLogin extends SlideFragment {
     }
 
     private void Login() {
-        mEmail = mEditTextMail.getText().toString();
-        mPassword = mEditTextPassword.getText().toString();
+        String mEmail = mEditTextMail.getText().toString();
+        String mPassword = mEditTextPassword.getText().toString();
 
         mEditTextMail.setEnabled(false);
         mEditTextPassword.setEnabled(false);
@@ -100,7 +98,7 @@ public class FragmentLogin extends SlideFragment {
                 })
                 .withResponse()
                 .setCallback((e, result) -> {
-                    if (result.getHeaders().code() == 200) {
+                    if (e == null && result.getHeaders().code() == 200) {
                         SharedPreferences settings = mContext.getSharedPreferences("REGISTRO", MODE_PRIVATE);
 
                         // Writing data to SharedPreferences

@@ -142,7 +142,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
                     })
                     .withResponse()
                     .setCallback((e, result) -> {
-                        if (result.getHeaders().code() == 200) {
+                        if (e == null && result.getHeaders().code() == 200) {
                             addCommunications(result.getResult(), true);
                         }
                         mSwipeRefreshLayout.setRefreshing(false);

@@ -138,7 +138,7 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
                     })
                     .withResponse()
                     .setCallback((e, result) -> {
-                        if (result.getHeaders().code() == 200) {
+                        if (e == null && result.getHeaders().code() == 200) {
                             addFiles(result.getResult(), true);
                         }
                         mSwipeRefreshLayout.setRefreshing(false);

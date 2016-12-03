@@ -141,7 +141,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
                     })
                     .withResponse()
                     .setCallback((e, result) -> {
-                        if (result.getHeaders().code() == 200) {
+                        if (e == null && result.getHeaders().code() == 200) {
                             addSubjects(result.getResult(), true);
                         }
                         mSwipeRefreshLayout.setRefreshing(false);
