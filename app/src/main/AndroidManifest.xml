@@ -31,7 +31,9 @@
         <activity
             android:name=".Activities.Intro"
             tools:ignore="InnerclassSeparator" />
-
+        <activity
+            android:name=".Activities.MarkSubjectDetailActivity"
+            tools:ignore="InnerclassSeparator" />
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.sharpdroid.registro.fileprovider"
@@ -42,7 +44,7 @@
                 android:resource="@xml/filepaths" />
         </provider>
 
-        <activity android:name=".Activities.MarkSubjectDetailActivity"></activity>
+
     </application>
 
 </manifest>

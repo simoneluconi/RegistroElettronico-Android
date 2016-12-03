@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:gravity="center_vertical"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+
+    android:layout_margin="16dp"
+    android:weightSum="3"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/orale"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="-"
+            android:textSize="18sp" />
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Orale" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_width="0dp">
+
+        <TextView
+            android:id="@+id/media"
+            android:layout_centerInParent="true"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="7.5" />
+
+        <devlight.io.library.ArcProgressStackView
+            android:id="@+id/progressvoti"
+            android:layout_centerInParent="true"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            app:apsv_draw_width="10dp"
+            app:apsv_rounded="true"
+            app:apsv_shadowed="false"
+            app:apsv_text_color="#00ffffff" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/scritto"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="-"
+            android:textSize="18sp" />
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Scritto" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,6 +1,7 @@
 package com.sharpdroid.registro.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.sharpdroid.registro.Activities.MarkSubjectDetailActivity;
 import com.sharpdroid.registro.Interfaces.Mark;
 import com.sharpdroid.registro.Interfaces.MarkSubject;
 import com.sharpdroid.registro.Interfaces.Media;
@@ -86,7 +88,7 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
         ViewHolder.mTextViewDesc.setText(obbiettivo_string);
 
         ViewHolder.mCardViewMedia.setOnClickListener(v -> {
-            // Perform action on click
+            mContext.startActivity(new Intent(mContext, MarkSubjectDetailActivity.class));
         });
     }
 
