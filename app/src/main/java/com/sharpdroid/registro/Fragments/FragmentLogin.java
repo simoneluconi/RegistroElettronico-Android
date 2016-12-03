@@ -3,12 +3,14 @@ package com.sharpdroid.registro.Fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.gson.reflect.TypeToken;
@@ -28,9 +30,9 @@ import static com.sharpdroid.registro.Utils.Metodi.NomeDecente;
 public class FragmentLogin extends SlideFragment {
 
     @BindView(R.id.mail)
-    EditText mEditTextMail;
+    TextInputEditText mEditTextMail;
     @BindView(R.id.password)
-    EditText mEditTextPassword;
+    TextInputEditText mEditTextPassword;
     @BindView(R.id.login_btn)
     Button mButtonLogin;
 
@@ -50,6 +52,7 @@ public class FragmentLogin extends SlideFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         mContext = getContext();
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_login, container, false);
@@ -62,16 +65,13 @@ public class FragmentLogin extends SlideFragment {
 
         mEditTextMail.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
 
-        mButtonLogin.setOnClickListener(v -> {
-            mEmail = mEditTextMail.getText().toString();
-            mPassword = mEditTextPassword.getText().toString();
-
-            mEditTextMail.setEnabled(false);
-            mEditTextPassword.setEnabled(false);
-            mButtonLogin.setEnabled(false);
-            mButtonLogin.setText(R.string.caricamento);
-
-            Login();
+        mButtonLogin.setOnClickListener(v -> Login());
+        mEditTextPassword.setOnEditorActionListener((textView, i, keyEvent) -> {
+            if (i == EditorInfo.IME_ACTION_DONE) {
+                Login();
+                return true;
+            }
+            return false;
         });
 
         return root;
@@ -83,6 +83,14 @@ public class FragmentLogin extends SlideFragment {
     }
 
     private void Login() {
+        mEmail = mEditTextMail.getText().toString();
+        mPassword = mEditTextPassword.getText().toString();
+
+        mEditTextMail.setEnabled(false);
+        mEditTextPassword.setEnabled(false);
+        mButtonLogin.setEnabled(false);
+        mButtonLogin.setText(R.string.caricamento);
+
         Ion.with(getContext())
                 .load(RESTFulAPI.LOGIN_URL)
                 .setBodyParameter("login", mEmail)
