@@ -134,13 +134,12 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
             mSwipeRefreshLayout.setRefreshing(true);
             Ion.with(mContext)
                     .load(RESTFulAPI.FILES_URL/* "https://gist.githubusercontent.com/luca020400/da76cedd586a5cec08788f7f9ffabe9a/raw/files.json"*/)
-                    .as(String.class/*new TypeToken<List<FileTeacher>>() {
-                    }*/)
+                    .as(new TypeToken<List<FileTeacher>>() {
+                    })
                     .withResponse()
                     .setCallback((e, result) -> {
                         if (result.getHeaders().code() == 200) {
-                            //addFiles(result.getResult(), true);
-                            Log.d(TAG,result.getResult());
+                            addFiles(result.getResult(), true);
                         }
                         mSwipeRefreshLayout.setRefreshing(false);
                     });
