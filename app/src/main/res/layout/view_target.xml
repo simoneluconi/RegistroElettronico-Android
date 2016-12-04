@@ -6,12 +6,12 @@
     android:orientation="vertical">
 
     <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+        android:id="@+id/progress"
         android:layout_width="match_parent"
-        android:layout_height="15dp"
+        android:layout_height="12dp"
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginTop="24dp"
-        android:id="@+id/progress"
         app:rcBackgroundColor="#ddd"
         app:rcBackgroundPadding="0dp"
         app:rcMax="10"
@@ -43,6 +43,7 @@
                 android:text="La tua media"
                 android:textColor="@color/textcolorgrey"
                 android:textSize="12sp" />
+
             <TextView
                 android:id="@+id/media"
                 android:layout_width="wrap_content"
@@ -68,6 +69,7 @@
                 android:text="Obiettivo"
                 android:textColor="@color/textcolorgrey"
                 android:textSize="12sp" />
+
             <TextView
                 android:id="@+id/obiettivo"
                 android:layout_width="wrap_content"
@@ -88,7 +90,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#f7f7f7"
+        android:background="#fafafa"
         android:gravity="end">
 
         <Button

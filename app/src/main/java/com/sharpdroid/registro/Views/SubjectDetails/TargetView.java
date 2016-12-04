@@ -52,7 +52,7 @@ public class TargetView extends CardView {
         ButterKnife.bind(this);
 
         setTypeface(EasyFonts.robotoMedium(mContext), media, obiettivo);
-        setTypeface(EasyFonts.robotoRegular(mContext), text1, text2);
+        setTypeface(EasyFonts.robotoLight(mContext), text1, text2);
         setProgress(8f);
     }
 

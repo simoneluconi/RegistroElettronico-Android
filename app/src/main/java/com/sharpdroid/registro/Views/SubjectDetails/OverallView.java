@@ -62,7 +62,8 @@ public class OverallView extends CardView {
         inflate(mContext, R.layout.view_overall_subject, this);
         ButterKnife.bind(this);
         setTypeface(EasyFonts.robotoMedium(mContext), mScritto, mOrale, mMedia);
-        setTypeface(EasyFonts.robotoRegular(mContext), text1, text2, header);
+        setTypeface(EasyFonts.robotoLight(mContext), text1, text2);
+        setTypeface(EasyFonts.robotoRegular(mContext), header);
     }
 
     public void setScritto(String scritto) {

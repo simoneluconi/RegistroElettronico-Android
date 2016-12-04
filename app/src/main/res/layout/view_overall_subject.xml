@@ -9,7 +9,7 @@
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#f7f7f7"
+        android:background="#fafafa"
         android:padding="8dp"
         android:text="La mia media"
         android:textColor="#414141" />
