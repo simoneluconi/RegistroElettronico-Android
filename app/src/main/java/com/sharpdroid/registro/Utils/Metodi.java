@@ -7,12 +7,14 @@ import android.net.NetworkInfo;
 import android.widget.TextView;
 
 import com.sharpdroid.registro.API.RESTFulAPI;
+import com.sharpdroid.registro.Databases.SubjectsDB;
 import com.sharpdroid.registro.Interfaces.Absence;
 import com.sharpdroid.registro.Interfaces.Delay;
 import com.sharpdroid.registro.Interfaces.Exit;
 import com.sharpdroid.registro.Interfaces.FileTeacher;
 import com.sharpdroid.registro.Interfaces.Folder;
 import com.sharpdroid.registro.Interfaces.Media;
+import com.sharpdroid.registro.Interfaces.Subject;
 import com.sharpdroid.registro.R;
 import com.vstechlab.easyfonts.EasyFonts;
 
@@ -220,4 +222,9 @@ public class Metodi {
             textView.setTypeface(font);
         }
     }
+
+    public static void saveAllSubjects(Context c, List<Subject> subjects){
+        SubjectsDB.from(c).addAllSubjects(subjects).close();
+    }
+
 }
