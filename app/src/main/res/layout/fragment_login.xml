@@ -28,9 +28,7 @@
             android:id="@+id/mail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_person"
-            android:drawablePadding="16dp"
-            android:drawableStart="@drawable/ic_person" />
+            android:drawablePadding="16dp"/>
 
     </android.support.design.widget.TextInputLayout>
 
@@ -44,9 +42,7 @@
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_password"
             android:drawablePadding="16dp"
-            android:drawableStart="@drawable/ic_password"
             android:imeOptions="actionDone"
             android:inputType="textPassword" />
     </android.support.design.widget.TextInputLayout>

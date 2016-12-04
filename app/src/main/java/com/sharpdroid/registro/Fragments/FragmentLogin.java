@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
+import android.support.v7.content.res.AppCompatResources;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,6 +57,9 @@ public class FragmentLogin extends SlideFragment {
         View root = inflater.inflate(R.layout.fragment_login, container, false);
 
         ButterKnife.bind(this, root);
+
+        mEditTextMail.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(mContext,R.drawable.ic_person), null, null, null);
+        mEditTextPassword.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(mContext,R.drawable.ic_password), null, null, null);
 
         mEditTextMail.setEnabled(!loggedIn);
         mEditTextPassword.setEnabled(!loggedIn);
