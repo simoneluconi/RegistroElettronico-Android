@@ -103,6 +103,7 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.yqritc:recyclerview-flexibledivider:1.4.0'
     compile 'com.vstechlab.easyfonts:easyfonts:1.0.0'
+    compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
 
     compile project(':arcprogressstackview')
 

@@ -1,4 +1,4 @@
-package com.sharpdroid.registro.Views;
+package com.sharpdroid.registro.Views.SubjectDetails;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
