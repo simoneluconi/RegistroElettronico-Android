@@ -17,7 +17,6 @@ import devlight.io.library.ArcProgressStackView;
 
 import static com.sharpdroid.registro.Utils.Metodi.setTypeface;
 
-
 public class OverallView extends CardView {
     Context mContext;
     AttributeSet mAttributeSet;
@@ -31,12 +30,10 @@ public class OverallView extends CardView {
     TextView mMedia;
     @BindView(R.id.progressvoti)
     ArcProgressStackView arcProgressStackView;
-
     @BindView(R.id.text1)
     TextView text1;
     @BindView(R.id.text2)
     TextView text2;
-
 
     public OverallView(Context context) {
         super(context);
@@ -63,7 +60,7 @@ public class OverallView extends CardView {
         inflate(mContext, R.layout.view_overall_subject, this);
         ButterKnife.bind(this);
         setTypeface(EasyFonts.robotoMedium(mContext), mScritto, mOrale, mMedia);
-        setTypeface(EasyFonts.robotoRegular(mContext), text1,text2);
+        setTypeface(EasyFonts.robotoRegular(mContext), text1, text2);
     }
 
     public void setScritto(String scritto) {
