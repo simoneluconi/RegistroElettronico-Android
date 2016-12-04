@@ -358,7 +358,6 @@ public class ArcProgressStackView extends View {
         return mAnimationDuration;
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void setAnimationDuration(final long animationDuration) {
         mAnimationDuration = (int) animationDuration;
         mProgressAnimator.setDuration(animationDuration);
@@ -427,7 +426,6 @@ public class ArcProgressStackView extends View {
         return mIsAnimated;
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void setIsAnimated(final boolean isAnimated) {
         mIsAnimated = mIsFeaturesAvailable && isAnimated;
     }
@@ -436,7 +434,6 @@ public class ArcProgressStackView extends View {
         return mIsShadowed;
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void setIsShadowed(final boolean isShadowed) {
         mIsShadowed = mIsFeaturesAvailable && isShadowed;
         resetShadowLayer();
@@ -489,7 +486,6 @@ public class ArcProgressStackView extends View {
         return (Interpolator) mProgressAnimator.getInterpolator();
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void setInterpolator(final Interpolator interpolator) {
         mInterpolator = interpolator == null ? new AccelerateDecelerateInterpolator() : interpolator;
         mProgressAnimator.setInterpolator(mInterpolator);
