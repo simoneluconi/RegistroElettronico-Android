@@ -103,7 +103,6 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.yqritc:recyclerview-flexibledivider:1.4.0'
     compile 'com.vstechlab.easyfonts:easyfonts:1.0.0'
-    compile 'me.zhanghai.android.materialprogressbar:library:1.3.0'
 
     compile project(':arcprogressstackview')
 

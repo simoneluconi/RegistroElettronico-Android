@@ -29,8 +29,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Orale"
-            android:textSize="12sp"
-            android:textColor="@color/textcolorgrey" />
+            android:textColor="@color/textcolorgrey"
+            android:textSize="12sp" />
     </LinearLayout>
 
     <RelativeLayout
@@ -43,8 +43,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:textSize="14sp"
-            android:text="7.5" />
+            android:text="7.5"
+            android:textSize="14sp" />
 
         <devlight.io.library.ArcProgressStackView
             android:id="@+id/progressvoti"
