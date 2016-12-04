@@ -7,10 +7,10 @@ public class Mark implements Serializable {
     private boolean ns;
     private String type;
     private String date;
-    private float mark;
+    private String mark;
     private String desc;
 
-    Mark(String q, boolean ns, String type, String date, float mark, String desc) {
+    Mark(String q, boolean ns, String type, String date, String mark, String desc) {
         this.q = q;
         this.ns = ns;
         this.type = type;
@@ -51,11 +51,11 @@ public class Mark implements Serializable {
         this.date = date;
     }
 
-    public float getMark() {
+    public String getMark() {
         return mark;
     }
 
-    public void setMark(float mark) {
+    public void setMark(String mark) {
         this.mark = mark;
     }
 
@@ -68,6 +68,6 @@ public class Mark implements Serializable {
     }
 
     public boolean isSufficiente() {
-        return this.mark > 6;
+        return Float.parseFloat(this.mark) > 6;
     }
 }

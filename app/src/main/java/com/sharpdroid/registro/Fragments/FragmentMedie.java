@@ -84,7 +84,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void addSubjects(List<MarkSubject> markSubjects, boolean docache) {
-        if (markSubjects.isEmpty()) {
+        if (!markSubjects.isEmpty()) {
             mRVAdapter.clear();
             mRVAdapter.addAll(markSubjects);
 

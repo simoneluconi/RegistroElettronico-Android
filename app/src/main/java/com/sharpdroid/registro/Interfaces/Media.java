@@ -78,22 +78,22 @@ public class Media implements Serializable {
     }
 
     public void addMark(Mark mark) {
-        if (mark.getMark() > 0) {
+        if (Float.parseFloat(mark.getMark()) > 0) {
             switch (mark.getType()) {
                 case RESTFulAPI.ORALE:
-                    this.somma_orale += mark.getMark();
+                    this.somma_orale += Float.parseFloat(mark.getMark());
                     this.numero_voti_orale++;
                     break;
                 case RESTFulAPI.PRATICO:
-                    this.somma_pratico += mark.getMark();
+                    this.somma_pratico += Float.parseFloat(mark.getMark());
                     this.numero_voti_pratico++;
                     break;
                 case RESTFulAPI.SCRITTO:
-                    this.somma_scritto += mark.getMark();
+                    this.somma_scritto += Float.parseFloat(mark.getMark());
                     this.numero_voti_scritto++;
                     break;
             }
-            this.somma_generale += mark.getMark();
+            this.somma_generale += Float.parseFloat(mark.getMark());
             this.numero_voti_generale++;
         } else {
             Log.e(Media.class.getCanonicalName(), "Voto inferiore a 0");
