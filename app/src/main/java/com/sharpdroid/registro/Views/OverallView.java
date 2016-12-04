@@ -1,18 +1,21 @@
 package com.sharpdroid.registro.Views;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.sharpdroid.registro.R;
+import com.vstechlab.easyfonts.EasyFonts;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import devlight.io.library.ArcProgressStackView;
+
+import static com.sharpdroid.registro.Utils.Metodi.setTypeface;
 
 
 public class OverallView extends CardView {
@@ -28,6 +31,11 @@ public class OverallView extends CardView {
     TextView mMedia;
     @BindView(R.id.progressvoti)
     ArcProgressStackView arcProgressStackView;
+
+    @BindView(R.id.text1)
+    TextView text1;
+    @BindView(R.id.text2)
+    TextView text2;
 
 
     public OverallView(Context context) {
@@ -54,6 +62,8 @@ public class OverallView extends CardView {
     void init() {
         inflate(mContext, R.layout.view_overall_subject, this);
         ButterKnife.bind(this);
+        setTypeface(EasyFonts.robotoMedium(mContext), mScritto, mOrale, mMedia);
+        setTypeface(EasyFonts.robotoRegular(mContext), text1,text2);
     }
 
     public void setScritto(String scritto) {
@@ -66,11 +76,10 @@ public class OverallView extends CardView {
 
     public void setMedia(String media) {
         mMedia.setText(media);
+        setProgress(Float.parseFloat(media) * 10);
     }
 
-    public void setProgress(float progress, int color) {
-        List<ArcProgressStackView.Model> models = new ArrayList<>();
-        models.add(new ArcProgressStackView.Model(null, progress, color));
-        arcProgressStackView.setModels(models);
+    public void setProgress(float progress) {
+        arcProgressStackView.setModels(Collections.singletonList(new ArcProgressStackView.Model("Voto", progress, ContextCompat.getColor(mContext, R.color.greenmaterial))));
     }
 }

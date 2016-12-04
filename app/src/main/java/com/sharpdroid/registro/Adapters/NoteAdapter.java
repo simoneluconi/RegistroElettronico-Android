@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.sharpdroid.registro.Interfaces.Note;
 import com.sharpdroid.registro.R;
+import com.vstechlab.easyfonts.EasyFonts;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,6 +18,8 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.sharpdroid.registro.Utils.Metodi.setTypeface;
 
 /**
  * Adapter per RecyclerView con Note disciplinari & Annotazioni
@@ -89,6 +92,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
         NoteHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            setTypeface(EasyFonts.robotoRegular(mContext), content, date);
+            setTypeface(EasyFonts.robotoMedium(mContext), teacher, type);
         }
     }
 }

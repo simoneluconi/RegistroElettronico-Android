@@ -6,7 +6,10 @@
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:paddingBottom="8dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="8dp">
 
     <RelativeLayout
         android:layout_width="match_parent"

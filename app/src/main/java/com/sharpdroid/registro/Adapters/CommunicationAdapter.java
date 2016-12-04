@@ -19,6 +19,7 @@ import com.koushikdutta.ion.Ion;
 import com.sharpdroid.registro.API.RESTFulAPI;
 import com.sharpdroid.registro.Interfaces.Communication;
 import com.sharpdroid.registro.R;
+import com.vstechlab.easyfonts.EasyFonts;
 
 import java.io.File;
 import java.text.ParseException;
@@ -30,6 +31,8 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.sharpdroid.registro.Utils.Metodi.setTypeface;
 
 public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdapter.CommunicationHolder> {
     private final List<Communication> CVDataList;
@@ -147,6 +150,8 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
         CommunicationHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            setTypeface(EasyFonts.robotoRegular(mContext), Title, Type);
+            setTypeface(EasyFonts.robotoLight(mContext), Date);
         }
     }
 }

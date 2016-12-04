@@ -21,12 +21,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="-"
+            android:textColor="@color/textcolorgrey"
             android:textSize="18sp" />
 
         <TextView
+            android:id="@+id/text1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Orale" />
+            android:text="Orale"
+            android:textSize="12sp"
+            android:textColor="@color/textcolorgrey" />
     </LinearLayout>
 
     <RelativeLayout
@@ -39,12 +43,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:textSize="14sp"
             android:text="7.5" />
 
         <devlight.io.library.ArcProgressStackView
             android:id="@+id/progressvoti"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:layout_centerInParent="true"
             app:apsv_draw_width="10dp"
             app:apsv_rounded="true"
@@ -64,13 +69,17 @@
             android:id="@+id/scritto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="-"
+            android:text="8.5"
+            android:textColor="@color/textcolorgrey"
             android:textSize="18sp" />
 
         <TextView
+            android:id="@+id/text2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Scritto" />
+            android:text="Scritto"
+            android:textColor="@color/textcolorgrey"
+            android:textSize="12sp" />
     </LinearLayout>
 
 </LinearLayout>

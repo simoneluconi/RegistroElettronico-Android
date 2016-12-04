@@ -56,6 +56,6 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
 
     void setOverall() {
         overallView.setMedia("5.5");
-        overallView.setProgress(0.8f, ContextCompat.getColor(this, R.color.bluematerial));
+        overallView.setOrale("7.5");
     }
 }

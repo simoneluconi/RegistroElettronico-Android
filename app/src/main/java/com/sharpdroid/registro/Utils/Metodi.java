@@ -1,8 +1,10 @@
 package com.sharpdroid.registro.Utils;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.widget.TextView;
 
 import com.sharpdroid.registro.API.RESTFulAPI;
 import com.sharpdroid.registro.Interfaces.Absence;
@@ -12,6 +14,7 @@ import com.sharpdroid.registro.Interfaces.FileTeacher;
 import com.sharpdroid.registro.Interfaces.Folder;
 import com.sharpdroid.registro.Interfaces.Media;
 import com.sharpdroid.registro.R;
+import com.vstechlab.easyfonts.EasyFonts;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -210,5 +213,11 @@ public class Metodi {
             new_name += ins.substring(0, 1).toUpperCase() + ins.substring(1).toLowerCase() + " ";
         }
         return new_name;
+    }
+
+    public static void setTypeface(Typeface font, TextView... textViews){
+        for(TextView textView : textViews){
+            textView.setTypeface(font);
+        }
     }
 }
