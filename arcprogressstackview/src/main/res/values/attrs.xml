@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Copyright (C) 2015 Basil Miller
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<resources>
+    <declare-styleable name="ArcProgressStackView">
+        <attr name="apsv_animated" format="boolean"/>
+        <attr name="apsv_shadowed" format="boolean"/>
+        <attr name="apsv_rounded" format="boolean"/>
+        <attr name="apsv_dragged" format="boolean"/>
+        <attr name="apsv_leveled" format="boolean"/>
+
+        <attr name="apsv_typeface" format="string"/>
+        <attr name="apsv_text_color" format="color"/>
+
+        <attr name="apsv_shadow_distance" format="dimension"/>
+        <attr name="apsv_shadow_angle" format="integer"/>
+        <attr name="apsv_shadow_radius" format="dimension"/>
+        <attr name="apsv_shadow_color" format="color"/>
+
+        <attr name="apsv_animation_duration" format="integer"/>
+        <attr name="apsv_interpolator" format="reference"/>
+
+        <attr name="apsv_draw_width" format="fraction|dimension"/>
+        <attr name="apsv_model_offset" format="dimension"/>
+        <attr name="apsv_model_bg_enabled" format="boolean"/>
+
+        <attr name="apsv_start_angle" format="integer"/>
+        <attr name="apsv_sweep_angle" format="integer"/>
+        <attr name="apsv_indicator_orientation" format="enum">
+            <enum name="vertical" value="0"/>
+            <enum name="horizontal" value="1"/>
+        </attr>
+
+        <attr name="apsv_preview_colors" format="reference"/>
+        <attr name="apsv_preview_bg" format="color"/>
+    </declare-styleable>
+</resources>
