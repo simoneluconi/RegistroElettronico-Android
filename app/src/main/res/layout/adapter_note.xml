@@ -25,8 +25,7 @@
             android:layout_alignParentTop="true"
             android:text="teacher"
             android:textColor="@color/red_strong"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            android:textSize="12sp"/>
 
         <TextView
             android:id="@+id/type"
@@ -37,8 +36,7 @@
             android:layout_alignParentTop="true"
             android:text="type"
             android:textColor="@color/red_strong"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            android:textSize="12sp"/>
     </RelativeLayout>
 
     <TextView
