@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.sharpdroid.registro.Interfaces.File;
 import com.sharpdroid.registro.R;
+import com.vstechlab.easyfonts.EasyFonts;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.sharpdroid.registro.Adapters.FolderAdapter.apiFormat;
 import static com.sharpdroid.registro.Adapters.FolderAdapter.dateFormat;
+import static com.sharpdroid.registro.Utils.Metodi.setTypeface;
 
 public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
     final static String TAG = FileAdapter.class.getSimpleName();
@@ -81,6 +83,9 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
         FileHolder(View layout) {
             super(layout);
             ButterKnife.bind(this, layout);
+
+            setTypeface(EasyFonts.robotoRegular(mContext), title);
+            setTypeface(EasyFonts.robotoLight(mContext), date);
         }
     }
 }

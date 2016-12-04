@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Jan 15, 2016"
-            android:textSize="13sp" />
+            android:textSize="12sp" />
     </LinearLayout>
 
 </RelativeLayout>

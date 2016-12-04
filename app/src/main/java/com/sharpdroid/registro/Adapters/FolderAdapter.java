@@ -18,6 +18,7 @@ import com.sharpdroid.registro.Fragments.FragmentFiles;
 import com.sharpdroid.registro.Interfaces.FileTeacher;
 import com.sharpdroid.registro.Interfaces.Folder;
 import com.sharpdroid.registro.R;
+import com.vstechlab.easyfonts.EasyFonts;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,6 +31,7 @@ import butterknife.ButterKnife;
 
 import static com.sharpdroid.registro.Utils.Metodi.NomeDecente;
 import static com.sharpdroid.registro.Utils.Metodi.getListLayouts;
+import static com.sharpdroid.registro.Utils.Metodi.setTypeface;
 
 public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     final static String TAG = FolderAdapter.class.getSimpleName();
@@ -97,14 +99,14 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                     transaction
                             .addSharedElement(folderHolder.date, "folder_date")
-                            .addSharedElement(folderHolder.teacher, "folder_title")
+                            .addSharedElement(folderHolder.title, "folder_title")
                             .addSharedElement(folderHolder.layout, "folder_layout")
                             .replace(R.id.fragment_container, fragment)
                             .addToBackStack(null)
                             .commit();
                 });
 
-                folderHolder.teacher.setText(NomeDecente(folder.getName().trim()));
+                folderHolder.title.setText(NomeDecente(folder.getName().trim()));
                 try {
                     folderHolder.date.setText(dateFormat.format(apiFormat.parse(date.split("T")[0])));
                 } catch (ParseException e) {
@@ -148,12 +150,13 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         SubheaderHolder(View layout) {
             super(layout);
             ButterKnife.bind(this, layout);
+            setTypeface(EasyFonts.robotoMedium(mContext), teacher);
         }
     }
 
     class FileTeacherHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.title)
-        TextView teacher;
+        TextView title;
         @BindView(R.id.date)
         TextView date;
         @BindView(R.id.relative_layout)
@@ -162,6 +165,9 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         FileTeacherHolder(View layout) {
             super(layout);
             ButterKnife.bind(this, layout);
+
+            setTypeface(EasyFonts.robotoRegular(mContext), title);
+            setTypeface(EasyFonts.robotoLight(mContext), date);
         }
     }
 
