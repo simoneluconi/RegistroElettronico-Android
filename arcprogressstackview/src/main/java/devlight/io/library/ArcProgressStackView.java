@@ -49,10 +49,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Created by GIGAMOLE on 04.03.2016.
- */
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class ArcProgressStackView extends View {
 
     // Default values
@@ -1068,6 +1064,7 @@ public class ArcProgressStackView extends View {
             return mProgress;
         }
 
+        @SuppressLint("SupportAnnotationUsage")
         @FloatRange
         public void setProgress(@FloatRange(from = MIN_PROGRESS, to = MAX_PROGRESS) final float progress) {
             mLastProgress = mProgress;
