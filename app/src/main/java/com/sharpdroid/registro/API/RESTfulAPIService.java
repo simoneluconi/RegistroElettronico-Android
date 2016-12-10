@@ -40,7 +40,7 @@ public interface RESTfulAPIService {
             @NonNull @Path("id") String id,
             @NonNull @Path("cksum") String cksum);
 
-    @GET("absences")
+    @GET("https://gist.githubusercontent.com/luca020400/55f65db6a685dc2413f9ba7252c20cbf/raw/absences.json")
     Call<Absences> getAbsences();
 
     @GET("marks")
