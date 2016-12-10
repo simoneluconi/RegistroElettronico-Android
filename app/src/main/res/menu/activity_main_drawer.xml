@@ -7,6 +7,10 @@
             android:icon="@drawable/ic_timeline_"
             android:title="@string/medie" />
         <item
+            android:id="@+id/timetable"
+            android:icon="@drawable/ic_grid_on"
+            android:title="@string/timetable" />
+        <item
             android:id="@+id/files"
             android:icon="@drawable/ic_folder"
             android:title="@string/files" />

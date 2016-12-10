@@ -23,6 +23,7 @@ import com.sharpdroid.registro.Fragments.FragmentFolders;
 import com.sharpdroid.registro.Fragments.FragmentMedie;
 import com.sharpdroid.registro.Fragments.FragmentNote;
 import com.sharpdroid.registro.Fragments.FragmentSettings;
+import com.sharpdroid.registro.Fragments.FragmentTimetable;
 import com.sharpdroid.registro.R;
 
 import butterknife.BindView;
@@ -97,6 +98,9 @@ public class MainActivity extends AppCompatActivity
         switch (item.getItemId()) {
             case R.id.medie:
                 fragment = new FragmentMedie();
+                break;
+            case R.id.timetable:
+                fragment = new FragmentTimetable();
                 break;
             case R.id.communications:
                 fragment = new FragmentCommunications();
