@@ -6,6 +6,7 @@
 
 
     <!-- DRAWER -->
+    <string name="agenda">Agenda</string>
     <string name="medie">Medie</string>
     <string name="timetable">Orario</string>
     <string name="share">Share</string>
