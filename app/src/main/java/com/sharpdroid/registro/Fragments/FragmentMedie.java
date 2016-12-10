@@ -13,9 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.gson.reflect.TypeToken;
-import com.koushikdutta.ion.Ion;
-import com.sharpdroid.registro.API.RESTFulAPI;
+import com.sharpdroid.registro.API.SpiaggiariApiClient;
 import com.sharpdroid.registro.Adapters.MedieAdapter;
 import com.sharpdroid.registro.Interfaces.MarkSubject;
 import com.sharpdroid.registro.R;
@@ -35,6 +33,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.sharpdroid.registro.Utils.Metodi.isNetworkAvailable;
 
@@ -135,17 +136,21 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
     private void UpdateMedie() {
         if (isNetworkAvailable(mContext)) {
             mSwipeRefreshLayout.setRefreshing(true);
-            Ion.with(mContext)
-                    .load(RESTFulAPI.MARKS_URL)
-                    .as(new TypeToken<List<MarkSubject>>() {
-                    })
-                    .withResponse()
-                    .setCallback((e, result) -> {
-                        if (e == null && result.getHeaders().code() == 200) {
-                            addSubjects(result.getResult(), true);
-                        }
+            new SpiaggiariApiClient(mContext).mService.getMarks().enqueue(new Callback<List<MarkSubject>>() {
+                @Override
+                public void onResponse(Call<List<MarkSubject>> call, Response<List<MarkSubject>> response) {
+                    if (response.isSuccessful()) {
+                        response.code();
+                        addSubjects(response.body(), true);
                         mSwipeRefreshLayout.setRefreshing(false);
-                    });
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<MarkSubject>> call, Throwable t) {
+
+                }
+            });
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);

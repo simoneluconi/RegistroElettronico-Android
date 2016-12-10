@@ -6,7 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.TextView;
 
-import com.sharpdroid.registro.API.RESTFulAPI;
+import com.sharpdroid.registro.API.SpiaggiariAPI;
 import com.sharpdroid.registro.Databases.SubjectsDB;
 import com.sharpdroid.registro.Interfaces.Absence;
 import com.sharpdroid.registro.Interfaces.Delay;
@@ -16,10 +16,16 @@ import com.sharpdroid.registro.Interfaces.Folder;
 import com.sharpdroid.registro.Interfaces.Media;
 import com.sharpdroid.registro.Interfaces.Subject;
 import com.sharpdroid.registro.R;
-import com.vstechlab.easyfonts.EasyFonts;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.ResponseBody;
 
 public class Metodi {
     public static boolean isNetworkAvailable(Context context) {
@@ -88,11 +94,11 @@ public class Metodi {
 
     public static boolean isMediaSufficiente(Media media, String tipo) {
         switch (tipo) {
-            case RESTFulAPI.ORALE:
+            case SpiaggiariAPI.ORALE:
                 return media.getMediaOrale() > 6;
-            case RESTFulAPI.PRATICO:
+            case SpiaggiariAPI.PRATICO:
                 return media.getMediaPratico() > 6;
-            case RESTFulAPI.SCRITTO:
+            case SpiaggiariAPI.SCRITTO:
                 return media.getMediaScritto() > 6;
             default:
                 return media.getMediaGenerale() > 6;
@@ -105,7 +111,7 @@ public class Metodi {
 
     public static int getMediaColor(Media media, String tipo, float voto_obiettivo) {
         switch (tipo) {
-            case RESTFulAPI.ORALE:
+            case SpiaggiariAPI.ORALE:
                 final float media_orale = media.getMediaOrale();
                 if (media_orale >= voto_obiettivo)
                     return R.color.greenmaterial;
@@ -115,7 +121,7 @@ public class Metodi {
                     return R.color.orangematerial;
                 else
                     return R.color.lightgreenmaterial;
-            case RESTFulAPI.PRATICO:
+            case SpiaggiariAPI.PRATICO:
                 final float media_pratico = media.getMediaPratico();
                 if (media_pratico >= voto_obiettivo)
                     return R.color.greenmaterial;
@@ -125,7 +131,7 @@ public class Metodi {
                     return R.color.orangematerial;
                 else
                     return R.color.lightgreenmaterial;
-            case RESTFulAPI.SCRITTO:
+            case SpiaggiariAPI.SCRITTO:
                 final float media_scritto = media.getMediaScritto();
                 if (media_scritto >= voto_obiettivo)
                     return R.color.greenmaterial;
@@ -217,14 +223,54 @@ public class Metodi {
         return new_name;
     }
 
-    public static void setTypeface(Typeface font, TextView... textViews){
-        for(TextView textView : textViews){
+    public static void setTypeface(Typeface font, TextView... textViews) {
+        for (TextView textView : textViews) {
             textView.setTypeface(font);
         }
     }
 
-    public static void saveAllSubjects(Context c, List<Subject> subjects){
+    public static void saveAllSubjects(Context c, List<Subject> subjects) {
         SubjectsDB.from(c).addAllSubjects(subjects).close();
     }
 
+    public static boolean writeResponseBodyToDisk(ResponseBody body, File file) {
+        try {
+            InputStream inputStream = null;
+            OutputStream outputStream = null;
+
+            try {
+                byte[] fileReader = new byte[4096];
+
+                inputStream = body.byteStream();
+                outputStream = new FileOutputStream(file);
+
+                while (true) {
+                    int read = inputStream.read(fileReader);
+
+                    if (read == -1) {
+                        break;
+                    }
+
+                    outputStream.write(fileReader, 0, read);
+
+                }
+
+                outputStream.flush();
+
+                return true;
+            } catch (IOException e) {
+                return false;
+            } finally {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            }
+        } catch (IOException e) {
+            return false;
+        }
+    }
 }

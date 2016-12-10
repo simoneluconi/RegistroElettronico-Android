@@ -2,7 +2,7 @@ package com.sharpdroid.registro.Interfaces;
 
 import android.util.Log;
 
-import com.sharpdroid.registro.API.RESTFulAPI;
+import com.sharpdroid.registro.API.SpiaggiariAPI;
 
 import java.io.Serializable;
 
@@ -80,15 +80,15 @@ public class Media implements Serializable {
     public void addMark(Mark mark) {
         if (Float.parseFloat(mark.getMark()) > 0) {
             switch (mark.getType()) {
-                case RESTFulAPI.ORALE:
+                case SpiaggiariAPI.ORALE:
                     this.somma_orale += Float.parseFloat(mark.getMark());
                     this.numero_voti_orale++;
                     break;
-                case RESTFulAPI.PRATICO:
+                case SpiaggiariAPI.PRATICO:
                     this.somma_pratico += Float.parseFloat(mark.getMark());
                     this.numero_voti_pratico++;
                     break;
-                case RESTFulAPI.SCRITTO:
+                case SpiaggiariAPI.SCRITTO:
                     this.somma_scritto += Float.parseFloat(mark.getMark());
                     this.numero_voti_scritto++;
                     break;

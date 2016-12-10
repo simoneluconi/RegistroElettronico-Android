@@ -12,10 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
-import com.google.gson.reflect.TypeToken;
-import com.koushikdutta.ion.Ion;
+import com.sharpdroid.registro.API.SpiaggiariApiClient;
 import com.sharpdroid.registro.Adapters.AllAbsencesAdapter;
-import com.sharpdroid.registro.Interfaces.Absences;
+import com.sharpdroid.registro.Interfaces.AllAbsences;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Tasks.CacheObjectTask;
 
@@ -29,6 +28,9 @@ import java.io.StreamCorruptedException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.sharpdroid.registro.Utils.Metodi.isNetworkAvailable;
 
@@ -72,7 +74,7 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
         return root;
     }
 
-    void addAbsences(Absences absences, boolean docache) {
+    void addAbsences(AllAbsences absences, boolean docache) {
         adapter.clear();
         adapter.setAbsences(absences);
         expandableListView.setAdapter(adapter);
@@ -88,8 +90,8 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
             FileInputStream fileInputStream = new FileInputStream(new File(mContext.getCacheDir(), TAG));
             objectInputStream = new ObjectInputStream(fileInputStream);
             Object obj = objectInputStream.readObject();
-            if (obj instanceof Absences) {
-                addAbsences((Absences) obj, false);
+            if (obj instanceof AllAbsences) {
+                addAbsences((AllAbsences) obj, false);
                 Log.d(TAG, "Restored cache");
             } else {
                 Log.e(TAG, "Corrupterd cache");
@@ -122,17 +124,20 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
     private void UpdateAllAbsences() {
         if (isNetworkAvailable(mContext)) {
             mSwipeRefreshLayout.setRefreshing(true);
-            Ion.with(mContext)
-                    .load(/*RESTFulAPI.ABSENCES_URL*/ "https://gist.githubusercontent.com/luca020400/55f65db6a685dc2413f9ba7252c20cbf/raw/absences.json")
-                    .as(new TypeToken<Absences>() {
-                    })
-                    .withResponse()
-                    .setCallback((e, result) -> {
-                        if (e == null && result.getHeaders().code() == 200) {
-                            addAbsences(result.getResult(), true);
-                        }
+            new SpiaggiariApiClient(mContext).mService.getAbsences().enqueue(new Callback<AllAbsences>() {
+                @Override
+                public void onResponse(Call<AllAbsences> call, Response<AllAbsences> response) {
+                    if (response.isSuccessful()) {
+                        addAbsences(response.body(), true);
                         mSwipeRefreshLayout.setRefreshing(false);
-                    });
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<AllAbsences> call, Throwable t) {
+
+                }
+            });
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);

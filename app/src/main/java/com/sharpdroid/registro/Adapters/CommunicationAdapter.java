@@ -8,15 +8,13 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.koushikdutta.ion.Ion;
-import com.sharpdroid.registro.API.RESTFulAPI;
+import com.sharpdroid.registro.API.SpiaggiariApiClient;
 import com.sharpdroid.registro.Interfaces.Communication;
 import com.sharpdroid.registro.R;
 import com.vstechlab.easyfonts.EasyFonts;
@@ -31,8 +29,13 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.sharpdroid.registro.Utils.Metodi.setTypeface;
+import static com.sharpdroid.registro.Utils.Metodi.writeResponseBodyToDisk;
 
 public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdapter.CommunicationHolder> {
     private final List<Communication> CVDataList;
@@ -87,29 +90,32 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
                             Environment.DIRECTORY_DOWNLOADS).toString() +
                             File.separator +
                             "Registro Elettronico");
+
             File file = new File(dir +
                     File.separator +
                     communication.getId() + ".pdf");
 
-            String url = new RESTFulAPI().COMMUNICATION_DOWNLOAD_URL(communication.getId());
+            communication.getId();
 
             if (!file.exists()) {
                 DownloadProgressSnak.show();
 
                 if (!dir.exists()) dir.mkdir();
-                Ion.with(mContext)
-                        .load(url)
-                        .write(file)
-                        .withResponse()
-                        .setCallback((e, result) -> {
-                            if (result.getHeaders().code() == 200) {
-                                openpdf(result.getResult(), DownloadProgressSnak);
-                                Log.d("ADAPTER", result.getResult().getPath());
-                            } else {
-                                DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, result.getHeaders().code()));
-                                DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT).show();
-                            }
-                        });
+                new SpiaggiariApiClient(mContext).mService.getcommunicationDownload(communication.getId()).enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful()) {
+                            if (writeResponseBodyToDisk(response.body(), file))
+                                openpdf(file, DownloadProgressSnak);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, t.getCause()));
+                        DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT).show();
+                    }
+                });
             } else {
                 openpdf(file, DownloadProgressSnak);
             }

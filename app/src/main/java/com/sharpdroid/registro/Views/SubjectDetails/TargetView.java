@@ -59,7 +59,8 @@ public class TargetView extends CardView {
     public void setMedia(Float media) {
         this.media.setText(String.valueOf(media));
     }
-    public void setProgress(Float media){
+
+    public void setProgress(Float media) {
         progressBar.setProgress(media);
         setMedia(media);
     }

@@ -13,9 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.gson.reflect.TypeToken;
-import com.koushikdutta.ion.Ion;
-import com.sharpdroid.registro.API.RESTFulAPI;
+import com.sharpdroid.registro.API.SpiaggiariApiClient;
 import com.sharpdroid.registro.Adapters.NoteAdapter;
 import com.sharpdroid.registro.Interfaces.Note;
 import com.sharpdroid.registro.R;
@@ -35,6 +33,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.sharpdroid.registro.Utils.Metodi.isNetworkAvailable;
 
@@ -136,17 +137,20 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
     private void UpdateNotes() {
         if (isNetworkAvailable(mContext)) {
             mSwipeRefreshLayout.setRefreshing(true);
-            Ion.with(mContext)
-                    .load(RESTFulAPI.NOTES_URL)
-                    .as(new TypeToken<List<Note>>() {
-                    })
-                    .withResponse()
-                    .setCallback((e, result) -> {
-                        if (e == null && result.getHeaders().code() == 200) {
-                            addNotes(result.getResult(), true);
-                        }
+            new SpiaggiariApiClient(mContext).mService.getNotes().enqueue(new Callback<List<Note>>() {
+                @Override
+                public void onResponse(Call<List<Note>> call, Response<List<Note>> response) {
+                    if (response.isSuccessful()) {
+                        addNotes(response.body(), true);
                         mSwipeRefreshLayout.setRefreshing(false);
-                    });
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<Note>> call, Throwable t) {
+
+                }
+            });
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);

@@ -14,9 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.gson.reflect.TypeToken;
-import com.koushikdutta.ion.Ion;
-import com.sharpdroid.registro.API.RESTFulAPI;
+import com.sharpdroid.registro.API.SpiaggiariApiClient;
 import com.sharpdroid.registro.Adapters.FolderAdapter;
 import com.sharpdroid.registro.Interfaces.FileTeacher;
 import com.sharpdroid.registro.R;
@@ -34,6 +32,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.sharpdroid.registro.Utils.Metodi.isNetworkAvailable;
 
@@ -132,17 +133,20 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
     private void UpdateFiles() {
         if (isNetworkAvailable(mContext)) {
             mSwipeRefreshLayout.setRefreshing(true);
-            Ion.with(mContext)
-                    .load(RESTFulAPI.FILES_URL/* "https://gist.githubusercontent.com/luca020400/da76cedd586a5cec08788f7f9ffabe9a/raw/files.json"*/)
-                    .as(new TypeToken<List<FileTeacher>>() {
-                    })
-                    .withResponse()
-                    .setCallback((e, result) -> {
-                        if (e == null && result.getHeaders().code() == 200) {
-                            addFiles(result.getResult(), true);
-                        }
+            new SpiaggiariApiClient(mContext).mService.getFiles().enqueue(new Callback<List<FileTeacher>>() {
+                @Override
+                public void onResponse(Call<List<FileTeacher>> call, Response<List<FileTeacher>> response) {
+                    if (response.isSuccessful()) {
+                        addFiles(response.body(), true);
                         mSwipeRefreshLayout.setRefreshing(false);
-                    });
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<FileTeacher>> call, Throwable t) {
+
+                }
+            });
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);

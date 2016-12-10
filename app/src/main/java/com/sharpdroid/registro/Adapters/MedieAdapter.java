@@ -115,8 +115,8 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
             super(itemView);
             ButterKnife.bind(this, itemView);
             setTypeface(EasyFonts.robotoLight(mContext), mTextViewDesc);
-            setTypeface(EasyFonts.robotoRegular(mContext),mTextViewMateria);
-            setTypeface(EasyFonts.robotoMedium(mContext),mTextViewMedia);
+            setTypeface(EasyFonts.robotoRegular(mContext), mTextViewMateria);
+            setTypeface(EasyFonts.robotoMedium(mContext), mTextViewMedia);
         }
     }
 }

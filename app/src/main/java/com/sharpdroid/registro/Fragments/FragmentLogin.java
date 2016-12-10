@@ -14,16 +14,17 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.gson.reflect.TypeToken;
 import com.heinrichreimersoftware.materialintro.app.SlideFragment;
-import com.koushikdutta.ion.Ion;
-import com.sharpdroid.registro.API.RESTFulAPI;
+import com.sharpdroid.registro.API.SpiaggiariApiClient;
 import com.sharpdroid.registro.Interfaces.Login;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Utils.DeviceUuidFactory;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.sharpdroid.registro.Utils.Metodi.NomeDecente;
@@ -58,8 +59,8 @@ public class FragmentLogin extends SlideFragment {
 
         ButterKnife.bind(this, root);
 
-        mEditTextMail.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(mContext,R.drawable.ic_person), null, null, null);
-        mEditTextPassword.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(mContext,R.drawable.ic_password), null, null, null);
+        mEditTextMail.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(mContext, R.drawable.ic_person), null, null, null);
+        mEditTextPassword.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(mContext, R.drawable.ic_password), null, null, null);
 
         mEditTextMail.setEnabled(!loggedIn);
         mEditTextPassword.setEnabled(!loggedIn);
@@ -93,36 +94,32 @@ public class FragmentLogin extends SlideFragment {
         mButtonLogin.setEnabled(false);
         mButtonLogin.setText(R.string.caricamento);
 
-        Ion.with(getContext())
-                .load(RESTFulAPI.LOGIN_URL)
-                .setBodyParameter("login", mEmail)
-                .setBodyParameter("password", mPassword)
-                .setBodyParameter("key", new DeviceUuidFactory(mContext).getDeviceUuid().toString())
-                .as(new TypeToken<Login>() {
-                })
-                .withResponse()
-                .setCallback((e, result) -> {
-                    if (e == null && result.getHeaders().code() == 200) {
-                        SharedPreferences settings = mContext.getSharedPreferences("REGISTRO", MODE_PRIVATE);
+        new SpiaggiariApiClient(mContext).mService.postLogin(mEmail, mPassword, new DeviceUuidFactory(mContext).getDeviceUuid().toString()).enqueue(new Callback<Login>() {
+            @Override
+            public void onResponse(Call<Login> call, Response<Login> response) {
+                SharedPreferences settings = mContext.getSharedPreferences("REGISTRO", MODE_PRIVATE);
 
-                        // Writing data to SharedPreferences
-                        SharedPreferences.Editor editor = settings.edit();
-                        editor.putString("name", NomeDecente(result.getResult().getName()).trim());
-                        editor.apply();
+                // Writing data to SharedPreferences
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString("name", NomeDecente(response.body().getName()).trim());
+                editor.apply();
 
-                        mButtonLogin.setText(R.string.login_riuscito);
-                        Toast.makeText(mContext, R.string.login_msg, Toast.LENGTH_SHORT).show();
+                mButtonLogin.setText(R.string.login_riuscito);
+                Toast.makeText(mContext, R.string.login_msg, Toast.LENGTH_SHORT).show();
 
-                        loggedIn = true;
-                        updateNavigation();
-                    } else {
-                        mButtonLogin.setText(R.string.login);
-                        Toast.makeText(mContext, R.string.login_msg_failer, Toast.LENGTH_SHORT).show();
+                loggedIn = true;
+                updateNavigation();
+            }
 
-                        mEditTextMail.setEnabled(true);
-                        mEditTextPassword.setEnabled(true);
-                        mButtonLogin.setEnabled(true);
-                    }
-                });
+            @Override
+            public void onFailure(Call<Login> call, Throwable t) {
+                mButtonLogin.setText(R.string.login);
+                Toast.makeText(mContext, R.string.login_msg_failer, Toast.LENGTH_SHORT).show();
+
+                mEditTextMail.setEnabled(true);
+                mEditTextPassword.setEnabled(true);
+                mButtonLogin.setEnabled(true);
+            }
+        });
     }
 }

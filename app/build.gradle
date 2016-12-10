@@ -96,14 +96,19 @@ dependencies {
     compile 'com.android.support:preference-v7:25.0.1'
     compile 'com.android.support:recyclerview-v7:25.0.1'
     compile 'com.android.support:support-v4:25.0.1'
-    compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.heinrichreimersoftware:material-intro:1.6'
     compile 'com.jakewharton:butterknife:8.4.0'
-    compile 'com.koushikdutta.ion:ion:2.1.9'
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.yqritc:recyclerview-flexibledivider:1.4.0'
     compile 'com.vstechlab.easyfonts:easyfonts:1.0.0'
     compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
+
+    compile 'com.google.code.gson:gson:2.8.0'
+
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+
+    compile 'com.github.franmontiel:PersistentCookieJar:v1.0.0'
 
     compile project(':arcprogressstackview')
 

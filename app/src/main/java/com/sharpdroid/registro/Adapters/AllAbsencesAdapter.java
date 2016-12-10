@@ -9,7 +9,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.sharpdroid.registro.Interfaces.Absence;
-import com.sharpdroid.registro.Interfaces.Absences;
+import com.sharpdroid.registro.Interfaces.AllAbsences;
 import com.sharpdroid.registro.R;
 
 import java.text.SimpleDateFormat;
@@ -26,14 +26,14 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
     private final Context mContext;
     private final LayoutInflater mInflater;
     private final SimpleDateFormat format = new SimpleDateFormat("dd MMM", Locale.getDefault());
-    private Absences absences;
+    private AllAbsences absences;
 
     public AllAbsencesAdapter(Context context) {
         mContext = context;
         mInflater = LayoutInflater.from(context);
     }
 
-    public void setAbsences(Absences absences) {
+    public void setAbsences(AllAbsences absences) {
         this.absences = absences;
         notifyDataSetChanged();
     }
@@ -51,11 +51,11 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
     public int getChildrenCount(int i) {
         switch (i) {
             case 0:
-                return absences.getAbsences().size();
+                return absences.getDone().getAbsences().size();
             case 1:
-                return absences.getDelays().size();
+                return absences.getDone().getDelays().size();
             case 2:
-                return absences.getExits().size();
+                return absences.getDone().getExits().size();
         }
         return 0;
     }
@@ -64,11 +64,11 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
     public List getGroup(int i) {
         switch (i) {
             case 0:
-                return absences.getAbsences();
+                return absences.getDone().getAbsences();
             case 1:
-                return absences.getDelays();
+                return absences.getDone().getDelays();
             case 2:
-                return absences.getExits();
+                return absences.getDone().getExits();
             default:
                 return null;
         }
@@ -109,16 +109,16 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
 
         switch (group_pos) {
             case 0:
-                count = getUndoneCountAbsences(absences.getAbsences());
+                count = getUndoneCountAbsences(absences.getDone().getAbsences());
                 title.setText(R.string.assenze);
-                days.setText(String.valueOf(getNumberDaysAbsences(absences.getAbsences())));
+                days.setText(String.valueOf(getNumberDaysAbsences(absences.getDone().getAbsences())));
                 break;
             case 1:
-                count = getUndoneCountDelays(absences.getDelays());
+                count = getUndoneCountDelays(absences.getDone().getDelays());
                 title.setText(R.string.ritardi);
                 break;
             case 2:
-                count = getUndoneCountExits(absences.getExits());
+                count = getUndoneCountExits(absences.getDone().getExits());
                 title.setText(R.string.uscite_anticipate);
                 break;
         }
@@ -154,7 +154,7 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
         TextView justification = (TextView) view.findViewById(R.id.justification);
         TextView days = (TextView) view.findViewById(R.id.days);
 
-        Absence absence = absences.getAbsences().get(child_pos);
+        Absence absence = absences.getDone().getAbsences().get(child_pos);
 
         days.setText(String.valueOf(absence.getDays()));
         from.setText(absence.getFrom());
