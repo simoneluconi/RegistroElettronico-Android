@@ -23,47 +23,23 @@ public class Scrutiny implements Serializable {
         return icon;
     }
 
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
     public String getDesc() {
         return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
     }
 
     public String getType() {
         return type;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public String getLink() {
         return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
     }
 
     public String getSess() {
         return sess;
     }
 
-    public void setSess(String sess) {
-        this.sess = sess;
-    }
-
     public boolean isDownloadable() {
         return downloadable;
-    }
-
-    public void setDownloadable(boolean downloadable) {
-        this.downloadable = downloadable;
     }
 }

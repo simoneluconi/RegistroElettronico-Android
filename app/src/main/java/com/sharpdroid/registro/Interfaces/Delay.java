@@ -21,39 +21,20 @@ public class Delay implements Serializable {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getDay() {
         return day;
-    }
-
-    public void setDay(String day) {
-        this.day = day;
     }
 
     public String getHours() {
         return hours;
     }
 
-    public void setHours(String hours) {
-        this.hours = hours;
-    }
-
     public String getJustification() {
         return justification;
-    }
-
-    public void setJustification(String justification) {
-        this.justification = justification;
     }
 
     public boolean isDone() {
         return done;
     }
 
-    public void setDone(boolean done) {
-        this.done = done;
-    }
 }

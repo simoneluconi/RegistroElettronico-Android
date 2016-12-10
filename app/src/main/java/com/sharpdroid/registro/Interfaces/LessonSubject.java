@@ -15,15 +15,7 @@ public class LessonSubject implements Serializable {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     int getCode() {
         return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
     }
 }

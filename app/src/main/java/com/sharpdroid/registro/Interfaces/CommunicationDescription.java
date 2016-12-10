@@ -17,23 +17,11 @@ public class CommunicationDescription implements Serializable {
         return longTitle;
     }
 
-    public void setLongTitle(String longTitle) {
-        this.longTitle = longTitle;
-    }
-
     public String getDesc() {
         return desc;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
-
     public boolean isAttachment() {
         return attachment;
-    }
-
-    public void setAttachment(boolean attachment) {
-        this.attachment = attachment;
     }
 }

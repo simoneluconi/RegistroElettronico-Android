@@ -17,23 +17,11 @@ public class Login implements Serializable {
         return ok;
     }
 
-    public void setOk(boolean ok) {
-        this.ok = ok;
-    }
-
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }

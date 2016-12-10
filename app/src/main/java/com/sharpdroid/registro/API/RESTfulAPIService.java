@@ -2,7 +2,7 @@ package com.sharpdroid.registro.API;
 
 import android.support.annotation.NonNull;
 
-import com.sharpdroid.registro.Interfaces.AllAbsences;
+import com.sharpdroid.registro.Interfaces.Absences;
 import com.sharpdroid.registro.Interfaces.Communication;
 import com.sharpdroid.registro.Interfaces.CommunicationDescription;
 import com.sharpdroid.registro.Interfaces.FileTeacher;
@@ -41,7 +41,7 @@ public interface RESTfulAPIService {
             @NonNull @Path("cksum") String cksum);
 
     @GET("absences")
-    Call<AllAbsences> getAbsences();
+    Call<Absences> getAbsences();
 
     @GET("marks")
     Call<List<MarkSubject>> getMarks();

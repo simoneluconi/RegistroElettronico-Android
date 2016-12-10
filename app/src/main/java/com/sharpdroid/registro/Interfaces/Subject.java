@@ -1,7 +1,8 @@
 package com.sharpdroid.registro.Interfaces;
 
-public class Subject {
+import java.io.Serializable;
 
+public class Subject implements Serializable {
     private int id, code;
     private String name;
     private float target;

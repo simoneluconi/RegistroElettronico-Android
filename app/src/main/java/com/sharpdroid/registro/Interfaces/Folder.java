@@ -19,23 +19,11 @@ public class Folder implements Serializable {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getLast() {
         return last;
     }
 
-    public void setLast(String last) {
-        this.last = last;
-    }
-
     public List<File> getElements() {
         return elements;
-    }
-
-    public void setElements(List<File> elements) {
-        this.elements = elements;
     }
 }

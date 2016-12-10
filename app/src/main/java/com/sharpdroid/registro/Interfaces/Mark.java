@@ -23,48 +23,24 @@ public class Mark implements Serializable {
         return q;
     }
 
-    public void setQ(String q) {
-        this.q = q;
-    }
-
     public boolean isNs() {
         return ns;
-    }
-
-    public void setNs(boolean ns) {
-        this.ns = ns;
     }
 
     public String getType() {
         return type;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public String getDate() {
         return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
     }
 
     public String getMark() {
         return mark;
     }
 
-    public void setMark(String mark) {
-        this.mark = mark;
-    }
-
     public String getDesc() {
         return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
     }
 
     public boolean isSufficiente() {

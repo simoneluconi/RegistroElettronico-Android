@@ -23,47 +23,23 @@ public class Absence implements Serializable {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getFrom() {
         return from;
-    }
-
-    public void setFrom(String from) {
-        this.from = from;
     }
 
     public String getTo() {
         return to;
     }
 
-    public void setTo(String to) {
-        this.to = to;
-    }
-
     public int getDays() {
         return days;
-    }
-
-    public void setDays(int days) {
-        this.days = days;
     }
 
     public String getJustification() {
         return justification;
     }
 
-    public void setJustification(String justification) {
-        this.justification = justification;
-    }
-
     public boolean isDone() {
         return done;
-    }
-
-    public void setDone(boolean done) {
-        this.done = done;
     }
 }

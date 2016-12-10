@@ -19,23 +19,11 @@ public class Absences implements Serializable {
         return absences;
     }
 
-    public void setAbsences(List<Absence> absences) {
-        this.absences = absences;
-    }
-
     public List<Delay> getDelays() {
         return delays;
     }
 
-    public void setDelays(List<Delay> delays) {
-        this.delays = delays;
-    }
-
     public List<Exit> getExits() {
         return exits;
-    }
-
-    public void setExits(List<Exit> exits) {
-        this.exits = exits;
     }
 }

@@ -19,31 +19,15 @@ public class Note implements Serializable {
         return teacher;
     }
 
-    public void setTeacher(String teacher) {
-        this.teacher = teacher;
-    }
-
     public String getDate() {
         return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
     }
 
     public String getContent() {
         return content;
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
-
     public String getType() {
         return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 }
