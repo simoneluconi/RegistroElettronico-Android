@@ -27,7 +27,7 @@ public class SpiaggiariApiClient {
         Retrofit retrofit = new Retrofit.Builder()
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("https://api.daniele.ml/")
+                .baseUrl("https://staging.api.daniele.ml/")
                 .client(okHttpClient)
                 .build();
 
