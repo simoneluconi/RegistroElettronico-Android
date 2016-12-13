@@ -142,6 +142,8 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
                     .subscribe(notes -> {
                         addNotes(notes, true);
                         mSwipeRefreshLayout.setRefreshing(false);
+                    }, error -> {
+                        mSwipeRefreshLayout.setRefreshing(false);
                     });
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();

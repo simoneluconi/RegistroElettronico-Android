@@ -142,6 +142,8 @@ public class FragmentAgenda extends Fragment implements SwipeRefreshLayout.OnRef
                     .subscribe(communications -> {
                         addCommunications(communications, true);
                         mSwipeRefreshLayout.setRefreshing(false);
+                    }, error -> {
+                        mSwipeRefreshLayout.setRefreshing(false);
                     });
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();

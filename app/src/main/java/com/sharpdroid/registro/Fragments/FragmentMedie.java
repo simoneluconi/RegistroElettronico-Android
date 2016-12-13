@@ -141,6 +141,8 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
                     .subscribe(marks -> {
                         addSubjects(marks, true);
                         mSwipeRefreshLayout.setRefreshing(false);
+                    }, error -> {
+                        mSwipeRefreshLayout.setRefreshing(false);
                     });
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();

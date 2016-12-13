@@ -129,6 +129,8 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
                     .subscribe(absences -> {
                         addAbsences(absences, true);
                         mSwipeRefreshLayout.setRefreshing(false);
+                    }, error -> {
+                        mSwipeRefreshLayout.setRefreshing(false);
                     });
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
