@@ -21,8 +21,8 @@ import com.sharpdroid.registro.Utils.DeviceUuidFactory;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.sharpdroid.registro.Utils.Metodi.NomeDecente;

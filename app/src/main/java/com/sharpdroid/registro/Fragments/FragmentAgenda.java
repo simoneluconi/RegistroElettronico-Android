@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CalendarView;
 
 import com.sharpdroid.registro.R;
 
@@ -15,11 +14,9 @@ import butterknife.ButterKnife;
 public class FragmentAgenda extends Fragment {
     final private String TAG = FragmentAgenda.class.getSimpleName();
 
-
     private Context mContext;
 
     public FragmentAgenda() {
-
     }
 
     @Override
@@ -32,5 +29,4 @@ public class FragmentAgenda extends Fragment {
 
         return layout;
     }
-
 }
