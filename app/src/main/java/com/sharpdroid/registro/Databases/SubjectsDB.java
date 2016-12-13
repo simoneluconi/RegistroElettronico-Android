@@ -16,12 +16,12 @@ public class SubjectsDB extends SQLiteOpenHelper {
     private final static String DB_NAME = "SubjectsDB";
     private final static String columns[] = {"id", "code", "name", "target", "professor", "classroom", "notes"};
 
-    public static SubjectsDB from(Context c) {
-        return new SubjectsDB(c);
-    }
-
     private SubjectsDB(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
+    }
+
+    public static SubjectsDB from(Context c) {
+        return new SubjectsDB(c);
     }
 
     @Override
@@ -71,17 +71,18 @@ public class SubjectsDB extends SQLiteOpenHelper {
         c.close();
         return subject;
     }
+
     public Subject getSubject(String name) {
         SQLiteDatabase db = this.getReadableDatabase();
         Subject subject;
         Cursor c = db.rawQuery("SELECT * FROM " + DB_NAME + " WHERE " + columns[2] + " = ?", new String[]{name});
-        if(c.moveToFirst()) {
+        if (c.moveToFirst()) {
 
             subject = new Subject(c.getInt(0), c.getInt(1), c.getString(2), c.getFloat(3), c.getString(4), c.getString(5), c.getString(6));
 
             c.close();
             return subject;
-        }else{
+        } else {
             c.close();
             return null;
         }

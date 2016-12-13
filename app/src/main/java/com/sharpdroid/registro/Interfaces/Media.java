@@ -46,23 +46,23 @@ public class Media implements Serializable {
         return this.numero_voti_scritto;
     }
 
-    public float getMediaGenerale() throws ArithmeticException{
-        if(numero_voti_generale==0) throw new ArithmeticException("Divisore uguale a 0");
+    public float getMediaGenerale() throws ArithmeticException {
+        if (numero_voti_generale == 0) throw new ArithmeticException("Divisore uguale a 0");
         return somma_generale / numero_voti_generale;
     }
 
-    public float getMediaOrale() throws ArithmeticException{
-        if(numero_voti_orale==0) throw new ArithmeticException("Divisore uguale a 0");
+    public float getMediaOrale() throws ArithmeticException {
+        if (numero_voti_orale == 0) throw new ArithmeticException("Divisore uguale a 0");
         return somma_orale / numero_voti_orale;
     }
 
-    public float getMediaScritto() throws ArithmeticException{
-        if(numero_voti_scritto==0) throw new ArithmeticException("Divisore uguale a 0");
+    public float getMediaScritto() throws ArithmeticException {
+        if (numero_voti_scritto == 0) throw new ArithmeticException("Divisore uguale a 0");
         return somma_scritto / numero_voti_scritto;
     }
 
-    public float getMediaPratico() throws  ArithmeticException{
-        if(numero_voti_pratico==0) throw new ArithmeticException("Divisore uguale a 0");
+    public float getMediaPratico() throws ArithmeticException {
+        if (numero_voti_pratico == 0) throw new ArithmeticException("Divisore uguale a 0");
         return somma_pratico / numero_voti_pratico;
     }
 
