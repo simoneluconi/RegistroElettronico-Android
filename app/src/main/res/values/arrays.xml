@@ -10,7 +10,9 @@
     </string-array>
 
     <string-array name="tab_list">
+        <item>@string/agenda</item>
         <item>@string/medie</item>
+        <item>@string/timetable</item>
         <item>@string/files</item>
         <item>@string/justifications</item>
         <item>@string/note</item>
@@ -23,5 +25,7 @@
         <item>2</item>
         <item>3</item>
         <item>4</item>
+        <item>5</item>
+        <item>6</item>
     </string-array>
 </resources>
