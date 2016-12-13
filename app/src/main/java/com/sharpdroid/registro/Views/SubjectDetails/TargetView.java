@@ -3,6 +3,7 @@ package com.sharpdroid.registro.Views.SubjectDetails;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
@@ -26,6 +27,10 @@ public class TargetView extends CardView {
     TextView targetView;
     @BindView(R.id.progress)
     RoundCornerProgressBar progressBar;
+    @BindView(R.id.imposta)
+    Button set;
+    @BindView(R.id.dettagli)
+    Button details;
 
     float media, target;
 
@@ -67,5 +72,9 @@ public class TargetView extends CardView {
     public void setProgress(Float media) {
         progressBar.setProgress(media);
         setMedia(media);
+    }
+
+    public void setClickListener(OnClickListener listener) {
+        set.setOnClickListener(listener);
     }
 }

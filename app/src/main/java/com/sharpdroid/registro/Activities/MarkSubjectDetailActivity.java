@@ -79,6 +79,8 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
                     .getString("voto_obiettivo", "8"));
             targetView.setTarget(target);
         }
+        // TODO: 13/12/2016 OPEN DIALOG
+        targetView.setClickListener(view -> targetView.setTarget(8f));
     }
 
     @Override

@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.heinrichreimersoftware.materialintro.app.SlideFragment;
 import com.sharpdroid.registro.API.SpiaggiariApiClient;
+import com.sharpdroid.registro.Databases.SubjectsDB;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Utils.DeviceUuidFactory;
 
@@ -105,6 +106,15 @@ public class FragmentLogin extends SlideFragment {
 
                     mButtonLogin.setText(R.string.login_riuscito);
                     Toast.makeText(mContext, R.string.login_msg, Toast.LENGTH_SHORT).show();
+
+                    //scarica le materie (nome, id) per poter in seguito modificare a piacere tutte le caratteristiche nel db
+                    new SpiaggiariApiClient(mContext).mService.getSubjects()
+                            .subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(subjects -> {
+                                SubjectsDB.from(mContext).addCODEandNAME(subjects).close();
+                            }, error -> {
+                            });
 
                     loggedIn = true;
                     updateNavigation();

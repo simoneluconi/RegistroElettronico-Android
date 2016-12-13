@@ -11,11 +11,11 @@ public class LessonSubject implements Serializable {
         this.code = code;
     }
 
-    String getName() {
+    public String getName() {
         return name;
     }
 
-    int getCode() {
+    public int getCode() {
         return code;
     }
 }
