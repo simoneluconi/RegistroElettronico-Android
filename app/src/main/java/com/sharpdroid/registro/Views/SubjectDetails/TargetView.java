@@ -60,12 +60,12 @@ public class TargetView extends CardView {
     }
 
     private void setMedia(float media) {
-        this.mediaView.setText(String.valueOf(Math.abs(media * 100) / 100f));
+        this.mediaView.setText(String.valueOf(Math.round(media * 100) / 100f));
         this.media = media;
     }
 
     public void setTarget(float target) {
-        targetView.setText(String.valueOf(Math.abs(target * 100) / 100f));
+        targetView.setText(String.valueOf(Math.round(target * 100) / 100f));
         this.target = target;
         progressBar.setMax(target);
     }
