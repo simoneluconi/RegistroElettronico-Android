@@ -6,7 +6,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,13 +66,8 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
         final List<Mark> marks = marksubject.getMarks();
         Media media = new Media();
         media.setMateria(marksubject.getName());
-        for (Mark mark : marks) {
-            if (!mark.isNs()) {
-                media.addMark(mark);
-            } else {
-                Log.d(TAG, String.format("%s %s non è significativo", marksubject.getName(), mark.getMark()));
-            }
-        }
+
+        media.addMarks(marks);
 
         ViewHolder.mTextViewMateria.setText(media.getMateria());
         ViewHolder.mTextViewMedia.setText(String.format(Locale.getDefault(), "%.2f", media.getMediaGenerale()));
@@ -90,7 +84,7 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
         ViewHolder.mTextViewDesc.setText(obbiettivo_string);
 
         ViewHolder.mCardViewMedia.setOnClickListener(v -> {
-            mContext.startActivity(new Intent(mContext, MarkSubjectDetailActivity.class));
+            mContext.startActivity(new Intent(mContext, MarkSubjectDetailActivity.class).putExtra("data", marksubject));
         });
     }
 

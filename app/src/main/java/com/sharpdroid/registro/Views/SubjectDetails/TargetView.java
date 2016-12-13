@@ -9,6 +9,8 @@ import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.sharpdroid.registro.R;
 import com.vstechlab.easyfonts.EasyFonts;
 
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -22,11 +24,13 @@ public class TargetView extends CardView {
     @BindView(R.id.text2)
     TextView text2;
     @BindView(R.id.media)
-    TextView media;
+    TextView mediaView;
     @BindView(R.id.obiettivo)
-    TextView obiettivo;
+    TextView targetView;
     @BindView(R.id.progress)
     RoundCornerProgressBar progressBar;
+
+    float media, target;
 
 
     public TargetView(Context context) {
@@ -51,13 +55,19 @@ public class TargetView extends CardView {
         inflate(mContext, R.layout.view_target, this);
         ButterKnife.bind(this);
 
-        setTypeface(EasyFonts.robotoMedium(mContext), media, obiettivo);
+        setTypeface(EasyFonts.robotoMedium(mContext), mediaView, targetView);
         setTypeface(EasyFonts.robotoLight(mContext), text1, text2);
-        setProgress(8f);
     }
 
-    public void setMedia(Float media) {
-        this.media.setText(String.valueOf(media));
+    private void setMedia(float media) {
+        this.mediaView.setText(String.valueOf(Math.abs(media * 100) / 100f));
+        this.media = media;
+    }
+
+    public void setTarget(float target) {
+        targetView.setText(String.valueOf(Math.abs(target * 100) / 100f));
+        this.target = target;
+        progressBar.setMax(target);
     }
 
     public void setProgress(Float media) {

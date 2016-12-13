@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.sharpdroid.registro.Fragments.FragmentAgenda;
 import com.sharpdroid.registro.Fragments.FragmentAllAbsences;
 import com.sharpdroid.registro.Fragments.FragmentCommunications;
 import com.sharpdroid.registro.Fragments.FragmentFolders;
@@ -93,9 +94,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
-        Fragment fragment = null;
+        Fragment fragment;
 
         switch (item.getItemId()) {
+            case R.id.agenda:
+                fragment = new FragmentAgenda();
+                break;
             case R.id.medie:
                 fragment = new FragmentMedie();
                 break;

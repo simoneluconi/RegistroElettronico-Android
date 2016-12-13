@@ -10,6 +10,7 @@ import com.sharpdroid.registro.R;
 import com.vstechlab.easyfonts.EasyFonts;
 
 import java.util.Collections;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -74,9 +75,9 @@ public class OverallView extends CardView {
         mOrale.setText(orale);
     }
 
-    public void setMedia(String media) {
-        mMedia.setText(media);
-        setProgress(Float.parseFloat(media) * 10);
+    public void setMedia(float media) {
+        mMedia.setText(String.format(Locale.getDefault(), "%.2f", media));
+        setProgress(media * 10);
     }
 
     public void setProgress(float progress) {

@@ -67,13 +67,6 @@ public class TimetableAdapter extends RecyclerView.Adapter<TimetableAdapter.Medi
         final List<Mark> marks = marksubject.getMarks();
         Media media = new Media();
         media.setMateria(marksubject.getName());
-        for (Mark mark : marks) {
-            if (!mark.isNs()) {
-                media.addMark(mark);
-            } else {
-                Log.d(TAG, String.format("%s %s non è significativo", marksubject.getName(), mark.getMark()));
-            }
-        }
 
         ViewHolder.mTextViewMateria.setText(media.getMateria());
         ViewHolder.mTextViewMedia.setText(String.format(Locale.getDefault(), "%.2f", media.getMediaGenerale()));

@@ -71,6 +71,21 @@ public class SubjectsDB extends SQLiteOpenHelper {
         c.close();
         return subject;
     }
+    public Subject getSubject(String name) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Subject subject;
+        Cursor c = db.rawQuery("SELECT * FROM " + DB_NAME + " WHERE " + columns[2] + " = ?", new String[]{name});
+        if(c.moveToFirst()) {
+
+            subject = new Subject(c.getInt(0), c.getInt(1), c.getString(2), c.getFloat(3), c.getString(4), c.getString(5), c.getString(6));
+
+            c.close();
+            return subject;
+        }else{
+            c.close();
+            return null;
+        }
+    }
 
     public SubjectsDB editSubject(int code, ContentValues contentValues) {
         SQLiteDatabase db = this.getWritableDatabase();
