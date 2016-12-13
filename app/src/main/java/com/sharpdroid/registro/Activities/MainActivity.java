@@ -120,6 +120,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_share:
             case R.id.nav_send:
             default:
+                return false;
         }
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
