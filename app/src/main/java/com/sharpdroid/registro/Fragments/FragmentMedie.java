@@ -33,9 +33,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.sharpdroid.registro.Utils.Metodi.isNetworkAvailable;
 
@@ -136,21 +135,13 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
     private void UpdateMedie() {
         if (isNetworkAvailable(mContext)) {
             mSwipeRefreshLayout.setRefreshing(true);
-            new SpiaggiariApiClient(mContext).mService.getMarks().enqueue(new Callback<List<MarkSubject>>() {
-                @Override
-                public void onResponse(Call<List<MarkSubject>> call, Response<List<MarkSubject>> response) {
-                    if (response.isSuccessful()) {
-                        response.code();
-                        addSubjects(response.body(), true);
+            new SpiaggiariApiClient(mContext).mService.getMarks()
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(marks -> {
+                        addSubjects(marks, true);
                         mSwipeRefreshLayout.setRefreshing(false);
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<MarkSubject>> call, Throwable t) {
-
-                }
-            });
+                    });
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);

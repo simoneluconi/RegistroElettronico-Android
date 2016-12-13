@@ -17,7 +17,6 @@ import com.sharpdroid.registro.Interfaces.MarkSubject;
 import com.sharpdroid.registro.Interfaces.Media;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Utils.Metodi;
-import com.vstechlab.easyfonts.EasyFonts;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,7 +28,6 @@ import butterknife.ButterKnife;
 import devlight.io.library.ArcProgressStackView;
 
 import static com.sharpdroid.registro.Utils.Metodi.getMediaColor;
-import static com.sharpdroid.registro.Utils.Metodi.setTypeface;
 
 public class TimetableAdapter extends RecyclerView.Adapter<TimetableAdapter.MedieHolder> {
     final private String TAG = TimetableAdapter.class.getSimpleName();
@@ -106,9 +104,6 @@ public class TimetableAdapter extends RecyclerView.Adapter<TimetableAdapter.Medi
         MedieHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            setTypeface(EasyFonts.robotoLight(mContext), mTextViewDesc);
-            setTypeface(EasyFonts.robotoRegular(mContext), mTextViewMateria);
-            setTypeface(EasyFonts.robotoMedium(mContext), mTextViewMedia);
         }
     }
 }

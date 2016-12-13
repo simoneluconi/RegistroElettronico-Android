@@ -32,9 +32,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.sharpdroid.registro.Utils.Metodi.isNetworkAvailable;
 
@@ -133,20 +132,13 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
     private void UpdateFiles() {
         if (isNetworkAvailable(mContext)) {
             mSwipeRefreshLayout.setRefreshing(true);
-            new SpiaggiariApiClient(mContext).mService.getFiles().enqueue(new Callback<List<FileTeacher>>() {
-                @Override
-                public void onResponse(Call<List<FileTeacher>> call, Response<List<FileTeacher>> response) {
-                    if (response.isSuccessful()) {
-                        addFiles(response.body(), true);
+            new SpiaggiariApiClient(mContext).mService.getFiles()
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(files -> {
+                        addFiles(files, true);
                         mSwipeRefreshLayout.setRefreshing(false);
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<FileTeacher>> call, Throwable t) {
-
-                }
-            });
+                    });
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);

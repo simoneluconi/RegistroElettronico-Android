@@ -100,13 +100,16 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.4.0'
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.yqritc:recyclerview-flexibledivider:1.4.0'
-    compile 'com.vstechlab.easyfonts:easyfonts:1.0.0'
     compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
-
-    compile 'com.google.code.gson:gson:2.8.0'
 
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+
+    compile 'com.google.code.gson:gson:2.8.0'
+
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'io.reactivex:rxjava:1.2.3'
 
     compile 'com.github.franmontiel:PersistentCookieJar:v1.0.0'
 

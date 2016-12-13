@@ -7,7 +7,6 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.sharpdroid.registro.R;
-import com.vstechlab.easyfonts.EasyFonts;
 
 import java.util.Collections;
 import java.util.Locale;
@@ -15,8 +14,6 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import devlight.io.library.ArcProgressStackView;
-
-import static com.sharpdroid.registro.Utils.Metodi.setTypeface;
 
 public class OverallView extends CardView {
     Context mContext;
@@ -62,9 +59,6 @@ public class OverallView extends CardView {
     void init() {
         inflate(mContext, R.layout.view_overall_subject, this);
         ButterKnife.bind(this);
-        setTypeface(EasyFonts.robotoMedium(mContext), mScritto, mOrale, mMedia);
-        setTypeface(EasyFonts.robotoLight(mContext), text1, text2);
-        setTypeface(EasyFonts.robotoRegular(mContext), header);
     }
 
     public void setScritto(String scritto) {

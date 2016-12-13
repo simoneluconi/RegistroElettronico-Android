@@ -1,10 +1,8 @@
 package com.sharpdroid.registro.Utils;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.widget.TextView;
 
 import com.sharpdroid.registro.API.SpiaggiariAPI;
 import com.sharpdroid.registro.Databases.SubjectsDB;
@@ -221,12 +219,6 @@ public class Metodi {
             new_name += ins.substring(0, 1).toUpperCase() + ins.substring(1).toLowerCase() + " ";
         }
         return new_name;
-    }
-
-    public static void setTypeface(Typeface font, TextView... textViews) {
-        for (TextView textView : textViews) {
-            textView.setTypeface(font);
-        }
     }
 
     public static void saveAllSubjects(Context c, List<Subject> subjects) {

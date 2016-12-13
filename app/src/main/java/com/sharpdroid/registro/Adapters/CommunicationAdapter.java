@@ -17,7 +17,6 @@ import android.widget.TextView;
 import com.sharpdroid.registro.API.SpiaggiariApiClient;
 import com.sharpdroid.registro.Interfaces.Communication;
 import com.sharpdroid.registro.R;
-import com.vstechlab.easyfonts.EasyFonts;
 
 import java.io.File;
 import java.text.ParseException;
@@ -29,12 +28,9 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
-import static com.sharpdroid.registro.Utils.Metodi.setTypeface;
 import static com.sharpdroid.registro.Utils.Metodi.writeResponseBodyToDisk;
 
 public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdapter.CommunicationHolder> {
@@ -95,27 +91,20 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
                     File.separator +
                     communication.getId() + ".pdf");
 
-            communication.getId();
-
             if (!file.exists()) {
                 DownloadProgressSnak.show();
 
                 if (!dir.exists()) dir.mkdir();
-                new SpiaggiariApiClient(mContext).mService.getcommunicationDownload(communication.getId()).enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response.isSuccessful()) {
-                            if (writeResponseBodyToDisk(response.body(), file))
-                                openpdf(file, DownloadProgressSnak);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, t.getCause()));
-                        DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT).show();
-                    }
-                });
+                new SpiaggiariApiClient(mContext).mService.getcommunicationDownload(communication.getId())
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(communication_file -> {
+                            writeResponseBodyToDisk(communication_file, file);
+                            openpdf(file, DownloadProgressSnak);
+                        }, error -> {
+                            DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, error.getCause()));
+                            DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT).show();
+                        });
             } else {
                 openpdf(file, DownloadProgressSnak);
             }
@@ -156,8 +145,6 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
         CommunicationHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            setTypeface(EasyFonts.robotoRegular(mContext), Title, Type);
-            setTypeface(EasyFonts.robotoLight(mContext), Date);
         }
     }
 }

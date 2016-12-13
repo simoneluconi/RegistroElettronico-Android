@@ -28,9 +28,8 @@ import java.io.StreamCorruptedException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.sharpdroid.registro.Utils.Metodi.isNetworkAvailable;
 
@@ -124,20 +123,13 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
     private void UpdateAllAbsences() {
         if (isNetworkAvailable(mContext)) {
             mSwipeRefreshLayout.setRefreshing(true);
-            new SpiaggiariApiClient(mContext).mService.getAbsences().enqueue(new Callback<Absences>() {
-                @Override
-                public void onResponse(Call<Absences> call, Response<Absences> response) {
-                    if (response.isSuccessful()) {
-                        addAbsences(response.body(), true);
+            new SpiaggiariApiClient(mContext).mService.getAbsences()
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(absences -> {
+                        addAbsences(absences, true);
                         mSwipeRefreshLayout.setRefreshing(false);
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Absences> call, Throwable t) {
-
-                }
-            });
+                    });
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);

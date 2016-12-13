@@ -9,6 +9,7 @@ import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersisto
 import okhttp3.CookieJar;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SpiaggiariApiClient {
@@ -24,8 +25,9 @@ public class SpiaggiariApiClient {
 
         // Retrofit
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.daniele.ml/")
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl("https://api.daniele.ml/")
                 .client(okHttpClient)
                 .build();
 

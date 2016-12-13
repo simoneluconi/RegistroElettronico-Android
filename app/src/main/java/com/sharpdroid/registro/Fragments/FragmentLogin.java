@@ -16,15 +16,13 @@ import android.widget.Toast;
 
 import com.heinrichreimersoftware.materialintro.app.SlideFragment;
 import com.sharpdroid.registro.API.SpiaggiariApiClient;
-import com.sharpdroid.registro.Interfaces.Login;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Utils.DeviceUuidFactory;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.sharpdroid.registro.Utils.Metodi.NomeDecente;
@@ -94,32 +92,29 @@ public class FragmentLogin extends SlideFragment {
         mButtonLogin.setEnabled(false);
         mButtonLogin.setText(R.string.caricamento);
 
-        new SpiaggiariApiClient(mContext).mService.postLogin(mEmail, mPassword, new DeviceUuidFactory(mContext).getDeviceUuid().toString()).enqueue(new Callback<Login>() {
-            @Override
-            public void onResponse(Call<Login> call, Response<Login> response) {
-                SharedPreferences settings = mContext.getSharedPreferences("REGISTRO", MODE_PRIVATE);
+        new SpiaggiariApiClient(mContext).mService.postLogin(mEmail, mPassword, new DeviceUuidFactory(mContext).getDeviceUuid().toString())
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(login -> {
+                    SharedPreferences settings = mContext.getSharedPreferences("REGISTRO", MODE_PRIVATE);
 
-                // Writing data to SharedPreferences
-                SharedPreferences.Editor editor = settings.edit();
-                editor.putString("name", NomeDecente(response.body().getName()).trim());
-                editor.apply();
+                    // Writing data to SharedPreferences
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString("name", NomeDecente(login.getName()).trim());
+                    editor.apply();
 
-                mButtonLogin.setText(R.string.login_riuscito);
-                Toast.makeText(mContext, R.string.login_msg, Toast.LENGTH_SHORT).show();
+                    mButtonLogin.setText(R.string.login_riuscito);
+                    Toast.makeText(mContext, R.string.login_msg, Toast.LENGTH_SHORT).show();
 
-                loggedIn = true;
-                updateNavigation();
-            }
+                    loggedIn = true;
+                    updateNavigation();
+                }, error -> {
+                    mButtonLogin.setText(R.string.login);
+                    Toast.makeText(mContext, R.string.login_msg_failer, Toast.LENGTH_SHORT).show();
 
-            @Override
-            public void onFailure(Call<Login> call, Throwable t) {
-                mButtonLogin.setText(R.string.login);
-                Toast.makeText(mContext, R.string.login_msg_failer, Toast.LENGTH_SHORT).show();
-
-                mEditTextMail.setEnabled(true);
-                mEditTextPassword.setEnabled(true);
-                mButtonLogin.setEnabled(true);
-            }
-        });
+                    mEditTextMail.setEnabled(true);
+                    mEditTextPassword.setEnabled(true);
+                    mButtonLogin.setEnabled(true);
+                });
     }
 }

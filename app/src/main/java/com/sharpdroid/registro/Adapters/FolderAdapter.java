@@ -18,7 +18,6 @@ import com.sharpdroid.registro.Fragments.FragmentFiles;
 import com.sharpdroid.registro.Interfaces.FileTeacher;
 import com.sharpdroid.registro.Interfaces.Folder;
 import com.sharpdroid.registro.R;
-import com.vstechlab.easyfonts.EasyFonts;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,7 +30,6 @@ import butterknife.ButterKnife;
 
 import static com.sharpdroid.registro.Utils.Metodi.NomeDecente;
 import static com.sharpdroid.registro.Utils.Metodi.getListLayouts;
-import static com.sharpdroid.registro.Utils.Metodi.setTypeface;
 
 public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static final SimpleDateFormat apiFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -149,7 +147,6 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         SubheaderHolder(View layout) {
             super(layout);
             ButterKnife.bind(this, layout);
-            setTypeface(EasyFonts.robotoMedium(mContext), teacher);
         }
     }
 
@@ -164,9 +161,6 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         FileTeacherHolder(View layout) {
             super(layout);
             ButterKnife.bind(this, layout);
-
-            setTypeface(EasyFonts.robotoRegular(mContext), title);
-            setTypeface(EasyFonts.robotoLight(mContext), date);
         }
     }
 

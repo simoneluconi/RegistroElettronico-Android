@@ -33,9 +33,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.sharpdroid.registro.Utils.Metodi.isNetworkAvailable;
 
@@ -137,20 +136,13 @@ public class FragmentAgenda extends Fragment implements SwipeRefreshLayout.OnRef
     private void UpdateCommunications() {
         if (isNetworkAvailable(mContext)) {
             mSwipeRefreshLayout.setRefreshing(true);
-            new SpiaggiariApiClient(mContext).mService.getCommunications().enqueue(new Callback<List<Communication>>() {
-                @Override
-                public void onResponse(Call<List<Communication>> call, Response<List<Communication>> response) {
-                    if (response.isSuccessful()) {
-                        addCommunications(response.body(), true);
+            new SpiaggiariApiClient(mContext).mService.getCommunications()
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(communications -> {
+                        addCommunications(communications, true);
                         mSwipeRefreshLayout.setRefreshing(false);
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<Communication>> call, Throwable t) {
-
-                }
-            });
+                    });
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);

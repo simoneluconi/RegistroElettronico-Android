@@ -33,9 +33,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.sharpdroid.registro.Utils.Metodi.isNetworkAvailable;
 
@@ -137,20 +136,13 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
     private void UpdateNotes() {
         if (isNetworkAvailable(mContext)) {
             mSwipeRefreshLayout.setRefreshing(true);
-            new SpiaggiariApiClient(mContext).mService.getNotes().enqueue(new Callback<List<Note>>() {
-                @Override
-                public void onResponse(Call<List<Note>> call, Response<List<Note>> response) {
-                    if (response.isSuccessful()) {
-                        addNotes(response.body(), true);
+            new SpiaggiariApiClient(mContext).mService.getNotes()
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(notes -> {
+                        addNotes(notes, true);
                         mSwipeRefreshLayout.setRefreshing(false);
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<Note>> call, Throwable t) {
-
-                }
-            });
+                    });
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);

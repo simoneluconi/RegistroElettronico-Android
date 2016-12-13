@@ -15,7 +15,6 @@ import com.google.gson.Gson;
 import com.sharpdroid.registro.Adapters.FileAdapter;
 import com.sharpdroid.registro.Interfaces.Folder;
 import com.sharpdroid.registro.R;
-import com.vstechlab.easyfonts.EasyFonts;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.io.IOException;
@@ -23,7 +22,6 @@ import java.text.ParseException;
 
 import static com.sharpdroid.registro.Adapters.FolderAdapter.apiFormat;
 import static com.sharpdroid.registro.Adapters.FolderAdapter.dateFormat;
-import static com.sharpdroid.registro.Utils.Metodi.setTypeface;
 
 public class FragmentFiles extends Fragment {
     final static String TAG = FragmentFiles.class.getSimpleName();
@@ -49,8 +47,6 @@ public class FragmentFiles extends Fragment {
         TextView folder_date = (TextView) folder_layout.findViewById(R.id.date);
         View folder_divider = folder_layout.findViewById(R.id.divider);
 
-        setTypeface(EasyFonts.robotoRegular(mContext), folder_title);
-        setTypeface(EasyFonts.robotoLight(mContext), folder_date);
         folder_divider.setVisibility(View.GONE);
         folder_layout.setClickable(false);
         folder_layout.setFocusable(false);

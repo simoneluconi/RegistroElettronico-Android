@@ -7,14 +7,11 @@ import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.sharpdroid.registro.R;
-import com.vstechlab.easyfonts.EasyFonts;
 
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.sharpdroid.registro.Utils.Metodi.setTypeface;
 
 public class TargetView extends CardView {
     Context mContext;
@@ -54,9 +51,6 @@ public class TargetView extends CardView {
     void init() {
         inflate(mContext, R.layout.view_target, this);
         ButterKnife.bind(this);
-
-        setTypeface(EasyFonts.robotoMedium(mContext), mediaView, targetView);
-        setTypeface(EasyFonts.robotoLight(mContext), text1, text2);
     }
 
     private void setMedia(float media) {
