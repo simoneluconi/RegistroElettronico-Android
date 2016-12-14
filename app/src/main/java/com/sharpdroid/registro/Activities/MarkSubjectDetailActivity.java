@@ -1,5 +1,6 @@
 package com.sharpdroid.registro.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -22,12 +23,15 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.sharpdroid.registro.Utils.Metodi.getSubjectName;
+
 // TODO: 03/12/2016 Dettagli (nome, aula, prof, ora, note, colore)
 // DONE: 03/12/2016 Media (scritto, orale, totale)
 // TODO: 03/12/2016 Obiettivo
 // TODO: 03/12/2016 Orario settimanale (in quali giorni)
 // TODO: 03/12/2016 Verifiche prossime
 // TODO: 03/12/2016 Voti recenti
+// TODO: 14/12/2016 Lezioni recenti
 
 public class MarkSubjectDetailActivity extends AppCompatActivity {
 
@@ -53,11 +57,9 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
 
         //get DATA
         data = (MarkSubject) getIntent().getSerializableExtra("data");
-        setTitle(data.getName());
 
         //DATABASE
         db = SubjectsDB.from(this);
-        subject = db.getSubject(data.getName());
 
         // toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -69,6 +71,15 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        subject = db.getSubject(data.getName());
+        setTitle(getSubjectName(subject));
+
         setInfo(subject);
         setOverall(data.getMarks());
         setTarget(subject);
@@ -76,13 +87,14 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
 
     private void setInfo(Subject subject) {
         infoView.setSubjectDetails(subject);
+        infoView.setEditListener(view -> startActivity(new Intent(this, EditSubjectDetailsActivity.class).putExtra("code", subject.getCode())));
     }
 
     private void setTarget(Subject subject) {
         targetView.setProgress(media.getMediaGenerale());
-        if (subject != null) {
+        try {
             targetView.setTarget(subject.getTarget());
-        } else {
+        } catch (NullPointerException e) {
             float target = Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(this)
                     .getString("voto_obiettivo", "8"));
             targetView.setTarget(target);

@@ -1,6 +1,7 @@
 package com.sharpdroid.registro.Views.SubjectDetails;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -59,13 +60,17 @@ public class InfoView extends CardView {
 
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).size(1).build());
+        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).size(1).marginResId(R.dimen.padding_left_divider1, R.dimen.nav_header_vertical_spacing).build());
 
         // TODO: 14/12/2016 Start Activity Edit_Details
     }
 
     public void setSubjectDetails(Subject data) {
         adapter.setData(data);
+    }
+
+    public void setEditListener(OnClickListener listener) {
+        edit.setOnClickListener(listener);
     }
 
     class InfoAdapter extends RecyclerView.Adapter<InfoAdapter.InfoHolder> {

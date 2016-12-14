@@ -34,6 +34,9 @@
         <activity
             android:name=".Activities.MarkSubjectDetailActivity"
             tools:ignore="InnerclassSeparator" />
+        <activity
+            android:name=".Activities.EditSubjectDetailsActivity"
+            android:windowSoftInputMode="adjustPan" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -44,5 +47,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
+
     </application>
+
 </manifest>

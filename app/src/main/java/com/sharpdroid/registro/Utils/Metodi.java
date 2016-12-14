@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import okhttp3.ResponseBody;
 
@@ -221,6 +222,14 @@ public class Metodi {
         return new_name;
     }
 
+    public static String beautifyName(String name) {
+        return name.substring(0, 1).toUpperCase(Locale.getDefault()) + name.substring(1).toLowerCase();
+    }
+
+    public static String getSubjectName(Subject subject) {
+        return (subject.getName() != null) ? subject.getName() : subject.getOriginalName();
+    }
+
     public static void saveAllSubjects(Context c, List<Subject> subjects) {
         SubjectsDB.from(c).addAllSubjects(subjects).close();
     }
@@ -265,4 +274,5 @@ public class Metodi {
             return false;
         }
     }
+
 }

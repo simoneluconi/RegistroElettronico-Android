@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static com.sharpdroid.registro.Utils.Metodi.beautifyName;
+
 public class MarkSubject implements Serializable {
     private String name;
     private List<Mark> marks = new ArrayList<>();
@@ -15,7 +17,7 @@ public class MarkSubject implements Serializable {
     }
 
     public String getName() {
-        return name.substring(0, 1).toUpperCase(Locale.getDefault()) + name.substring(1);
+        return beautifyName(name);
     }
 
     public List<Mark> getMarks() {
