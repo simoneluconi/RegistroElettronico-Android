@@ -229,7 +229,7 @@ public class Metodi {
     }
 
     public static String getSubjectName(Subject subject) {
-        return (!subject.getName().isEmpty()) ? subject.getName() : subject.getOriginalName();
+        return (!isEmptyOrNull(subject.getName())) ? subject.getName() : subject.getOriginalName();
     }
 
     public static void saveAllSubjects(Context c, List<Subject> subjects) {
