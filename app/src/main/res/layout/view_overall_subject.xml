@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:background="#fafafa"
         android:padding="8dp"
-        android:text="La mia media"
+        android:text="La tua media"
         android:textColor="#414141" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

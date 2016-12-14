@@ -12,6 +12,7 @@ import com.sharpdroid.registro.Interfaces.MarkSubject;
 import com.sharpdroid.registro.Interfaces.Media;
 import com.sharpdroid.registro.Interfaces.Subject;
 import com.sharpdroid.registro.R;
+import com.sharpdroid.registro.Views.SubjectDetails.InfoView;
 import com.sharpdroid.registro.Views.SubjectDetails.OverallView;
 import com.sharpdroid.registro.Views.SubjectDetails.TargetView;
 
@@ -31,6 +32,8 @@ import butterknife.ButterKnife;
 public class MarkSubjectDetailActivity extends AppCompatActivity {
 
     private static final String TAG = MarkSubjectDetailActivity.class.getSimpleName();
+    @BindView(R.id.info)
+    InfoView infoView;
     @BindView(R.id.overall)
     OverallView overallView;
     @BindView(R.id.target)
@@ -66,8 +69,13 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
+        setInfo(subject);
         setOverall(data.getMarks());
         setTarget(subject);
+    }
+
+    private void setInfo(Subject subject) {
+        infoView.setSubjectDetails(subject);
     }
 
     private void setTarget(Subject subject) {
