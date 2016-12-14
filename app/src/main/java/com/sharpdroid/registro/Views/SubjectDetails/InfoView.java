@@ -1,7 +1,6 @@
 package com.sharpdroid.registro.Views.SubjectDetails;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +22,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.sharpdroid.registro.Utils.Metodi.isEmptyOrNull;
 
 public class InfoView extends CardView {
     Context mContext;
@@ -119,14 +120,14 @@ public class InfoView extends CardView {
             List<Pair<Integer, String>> list = new ArrayList<>();
 
             if (data != null) {
-                if (data.getName() != null)
+                if (!isEmptyOrNull(data.getName()))
                     list.add(new Pair<>(R.drawable.ic_title, data.getName()));
                 else list.add(new Pair<>(R.drawable.ic_title, data.getOriginalName()));
-                if (data.getProfessor() != null)
+                if (!isEmptyOrNull(data.getProfessor()))
                     list.add(new Pair<>(R.drawable.ic_person, data.getProfessor()));
-                if (data.getClassroom() != null)
+                if (!isEmptyOrNull(data.getClassroom()))
                     list.add(new Pair<>(R.drawable.ic_room, data.getClassroom()));
-                if (data.getNotes() != null)
+                if (!isEmptyOrNull(data.getNotes()))
                     list.add(new Pair<>(R.drawable.ic_description, data.getNotes()));
             }
 

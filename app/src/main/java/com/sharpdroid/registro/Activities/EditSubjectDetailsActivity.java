@@ -92,14 +92,11 @@ public class EditSubjectDetailsActivity extends AppCompatActivity {
         prof = this.prof.getText().toString().trim();
         classroom = this.classroom.getText().toString().trim();
         notes = this.notes.getText().toString().trim();
-        if (!name.isEmpty())
-            values.put("name", beautifyName(name));
-        if (!prof.isEmpty())
-            values.put("professor", NomeDecente(prof));
-        if (!classroom.isEmpty())
-            values.put("classroom", classroom);
-        if (!notes.isEmpty())
-            values.put("notes", beautifyName(notes));
+
+        values.put("name", beautifyName(name));
+        values.put("professor", NomeDecente(prof));
+        values.put("classroom", classroom);
+        values.put("notes", beautifyName(notes));
 
         db.editSubject(subject.getCode(), values);
 

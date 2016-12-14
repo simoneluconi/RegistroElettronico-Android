@@ -223,11 +223,13 @@ public class Metodi {
     }
 
     public static String beautifyName(String name) {
-        return name.substring(0, 1).toUpperCase(Locale.getDefault()) + name.substring(1).toLowerCase();
+        if (!name.isEmpty())
+            return name.substring(0, 1).toUpperCase(Locale.getDefault()) + name.substring(1).toLowerCase();
+        else return null;
     }
 
     public static String getSubjectName(Subject subject) {
-        return (subject.getName() != null) ? subject.getName() : subject.getOriginalName();
+        return (!subject.getName().isEmpty()) ? subject.getName() : subject.getOriginalName();
     }
 
     public static void saveAllSubjects(Context c, List<Subject> subjects) {
@@ -275,4 +277,7 @@ public class Metodi {
         }
     }
 
+    public static boolean isEmptyOrNull(String string) {
+        return string == null || string.isEmpty();
+    }
 }
