@@ -76,5 +76,6 @@ public class TargetView extends CardView {
 
     public void setClickListener(OnClickListener listener) {
         set.setOnClickListener(listener);
+        // TODO: 14/12/2016 dialog
     }
 }
