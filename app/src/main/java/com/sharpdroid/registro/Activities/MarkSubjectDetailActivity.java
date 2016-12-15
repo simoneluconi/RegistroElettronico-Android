@@ -1,8 +1,8 @@
 package com.sharpdroid.registro.Activities;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -91,16 +91,25 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     }
 
     private void setTarget(Subject subject) {
-        targetView.setProgress(media.getMediaGenerale());
-        try {
-            targetView.setTarget(subject.getTarget());
-        } catch (NullPointerException e) {
-            float target = Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(this)
-                    .getString("voto_obiettivo", "8"));
+        //set initial target
+        float target = subject.getTarget();
+        if (target != 0f)
             targetView.setTarget(target);
-        }
+        else
+            targetView.clear();
+
+        //set progress
+        targetView.setProgress(media.getMediaGenerale());
+
+        //set listener for button
         // TODO: 13/12/2016 OPEN DIALOG
-        targetView.setClickListener(view -> targetView.setTarget(8f));
+        targetView.setClickListener(view -> {
+            ContentValues values = new ContentValues();
+            values.put("target", 9f);
+            db.editSubject(subject.getCode(), values);
+            targetView.setTarget(values.getAsFloat("target"));
+        });
+
     }
 
     @Override

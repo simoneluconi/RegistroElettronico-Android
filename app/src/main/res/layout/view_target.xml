@@ -14,9 +14,8 @@
         android:layout_marginTop="24dp"
         app:rcBackgroundColor="#ddd"
         app:rcBackgroundPadding="0dp"
-        app:rcMax="10"
-        app:rcProgress="6.5"
         app:rcProgressColor="@color/colorPrimary"
+        app:rcMax="0"
         app:rcRadius="3dp" />
 
     <RelativeLayout
@@ -48,7 +47,7 @@
                 android:id="@+id/media"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="6.5"
+                android:text="-"
                 android:textColor="@color/textcolorgrey"
                 android:textSize="14sp" />
         </LinearLayout>
@@ -66,7 +65,7 @@
                 android:id="@+id/text2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Obiettivo"
+                android:text="Il tuo obiettivo"
                 android:textColor="@color/textcolorgrey"
                 android:textSize="12sp" />
 
@@ -74,7 +73,7 @@
                 android:id="@+id/obiettivo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="10"
+                android:text="-"
                 android:textColor="@color/textcolorgrey"
                 android:textSize="14sp" />
         </LinearLayout>

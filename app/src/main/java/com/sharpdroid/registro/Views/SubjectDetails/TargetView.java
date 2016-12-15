@@ -3,6 +3,7 @@ package com.sharpdroid.registro.Views.SubjectDetails;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -59,19 +60,33 @@ public class TargetView extends CardView {
     }
 
     private void setMedia(float media) {
-        this.mediaView.setText(String.format(Locale.getDefault(), "%.2f", media));
         this.media = media;
-    }
-
-    public void setTarget(float target) {
-        targetView.setText(String.format(Locale.getDefault(), "%.2f", target));
-        this.target = target;
-        progressBar.setMax(target);
+        this.mediaView.setText(String.format(Locale.getDefault(), "%.2f", media));
     }
 
     public void setProgress(Float media) {
-        progressBar.setProgress(media);
         setMedia(media);
+
+        //bar
+        progressBar.setProgress(media);
+    }
+
+    public void setTarget(float target) {
+        this.target = target;
+        targetView.setText(String.format(Locale.getDefault(), "%.2f", target));
+
+        //bar
+        progressBar.setMax(target);
+        setProgress(media);
+    }
+
+    public void clear() {
+        target = 0f;
+        targetView.setText("-");
+
+        //bar
+        progressBar.setProgress(0f);
+        progressBar.setMax(0f);
     }
 
     public void setClickListener(OnClickListener listener) {
