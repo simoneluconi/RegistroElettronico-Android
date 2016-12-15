@@ -3,9 +3,14 @@ package com.sharpdroid.registro.Activities;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
+import android.util.Log;
 import android.view.MenuItem;
+import android.widget.EditText;
 
 import com.sharpdroid.registro.Databases.SubjectsDB;
 import com.sharpdroid.registro.Interfaces.Mark;
@@ -93,22 +98,48 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     private void setTarget(Subject subject) {
         //set initial target
         float target = subject.getTarget();
-        if (target != 0f)
-            targetView.setTarget(target);
-        else
-            targetView.clear();
+        if (target <= 0) {
+            target = Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(this)
+                    .getString("voto_obiettivo", "8"));
+        }
+
+        targetView.setTarget(target);
 
         //set progress
         targetView.setProgress(media.getMediaGenerale());
 
         //set listener for button
-        // TODO: 13/12/2016 OPEN DIALOG
         targetView.setClickListener(view -> {
-            ContentValues values = new ContentValues();
-            values.put("target", 9f);
-            db.editSubject(subject.getCode(), values);
-            targetView.setTarget(values.getAsFloat("target"));
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setTitle(getString(R.string.obiettivo_title));
+            alert.setMessage(getString(R.string.obiettivo_summary));
+
+            // Set an EditText view to get user input
+            final EditText input = new EditText(this);
+            input.setInputType(InputType.TYPE_CLASS_NUMBER);
+
+            alert.setView(input);
+            alert.setPositiveButton("Ok", (dialog, whichButton) -> {
+                try {
+                    float new_target = Float.parseFloat(input.getText().toString());
+                    if (new_target <= 10 && new_target >= 0) {
+                        targetView.setTarget(new_target);
+
+                        ContentValues values = new ContentValues();
+                        values.put("target", input.getText().toString());
+                        db.editTarget(subject.getCode(), values);
+                    }
+                } catch (NumberFormatException e) {
+                    Log.d(TAG, "Could not parse " + e);
+                }
+            });
+
+            alert.setNegativeButton("Cancel", (dialog, whichButton) -> {
+                // Canceled. Do nothing;
+            });
+            alert.show();
         });
+
 
     }
 

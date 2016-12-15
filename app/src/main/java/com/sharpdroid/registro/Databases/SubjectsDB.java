@@ -90,6 +90,12 @@ public class SubjectsDB extends SQLiteOpenHelper {
         return this;
     }
 
+    public SubjectsDB editTarget(int code, ContentValues contentValues) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.update(DB_NAME, contentValues, columns[1] + " = ?", new String[]{String.valueOf(code)});
+        return this;
+    }
+
     public SubjectsDB addAllSubjects(List<Subject> subjects) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues;
