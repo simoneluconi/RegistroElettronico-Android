@@ -49,8 +49,8 @@ public interface RESTfulAPIService {
     @GET("subjects")
     Observable<List<LessonSubject>> getSubjects();
 
-    @GET("subjects/{id}/lessons")
-    Observable<Lesson> getLessons(
+    @GET("subject/{id}/lessons")
+    Observable<List<Lesson>> getLessons(
             @Path("id") int id);
 
     @GET("notes")

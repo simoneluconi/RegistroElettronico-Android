@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.EditText;
 
+import com.sharpdroid.registro.API.SpiaggiariApiClient;
 import com.sharpdroid.registro.Databases.SubjectsDB;
 import com.sharpdroid.registro.Interfaces.Mark;
 import com.sharpdroid.registro.Interfaces.MarkSubject;
@@ -20,6 +21,7 @@ import com.sharpdroid.registro.Interfaces.Subject;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Views.SubjectDetails.InfoView;
 import com.sharpdroid.registro.Views.SubjectDetails.OverallView;
+import com.sharpdroid.registro.Views.SubjectDetails.RecentLessonsView;
 import com.sharpdroid.registro.Views.SubjectDetails.TargetView;
 
 import java.util.List;
@@ -27,10 +29,12 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.sharpdroid.registro.Utils.Metodi.getSubjectName;
 
-// TODO: 03/12/2016 Dettagli (nome, aula, prof, ora, note, colore)
+// DONE: 03/12/2016 Dettagli (nome, aula, prof, ora, note, colore)
 // DONE: 03/12/2016 Media (scritto, orale, totale)
 // TODO: 03/12/2016 Obiettivo
 // TODO: 03/12/2016 Orario settimanale (in quali giorni)
@@ -47,6 +51,8 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     OverallView overallView;
     @BindView(R.id.target)
     TargetView targetView;
+    @BindView(R.id.lessons)
+    RecentLessonsView lessonsView;
 
     MarkSubject data;
     SubjectsDB db;
@@ -88,6 +94,16 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         setInfo(subject);
         setOverall(data.getMarks());
         setTarget(subject);
+        setLessons(subject);
+    }
+
+    private void setLessons(Subject subject) {
+        new SpiaggiariApiClient(this).mService.getLessons(subject.getId())
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(lessons -> lessonsView.addAll(lessons), error -> {
+                    // TODO: 16/12/2016 something went wrong
+                });
     }
 
     private void setInfo(Subject subject) {
