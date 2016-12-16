@@ -3,7 +3,6 @@ package com.sharpdroid.registro.Views.SubjectDetails;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 

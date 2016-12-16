@@ -1,9 +1,7 @@
 package com.sharpdroid.registro.Adapters;
 
 import android.content.Context;
-import android.support.v7.view.CollapsibleActionView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +13,6 @@ import com.sharpdroid.registro.R;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;

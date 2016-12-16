@@ -5,27 +5,16 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.sharpdroid.registro.Adapters.LessonsAdapter;
 import com.sharpdroid.registro.Interfaces.Lesson;
 import com.sharpdroid.registro.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.sharpdroid.registro.Utils.Metodi.beautifyName;
 
 public class RecentLessonsView extends CardView {
     Context mContext;
