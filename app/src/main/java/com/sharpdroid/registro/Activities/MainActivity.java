@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity
 
         mNavigationView.setNavigationItemSelectedListener(this);
 
-        settings = getSharedPreferences("REGISTRO", 0);
+        settings = getSharedPreferences("REGISTRO", MODE_PRIVATE);
 
         if (settings.getBoolean("primo_avvio", true)) {
             // first time task
