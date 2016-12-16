@@ -214,18 +214,22 @@ public class Metodi {
     }
 
     public static String NomeDecente(String name) {
-        String new_name = "";
-        String[] insV = name.trim().split("\\s+");
-        for (String ins : insV) {
-            new_name += ins.substring(0, 1).toUpperCase() + ins.substring(1).toLowerCase() + " ";
+        if (!isEmptyOrNull(name)) {
+            String new_name = "";
+            String[] insV = name.trim().split("\\s+");
+            for (String ins : insV) {
+                new_name += ins.substring(0, 1).toUpperCase() + ins.substring(1).toLowerCase() + " ";
+            }
+            return new_name;
+        } else {
+            return name;
         }
-        return new_name;
     }
 
     public static String beautifyName(String name) {
-        if (!name.isEmpty())
+        if (!isEmptyOrNull(name))
             return name.substring(0, 1).toUpperCase(Locale.getDefault()) + name.substring(1).toLowerCase();
-        else return null;
+        else return name;
     }
 
     public static String getSubjectName(Subject subject) {
