@@ -1,6 +1,7 @@
 package com.sharpdroid.registro.Adapters;
 
 import android.content.Context;
+import android.support.v7.view.CollapsibleActionView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +15,8 @@ import com.sharpdroid.registro.R;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -23,12 +26,12 @@ import butterknife.ButterKnife;
 import static com.sharpdroid.registro.Utils.Metodi.beautifyName;
 
 public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.LessonHolder> {
-    final SimpleDateFormat apiFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-    final SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM", Locale.getDefault());
+    private final SimpleDateFormat apiFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM", Locale.getDefault());
 
-    Context mContext;
+    private Context mContext;
 
-    List<Lesson> lessons;
+    private List<Lesson> lessons;
 
     public LessonsAdapter(Context mContext) {
         this.mContext = mContext;
@@ -57,8 +60,8 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.LessonHo
     }
 
     public void addAll(List<Lesson> list) {
-        Log.d("LESSONS", list.toString());
         lessons = list;
+        Collections.reverse(lessons);
         notifyDataSetChanged();
     }
 

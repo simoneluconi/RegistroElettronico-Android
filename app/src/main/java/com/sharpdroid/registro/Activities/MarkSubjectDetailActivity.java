@@ -94,11 +94,11 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         setInfo(subject);
         setOverall(data.getMarks());
         setTarget(subject);
-        setLessons(subject);
+        setLessons(subject.getCode());
     }
 
-    private void setLessons(Subject subject) {
-        new SpiaggiariApiClient(this).mService.getLessons(subject.getId())
+    private void setLessons(int id) {
+        new SpiaggiariApiClient(this).mService.getLessons(id)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(lessons -> lessonsView.addAll(lessons), error -> {
