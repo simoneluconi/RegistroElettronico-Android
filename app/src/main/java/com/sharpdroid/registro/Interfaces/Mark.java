@@ -1,16 +1,17 @@
 package com.sharpdroid.registro.Interfaces;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class Mark implements Serializable {
     private String q;
     private boolean ns;
     private String type;
-    private String date;
+    private Date date;
     private String mark;
     private String desc;
 
-    Mark(String q, boolean ns, String type, String date, String mark, String desc) {
+    Mark(String q, boolean ns, String type, Date date, String mark, String desc) {
         this.q = q;
         this.ns = ns;
         this.type = type;
@@ -31,7 +32,7 @@ public class Mark implements Serializable {
         return type;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
@@ -41,9 +42,5 @@ public class Mark implements Serializable {
 
     public String getDesc() {
         return desc;
-    }
-
-    public boolean isSufficiente() {
-        return Float.parseFloat(this.mark) > 6;
     }
 }

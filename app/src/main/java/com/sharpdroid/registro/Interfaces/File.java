@@ -1,15 +1,16 @@
 package com.sharpdroid.registro.Interfaces;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class File implements Serializable {
     private String id;
     private String name;
     private String type;
-    private String date;
+    private Date date;
     private String cksum;
 
-    public File(String id, String name, String type, String date, String cksum) {
+    public File(String id, String name, String type, Date date, String cksum) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -29,7 +30,7 @@ public class File implements Serializable {
         return type;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 

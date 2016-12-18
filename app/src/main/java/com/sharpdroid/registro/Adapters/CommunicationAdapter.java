@@ -19,10 +19,8 @@ import com.sharpdroid.registro.Interfaces.Communication;
 import com.sharpdroid.registro.R;
 
 import java.io.File;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -65,16 +63,8 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
     public void onBindViewHolder(CommunicationHolder ViewHolder, int i) {
         final Communication communication = CVDataList.get(ViewHolder.getAdapterPosition());
         ViewHolder.Title.setText(communication.getTitle().trim());
-        String datestring = communication.getDate().split("T")[0];
-        try {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ITALIAN);
-            Date convertedCommitDate = formatter.parse(datestring);
-            //formatter = new SimpleDateFormat("dd/MM/YYYY", Locale.ITALIAN);
-            formatter = new SimpleDateFormat("d MMMM", Locale.ITALIAN);
-            ViewHolder.Date.setText(formatter.format(convertedCommitDate));
-        } catch (ParseException e) {
-            ViewHolder.Date.setText(datestring);
-        }
+        SimpleDateFormat formatter = new SimpleDateFormat("d MMMM", Locale.ITALIAN);
+        ViewHolder.Date.setText(formatter.format(communication.getDate()));
         ViewHolder.Type.setText(communication.getType());
 
         // TODO: 18/11/2016 aggiungere listener solo con allegati presenti

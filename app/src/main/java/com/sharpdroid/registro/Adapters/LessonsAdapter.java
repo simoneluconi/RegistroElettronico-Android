@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.sharpdroid.registro.Interfaces.Lesson;
 import com.sharpdroid.registro.R;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +22,6 @@ import butterknife.ButterKnife;
 import static com.sharpdroid.registro.Utils.Metodi.beautifyName;
 
 public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.LessonHolder> {
-    private final SimpleDateFormat apiFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM", Locale.getDefault());
 
     private Context mContext;
@@ -44,16 +42,7 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.LessonHo
     public void onBindViewHolder(LessonHolder holder, int position) {
         Lesson lesson = lessons.get(position);
         holder.content.setText(beautifyName(lesson.getContent().trim()));
-        try {
-            holder.date.setText(
-                    dateFormat.format(
-                            apiFormat.parse(
-                                    lesson.getDate().split("T")[0]
-                            )
-                    ));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        holder.date.setText(dateFormat.format(lesson.getDate()));
     }
 
     public void addAll(List<Lesson> list) {

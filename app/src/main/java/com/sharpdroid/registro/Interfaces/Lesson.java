@@ -1,13 +1,14 @@
 package com.sharpdroid.registro.Interfaces;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class Lesson implements Serializable {
     private String teacher;
-    private String date;
+    private Date date;
     private String content;
 
-    public Lesson(String teacher, String date, String content) {
+    public Lesson(String teacher, Date date, String content) {
         this.teacher = teacher;
         this.date = date;
         this.content = content;
@@ -17,7 +18,7 @@ public class Lesson implements Serializable {
         return teacher;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 

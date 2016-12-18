@@ -2,7 +2,6 @@ package com.sharpdroid.registro.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import android.widget.TextView;
 import com.sharpdroid.registro.Interfaces.File;
 import com.sharpdroid.registro.R;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +17,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.sharpdroid.registro.Adapters.FolderAdapter.apiFormat;
 import static com.sharpdroid.registro.Adapters.FolderAdapter.dateFormat;
 
 public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
@@ -54,11 +51,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
         File file = CVDataList.get(position);
 
         holder.title.setText(file.getName().trim());
-        try {
-            holder.date.setText(dateFormat.format(apiFormat.parse(file.getDate().split("T")[0])));
-        } catch (ParseException e) {
-            Log.e(TAG, "Error parsing DATE");
-        }
+        holder.date.setText(dateFormat.format(file.getDate()));
 
         if (file.getType().equals("link")) {
             holder.image.setImageResource(R.drawable.link);
