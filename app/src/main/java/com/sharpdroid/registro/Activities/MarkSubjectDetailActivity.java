@@ -43,8 +43,8 @@ import static com.sharpdroid.registro.Utils.Metodi.getSubjectName;
 // TODO: 14/12/2016 Lezioni recenti
 
 public class MarkSubjectDetailActivity extends AppCompatActivity {
-
     private static final String TAG = MarkSubjectDetailActivity.class.getSimpleName();
+
     @BindView(R.id.info)
     InfoView infoView;
     @BindView(R.id.overall)
