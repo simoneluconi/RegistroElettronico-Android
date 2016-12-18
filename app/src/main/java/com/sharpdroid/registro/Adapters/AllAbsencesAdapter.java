@@ -157,11 +157,11 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
         Absence absence = absences.getAbsences().get(child_pos);
 
         days.setText(String.valueOf(absence.getDays()));
-        from.setText(absence.getFrom());
-        if (absence.getTo().trim().equals(format.format(new Date()))) {
+        from.setText(format.format(absence.getFrom()));
+        if (format.format(absence.getTo()).equals(format.format(new Date()))) {
             to.setText(R.string.oggi);
         } else {
-            to.setText(absence.getTo());
+            to.setText(format.format(absence.getTo()));
         }
 
         if (absence.getJustification() != null && !absence.getJustification().isEmpty())

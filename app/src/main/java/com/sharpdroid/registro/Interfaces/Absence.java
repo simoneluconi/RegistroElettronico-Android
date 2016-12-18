@@ -1,16 +1,17 @@
 package com.sharpdroid.registro.Interfaces;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class Absence implements Serializable {
     private int id;
     private boolean done;
-    private String from;
-    private String to;
+    private Date from;
+    private Date to;
     private int days;
     private String justification;
 
-    public Absence(int id, boolean done, String from, String to, int days, String justification) {
+    public Absence(int id, boolean done, Date from, Date to, int days, String justification) {
         this.id = id;
         this.done = done;
         this.from = from;
@@ -27,11 +28,11 @@ public class Absence implements Serializable {
         return done;
     }
 
-    public String getFrom() {
+    public Date getFrom() {
         return from;
     }
 
-    public String getTo() {
+    public Date getTo() {
         return to;
     }
 

@@ -1,15 +1,16 @@
 package com.sharpdroid.registro.Interfaces;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class Exit implements Serializable {
     private int id;
     private boolean done;
-    private String day;
+    private Date day;
     private String hours;
     private String justification;
 
-    public Exit(int id, boolean done, String day, String hours, String justification) {
+    public Exit(int id, boolean done, Date day, String hours, String justification) {
         this.id = id;
         this.done = done;
         this.day = day;
@@ -25,7 +26,7 @@ public class Exit implements Serializable {
         return done;
     }
 
-    public String getDay() {
+    public Date getDay() {
         return day;
     }
 
