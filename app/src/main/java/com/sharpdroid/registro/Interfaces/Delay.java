@@ -4,21 +4,25 @@ import java.io.Serializable;
 
 public class Delay implements Serializable {
     private int id;
+    private boolean done;
     private String day;
     private String hours;
     private String justification;
-    private boolean done;
 
-    public Delay(int id, String day, String hours, String justification, boolean done) {
+    public Delay(int id, boolean done, String day, String hours, String justification) {
         this.id = id;
+        this.done = done;
         this.day = day;
         this.hours = hours;
         this.justification = justification;
-        this.done = done;
     }
 
     public int getId() {
         return id;
+    }
+
+    public boolean isDone() {
+        return done;
     }
 
     public String getDay() {
@@ -32,9 +36,4 @@ public class Delay implements Serializable {
     public String getJustification() {
         return justification;
     }
-
-    public boolean isDone() {
-        return done;
-    }
-
 }

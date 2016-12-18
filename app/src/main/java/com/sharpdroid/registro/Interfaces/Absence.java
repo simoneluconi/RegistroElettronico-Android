@@ -4,23 +4,27 @@ import java.io.Serializable;
 
 public class Absence implements Serializable {
     private int id;
+    private boolean done;
     private String from;
     private String to;
     private int days;
     private String justification;
-    private boolean done;
 
-    public Absence(int id, String from, String to, int days, String justification, boolean done) {
+    public Absence(int id, boolean done, String from, String to, int days, String justification) {
         this.id = id;
+        this.done = done;
         this.from = from;
         this.to = to;
         this.days = days;
         this.justification = justification;
-        this.done = done;
     }
 
     public int getId() {
         return id;
+    }
+
+    public boolean isDone() {
+        return done;
     }
 
     public String getFrom() {
@@ -37,9 +41,5 @@ public class Absence implements Serializable {
 
     public String getJustification() {
         return justification;
-    }
-
-    public boolean isDone() {
-        return done;
     }
 }

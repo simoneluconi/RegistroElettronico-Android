@@ -1,14 +1,15 @@
 package com.sharpdroid.registro.Interfaces;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class Communication implements Serializable {
     private String title;
     private String type;
-    private String date;
+    private Date date;
     private int id;
 
-    public Communication(String title, String type, String date, int id) {
+    public Communication(String title, String type, Date date, int id) {
         this.title = title;
         this.type = type;
         this.date = date;
@@ -23,7 +24,7 @@ public class Communication implements Serializable {
         return type;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
