@@ -19,3 +19,16 @@
 -dontwarn java.lang.invoke.*
 
 -keep class com.sharpdroid.registro.Interfaces.** { *; }
+
+-dontwarn retrofit2.**
+-keep class retrofit2.** { *; }
+-keepattributes Signature
+-keepattributes Exceptions
+
+-keepclasseswithmembers class * {
+    @retrofit2.http.* <methods>;
+}
+
+-dontwarn okio.**
+
+-dontwarn com.akexorcist.roundcornerprogressbar.**
