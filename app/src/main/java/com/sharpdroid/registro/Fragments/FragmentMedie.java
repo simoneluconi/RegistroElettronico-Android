@@ -46,6 +46,8 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
     CoordinatorLayout mCoordinatorLayout;
     @BindView(R.id.swiperefresh)
     SwipeRefreshLayout mSwipeRefreshLayout;
+    @BindView(R.id.recycler)
+    RecyclerView mRecyclerView;
     private MedieAdapter mRVAdapter;
     private Context mContext;
 
@@ -72,17 +74,9 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
                 R.color.greenmaterial,
                 R.color.orangematerial);
 
-        RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 2));
         mRecyclerView.addItemDecoration(new ItemOffsetDecoration(mContext, R.dimen.cards_margin));
-
-        mRVAdapter = new MedieAdapter(mContext, new CopyOnWriteArrayList<>(), subjectsDB);
-        mRecyclerView.setAdapter(mRVAdapter);
-
-        bindMarksCache();
-
-        UpdateMedie();
 
         return layout;
     }
@@ -97,6 +91,18 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
                 new CacheListTask(mContext.getCacheDir(), TAG).execute((List) markSubjects);
             }
         }
+    }
+
+    @Override
+    public void onResume() {
+        mRVAdapter = new MedieAdapter(mContext, new CopyOnWriteArrayList<>(), subjectsDB);
+        mRecyclerView.setAdapter(mRVAdapter);
+
+        bindMarksCache();
+
+        UpdateMedie();
+
+        super.onResume();
     }
 
     private void bindMarksCache() {
