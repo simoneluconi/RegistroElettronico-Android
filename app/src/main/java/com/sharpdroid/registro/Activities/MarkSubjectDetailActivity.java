@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.widget.EditText;
 
 import com.sharpdroid.registro.API.SpiaggiariApiClient;
+import com.sharpdroid.registro.Adapters.MarkAdapter;
 import com.sharpdroid.registro.Databases.SubjectsDB;
 import com.sharpdroid.registro.Interfaces.Mark;
 import com.sharpdroid.registro.Interfaces.MarkSubject;
@@ -20,6 +21,7 @@ import com.sharpdroid.registro.Interfaces.Media;
 import com.sharpdroid.registro.Interfaces.Subject;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Views.SubjectDetails.InfoView;
+import com.sharpdroid.registro.Views.SubjectDetails.MarksView;
 import com.sharpdroid.registro.Views.SubjectDetails.OverallView;
 import com.sharpdroid.registro.Views.SubjectDetails.RecentLessonsView;
 import com.sharpdroid.registro.Views.SubjectDetails.TargetView;
@@ -53,6 +55,8 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     TargetView targetView;
     @BindView(R.id.lessons)
     RecentLessonsView lessonsView;
+    @BindView(R.id.marks)
+    MarksView marksView;
 
     MarkSubject data;
     SubjectsDB db;
@@ -95,20 +99,29 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         setOverall(data.getMarks());
         setTarget(subject);
         setLessons(subject.getCode());
-    }
-
-    private void setLessons(int id) {
-        new SpiaggiariApiClient(this).mService.getLessons(id)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(lessons -> lessonsView.addAll(lessons), error -> {
-                    // TODO: 16/12/2016 something went wrong
-                });
+        setMarks(data.getMarks());
     }
 
     private void setInfo(Subject subject) {
         infoView.setSubjectDetails(subject);
         infoView.setEditListener(view -> startActivity(new Intent(this, EditSubjectDetailsActivity.class).putExtra("code", subject.getCode())));
+    }
+
+    void setOverall(List<Mark> marks) {
+        media = new Media();
+        media.addMarks(marks);
+        try {
+            overallView.setPratico(String.format(Locale.getDefault(), "%.2f", media.getMediaPratico()));
+        } catch (Exception ignored) {
+        }
+        try {
+            overallView.setOrale(String.format(Locale.getDefault(), "%.2f", media.getMediaOrale()));
+        } catch (Exception ignored) {
+        }
+        try {
+            overallView.setScritto(String.format(Locale.getDefault(), "%.2f", media.getMediaScritto()));
+        } catch (Exception ignored) {
+        }
     }
 
     private void setTarget(Subject subject) {
@@ -159,6 +172,20 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
 
     }
 
+    private void setLessons(int id) {
+        new SpiaggiariApiClient(this).mService.getLessons(id)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(lessons -> lessonsView.addAll(lessons), error -> {
+                    // TODO: 16/12/2016 something went wrong
+                });
+    }
+
+    private void setMarks(List<Mark> marks) {
+        marksView.setSubject(subject);
+        marksView.addAll(marks);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // handle arrow click here
@@ -167,23 +194,6 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    void setOverall(List<Mark> marks) {
-        media = new Media();
-        media.addMarks(marks);
-        try {
-            overallView.setPratico(String.format(Locale.getDefault(), "%.2f", media.getMediaPratico()));
-        } catch (Exception ignored) {
-        }
-        try {
-            overallView.setOrale(String.format(Locale.getDefault(), "%.2f", media.getMediaOrale()));
-        } catch (Exception ignored) {
-        }
-        try {
-            overallView.setScritto(String.format(Locale.getDefault(), "%.2f", media.getMediaScritto()));
-        } catch (Exception ignored) {
-        }
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.sharpdroid.registro.Utils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.design.widget.FloatingActionButton;
 
 import com.sharpdroid.registro.API.SpiaggiariAPI;
 import com.sharpdroid.registro.Databases.SubjectsDB;
@@ -11,6 +12,7 @@ import com.sharpdroid.registro.Interfaces.Delay;
 import com.sharpdroid.registro.Interfaces.Exit;
 import com.sharpdroid.registro.Interfaces.FileTeacher;
 import com.sharpdroid.registro.Interfaces.Folder;
+import com.sharpdroid.registro.Interfaces.Mark;
 import com.sharpdroid.registro.Interfaces.Media;
 import com.sharpdroid.registro.Interfaces.Subject;
 import com.sharpdroid.registro.R;
@@ -117,6 +119,22 @@ public class Metodi {
             return R.color.orangematerial;
         else
             return R.color.lightgreenmaterial;
+    }
+
+    public static int getMarkColor(Mark mark, float voto_obiettivo) {
+        if (!mark.isNs()) {
+            float voto = Float.parseFloat(mark.getMark());
+            if (voto >= voto_obiettivo)
+                return R.color.greenmaterial;
+            else if (voto < 5)
+                return R.color.redmaterial;
+            else if (voto >= 5 && voto < 6)
+                return R.color.orangematerial;
+            else
+                return R.color.lightgreenmaterial;
+        } else {
+            return R.color.intro_blue;
+        }
     }
 
     public static int getMediaColor(Media media, String tipo, float voto_obiettivo) {
