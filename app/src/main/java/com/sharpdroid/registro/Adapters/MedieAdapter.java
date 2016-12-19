@@ -38,10 +38,10 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
 
     private final SubjectsDB db;
 
-    public MedieAdapter(Context context, List<MarkSubject> CVDataList) {
+    public MedieAdapter(Context context, List<MarkSubject> CVDataList, SubjectsDB db) {
         this.mContext = context;
         this.CVDataList = CVDataList;
-        db = SubjectsDB.from(context);
+        this.db = db;
     }
 
     public void addAll(Collection<MarkSubject> list) {

@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.sharpdroid.registro.API.SpiaggiariApiClient;
 import com.sharpdroid.registro.Adapters.MedieAdapter;
+import com.sharpdroid.registro.Databases.SubjectsDB;
 import com.sharpdroid.registro.Interfaces.MarkSubject;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Tasks.CacheListTask;
@@ -45,9 +46,10 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
     CoordinatorLayout mCoordinatorLayout;
     @BindView(R.id.swiperefresh)
     SwipeRefreshLayout mSwipeRefreshLayout;
-
     private MedieAdapter mRVAdapter;
     private Context mContext;
+
+    SubjectsDB subjectsDB;
 
     public FragmentMedie() {
 
@@ -61,6 +63,8 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
 
         ButterKnife.bind(this, layout);
 
+        subjectsDB = SubjectsDB.from(mContext);
+
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(
                 R.color.bluematerial,
@@ -73,7 +77,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
         mRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 2));
         mRecyclerView.addItemDecoration(new ItemOffsetDecoration(mContext, R.dimen.cards_margin));
 
-        mRVAdapter = new MedieAdapter(mContext, new CopyOnWriteArrayList<>());
+        mRVAdapter = new MedieAdapter(mContext, new CopyOnWriteArrayList<>(), subjectsDB);
         mRecyclerView.setAdapter(mRVAdapter);
 
         bindMarksCache();
@@ -146,5 +150,11 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        subjectsDB.close();
     }
 }

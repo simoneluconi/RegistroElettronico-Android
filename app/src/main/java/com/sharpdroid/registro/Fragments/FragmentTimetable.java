@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.sharpdroid.registro.API.SpiaggiariApiClient;
 import com.sharpdroid.registro.Adapters.MedieAdapter;
+import com.sharpdroid.registro.Databases.SubjectsDB;
 import com.sharpdroid.registro.Interfaces.MarkSubject;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Tasks.CacheListTask;
@@ -73,7 +74,7 @@ public class FragmentTimetable extends Fragment implements SwipeRefreshLayout.On
         mRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 2));
         mRecyclerView.addItemDecoration(new ItemOffsetDecoration(mContext, R.dimen.cards_margin));
 
-        mRVAdapter = new MedieAdapter(mContext, new CopyOnWriteArrayList<>());
+        mRVAdapter = new MedieAdapter(mContext, new CopyOnWriteArrayList<>(), SubjectsDB.from(mContext));
         mRecyclerView.setAdapter(mRVAdapter);
 
         bindMarksCache();

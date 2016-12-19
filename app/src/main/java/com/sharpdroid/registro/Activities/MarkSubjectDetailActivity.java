@@ -40,7 +40,7 @@ import static com.sharpdroid.registro.Utils.Metodi.getSubjectName;
 // TODO: 03/12/2016 Orario settimanale (in quali giorni)
 // TODO: 03/12/2016 Verifiche prossime
 // TODO: 03/12/2016 Voti recenti
-// TODO: 14/12/2016 Lezioni recenti
+// DONE: 14/12/2016 Lezioni recenti
 
 public class MarkSubjectDetailActivity extends AppCompatActivity {
     private static final String TAG = MarkSubjectDetailActivity.class.getSimpleName();
