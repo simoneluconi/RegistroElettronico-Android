@@ -87,14 +87,6 @@ public class ArcProgressStackView extends View {
 
     // Default colors
     private final static int DEFAULT_SHADOW_COLOR = Color.parseColor("#8C000000");
-
-    // Start and end angles
-    private float mStartAngle;
-    private float mSweepAngle;
-
-    // Progress models
-    private List<Model> mModels = new ArrayList<>();
-
     // Progress and text paints
     private final Paint mProgressPaint = new Paint(Paint.ANTI_ALIAS_FLAG) {
         {
@@ -115,9 +107,13 @@ public class ArcProgressStackView extends View {
             setPathEffect(new CornerPathEffect(0.5F));
         }
     };
-
     // ValueAnimator and interpolator for progress animating
     private final ValueAnimator mProgressAnimator = new ValueAnimator();
+    // Start and end angles
+    private float mStartAngle;
+    private float mSweepAngle;
+    // Progress models
+    private List<Model> mModels = new ArrayList<>();
     private ValueAnimator.AnimatorListener mAnimatorListener;
     private ValueAnimator.AnimatorUpdateListener mAnimatorUpdateListener;
     private Interpolator mInterpolator;
@@ -578,6 +574,12 @@ public class ArcProgressStackView extends View {
         return mTypeface;
     }
 
+    public void setTypeface(final Typeface typeface) {
+        mTypeface = typeface;
+        mTextPaint.setTypeface(typeface);
+        postInvalidate();
+    }
+
     public void setTypeface(final String typeface) {
         Typeface tempTypeface;
         try {
@@ -588,12 +590,6 @@ public class ArcProgressStackView extends View {
         }
 
         setTypeface(tempTypeface);
-    }
-
-    public void setTypeface(final Typeface typeface) {
-        mTypeface = typeface;
-        mTextPaint.setTypeface(typeface);
-        postInvalidate();
     }
 
     public IndicatorOrientation getIndicatorOrientation() {
@@ -1001,25 +997,25 @@ public class ArcProgressStackView extends View {
         canvas.restore();
     }
 
+    public enum IndicatorOrientation {
+        HORIZONTAL, VERTICAL
+    }
+
     public static class Model {
-
-        private String mTitle;
-        private float mLastProgress;
-        private float mProgress;
-
-        private int mColor;
-        private int mBgColor;
-        private int[] mColors;
 
         private final RectF mBounds = new RectF();
         private final Rect mTextBounds = new Rect();
-
         private final Path mPath = new Path();
-        private SweepGradient mSweepGradient;
-
         private final PathMeasure mPathMeasure = new PathMeasure();
         private final float[] mPos = new float[2];
         private final float[] mTan = new float[2];
+        private String mTitle;
+        private float mLastProgress;
+        private float mProgress;
+        private int mColor;
+        private int mBgColor;
+        private int[] mColors;
+        private SweepGradient mSweepGradient;
 
         public Model(final String title, final float progress, final int color) {
             setTitle(title);
@@ -1090,9 +1086,5 @@ public class ArcProgressStackView extends View {
             if (colors != null && colors.length >= 2) mColors = colors;
             else mColors = null;
         }
-    }
-
-    public enum IndicatorOrientation {
-        HORIZONTAL, VERTICAL
     }
 }
