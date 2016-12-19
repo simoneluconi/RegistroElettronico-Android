@@ -12,11 +12,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.sharpdroid.registro.Activities.MarkSubjectDetailActivity;
-import com.sharpdroid.registro.Interfaces.Mark;
+import com.sharpdroid.registro.Databases.SubjectsDB;
 import com.sharpdroid.registro.Interfaces.MarkSubject;
 import com.sharpdroid.registro.Interfaces.Media;
 import com.sharpdroid.registro.R;
-import com.sharpdroid.registro.Utils.Metodi;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,7 +26,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import devlight.io.library.ArcProgressStackView;
 
+import static com.sharpdroid.registro.Utils.Metodi.MessaggioVoto;
 import static com.sharpdroid.registro.Utils.Metodi.getMediaColor;
+import static com.sharpdroid.registro.Utils.Metodi.getSubjectName;
 
 public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder> {
     final private String TAG = MedieAdapter.class.getSimpleName();
@@ -35,9 +36,12 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
     private final List<MarkSubject> CVDataList;
     private final Context mContext;
 
+    private final SubjectsDB db;
+
     public MedieAdapter(Context context, List<MarkSubject> CVDataList) {
         this.mContext = context;
         this.CVDataList = CVDataList;
+        db = SubjectsDB.from(context);
     }
 
     public void addAll(Collection<MarkSubject> list) {
@@ -61,13 +65,13 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
     @Override
     public void onBindViewHolder(MedieHolder ViewHolder, int position) {
         final MarkSubject marksubject = CVDataList.get(position);
-        final List<Mark> marks = marksubject.getMarks();
+        final String subjectname = getSubjectName(db.getSubject(marksubject.getName()));
+
         Media media = new Media();
-        media.setMateria(marksubject.getName());
+        media.setMateria(subjectname);
+        media.addMarks(marksubject.getMarks());
 
-        media.addMarks(marks);
-
-        ViewHolder.mTextViewMateria.setText(media.getMateria());
+        ViewHolder.mTextViewMateria.setText(subjectname);
         ViewHolder.mTextViewMedia.setText(String.format(Locale.getDefault(), "%.2f", media.getMediaGenerale()));
 
         final float voto_obiettivo = Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(mContext)
@@ -78,7 +82,7 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
 
         ViewHolder.mArcProgressStackView.setModels(models);
 
-        String obbiettivo_string = Metodi.MessaggioVoto(voto_obiettivo, media.getMediaGenerale(), media.getNumeroVoti());
+        String obbiettivo_string = MessaggioVoto(voto_obiettivo, media.getMediaGenerale(), media.getNumeroVoti());
         ViewHolder.mTextViewDesc.setText(obbiettivo_string);
 
         ViewHolder.mCardViewMedia.setOnClickListener(v -> mContext.startActivity(new Intent(mContext, MarkSubjectDetailActivity.class).putExtra("data", marksubject)));

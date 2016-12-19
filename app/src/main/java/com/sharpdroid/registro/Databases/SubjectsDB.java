@@ -51,6 +51,7 @@ public class SubjectsDB extends SQLiteOpenHelper {
     public Subject getSubject(int code) {
         SQLiteDatabase db = this.getReadableDatabase();
         Subject subject;
+
         Cursor c = db.rawQuery("SELECT * FROM " + DB_NAME + " WHERE " + columns[1] + " = ?", new String[]{String.valueOf(code)});
         c.moveToFirst();
 
