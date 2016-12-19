@@ -36,6 +36,8 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.Communicat
     private final Context mContext;
     private final CoordinatorLayout mCoordinatorLayout;
 
+    private final SimpleDateFormat formatter = new SimpleDateFormat("d MMMM", Locale.ITALIAN);
+
     public AgendaAdapter(Context mContext, CoordinatorLayout mCoordinatorLayout, List<Communication> CVDataList) {
         this.CVDataList = CVDataList;
         this.mContext = mContext;
@@ -63,7 +65,6 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.Communicat
     public void onBindViewHolder(CommunicationHolder ViewHolder, int i) {
         final Communication communication = CVDataList.get(ViewHolder.getAdapterPosition());
         ViewHolder.Title.setText(communication.getTitle().trim());
-        SimpleDateFormat formatter = new SimpleDateFormat("d MMMM", Locale.ITALIAN);
         ViewHolder.Date.setText(formatter.format(communication.getDate()));
         ViewHolder.Type.setText(communication.getType());
 

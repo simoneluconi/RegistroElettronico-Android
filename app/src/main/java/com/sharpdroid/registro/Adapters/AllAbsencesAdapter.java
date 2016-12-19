@@ -25,7 +25,7 @@ import static com.sharpdroid.registro.Utils.Metodi.getUndoneCountExits;
 public class AllAbsencesAdapter extends BaseExpandableListAdapter {
     private final Context mContext;
     private final LayoutInflater mInflater;
-    private final SimpleDateFormat format = new SimpleDateFormat("dd MMM", Locale.getDefault());
+    private final SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM", Locale.ITALIAN);
     private Absences absences;
 
     public AllAbsencesAdapter(Context context) {
@@ -157,11 +157,11 @@ public class AllAbsencesAdapter extends BaseExpandableListAdapter {
         Absence absence = absences.getAbsences().get(child_pos);
 
         days.setText(String.valueOf(absence.getDays()));
-        from.setText(format.format(absence.getFrom()));
-        if (format.format(absence.getTo()).equals(format.format(new Date()))) {
+        from.setText(formatter.format(absence.getFrom()));
+        if (formatter.format(absence.getTo()).equals(formatter.format(new Date()))) {
             to.setText(R.string.oggi);
         } else {
-            to.setText(format.format(absence.getTo()));
+            to.setText(formatter.format(absence.getTo()));
         }
 
         if (absence.getJustification() != null && !absence.getJustification().isEmpty())

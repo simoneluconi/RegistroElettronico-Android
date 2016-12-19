@@ -10,18 +10,19 @@ import android.widget.TextView;
 import com.sharpdroid.registro.Interfaces.File;
 import com.sharpdroid.registro.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.sharpdroid.registro.Adapters.FolderAdapter.dateFormat;
-
 public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
     final static String TAG = FileAdapter.class.getSimpleName();
 
+    private final SimpleDateFormat formatter = new SimpleDateFormat("MMM d, yyyy", Locale.ITALIAN);
     private Context mContext;
     private List<File> CVDataList;
 
@@ -51,7 +52,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
         File file = CVDataList.get(position);
 
         holder.title.setText(file.getName().trim());
-        holder.date.setText(dateFormat.format(file.getDate()));
+        holder.date.setText(formatter.format(file.getDate()));
 
         if (file.getType().equals("link")) {
             holder.image.setImageResource(R.drawable.link);

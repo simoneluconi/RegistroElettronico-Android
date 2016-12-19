@@ -1,11 +1,9 @@
 package com.sharpdroid.registro.Adapters;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
@@ -19,7 +17,6 @@ import com.sharpdroid.registro.Interfaces.FileTeacher;
 import com.sharpdroid.registro.Interfaces.Folder;
 import com.sharpdroid.registro.R;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,22 +29,20 @@ import static com.sharpdroid.registro.Utils.Metodi.NomeDecente;
 import static com.sharpdroid.registro.Utils.Metodi.getListLayouts;
 
 public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    public static final SimpleDateFormat apiFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-    public static final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
     final static String TAG = FolderAdapter.class.getSimpleName();
+
     private final Context mContext;
     private final LayoutInflater mInflater;
+    private final SimpleDateFormat formatter = new SimpleDateFormat("MMM d, yyyy", Locale.ITALIAN);
     private List<Integer> listLayouts = new ArrayList<>();
     private List<FileTeacher> fileteachers = new ArrayList<>();
-    private FragmentTransaction transaction;
-
+    private FragmentManager fragmentManager;
     private int current_subheader, current_folder = 0;
 
-    @SuppressLint("CommitTransaction")
     public FolderAdapter(Context context, FragmentManager fragmentManager) {
         mContext = context;
         mInflater = LayoutInflater.from(mContext);
-        transaction = fragmentManager.beginTransaction();
+        this.fragmentManager = fragmentManager;
     }
 
     @Override
@@ -82,7 +77,6 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             case R.layout.adapter_folder:
                 FileTeacherHolder folderHolder = (FileTeacherHolder) holder;
                 Folder folder = fileteachers.get(current_subheader - 1).getFolders().get(current_folder);
-                String date = folder.getLast();
 
                 folderHolder.layout.setOnClickListener(view -> {
                     FragmentFiles fragment = new FragmentFiles();
@@ -94,7 +88,7 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         fragment.setSharedElementEnterTransition(TransitionInflater.from(mContext).inflateTransition(R.transition.shared_element));
                     }
 
-                    transaction
+                    fragmentManager.beginTransaction()
                             .addSharedElement(folderHolder.date, "folder_date")
                             .addSharedElement(folderHolder.title, "folder_title")
                             .addSharedElement(folderHolder.layout, "folder_layout")
@@ -104,11 +98,7 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 });
 
                 folderHolder.title.setText(NomeDecente(folder.getName().trim()));
-                try {
-                    folderHolder.date.setText(dateFormat.format(apiFormat.parse(date.split("T")[0])));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                folderHolder.date.setText(formatter.format(folder.getLast()));
 
                 current_folder++;
                 break;

@@ -22,7 +22,7 @@ import butterknife.ButterKnife;
 import static com.sharpdroid.registro.Utils.Metodi.beautifyName;
 
 public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.LessonHolder> {
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM", Locale.getDefault());
+    private final SimpleDateFormat formatter = new SimpleDateFormat("d MMM", Locale.getDefault());
 
     private Context mContext;
 
@@ -42,7 +42,7 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.LessonHo
     public void onBindViewHolder(LessonHolder holder, int position) {
         Lesson lesson = lessons.get(position);
         holder.content.setText(beautifyName(lesson.getContent().trim()));
-        holder.date.setText(dateFormat.format(lesson.getDate()));
+        holder.date.setText(formatter.format(lesson.getDate()));
     }
 
     public void addAll(List<Lesson> list) {

@@ -18,13 +18,13 @@ import com.sharpdroid.registro.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.io.IOException;
-import java.text.ParseException;
-
-import static com.sharpdroid.registro.Adapters.FolderAdapter.apiFormat;
-import static com.sharpdroid.registro.Adapters.FolderAdapter.dateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class FragmentFiles extends Fragment {
     final static String TAG = FragmentFiles.class.getSimpleName();
+
+    private final SimpleDateFormat formatter = new SimpleDateFormat("MMM d, yyyy", Locale.ITALIAN);
 
     Context mContext;
     FileAdapter mRVAdapter;
@@ -60,11 +60,7 @@ public class FragmentFiles extends Fragment {
         } finally {
             if (data != null) {
                 folder_title.setText(data.getName().trim());
-                try {
-                    folder_date.setText(dateFormat.format(apiFormat.parse(data.getLast().split("T")[0])));
-                } catch (ParseException e) {
-                    Log.e(TAG, e.getMessage(), e);
-                }
+                folder_date.setText(formatter.format(data.getLast()));
                 mRVAdapter = new FileAdapter(mContext);
                 addSubjects(data);
             }

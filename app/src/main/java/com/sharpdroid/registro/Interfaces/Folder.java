@@ -2,14 +2,15 @@ package com.sharpdroid.registro.Interfaces;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Folder implements Serializable {
     private String name;
-    private String last;
+    private Date last;
     private List<File> elements = new ArrayList<>();
 
-    public Folder(String name, String last, List<File> elements) {
+    public Folder(String name, Date last, List<File> elements) {
         this.name = name;
         this.last = last;
         this.elements = elements;
@@ -19,7 +20,7 @@ public class Folder implements Serializable {
         return name;
     }
 
-    public String getLast() {
+    public Date getLast() {
         return last;
     }
 
