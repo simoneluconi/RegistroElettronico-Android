@@ -79,9 +79,7 @@ public class TimetableAdapter extends RecyclerView.Adapter<TimetableAdapter.Medi
         String obbiettivo_string = Metodi.MessaggioVoto(voto_obiettivo, media.getMediaGenerale(), media.getNumeroVoti());
         ViewHolder.mTextViewDesc.setText(obbiettivo_string);
 
-        ViewHolder.mCardViewMedia.setOnClickListener(v -> {
-            mContext.startActivity(new Intent(mContext, MarkSubjectDetailActivity.class));
-        });
+        ViewHolder.mCardViewMedia.setOnClickListener(v -> mContext.startActivity(new Intent(mContext, MarkSubjectDetailActivity.class)));
     }
 
     @Override

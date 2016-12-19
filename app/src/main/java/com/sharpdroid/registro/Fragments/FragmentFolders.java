@@ -138,9 +138,7 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
                     .subscribe(files -> {
                         addFiles(files, true);
                         mSwipeRefreshLayout.setRefreshing(false);
-                    }, error -> {
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    });
+                    }, error -> mSwipeRefreshLayout.setRefreshing(false));
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);

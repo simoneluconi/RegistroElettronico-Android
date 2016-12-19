@@ -11,12 +11,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<manifest package="devlight.io.library"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="devlight.io.library">
 
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
-        android:supportsRtl="true"></application>
+        android:supportsRtl="true" />
 
 </manifest>

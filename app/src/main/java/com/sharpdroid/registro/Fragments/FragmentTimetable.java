@@ -141,9 +141,7 @@ public class FragmentTimetable extends Fragment implements SwipeRefreshLayout.On
                     .subscribe(marks -> {
                         addSubjects(marks, true);
                         mSwipeRefreshLayout.setRefreshing(false);
-                    }, error -> {
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    });
+                    }, error -> mSwipeRefreshLayout.setRefreshing(false));
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);

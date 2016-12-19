@@ -111,9 +111,7 @@ public class FragmentLogin extends SlideFragment {
                     new SpiaggiariApiClient(mContext).mService.getSubjects()
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(subjects -> {
-                                SubjectsDB.from(mContext).addCODEandNAME(subjects).close();
-                            }, error -> {
+                            .subscribe(subjects -> SubjectsDB.from(mContext).addCODEandNAME(subjects).close(), error -> {
                             });
 
                     loggedIn = true;

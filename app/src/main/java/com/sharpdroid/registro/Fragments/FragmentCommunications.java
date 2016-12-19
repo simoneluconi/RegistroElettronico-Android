@@ -142,9 +142,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
                     .subscribe(communications -> {
                         addCommunications(communications, true);
                         mSwipeRefreshLayout.setRefreshing(false);
-                    }, error -> {
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    });
+                    }, error -> mSwipeRefreshLayout.setRefreshing(false));
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);
