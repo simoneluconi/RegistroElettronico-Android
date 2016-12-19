@@ -108,48 +108,27 @@ public class Metodi {
         return isMediaSufficiente(media, "Generale");
     }
 
+    public static int getMarkColor(float voto, float voto_obiettivo) {
+        if (voto >= voto_obiettivo)
+            return R.color.greenmaterial;
+        else if (voto < 5)
+            return R.color.redmaterial;
+        else if (voto >= 5 && voto < 6)
+            return R.color.orangematerial;
+        else
+            return R.color.lightgreenmaterial;
+    }
+
     public static int getMediaColor(Media media, String tipo, float voto_obiettivo) {
         switch (tipo) {
             case SpiaggiariAPI.ORALE:
-                final float media_orale = media.getMediaOrale();
-                if (media_orale >= voto_obiettivo)
-                    return R.color.greenmaterial;
-                else if (media_orale < 5)
-                    return R.color.redmaterial;
-                else if (media_orale >= 5 && media_orale < 6)
-                    return R.color.orangematerial;
-                else
-                    return R.color.lightgreenmaterial;
+                return getMarkColor(media.getMediaOrale(), voto_obiettivo);
             case SpiaggiariAPI.PRATICO:
-                final float media_pratico = media.getMediaPratico();
-                if (media_pratico >= voto_obiettivo)
-                    return R.color.greenmaterial;
-                else if (media_pratico < 5)
-                    return R.color.redmaterial;
-                else if (media_pratico >= 5 && media_pratico < 6)
-                    return R.color.orangematerial;
-                else
-                    return R.color.lightgreenmaterial;
+                return getMarkColor(media.getMediaPratico(), voto_obiettivo);
             case SpiaggiariAPI.SCRITTO:
-                final float media_scritto = media.getMediaScritto();
-                if (media_scritto >= voto_obiettivo)
-                    return R.color.greenmaterial;
-                else if (media_scritto < 5)
-                    return R.color.redmaterial;
-                else if (media_scritto >= 5 && media_scritto < 6)
-                    return R.color.orangematerial;
-                else
-                    return R.color.lightgreenmaterial;
+                return getMarkColor(media.getMediaScritto(), voto_obiettivo);
             default:
-                final float meadia_generale = media.getMediaGenerale();
-                if (meadia_generale >= voto_obiettivo)
-                    return R.color.greenmaterial;
-                else if (meadia_generale < 5)
-                    return R.color.redmaterial;
-                else if (meadia_generale >= 5 && meadia_generale < 6)
-                    return R.color.orangematerial;
-                else
-                    return R.color.lightgreenmaterial;
+                return getMarkColor(media.getMediaGenerale(), voto_obiettivo);
         }
     }
 

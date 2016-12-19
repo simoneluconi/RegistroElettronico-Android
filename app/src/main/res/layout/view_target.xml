@@ -15,7 +15,6 @@
         app:rcBackgroundColor="#ddd"
         app:rcBackgroundPadding="0dp"
         app:rcMax="0"
-        app:rcProgressColor="@color/colorPrimary"
         app:rcRadius="3dp" />
 
     <RelativeLayout

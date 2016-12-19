@@ -1,6 +1,7 @@
 package com.sharpdroid.registro.Views.SubjectDetails;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.widget.Button;
@@ -13,6 +14,8 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.sharpdroid.registro.Utils.Metodi.getMarkColor;
 
 public class TargetView extends CardView {
     Context mContext;
@@ -33,7 +36,6 @@ public class TargetView extends CardView {
     Button details;
 
     float media, target;
-
 
     public TargetView(Context context) {
         super(context);
@@ -68,6 +70,7 @@ public class TargetView extends CardView {
 
         //bar
         progressBar.setProgress(media);
+        progressBar.setProgressColor(getColor(getMarkColor(media, target)));
     }
 
     public void setTarget(float target) {
@@ -90,5 +93,9 @@ public class TargetView extends CardView {
 
     public void setClickListener(OnClickListener listener) {
         set.setOnClickListener(listener);
+    }
+
+    private int getColor(int color) {
+        return ContextCompat.getColor(mContext, color);
     }
 }
