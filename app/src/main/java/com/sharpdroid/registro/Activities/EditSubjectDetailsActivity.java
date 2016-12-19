@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 
 import static com.sharpdroid.registro.Utils.Metodi.NomeDecente;
 import static com.sharpdroid.registro.Utils.Metodi.beautifyName;
+import static com.sharpdroid.registro.Utils.Metodi.getSubjectName;
 
 public class EditSubjectDetailsActivity extends AppCompatActivity {
 
@@ -70,10 +71,7 @@ public class EditSubjectDetailsActivity extends AppCompatActivity {
         if (code != -1) {
             subject = db.getSubject(code);
 
-            if (subject.getName() != null)
-                name.setText(subject.getName());
-            else
-                name.setText(subject.getOriginalName());
+            name.setText(getSubjectName(subject));
             if (subject.getProfessor() != null)
                 prof.setText(subject.getProfessor());
             if (subject.getClassroom() != null)
