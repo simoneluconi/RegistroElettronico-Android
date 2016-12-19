@@ -27,11 +27,11 @@
         android:background="#e5e5e5" />
 
     <Button
+        android:id="@+id/load_more"
         style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:id="@+id/load_more"
         android:text="Mostra Tutti" />
 
 </LinearLayout>

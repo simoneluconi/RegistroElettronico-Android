@@ -1,19 +1,14 @@
 package com.sharpdroid.registro.Views.SubjectDetails;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.sharpdroid.registro.R;
 
-import java.util.Collections;
-import java.util.Locale;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import devlight.io.library.ArcProgressStackView;
 
 public class OverallView extends CardView {
     Context mContext;
@@ -24,14 +19,14 @@ public class OverallView extends CardView {
     TextView mScritto;
     @BindView(R.id.orale)
     TextView mOrale;
-    @BindView(R.id.media)
-    TextView mMedia;
-    @BindView(R.id.progressvoti)
-    ArcProgressStackView arcProgressStackView;
+    @BindView(R.id.pratico)
+    TextView mPratico;
     @BindView(R.id.text1)
     TextView text1;
     @BindView(R.id.text2)
     TextView text2;
+    @BindView(R.id.text3)
+    TextView text3;
     @BindView(R.id.header)
     TextView header;
 
@@ -69,12 +64,7 @@ public class OverallView extends CardView {
         mOrale.setText(orale);
     }
 
-    public void setMedia(float media) {
-        mMedia.setText(String.format(Locale.getDefault(), "%.2f", media));
-        setProgress(media * 10);
-    }
-
-    public void setProgress(float progress) {
-        arcProgressStackView.setModels(Collections.singletonList(new ArcProgressStackView.Model("Voto", progress, ContextCompat.getColor(mContext, R.color.greenmaterial))));
+    public void setPratico(String pratico) {
+        mPratico.setText(pratico);
     }
 }

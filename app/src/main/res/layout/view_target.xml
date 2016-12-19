@@ -14,8 +14,8 @@
         android:layout_marginTop="24dp"
         app:rcBackgroundColor="#ddd"
         app:rcBackgroundPadding="0dp"
-        app:rcProgressColor="@color/colorPrimary"
         app:rcMax="0"
+        app:rcProgressColor="@color/colorPrimary"
         app:rcRadius="3dp" />
 
     <RelativeLayout
@@ -107,6 +107,5 @@
             android:text="Dettagli"
             android:textColor="@color/textcolorgrey" />
     </LinearLayout>
-
 
 </LinearLayout>

@@ -58,6 +58,9 @@
     <string name="download_fallito">Download fallito (%1$s)</string>
     <string name="obiettivo_summary">Seleziona il voto obiettivo</string>
     <string name="obiettivo_title">Obiettivo</string>
+    <string name="materia">Materia</string>
+    <string name="professore">Professore</string>
+    <string name="aula">Aula</string>
 
     <plurals name="attiva">
         <item quantity="one">%d Attiva</item>

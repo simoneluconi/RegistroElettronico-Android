@@ -173,7 +173,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         media = new Media();
         media.addMarks(marks);
         try {
-            overallView.setMedia(media.getMediaGenerale());
+            overallView.setPratico(String.format(Locale.getDefault(), "%.2f", media.getMediaPratico()));
         } catch (Exception ignored) {
         }
         try {

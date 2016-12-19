@@ -4,59 +4,57 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.sharpdroid.registro.Activities.MarkSubjectDetailActivity">
+    tools:context="com.sharpdroid.registro.Activities.EditSubjectDetailsActivity">
 
     <include
         layout="@layout/app_bar_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:id="@+id/activity_edit_subject_details"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
         android:orientation="vertical"
-        android:padding="16dp"
-        tools:context="com.sharpdroid.registro.Activities.EditSubjectDetailsActivity">
+        android:padding="16dp">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawablePadding="16dp"
-            android:hint="Materia"
+            android:hint="@string/materia"
             android:imeOptions="actionNext"
-            android:singleLine="true" />
+            android:maxLines="1" />
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/professor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawablePadding="16dp"
-            android:hint="Professore"
-            android:inputType="textPersonName"
+            android:hint="@string/professore"
             android:imeOptions="actionNext"
-            android:singleLine="true" />
+            android:inputType="textPersonName"
+            android:maxLines="1" />
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/classroom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawablePadding="16dp"
-            android:hint="Aula"
+            android:hint="@string/aula"
             android:imeOptions="actionNext"
-            android:singleLine="true" />
+            android:maxLines="1" />
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/notes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawablePadding="16dp"
-            android:hint="Note"
+            android:hint="@string/note"
             android:imeOptions="actionDone"
-            android:singleLine="true" />
+            android:maxLines="1" />
 
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

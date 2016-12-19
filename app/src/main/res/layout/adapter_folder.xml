@@ -27,11 +27,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:layout_toEndOf="@+id/circleImageView"
         android:layout_toRightOf="@+id/circleImageView"
-        android:orientation="vertical"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/title"
