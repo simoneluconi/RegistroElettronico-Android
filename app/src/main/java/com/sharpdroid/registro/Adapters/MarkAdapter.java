@@ -25,13 +25,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import static com.sharpdroid.registro.Utils.Metodi.getMarkColor;
 
 public class MarkAdapter extends RecyclerView.Adapter<MarkAdapter.MarkHolder> {
+    float target;
     private Context mContext;
-
     private SimpleDateFormat format = new SimpleDateFormat("d MMMM yyyy", Locale.getDefault());
     private List<Mark> CVDataList;
-
     private Subject subject;
-    float target;
 
     public MarkAdapter(Context mContext, Subject subject) {
         this.mContext = mContext;

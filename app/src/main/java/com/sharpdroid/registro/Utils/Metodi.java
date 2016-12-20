@@ -3,7 +3,6 @@ package com.sharpdroid.registro.Utils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.design.widget.FloatingActionButton;
 
 import com.sharpdroid.registro.API.SpiaggiariAPI;
 import com.sharpdroid.registro.Databases.SubjectsDB;

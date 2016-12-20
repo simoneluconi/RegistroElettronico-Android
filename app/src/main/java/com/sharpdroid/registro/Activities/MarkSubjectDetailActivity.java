@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.widget.EditText;
 
 import com.sharpdroid.registro.API.SpiaggiariApiClient;
-import com.sharpdroid.registro.Adapters.MarkAdapter;
 import com.sharpdroid.registro.Databases.SubjectsDB;
 import com.sharpdroid.registro.Interfaces.Mark;
 import com.sharpdroid.registro.Interfaces.MarkSubject;
