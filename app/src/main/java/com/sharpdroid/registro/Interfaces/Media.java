@@ -106,7 +106,7 @@ public class Media implements Serializable {
                     Log.e(Media.class.getCanonicalName(), "Voto inferiore a 0");
                 }
             } else {
-                Log.d("MEDIA", String.format("%s %s non è significativo", materia, mark.getMark()));
+                Log.d(Media.class.getCanonicalName(), String.format("%s %s non è significativo", materia, mark.getMark()));
             }
         }
     }
