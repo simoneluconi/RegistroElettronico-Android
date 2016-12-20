@@ -23,6 +23,7 @@ import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.sharpdroid.registro.Utils.Metodi.getMarkColor;
+import static com.sharpdroid.registro.Utils.Metodi.sortMarksByDate;
 
 public class MarkAdapter extends RecyclerView.Adapter<MarkAdapter.MarkHolder> {
     float target;
@@ -38,7 +39,7 @@ public class MarkAdapter extends RecyclerView.Adapter<MarkAdapter.MarkHolder> {
     }
 
     public void addAll(List<Mark> list) {
-        CVDataList = list;
+        CVDataList = sortMarksByDate(list);
         notifyDataSetChanged();
     }
 
@@ -48,7 +49,10 @@ public class MarkAdapter extends RecyclerView.Adapter<MarkAdapter.MarkHolder> {
     }
 
     public void setTarget(float t) {
-        target = t;
+        if (t > 0 && t <= 10)
+            target = t;
+        else
+            target = 6f;
         notifyDataSetChanged();
     }
 

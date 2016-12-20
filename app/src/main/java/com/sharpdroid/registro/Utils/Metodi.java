@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -279,5 +280,10 @@ public class Metodi {
 
     public static boolean isEmptyOrNull(String string) {
         return string == null || string.isEmpty();
+    }
+
+    public static List<Mark> sortMarksByDate(List<Mark> marks) {
+        Collections.sort(marks, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
+        return marks;
     }
 }
