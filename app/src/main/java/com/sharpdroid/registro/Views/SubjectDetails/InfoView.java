@@ -62,8 +62,6 @@ public class InfoView extends CardView {
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).size(1).marginResId(R.dimen.padding_left_divider1, R.dimen.nav_header_vertical_spacing).build());
-
-        // TODO: 14/12/2016 Start Activity Edit_Details
     }
 
     public void setSubjectDetails(Subject data) {

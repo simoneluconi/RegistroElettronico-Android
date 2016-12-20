@@ -40,7 +40,7 @@ import static com.sharpdroid.registro.Utils.Metodi.getSubjectName;
 // DONE: 03/12/2016 Obiettivo
 // TODO: 03/12/2016 Orario settimanale (in quali giorni)
 // TODO: 03/12/2016 Verifiche prossime
-// TODO: 03/12/2016 Voti recenti
+// DONE: 03/12/2016 Voti recenti
 // DONE: 14/12/2016 Lezioni recenti
 
 public class MarkSubjectDetailActivity extends AppCompatActivity {
@@ -176,7 +176,6 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(lessons -> lessonsView.addAll(lessons), error -> {
-                    // TODO: 16/12/2016 something went wrong
                 });
     }
 
