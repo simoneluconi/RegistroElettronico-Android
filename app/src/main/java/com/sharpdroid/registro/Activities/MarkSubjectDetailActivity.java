@@ -33,7 +33,6 @@ import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.sharpdroid.registro.Utils.Metodi.getMarkColor;
 import static com.sharpdroid.registro.Utils.Metodi.getSubjectName;
 
 // DONE: 03/12/2016 Dettagli (nome, aula, prof, ora, note, colore)
@@ -157,6 +156,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
                         ContentValues values = new ContentValues();
                         values.put("target", input.getText().toString());
                         db.editTarget(subject.getCode(), values);
+                        marksView.setTarget(new_target);
                     }
                 } catch (NumberFormatException e) {
                     Log.d(TAG, "Could not parse " + e);

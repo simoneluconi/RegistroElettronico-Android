@@ -49,10 +49,7 @@ public class MarkAdapter extends RecyclerView.Adapter<MarkAdapter.MarkHolder> {
     }
 
     public void setTarget(float t) {
-        if (t > 0 && t <= 10)
-            target = t;
-        else
-            target = 6f;
+        target = t;
         notifyDataSetChanged();
     }
 

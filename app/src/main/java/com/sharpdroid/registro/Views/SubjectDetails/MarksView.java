@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.widget.ImageButton;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -29,7 +30,9 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -86,11 +89,7 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
         YAxis leftAxis = lineChartView.getAxisLeft();
-        leftAxis.setDrawGridLines(true);
-        leftAxis.setDrawZeroLine(false);
-        leftAxis.setGranularityEnabled(true);
-        leftAxis.setAxisMinimum(0f);
-        leftAxis.setAxisMaximum(10f);
+        leftAxis.setEnabled(false);
 
         YAxis rightAxis = lineChartView.getAxisRight();
         rightAxis.setDrawGridLines(false);
@@ -108,14 +107,33 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
     }
 
     public void setSubject(Subject subject) {
+        setTarget(subject.getTarget());
+
         adapter = new MarkAdapter(mContext, subject);
         adapter.setTarget(subject.getTarget());
         mRecyclerView.setAdapter(adapter);
+
+
     }
 
     public void addAll(List<Mark> marks) {
         adapter.addAll(marks);
         setChart(marks);
+    }
+
+    public void setTarget(float target) {
+        Float t = target;
+        if (!t.isNaN())
+            t = Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(mContext).getString("voto_obiettivo", "8"));
+
+        LimitLine ll2 = new LimitLine(t, "Il tuo obiettivo");
+        ll2.setLineWidth(3f);
+        ll2.enableDashedLine(10f, 10f, 0f);
+        ll2.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
+        ll2.setTextSize(10f);
+
+        lineChartView.getAxisRight().getLimitLines().clear();
+        lineChartView.getAxisRight().addLimitLine(ll2);
     }
 
     public void clear() {
@@ -140,6 +158,7 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
         line.setCircleRadius(1.5f);
         line.setCircleColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
         line.setDrawCircleHole(false);
+        line.setAxisDependency(YAxis.AxisDependency.RIGHT);
         //drawable gradient
         if (Utils.getSDKInt() >= 18) {
             // fill drawable only supported on api level 18 and above
@@ -158,13 +177,45 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
 
     List<Entry> getEntriesFromMarks(List<Mark> marks) {
         List<Entry> list = new ArrayList<>();
+
+        HashMap<Long, List<Mark>> collectedMarks = collectAllMarks(marks);
+
+        List<Long> sortedKeys = new ArrayList<>(collectedMarks.keySet());
+        Collections.sort(sortedKeys, Long::compareTo);
+
+        for (long date : sortedKeys) {
+            List<Mark> markList = collectedMarks.get(date);
+            float media = 0f;
+
+            for (Mark mark : markList) {
+                media += Float.parseFloat(mark.getMark());
+            }
+            media /= markList.size();
+            list.add(new Entry(date, media));
+        }
+
+        return list;
+    }
+
+    /**
+     * raggruppa tutti i voti con la stessa data
+     */
+    HashMap<Long, List<Mark>> collectAllMarks(List<Mark> marks) {
+        HashMap<Long, List<Mark>> collect = new HashMap<>();
+
         for (Mark mark : marks) {
             if (!mark.isNs()) {
-                Entry entry = new Entry(mark.getDate().getTime(), Float.parseFloat(mark.getMark()));
-                list.add(entry);
+                long time = mark.getDate().getTime();
+                if (collect.containsKey(time)) {
+                    List<Mark> markList = collect.get(time);
+                    markList.add(mark);
+                    collect.put(time, markList);
+                } else {
+                    collect.put(time, Collections.singletonList(mark));
+                }
             }
         }
-        return list;
+        return collect;
     }
 
     @Override
