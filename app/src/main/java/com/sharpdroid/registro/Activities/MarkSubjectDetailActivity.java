@@ -25,6 +25,7 @@ import com.sharpdroid.registro.Views.SubjectDetails.OverallView;
 import com.sharpdroid.registro.Views.SubjectDetails.RecentLessonsView;
 import com.sharpdroid.registro.Views.SubjectDetails.TargetView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -176,7 +177,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         new SpiaggiariApiClient(this).mService.getLessons(id)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(lessons -> lessonsView.addAll(lessons), error -> {
+                .subscribe(lessons -> lessonsView.addAll(new ArrayList<>(lessons)), error -> {
                 });
     }
 

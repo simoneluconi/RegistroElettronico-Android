@@ -3,10 +3,9 @@ package com.sharpdroid.registro.Adapters;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
+import com.sharpdroid.registro.Adapters.Holders.LessonHolder;
 import com.sharpdroid.registro.Interfaces.Lesson;
 import com.sharpdroid.registro.R;
 
@@ -16,12 +15,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 import static com.sharpdroid.registro.Utils.Metodi.beautifyName;
 
-public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.LessonHolder> {
+public class LessonsAdapter extends RecyclerView.Adapter<LessonHolder> {
     private final SimpleDateFormat formatter = new SimpleDateFormat("d MMM", Locale.getDefault());
 
     private Context mContext;
@@ -61,15 +57,4 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.LessonHo
         return (lessons.size() > 5) ? 5 : lessons.size();
     }
 
-    class LessonHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.content)
-        TextView content;
-        @BindView(R.id.date)
-        TextView date;
-
-        LessonHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-    }
 }

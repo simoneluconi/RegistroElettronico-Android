@@ -1,17 +1,20 @@
 package com.sharpdroid.registro.Views.SubjectDetails;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.widget.Button;
 
+import com.sharpdroid.registro.Activities.AllLessonsActivity;
 import com.sharpdroid.registro.Adapters.LessonsAdapter;
 import com.sharpdroid.registro.Interfaces.Lesson;
 import com.sharpdroid.registro.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,6 +24,8 @@ public class RecentLessonsView extends CardView {
 
     @BindView(R.id.recycler)
     RecyclerView mRecyclerView;
+    @BindView(R.id.load_more)
+    Button showAllButton;
 
     LessonsAdapter adapter;
 
@@ -52,8 +57,9 @@ public class RecentLessonsView extends CardView {
         mRecyclerView.setAdapter(adapter);
     }
 
-    public void addAll(List<Lesson> list) {
+    public void addAll(ArrayList<Lesson> list) {
         adapter.addAll(list);
+        showAllButton.setOnClickListener(view -> mContext.startActivity(new Intent(mContext, AllLessonsActivity.class).putExtra("data", list)));
     }
 
     public void clear() {

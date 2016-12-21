@@ -50,6 +50,7 @@
                 android:resource="@xml/filepaths" />
         </provider>
 
+        <activity android:name=".Activities.AllLessonsActivity"></activity>
     </application>
 
 </manifest>
