@@ -156,7 +156,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
                         ContentValues values = new ContentValues();
                         values.put("target", input.getText().toString());
                         db.editTarget(subject.getCode(), values);
-                        marksView.setTarget(new_target);
+                        marksView.setLimitLines(new_target, media.getMediaGenerale());
                     }
                 } catch (NumberFormatException e) {
                     Log.d(TAG, "Could not parse " + e);
@@ -181,7 +181,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     }
 
     private void setMarks(List<Mark> marks) {
-        marksView.setSubject(subject);
+        marksView.setSubject(subject, media.getMediaGenerale());
         marksView.addAll(marks);
         marksView.setShowChart(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("show_chart", true));
     }

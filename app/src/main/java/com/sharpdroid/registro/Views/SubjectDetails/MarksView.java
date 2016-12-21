@@ -90,14 +90,15 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setGranularity(1314873000f);
 
-        YAxis leftAxis = lineChartView.getAxisLeft();
-        leftAxis.setEnabled(false);
-
         YAxis rightAxis = lineChartView.getAxisRight();
-        rightAxis.setDrawGridLines(true);
-        rightAxis.setGridColor(Color.parseColor("#22000000"));
-        rightAxis.setAxisMinimum(0f);
-        rightAxis.setAxisMaximum(10f);
+        rightAxis.setEnabled(false);
+
+        YAxis leftAxis = lineChartView.getAxisLeft();
+        leftAxis.setDrawGridLines(false);
+        leftAxis.setGridColor(Color.parseColor("#22000000"));
+        leftAxis.setAxisMinimum(0f);
+        leftAxis.setAxisMaximum(10f);
+
 
         //not zoomable nor draggable
         lineChartView.setDragEnabled(false);
@@ -109,8 +110,8 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
         lineChartView.getLegend().setEnabled(false);
     }
 
-    public void setSubject(Subject subject) {
-        setTarget(subject.getTarget());
+    public void setSubject(Subject subject, float media) {
+        setLimitLines(subject.getTarget(), media);
 
         adapter = new MarkAdapter(mContext, subject);
         adapter.setTarget(subject.getTarget());
@@ -124,21 +125,31 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
         setChart(marks);
     }
 
-    public void setTarget(float target) {
+    public void setLimitLines(float target, float media) {
         Float t = target;
-        if (t.isNaN())
+        if (t.equals(0f))
             t = Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(mContext).getString("voto_obiettivo", "8"));
 
         LimitLine ll2 = new LimitLine(t, "Il tuo obiettivo");
         ll2.setLineWidth(1f);
-        ll2.setLineColor(Color.parseColor("#66000000"));
+        ll2.setLineColor(Color.parseColor("#22000000"));
         ll2.enableDashedLine(15f, 0f, 0f);
         ll2.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
         ll2.setTextSize(10f);
-        ll2.setTextColor(Color.parseColor("#88000000"));
+        ll2.setTextColor(Color.parseColor("#444444"));
 
-        lineChartView.getAxisRight().getLimitLines().clear();
-        lineChartView.getAxisRight().addLimitLine(ll2);
+
+        LimitLine ll1 = new LimitLine(media, "La tua media");
+        ll1.setLineWidth(1f);
+        ll1.setLineColor(Color.parseColor("#22000000"));
+        ll1.enableDashedLine(15f, 0f, 0f);
+        ll1.setLabelPosition(LimitLine.LimitLabelPosition.LEFT_BOTTOM);
+        ll1.setTextSize(10f);
+        ll1.setTextColor(Color.parseColor("#444444"));
+
+        lineChartView.getAxisLeft().getLimitLines().clear();
+        lineChartView.getAxisLeft().addLimitLine(ll1);
+        lineChartView.getAxisLeft().addLimitLine(ll2);
         invalidate();
     }
 
@@ -164,7 +175,7 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
         line.setCircleRadius(1.5f);
         line.setCircleColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
         line.setDrawCircleHole(false);
-        line.setAxisDependency(YAxis.AxisDependency.RIGHT);
+        line.setAxisDependency(YAxis.AxisDependency.LEFT);
         //drawable gradient
         if (Utils.getSDKInt() >= 18) {
             // fill drawable only supported on api level 18 and above
