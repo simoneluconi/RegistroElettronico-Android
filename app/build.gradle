@@ -103,6 +103,7 @@ dependencies {
     compile 'com.yqritc:recyclerview-flexibledivider:1.4.0'
     compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
+    compile 'com.github.sundeepk:compact-calendar-view:1.9.1'
 
     compile 'com.google.code.gson:gson:2.8.0'
 
