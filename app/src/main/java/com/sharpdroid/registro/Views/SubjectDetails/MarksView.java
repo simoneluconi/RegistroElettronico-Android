@@ -2,6 +2,7 @@ package com.sharpdroid.registro.Views.SubjectDetails;
 
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.preference.PreferenceManager;
@@ -87,12 +88,14 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
         xAxis.setDrawGridLines(false);
         xAxis.setValueFormatter((value, axis) -> format.format(new Date((long) value)));
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setGranularity(1314873000f);
 
         YAxis leftAxis = lineChartView.getAxisLeft();
         leftAxis.setEnabled(false);
 
         YAxis rightAxis = lineChartView.getAxisRight();
-        rightAxis.setDrawGridLines(false);
+        rightAxis.setDrawGridLines(true);
+        rightAxis.setGridColor(Color.parseColor("#22000000"));
         rightAxis.setAxisMinimum(0f);
         rightAxis.setAxisMaximum(10f);
 
@@ -123,17 +126,20 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
 
     public void setTarget(float target) {
         Float t = target;
-        if (!t.isNaN())
+        if (t.isNaN())
             t = Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(mContext).getString("voto_obiettivo", "8"));
 
         LimitLine ll2 = new LimitLine(t, "Il tuo obiettivo");
-        ll2.setLineWidth(3f);
-        ll2.enableDashedLine(10f, 10f, 0f);
+        ll2.setLineWidth(1f);
+        ll2.setLineColor(Color.parseColor("#66000000"));
+        ll2.enableDashedLine(15f, 0f, 0f);
         ll2.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
         ll2.setTextSize(10f);
+        ll2.setTextColor(Color.parseColor("#88000000"));
 
         lineChartView.getAxisRight().getLimitLines().clear();
         lineChartView.getAxisRight().addLimitLine(ll2);
+        invalidate();
     }
 
     public void clear() {
@@ -150,11 +156,11 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
         List<ILineDataSet> lines = new ArrayList<>();
 
         LineDataSet line = new LineDataSet(getEntriesFromMarks(marks), "");
-        line.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
+        line.setMode(LineDataSet.Mode.LINEAR);
         line.setColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
         line.setDrawValues(false);
         line.setDrawFilled(true);
-        line.setDrawCircles(true);
+        line.setDrawCircles(false);
         line.setCircleRadius(1.5f);
         line.setCircleColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
         line.setDrawCircleHole(false);
@@ -207,7 +213,7 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
             if (!mark.isNs()) {
                 long time = mark.getDate().getTime();
                 if (collect.containsKey(time)) {
-                    List<Mark> markList = collect.get(time);
+                    List<Mark> markList = new ArrayList<>(collect.get(time));
                     markList.add(mark);
                     collect.put(time, markList);
                 } else {
