@@ -5,7 +5,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import com.sharpdroid.registro.API.SpiaggiariAPI;
-import com.sharpdroid.registro.Databases.SubjectsDB;
 import com.sharpdroid.registro.Interfaces.Absence;
 import com.sharpdroid.registro.Interfaces.Delay;
 import com.sharpdroid.registro.Interfaces.Exit;
@@ -230,20 +229,7 @@ public class Metodi {
     }
 
     public static String getSubjectName(Subject subject) {
-        /*try{
-            if(!isEmptyOrNull(subject.getName())){
-                return subject.getName();
-            }else{
-                return subject.getOriginalName();
-            }
-        }catch(NullPointerException e){
-            return subject.getOriginalName();
-        }*/
         return (!isEmptyOrNull(subject.getName())) ? subject.getName() : subject.getOriginalName();
-    }
-
-    public static void saveAllSubjects(Context c, List<Subject> subjects) {
-        SubjectsDB.from(c).addAllSubjects(subjects).close();
     }
 
     public static boolean writeResponseBodyToDisk(ResponseBody body, File file) {
