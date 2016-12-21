@@ -33,6 +33,7 @@ import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.sharpdroid.registro.Utils.Metodi.getMarkColor;
 import static com.sharpdroid.registro.Utils.Metodi.getSubjectName;
 
 // DONE: 03/12/2016 Dettagli (nome, aula, prof, ora, note, colore)
@@ -182,6 +183,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     private void setMarks(List<Mark> marks) {
         marksView.setSubject(subject);
         marksView.addAll(marks);
+        marksView.setShowChart(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("show_chart", true));
     }
 
     @Override

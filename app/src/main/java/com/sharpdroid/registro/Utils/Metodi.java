@@ -230,6 +230,15 @@ public class Metodi {
     }
 
     public static String getSubjectName(Subject subject) {
+        /*try{
+            if(!isEmptyOrNull(subject.getName())){
+                return subject.getName();
+            }else{
+                return subject.getOriginalName();
+            }
+        }catch(NullPointerException e){
+            return subject.getOriginalName();
+        }*/
         return (!isEmptyOrNull(subject.getName())) ? subject.getName() : subject.getOriginalName();
     }
 

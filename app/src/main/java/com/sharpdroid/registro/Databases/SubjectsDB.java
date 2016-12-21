@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.sharpdroid.registro.Interfaces.LessonSubject;
 import com.sharpdroid.registro.Interfaces.Subject;
@@ -50,12 +49,11 @@ public class SubjectsDB extends SQLiteOpenHelper {
 
     public Subject getSubject(int code) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Subject subject;
+        Subject subject = null;
 
         Cursor c = db.rawQuery("SELECT * FROM " + DB_NAME + " WHERE " + columns[1] + " = ?", new String[]{String.valueOf(code)});
-        c.moveToFirst();
-
-        subject = new Subject(c.getInt(0), c.getInt(1), c.getString(2), c.getString(3), c.getFloat(4), c.getString(5), c.getString(6), c.getString(7));
+        if (c.moveToFirst())
+            subject = new Subject(c.getInt(0), c.getInt(1), c.getString(2), c.getString(3), c.getFloat(4), c.getString(5), c.getString(6), c.getString(7));
 
         c.close();
         return subject;
@@ -63,31 +61,20 @@ public class SubjectsDB extends SQLiteOpenHelper {
 
     public Subject getSubject(String name) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Subject subject;
+        Subject subject = null;
 
         Cursor c = db.rawQuery("SELECT * FROM " + DB_NAME + " WHERE " + columns[2] + " = ? OR " + columns[3] + " = ?", new String[]{beautifyName(name), beautifyName(name)});
-        if (c.moveToFirst()) {
 
+        if (c.moveToFirst())
             subject = new Subject(c.getInt(0), c.getInt(1), c.getString(2), c.getString(3), c.getFloat(4), c.getString(5), c.getString(6), c.getString(7));
 
-            c.close();
-            return subject;
-        } else {
-            Log.d("DATABASE", name + " - no matches");
-            c.close();
-            return null;
-        }
+        c.close();
+        return subject;
     }
 
     public SubjectsDB editSubject(int code, ContentValues contentValues) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.update(DB_NAME, contentValues, columns[1] + " = ?", new String[]{String.valueOf(code)});
-        return this;
-    }
-
-    public SubjectsDB editSubject(String name, ContentValues contentValues) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.update(DB_NAME, contentValues, columns[2] + " = ? OR " + columns[3] + " = ?", new String[]{beautifyName(name), beautifyName(name)});
         return this;
     }
 
@@ -117,7 +104,6 @@ public class SubjectsDB extends SQLiteOpenHelper {
 
         return this;
     }
-
 
     public SubjectsDB addCODEandNAME(List<LessonSubject> subjects) {
         SQLiteDatabase db = this.getWritableDatabase();

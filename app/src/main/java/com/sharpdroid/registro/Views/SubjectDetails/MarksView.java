@@ -4,10 +4,14 @@ package com.sharpdroid.registro.Views.SubjectDetails;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.MenuItem;
+import android.widget.ImageButton;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -32,7 +36,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MarksView extends CardView {
+public class MarksView extends CardView implements PopupMenu.OnMenuItemClickListener {
     Context mContext;
     SimpleDateFormat format = new SimpleDateFormat("d MMM", Locale.getDefault());
 
@@ -40,7 +44,10 @@ public class MarksView extends CardView {
     RecyclerView mRecyclerView;
     @BindView(R.id.chart)
     LineChart lineChartView;
+    @BindView(R.id.options)
+    ImageButton optionButton;
 
+    PopupMenu menu;
     MarkAdapter adapter;
 
     public MarksView(Context context) {
@@ -68,6 +75,10 @@ public class MarksView extends CardView {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).marginResId(R.dimen.activity_vertical_margin, R.dimen.activity_vertical_margin).size(1).build());
 
+        menu = new PopupMenu(mContext, optionButton);
+        menu.getMenuInflater().inflate(R.menu.view_marks_menu, menu.getMenu());
+        optionButton.setOnClickListener(view -> menu.show());
+        menu.setOnMenuItemClickListener(this);
 
         XAxis xAxis = lineChartView.getXAxis();
         xAxis.setDrawGridLines(false);
@@ -79,12 +90,12 @@ public class MarksView extends CardView {
         leftAxis.setDrawZeroLine(false);
         leftAxis.setGranularityEnabled(true);
         leftAxis.setAxisMinimum(0f);
-        //leftAxis.setAxisMaximum(10f);
+        leftAxis.setAxisMaximum(10f);
 
         YAxis rightAxis = lineChartView.getAxisRight();
         rightAxis.setDrawGridLines(false);
         rightAxis.setAxisMinimum(0f);
-        //rightAxis.setAxisMaximum(10f);
+        rightAxis.setAxisMaximum(10f);
 
         //not zoomable nor draggable
         lineChartView.setDragEnabled(false);
@@ -109,6 +120,12 @@ public class MarksView extends CardView {
 
     public void clear() {
         adapter.clear();
+    }
+
+    public void setShowChart(boolean show) {
+        menu.getMenu().findItem(R.id.show).setChecked(show);
+        if (show) lineChartView.setVisibility(VISIBLE);
+        else lineChartView.setVisibility(GONE);
     }
 
     void setChart(List<Mark> marks) {
@@ -148,5 +165,16 @@ public class MarksView extends CardView {
             }
         }
         return list;
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        if (item.getItemId() == R.id.show) {
+            item.setChecked(!item.isChecked());
+            PreferenceManager.getDefaultSharedPreferences(mContext).edit().putBoolean("show_chart", item.isChecked()).apply();
+            if (item.isChecked()) lineChartView.setVisibility(VISIBLE);
+            else lineChartView.setVisibility(GONE);
+        }
+        return true;
     }
 }

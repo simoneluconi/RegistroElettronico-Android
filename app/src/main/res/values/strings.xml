@@ -61,6 +61,8 @@
     <string name="materia">Materia</string>
     <string name="professore">Professore</string>
     <string name="aula">Aula</string>
+    <string name="mostra_grafico">Mostra grafico</string>
+    <string name="i_tuoi_voti">I tuoi voti</string>
 
     <plurals name="attiva">
         <item quantity="one">%d Attiva</item>
