@@ -17,11 +17,11 @@
         android:textColor="#414141" />
 
     <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chart"
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:id="@+id/chart" />
+        android:layout_marginRight="8dp" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler"
