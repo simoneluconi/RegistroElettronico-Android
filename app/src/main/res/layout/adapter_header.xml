@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
-    android:layout_marginTop="16dp"
+    android:layout_marginTop="12dp"
+    android:layout_marginBottom="8dp"
     android:orientation="vertical">
 
     <TextView
@@ -14,6 +15,7 @@
         android:layout_height="wrap_content"
         android:textAllCaps="true"
         android:textColor="@color/textcolorgrey"
-        android:textSize="15sp" />
+        android:letterSpacing=".07"
+        android:textSize="12sp" />
 
 </LinearLayout>

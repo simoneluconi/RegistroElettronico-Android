@@ -25,6 +25,7 @@ import com.sharpdroid.registro.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -105,8 +106,9 @@ public class AllAbsencesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         List<Entry> chronologic = new ArrayList<>();
 
         HashMap<String, List<Entry>> hashMap = convertAbsencesToHashmap(absences);
-
-        for (String header : hashMap.keySet()) {
+        List<String> keys = new ArrayList<>(hashMap.keySet());
+        Collections.reverse(keys);
+        for (String header : keys) {
             chronologic.add(new HeaderEntry(header));
             chronologic.addAll(hashMap.get(header));
         }
