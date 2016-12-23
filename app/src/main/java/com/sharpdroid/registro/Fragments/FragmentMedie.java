@@ -49,9 +49,9 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
     @BindView(R.id.swiperefresh)
     SwipeRefreshLayout mSwipeRefreshLayout;
     SubjectsDB subjectsDB;
+    Snackbar snackbar;
     private MedieAdapter mRVAdapter;
     private Context mContext;
-    Snackbar snackbar;
 
     public FragmentMedie() {
 

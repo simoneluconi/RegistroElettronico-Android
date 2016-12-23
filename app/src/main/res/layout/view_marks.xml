@@ -22,18 +22,18 @@
             android:textColor="#414141" />
 
         <ImageButton
+            android:id="@+id/options"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:background="#00ffffff"
-            android:paddingLeft="16dp"
-            android:paddingStart="16dp"
-            android:paddingRight="8dp"
             android:paddingEnd="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="8dp"
+            android:paddingStart="16dp"
             android:tint="#414141"
-            android:id="@+id/options"
             app:srcCompat="@drawable/ic_more" />
 
     </RelativeLayout>
@@ -43,9 +43,9 @@
         android:id="@+id/chart"
         android:layout_width="match_parent"
         android:layout_height="120dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginRight="8dp" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler"
