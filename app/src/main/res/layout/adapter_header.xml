@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     android:layout_marginTop="12dp"
-    android:layout_marginBottom="8dp"
     android:orientation="vertical">
 
     <TextView
@@ -13,9 +13,9 @@
         style="@style/TextAppearance.AppCompat.Body2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:letterSpacing=".07"
         android:textAllCaps="true"
         android:textColor="@color/textcolorgrey"
-        android:letterSpacing=".07"
         android:textSize="12sp" />
 
 </LinearLayout>
