@@ -75,7 +75,7 @@ public class AllAbsencesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 Absence absence = ((AbsenceEntry) entry).getAbsence();
 
                 absencesHolder.date.setText(long_date_format.format(absence.getFrom()));
-                absencesHolder.hour.setText(mContext.getResources().getQuantityString(R.plurals.days, absence.getDays()));
+                absencesHolder.hour.setText(mContext.getResources().getQuantityString(R.plurals.days, absence.getDays(), absence.getDays()));
                 absencesHolder.done.setVisibility(absence.isDone() ? View.VISIBLE : View.INVISIBLE);
                 absencesHolder.type_color.setImageDrawable(new ColorDrawable(ContextCompat.getColor(mContext, R.color.brown)));
                 absencesHolder.type_text.setText("A");
