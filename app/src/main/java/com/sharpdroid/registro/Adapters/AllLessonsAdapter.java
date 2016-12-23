@@ -1,13 +1,15 @@
 package com.sharpdroid.registro.Adapters;
 
 import android.content.Context;
+import android.support.annotation.IdRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.sharpdroid.registro.Adapters.Holders.HeaderHolder;
 import com.sharpdroid.registro.Adapters.Holders.LessonHolder;
-import com.sharpdroid.registro.Interfaces.Lesson;
+import com.sharpdroid.registro.Interfaces.API.Lesson;
+import com.sharpdroid.registro.Interfaces.Client.Entry;
 import com.sharpdroid.registro.R;
 
 import java.text.SimpleDateFormat;
@@ -18,6 +20,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static com.sharpdroid.registro.Utils.Metodi.beautifyName;
+import static com.sharpdroid.registro.Utils.Metodi.month_year;
 
 public class AllLessonsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -68,9 +71,6 @@ public class AllLessonsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     private void elaborateList(List<Lesson> lessons) {
-        //recente->vecchia
-
-        SimpleDateFormat month_year = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
         HashMap<String, List<Lesson>> organizedLessons = new HashMap<>();
 
         for (Lesson lesson : lessons) {
@@ -101,15 +101,12 @@ public class AllLessonsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return n_headers + n_rows;
     }
 
-    private abstract class Entry {
-        abstract int getID();
-    }
-
     private class HeaderEntry extends Entry {
+        @IdRes
         final static int ID = R.layout.adapter_header;
         private String content;
 
-        public HeaderEntry(String content) {
+        HeaderEntry(String content) {
             this.content = content;
         }
 
@@ -118,25 +115,26 @@ public class AllLessonsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
         @Override
-        int getID() {
+        public int getID() {
             return ID;
         }
     }
 
     private class LessonEntry extends Entry {
+        @IdRes
         final static int ID = R.layout.adapter_lessons_1;
         private Lesson lesson;
 
-        public LessonEntry(Lesson lesson) {
+        LessonEntry(Lesson lesson) {
             this.lesson = lesson;
         }
 
-        public Lesson getLesson() {
+        Lesson getLesson() {
             return lesson;
         }
 
         @Override
-        int getID() {
+        public int getID() {
             return ID;
         }
     }

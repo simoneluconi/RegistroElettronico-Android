@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.sharpdroid.registro.Adapters.Holders.LessonHolder;
-import com.sharpdroid.registro.Interfaces.Lesson;
+import com.sharpdroid.registro.Interfaces.API.Lesson;
 import com.sharpdroid.registro.R;
 
 import java.text.SimpleDateFormat;

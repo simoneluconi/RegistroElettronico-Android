@@ -6,8 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.sharpdroid.registro.Interfaces.LessonSubject;
-import com.sharpdroid.registro.Interfaces.Subject;
+import com.sharpdroid.registro.Interfaces.API.LessonSubject;
+import com.sharpdroid.registro.Interfaces.Client.Subject;
 
 import java.util.List;
 

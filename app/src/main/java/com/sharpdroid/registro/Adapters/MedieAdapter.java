@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import com.sharpdroid.registro.Activities.MarkSubjectDetailActivity;
 import com.sharpdroid.registro.Databases.SubjectsDB;
-import com.sharpdroid.registro.Interfaces.MarkSubject;
-import com.sharpdroid.registro.Interfaces.Media;
+import com.sharpdroid.registro.Interfaces.API.MarkSubject;
+import com.sharpdroid.registro.Interfaces.Client.Media;
 import com.sharpdroid.registro.R;
 
 import java.util.ArrayList;

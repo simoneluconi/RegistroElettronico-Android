@@ -14,10 +14,10 @@ import android.widget.EditText;
 
 import com.sharpdroid.registro.API.SpiaggiariApiClient;
 import com.sharpdroid.registro.Databases.SubjectsDB;
-import com.sharpdroid.registro.Interfaces.Mark;
-import com.sharpdroid.registro.Interfaces.MarkSubject;
-import com.sharpdroid.registro.Interfaces.Media;
-import com.sharpdroid.registro.Interfaces.Subject;
+import com.sharpdroid.registro.Interfaces.API.Mark;
+import com.sharpdroid.registro.Interfaces.API.MarkSubject;
+import com.sharpdroid.registro.Interfaces.Client.Media;
+import com.sharpdroid.registro.Interfaces.Client.Subject;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Views.SubjectDetails.InfoView;
 import com.sharpdroid.registro.Views.SubjectDetails.MarksView;

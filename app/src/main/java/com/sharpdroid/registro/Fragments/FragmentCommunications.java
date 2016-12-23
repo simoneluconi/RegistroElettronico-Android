@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 
 import com.sharpdroid.registro.API.SpiaggiariApiClient;
 import com.sharpdroid.registro.Adapters.CommunicationAdapter;
-import com.sharpdroid.registro.Interfaces.Communication;
+import com.sharpdroid.registro.Interfaces.API.Communication;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Tasks.CacheListTask;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;

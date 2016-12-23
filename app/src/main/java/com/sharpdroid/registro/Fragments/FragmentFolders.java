@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 
 import com.sharpdroid.registro.API.SpiaggiariApiClient;
 import com.sharpdroid.registro.Adapters.FolderAdapter;
-import com.sharpdroid.registro.Interfaces.FileTeacher;
+import com.sharpdroid.registro.Interfaces.API.FileTeacher;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Tasks.CacheListTask;
 

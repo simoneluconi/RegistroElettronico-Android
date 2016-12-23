@@ -10,7 +10,7 @@ import android.widget.Button;
 
 import com.sharpdroid.registro.Activities.AllLessonsActivity;
 import com.sharpdroid.registro.Adapters.LessonsAdapter;
-import com.sharpdroid.registro.Interfaces.Lesson;
+import com.sharpdroid.registro.Interfaces.API.Lesson;
 import com.sharpdroid.registro.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 

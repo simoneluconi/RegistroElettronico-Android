@@ -24,8 +24,8 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.Utils;
 import com.sharpdroid.registro.Adapters.MarkAdapter;
-import com.sharpdroid.registro.Interfaces.Mark;
-import com.sharpdroid.registro.Interfaces.Subject;
+import com.sharpdroid.registro.Interfaces.API.Mark;
+import com.sharpdroid.registro.Interfaces.Client.Subject;
 import com.sharpdroid.registro.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 

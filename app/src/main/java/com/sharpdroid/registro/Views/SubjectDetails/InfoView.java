@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.sharpdroid.registro.Interfaces.Subject;
+import com.sharpdroid.registro.Interfaces.Client.Subject;
 import com.sharpdroid.registro.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 

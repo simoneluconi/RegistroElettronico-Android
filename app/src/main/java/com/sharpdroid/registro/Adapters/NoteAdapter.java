@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.sharpdroid.registro.Interfaces.Note;
+import com.sharpdroid.registro.Interfaces.API.Note;
 import com.sharpdroid.registro.R;
 
 import java.text.SimpleDateFormat;

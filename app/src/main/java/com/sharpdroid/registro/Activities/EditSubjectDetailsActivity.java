@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
 
 import com.sharpdroid.registro.Databases.SubjectsDB;
-import com.sharpdroid.registro.Interfaces.Subject;
+import com.sharpdroid.registro.Interfaces.Client.Subject;
 import com.sharpdroid.registro.R;
 
 import butterknife.BindView;

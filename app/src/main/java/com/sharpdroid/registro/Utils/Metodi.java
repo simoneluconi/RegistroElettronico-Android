@@ -5,15 +5,20 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import com.sharpdroid.registro.API.SpiaggiariAPI;
-import com.sharpdroid.registro.Interfaces.Absence;
-import com.sharpdroid.registro.Interfaces.Delay;
-import com.sharpdroid.registro.Interfaces.Exit;
-import com.sharpdroid.registro.Interfaces.FileTeacher;
-import com.sharpdroid.registro.Interfaces.Folder;
-import com.sharpdroid.registro.Interfaces.Mark;
-import com.sharpdroid.registro.Interfaces.MarkSubject;
-import com.sharpdroid.registro.Interfaces.Media;
-import com.sharpdroid.registro.Interfaces.Subject;
+import com.sharpdroid.registro.Interfaces.API.Absence;
+import com.sharpdroid.registro.Interfaces.API.Absences;
+import com.sharpdroid.registro.Interfaces.API.Delay;
+import com.sharpdroid.registro.Interfaces.API.Exit;
+import com.sharpdroid.registro.Interfaces.API.FileTeacher;
+import com.sharpdroid.registro.Interfaces.API.Folder;
+import com.sharpdroid.registro.Interfaces.API.Mark;
+import com.sharpdroid.registro.Interfaces.API.MarkSubject;
+import com.sharpdroid.registro.Interfaces.Client.AbsenceEntry;
+import com.sharpdroid.registro.Interfaces.Client.DelayEntry;
+import com.sharpdroid.registro.Interfaces.Client.Entry;
+import com.sharpdroid.registro.Interfaces.Client.ExitEntry;
+import com.sharpdroid.registro.Interfaces.Client.Media;
+import com.sharpdroid.registro.Interfaces.Client.Subject;
 import com.sharpdroid.registro.R;
 
 import java.io.File;
@@ -21,14 +26,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 import okhttp3.ResponseBody;
 
 public class Metodi {
+    public static SimpleDateFormat month_year = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
+
     public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -295,5 +304,44 @@ public class Metodi {
     public static List<Mark> sortMarksByDate(List<Mark> marks) {
         Collections.sort(marks, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
         return marks;
+    }
+
+    public static HashMap<String, List<Entry>> convertAbsencesToHashmap(Absences absences) {
+        HashMap<String, List<Entry>> hashMap = new HashMap<>();
+
+        //assenze
+        for (Absence absence : absences.getAbsences()) {
+            String month = month_year.format(absence.getFrom());
+            if (hashMap.containsKey(month)) {
+                List<Entry> entries = hashMap.get(month);
+                entries.add(new AbsenceEntry(absence));
+                hashMap.put(month, entries);
+            } else {
+                hashMap.put(month, Collections.singletonList(new AbsenceEntry(absence)));
+            }
+        }
+        //uscite
+        for (Exit exit : absences.getExits()) {
+            String month = month_year.format(exit.getDay());
+            if (hashMap.containsKey(month)) {
+                List<Entry> entries = hashMap.get(month);
+                entries.add(new ExitEntry(exit));
+                hashMap.put(month, entries);
+            } else {
+                hashMap.put(month, Collections.singletonList(new ExitEntry(exit)));
+            }
+        }
+        //ritardi
+        for (Delay delay : absences.getDelays()) {
+            String month = month_year.format(delay.getDay());
+            if (hashMap.containsKey(month)) {
+                List<Entry> entries = hashMap.get(month);
+                entries.add(new DelayEntry(delay));
+                hashMap.put(month, entries);
+            } else {
+                hashMap.put(month, Collections.singletonList(new DelayEntry(delay)));
+            }
+        }
+        return hashMap;
     }
 }

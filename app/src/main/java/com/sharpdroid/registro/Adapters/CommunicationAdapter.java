@@ -15,7 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sharpdroid.registro.API.SpiaggiariApiClient;
-import com.sharpdroid.registro.Interfaces.Communication;
+import com.sharpdroid.registro.Interfaces.API.Communication;
 import com.sharpdroid.registro.R;
 
 import java.io.File;

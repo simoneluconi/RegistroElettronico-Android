@@ -6,15 +6,16 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ExpandableListView;
 
 import com.sharpdroid.registro.API.SpiaggiariApiClient;
 import com.sharpdroid.registro.Adapters.AllAbsencesAdapter;
-import com.sharpdroid.registro.Interfaces.Absences;
+import com.sharpdroid.registro.Interfaces.API.Absences;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Tasks.CacheObjectTask;
 
@@ -36,8 +37,8 @@ import static com.sharpdroid.registro.Utils.Metodi.isNetworkAvailable;
 public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     final private String TAG = FragmentAllAbsences.class.getSimpleName();
 
-    @BindView(R.id.expandable_list)
-    ExpandableListView expandableListView;
+    @BindView(R.id.recycler)
+    RecyclerView recycler;
     @BindView(R.id.swiperefresh)
     SwipeRefreshLayout mSwipeRefreshLayout;
     @BindView(R.id.coordinator_layout)
@@ -65,6 +66,8 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
                 R.color.orangematerial);
 
         adapter = new AllAbsencesAdapter(mContext);
+        recycler.setLayoutManager(new LinearLayoutManager(mContext));
+        recycler.setAdapter(adapter);
 
         bindAbsencesCache();
 
@@ -75,8 +78,7 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
 
     void addAbsences(Absences absences, boolean docache) {
         adapter.clear();
-        adapter.setAbsences(absences);
-        expandableListView.setAdapter(adapter);
+        adapter.addAll(absences);
 
         if (docache) {
             new CacheObjectTask(mContext.getCacheDir(), TAG).execute(absences);

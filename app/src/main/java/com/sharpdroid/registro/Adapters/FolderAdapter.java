@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.sharpdroid.registro.Fragments.FragmentFiles;
-import com.sharpdroid.registro.Interfaces.FileTeacher;
-import com.sharpdroid.registro.Interfaces.Folder;
+import com.sharpdroid.registro.Interfaces.API.FileTeacher;
+import com.sharpdroid.registro.Interfaces.API.Folder;
 import com.sharpdroid.registro.R;
 
 import java.text.SimpleDateFormat;

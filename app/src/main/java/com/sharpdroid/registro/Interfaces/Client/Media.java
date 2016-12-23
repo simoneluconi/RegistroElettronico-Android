@@ -1,6 +1,7 @@
-package com.sharpdroid.registro.Interfaces;
+package com.sharpdroid.registro.Interfaces.Client;
 
 import com.sharpdroid.registro.API.SpiaggiariAPI;
+import com.sharpdroid.registro.Interfaces.API.Mark;
 
 import java.io.Serializable;
 import java.util.List;

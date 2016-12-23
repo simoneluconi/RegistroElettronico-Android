@@ -12,9 +12,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.sharpdroid.registro.Activities.MarkSubjectDetailActivity;
-import com.sharpdroid.registro.Interfaces.Mark;
-import com.sharpdroid.registro.Interfaces.MarkSubject;
-import com.sharpdroid.registro.Interfaces.Media;
+import com.sharpdroid.registro.Interfaces.API.Mark;
+import com.sharpdroid.registro.Interfaces.API.MarkSubject;
+import com.sharpdroid.registro.Interfaces.Client.Media;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Utils.Metodi;
 

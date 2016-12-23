@@ -68,4 +68,11 @@
         <item quantity="one">%d Attiva</item>
         <item quantity="other">%d Attive</item>
     </plurals>
+
+    <plurals name="days">
+        <item quantity="one">Assente tutto il giorno</item>
+        <item quantity="other">Assente %d giorni</item>
+    </plurals>
+
+    <string name="hour">Sei (%1$s) alla (%2$d)ª ora</string>
 </resources>

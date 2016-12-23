@@ -1,20 +1,20 @@
-package com.sharpdroid.registro.Interfaces;
+package com.sharpdroid.registro.Interfaces.API;
 
 import java.io.Serializable;
 import java.util.Date;
 
-public class Delay implements Serializable {
+public class Exit implements Serializable {
     private int id;
     private boolean done;
     private Date day;
-    private Date hours;
+    private int hour;
     private String justification;
 
-    public Delay(int id, boolean done, Date day, Date hours, String justification) {
+    public Exit(int id, boolean done, Date day, int hour, String justification) {
         this.id = id;
         this.done = done;
         this.day = day;
-        this.hours = hours;
+        this.hour = hour;
         this.justification = justification;
     }
 
@@ -30,8 +30,8 @@ public class Delay implements Serializable {
         return day;
     }
 
-    public Date getHours() {
-        return hours;
+    public int getHour() {
+        return hour;
     }
 
     public String getJustification() {

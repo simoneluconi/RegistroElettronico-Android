@@ -1,180 +1,142 @@
 package com.sharpdroid.registro.Adapters;
 
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseExpandableListAdapter;
-import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.sharpdroid.registro.Interfaces.Absence;
-import com.sharpdroid.registro.Interfaces.Absences;
+import com.sharpdroid.registro.Adapters.Holders.HeaderHolder;
+import com.sharpdroid.registro.Interfaces.API.Absence;
+import com.sharpdroid.registro.Interfaces.API.Absences;
+import com.sharpdroid.registro.Interfaces.API.Delay;
+import com.sharpdroid.registro.Interfaces.API.Exit;
+import com.sharpdroid.registro.Interfaces.Client.AbsenceEntry;
+import com.sharpdroid.registro.Interfaces.Client.DelayEntry;
+import com.sharpdroid.registro.Interfaces.Client.Entry;
+import com.sharpdroid.registro.Interfaces.Client.ExitEntry;
+import com.sharpdroid.registro.Interfaces.Client.HeaderEntry;
 import com.sharpdroid.registro.R;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import static com.sharpdroid.registro.Utils.Metodi.getNumberDaysAbsences;
-import static com.sharpdroid.registro.Utils.Metodi.getUndoneCountAbsences;
-import static com.sharpdroid.registro.Utils.Metodi.getUndoneCountDelays;
-import static com.sharpdroid.registro.Utils.Metodi.getUndoneCountExits;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
-public class AllAbsencesAdapter extends BaseExpandableListAdapter {
-    private final Context mContext;
-    private final LayoutInflater mInflater;
-    private final SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM", Locale.ITALIAN);
-    private Absences absences;
+import static com.sharpdroid.registro.Utils.Metodi.convertAbsencesToHashmap;
 
-    public AllAbsencesAdapter(Context context) {
-        mContext = context;
-        mInflater = LayoutInflater.from(context);
+public class AllAbsencesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private Context mContext;
+    private SimpleDateFormat long_date_format = new SimpleDateFormat("EEEE, d MMMM yyyy", Locale.getDefault());
+
+    private List<Entry> CVDataList;
+
+    public AllAbsencesAdapter(Context mContext) {
+        this.mContext = mContext;
+
+        CVDataList = new ArrayList<>();
     }
 
-    public void setAbsences(Absences absences) {
-        this.absences = absences;
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == 0)
+            return new HeaderHolder(LayoutInflater.from(mContext).inflate(R.layout.adapter_header, parent, false));
+        else
+            return new AbsencesHolder(LayoutInflater.from(mContext).inflate(R.layout.adapter_absence, parent, false));
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        Entry entry = CVDataList.get(position);
+        if (holder instanceof HeaderHolder) {
+            ((HeaderHolder) holder).content.setText(((HeaderEntry) entry).getTitle());
+        } else {
+            AbsencesHolder absencesHolder = (AbsencesHolder) holder;
+            if (entry instanceof DelayEntry) {
+                Delay delay = ((DelayEntry) entry).getDelay();
+
+                absencesHolder.date.setText(long_date_format.format(delay.getDay()));
+                absencesHolder.hour.setText(mContext.getString(R.string.hour, "entrato", delay.getHour()));
+                absencesHolder.done.setVisibility(delay.isDone() ? View.VISIBLE : View.INVISIBLE);
+                absencesHolder.type_color.setImageDrawable(new ColorDrawable(ContextCompat.getColor(mContext, R.color.light_green)));
+                absencesHolder.type_text.setText("R");
+            } else if (entry instanceof AbsenceEntry) {
+                Absence absence = ((AbsenceEntry) entry).getAbsence();
+
+                absencesHolder.date.setText(long_date_format.format(absence.getFrom()));
+                absencesHolder.hour.setText(mContext.getResources().getQuantityString(R.plurals.days, absence.getDays()));
+                absencesHolder.done.setVisibility(absence.isDone() ? View.VISIBLE : View.INVISIBLE);
+                absencesHolder.type_color.setImageDrawable(new ColorDrawable(ContextCompat.getColor(mContext, R.color.brown)));
+                absencesHolder.type_text.setText("A");
+            } else {
+                Exit exit = ((ExitEntry) entry).getExit();
+
+                absencesHolder.date.setText(long_date_format.format(exit.getDay()));
+                absencesHolder.hour.setText(mContext.getString(R.string.hour, "uscito", exit.getHour()));
+                absencesHolder.done.setVisibility(exit.isDone() ? View.VISIBLE : View.INVISIBLE);
+                absencesHolder.type_color.setImageDrawable(new ColorDrawable(ContextCompat.getColor(mContext, R.color.cyan)));
+                absencesHolder.type_text.setText("U");
+            }
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return (CVDataList.get(position) instanceof HeaderEntry) ? 0 : 1;
+    }
+
+    @Override
+    public int getItemCount() {
+        return CVDataList.size();
+    }
+
+    private List<Entry> convertToChronologic(Absences absences) {
+        List<Entry> chronologic = new ArrayList<>();
+
+        HashMap<String, List<Entry>> hashMap = convertAbsencesToHashmap(absences);
+
+        for (String header : hashMap.keySet()) {
+            chronologic.add(new HeaderEntry(header));
+            chronologic.addAll(hashMap.get(header));
+        }
+
+        return chronologic;
+    }
+
+    public void addAll(Absences absences) {
+        CVDataList = convertToChronologic(absences);
         notifyDataSetChanged();
     }
 
     public void clear() {
-        this.absences = null;
+        CVDataList.clear();
+        notifyDataSetChanged();
     }
 
-    @Override
-    public int getGroupCount() {
-        return 3;
-    }
+    class AbsencesHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.date)
+        TextView date;
+        @BindView(R.id.hour)
+        TextView hour;
+        @BindView(R.id.type)
+        TextView type_text;
+        @BindView(R.id.done)
+        ImageView done;
+        @BindView(R.id.type_color)
+        CircleImageView type_color;
 
-    @Override
-    public int getChildrenCount(int i) {
-        switch (i) {
-            case 0:
-                return absences.getAbsences().size();
-            case 1:
-                return absences.getDelays().size();
-            case 2:
-                return absences.getExits().size();
-        }
-        return 0;
-    }
-
-    @Override
-    public List getGroup(int i) {
-        switch (i) {
-            case 0:
-                return absences.getAbsences();
-            case 1:
-                return absences.getDelays();
-            case 2:
-                return absences.getExits();
-            default:
-                return null;
+        AbsencesHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
-
-    @Override
-    public List getChild(int i, int i1) {
-        return (List) getGroup(i).get(i1);
-    }
-
-    @Override
-    public long getGroupId(int i) {
-        return i;
-    }
-
-    @Override
-    public long getChildId(int p_parent, int p_child) {
-        return p_child;
-    }
-
-    @Override
-    public boolean hasStableIds() {
-        return false;
-    }
-
-    @Override
-    public View getGroupView(int group_pos, boolean expanded, View view, ViewGroup viewGroup) {
-        if (view == null)
-            view = mInflater.inflate(R.layout.adapter_expandable_group, viewGroup, false);
-
-        FrameLayout attive = (FrameLayout) view.findViewById(R.id.attive);
-
-        TextView days = (TextView) view.findViewById(R.id.days);
-        TextView title = (TextView) view.findViewById(R.id.type);
-        TextView text = (TextView) view.findViewById(R.id.attive_text);
-
-        int count = 0;
-
-        switch (group_pos) {
-            case 0:
-                count = getUndoneCountAbsences(absences.getAbsences());
-                title.setText(R.string.assenze);
-                days.setText(String.valueOf(getNumberDaysAbsences(absences.getAbsences())));
-                break;
-            case 1:
-                count = getUndoneCountDelays(absences.getDelays());
-                title.setText(R.string.ritardi);
-                break;
-            case 2:
-                count = getUndoneCountExits(absences.getExits());
-                title.setText(R.string.uscite_anticipate);
-                break;
-        }
-
-        if (count == 0) {
-            attive.setVisibility(View.GONE);
-        } else {
-            attive.setVisibility(View.VISIBLE);
-            text.setText(mContext.getResources().getQuantityString(R.plurals.attiva, count, count));
-        }
-
-        return view;
-    }
-
-    @Override
-    public View getChildView(int group_pos, int child_pos, boolean last, View view, ViewGroup viewGroup) {
-        switch (group_pos) {
-            case 0:
-                view = mInflater.inflate(R.layout.adapter_expandable_child, viewGroup, false);
-                break;
-            case 1:
-                view = mInflater.inflate(R.layout.adapter_expandable_child, viewGroup, false);
-                break;
-            case 2:
-                view = mInflater.inflate(R.layout.adapter_expandable_child, viewGroup, false);
-                break;
-        }
-
-        FrameLayout attive = (FrameLayout) view.findViewById(R.id.attive);
-
-        TextView from = (TextView) view.findViewById(R.id.from);
-        TextView to = (TextView) view.findViewById(R.id.to);
-        TextView justification = (TextView) view.findViewById(R.id.justification);
-        TextView days = (TextView) view.findViewById(R.id.days);
-
-        Absence absence = absences.getAbsences().get(child_pos);
-
-        days.setText(String.valueOf(absence.getDays()));
-        from.setText(formatter.format(absence.getFrom()));
-        if (formatter.format(absence.getTo()).equals(formatter.format(new Date()))) {
-            to.setText(R.string.oggi);
-        } else {
-            to.setText(formatter.format(absence.getTo()));
-        }
-
-        if (absence.getJustification() != null && !absence.getJustification().isEmpty())
-            justification.setText(absence.getJustification());
-
-        attive.setVisibility(absence.isDone() ? View.GONE : View.VISIBLE);
-
-        return view;
-    }
-
-    @Override
-    public boolean isChildSelectable(int i, int i1) {
-        return false;
-    }
-
 }

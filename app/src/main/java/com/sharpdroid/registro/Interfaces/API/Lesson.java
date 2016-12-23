@@ -1,19 +1,17 @@
-package com.sharpdroid.registro.Interfaces;
+package com.sharpdroid.registro.Interfaces.API;
 
 import java.io.Serializable;
 import java.util.Date;
 
-public class Note implements Serializable {
+public class Lesson implements Serializable {
     private String teacher;
     private Date date;
     private String content;
-    private String type;
 
-    public Note(String teacher, Date date, String content, String type) {
+    public Lesson(String teacher, Date date, String content) {
         this.teacher = teacher;
         this.date = date;
         this.content = content;
-        this.type = type;
     }
 
     public String getTeacher() {
@@ -26,9 +24,5 @@ public class Note implements Serializable {
 
     public String getContent() {
         return content;
-    }
-
-    public String getType() {
-        return type;
     }
 }

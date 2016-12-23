@@ -8,7 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.sharpdroid.registro.Adapters.AllLessonsAdapter;
-import com.sharpdroid.registro.Interfaces.Lesson;
+import com.sharpdroid.registro.Interfaces.API.Lesson;
 import com.sharpdroid.registro.R;
 
 import java.util.ArrayList;

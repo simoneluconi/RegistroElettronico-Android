@@ -2,16 +2,16 @@ package com.sharpdroid.registro.API;
 
 import android.support.annotation.NonNull;
 
-import com.sharpdroid.registro.Interfaces.Absences;
-import com.sharpdroid.registro.Interfaces.Communication;
-import com.sharpdroid.registro.Interfaces.CommunicationDescription;
-import com.sharpdroid.registro.Interfaces.FileTeacher;
-import com.sharpdroid.registro.Interfaces.Lesson;
-import com.sharpdroid.registro.Interfaces.LessonSubject;
-import com.sharpdroid.registro.Interfaces.Login;
-import com.sharpdroid.registro.Interfaces.MarkSubject;
-import com.sharpdroid.registro.Interfaces.Note;
-import com.sharpdroid.registro.Interfaces.Scrutiny;
+import com.sharpdroid.registro.Interfaces.API.Absences;
+import com.sharpdroid.registro.Interfaces.API.Communication;
+import com.sharpdroid.registro.Interfaces.API.CommunicationDescription;
+import com.sharpdroid.registro.Interfaces.API.FileTeacher;
+import com.sharpdroid.registro.Interfaces.API.Lesson;
+import com.sharpdroid.registro.Interfaces.API.LessonSubject;
+import com.sharpdroid.registro.Interfaces.API.Login;
+import com.sharpdroid.registro.Interfaces.API.MarkSubject;
+import com.sharpdroid.registro.Interfaces.API.Note;
+import com.sharpdroid.registro.Interfaces.API.Scrutiny;
 
 import java.util.List;
 

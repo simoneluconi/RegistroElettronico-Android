@@ -1,4 +1,4 @@
-package com.sharpdroid.registro.Interfaces;
+package com.sharpdroid.registro.Interfaces.Client;
 
 import java.io.Serializable;
 

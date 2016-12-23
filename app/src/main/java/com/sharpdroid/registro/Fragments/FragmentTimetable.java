@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import com.sharpdroid.registro.API.SpiaggiariApiClient;
 import com.sharpdroid.registro.Adapters.MedieAdapter;
 import com.sharpdroid.registro.Databases.SubjectsDB;
-import com.sharpdroid.registro.Interfaces.MarkSubject;
+import com.sharpdroid.registro.Interfaces.API.MarkSubject;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Tasks.CacheListTask;
 import com.sharpdroid.registro.Utils.ItemOffsetDecoration;
