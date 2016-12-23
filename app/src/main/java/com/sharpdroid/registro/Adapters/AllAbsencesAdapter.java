@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +43,6 @@ public class AllAbsencesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public AllAbsencesAdapter(Context mContext) {
         this.mContext = mContext;
-
         CVDataList = new ArrayList<>();
     }
 
@@ -61,6 +61,8 @@ public class AllAbsencesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ((HeaderHolder) holder).content.setText(((HeaderEntry) entry).getTitle());
         } else {
             AbsencesHolder absencesHolder = (AbsencesHolder) holder;
+            absencesHolder.divider.setVisibility((getItemViewType(position - 1) == 0) ? View.INVISIBLE : View.VISIBLE);
+
             if (entry instanceof DelayEntry) {
                 Delay delay = ((DelayEntry) entry).getDelay();
 
@@ -108,11 +110,11 @@ public class AllAbsencesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             chronologic.add(new HeaderEntry(header));
             chronologic.addAll(hashMap.get(header));
         }
-
         return chronologic;
     }
 
     public void addAll(Absences absences) {
+        Log.d("ADAPTER", "CONVERT");
         CVDataList = convertToChronologic(absences);
         notifyDataSetChanged();
     }
@@ -133,6 +135,8 @@ public class AllAbsencesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         ImageView done;
         @BindView(R.id.type_color)
         CircleImageView type_color;
+        @BindView(R.id.divider)
+        View divider;
 
         AbsencesHolder(View itemView) {
             super(itemView);

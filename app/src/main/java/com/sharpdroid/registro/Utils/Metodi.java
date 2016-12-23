@@ -313,7 +313,7 @@ public class Metodi {
         for (Absence absence : absences.getAbsences()) {
             String month = month_year.format(absence.getFrom());
             if (hashMap.containsKey(month)) {
-                List<Entry> entries = hashMap.get(month);
+                List<Entry> entries = new ArrayList<>(hashMap.get(month));
                 entries.add(new AbsenceEntry(absence));
                 hashMap.put(month, entries);
             } else {
@@ -324,7 +324,7 @@ public class Metodi {
         for (Exit exit : absences.getExits()) {
             String month = month_year.format(exit.getDay());
             if (hashMap.containsKey(month)) {
-                List<Entry> entries = hashMap.get(month);
+                List<Entry> entries = new ArrayList<>(hashMap.get(month));
                 entries.add(new ExitEntry(exit));
                 hashMap.put(month, entries);
             } else {
@@ -335,7 +335,7 @@ public class Metodi {
         for (Delay delay : absences.getDelays()) {
             String month = month_year.format(delay.getDay());
             if (hashMap.containsKey(month)) {
-                List<Entry> entries = hashMap.get(month);
+                List<Entry> entries = new ArrayList<>(hashMap.get(month));
                 entries.add(new DelayEntry(delay));
                 hashMap.put(month, entries);
             } else {

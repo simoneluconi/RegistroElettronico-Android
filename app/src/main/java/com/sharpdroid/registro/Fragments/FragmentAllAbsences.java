@@ -95,7 +95,7 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
                 addAbsences((Absences) obj, false);
                 Log.d(TAG, "Restored cache");
             } else {
-                Log.e(TAG, "Corrupterd cache");
+                Log.e(TAG, "Corrupted cache");
             }
         } catch (FileNotFoundException e) {
             Log.w(TAG, "Cache not found.");
@@ -129,6 +129,7 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(absences -> {
+                        Log.d(TAG, absences.toString());
                         addAbsences(absences, true);
                         mSwipeRefreshLayout.setRefreshing(false);
                     }, error -> mSwipeRefreshLayout.setRefreshing(false));
