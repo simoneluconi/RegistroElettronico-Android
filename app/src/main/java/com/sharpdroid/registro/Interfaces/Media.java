@@ -1,7 +1,5 @@
 package com.sharpdroid.registro.Interfaces;
 
-import android.util.Log;
-
 import com.sharpdroid.registro.API.SpiaggiariAPI;
 
 import java.io.Serializable;
@@ -103,10 +101,10 @@ public class Media implements Serializable {
                     this.somma_generale += Float.parseFloat(mark.getMark());
                     this.numero_voti_generale++;
                 } else {
-                    Log.e(Media.class.getCanonicalName(), "Voto inferiore a 0");
+                    //Log.e(Media.class.getCanonicalName(), "Voto inferiore a 0");
                 }
             } else {
-                Log.d(Media.class.getCanonicalName(), String.format("%s %s non è significativo", materia, mark.getMark()));
+                //Log.d(Media.class.getCanonicalName(), String.format("%s %s non è significativo", materia, mark.getMark()));
             }
         }
     }

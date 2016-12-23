@@ -11,6 +11,7 @@ import com.sharpdroid.registro.Interfaces.Exit;
 import com.sharpdroid.registro.Interfaces.FileTeacher;
 import com.sharpdroid.registro.Interfaces.Folder;
 import com.sharpdroid.registro.Interfaces.Mark;
+import com.sharpdroid.registro.Interfaces.MarkSubject;
 import com.sharpdroid.registro.Interfaces.Media;
 import com.sharpdroid.registro.Interfaces.Subject;
 import com.sharpdroid.registro.R;
@@ -231,6 +232,20 @@ public class Metodi {
     public static String getSubjectName(Subject subject) {
         return (!isEmptyOrNull(subject.getName())) ? subject.getName() : subject.getOriginalName();
     }
+
+    public static float getOverallAverage(List<MarkSubject> subjects) {
+        float media = 0f;
+        int n = subjects.size();
+
+        for (MarkSubject subject : subjects) {
+            Media _media = new Media();
+            _media.addMarks(subject.getMarks());
+
+            media += _media.getMediaGenerale();
+        }
+        return media / n;
+    }
+
 
     public static boolean writeResponseBodyToDisk(ResponseBody body, File file) {
         try {

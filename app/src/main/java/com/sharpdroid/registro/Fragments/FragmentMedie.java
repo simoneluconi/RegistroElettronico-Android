@@ -30,6 +30,7 @@ import java.io.ObjectInputStream;
 import java.io.StreamCorruptedException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import butterknife.BindView;
@@ -37,6 +38,7 @@ import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.sharpdroid.registro.Utils.Metodi.getOverallAverage;
 import static com.sharpdroid.registro.Utils.Metodi.isNetworkAvailable;
 
 public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -49,6 +51,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
     SubjectsDB subjectsDB;
     private MedieAdapter mRVAdapter;
     private Context mContext;
+    Snackbar snackbar;
 
     public FragmentMedie() {
 
@@ -94,6 +97,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
         if (!markSubjects.isEmpty()) {
             mRVAdapter.clear();
             mRVAdapter.addAll(markSubjects);
+
 
             if (docache) {
                 // Update cache
@@ -148,6 +152,8 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
                     .subscribe(marks -> {
                         addSubjects(marks, true);
                         mSwipeRefreshLayout.setRefreshing(false);
+                        snackbar = Snackbar.make(mCoordinatorLayout, "Media totale: " + String.format(Locale.getDefault(), "%.2f", getOverallAverage(marks)), Snackbar.LENGTH_INDEFINITE);
+                        snackbar.show();
                     }, error -> mSwipeRefreshLayout.setRefreshing(false));
         } else {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
