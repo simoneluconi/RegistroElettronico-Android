@@ -199,9 +199,9 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         try {
             layout.setErrorEnabled(false);
             float new_target = Float.parseFloat(layout.getEditText().getText().toString());
-            if (new_target <= 10 && new_target >= 0) {
+            if (new_target <= 10 && new_target > 0) {
                 targetView.setTarget(new_target);
-                marksView.invalidate();
+                marksView.setTarget(new_target);
 
                 ContentValues values = new ContentValues();
                 values.put("target", layout.getEditText().getText().toString());

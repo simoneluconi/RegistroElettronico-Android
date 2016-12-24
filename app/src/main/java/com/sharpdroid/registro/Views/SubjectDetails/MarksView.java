@@ -77,7 +77,7 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
         ButterKnife.bind(this);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).marginResId(R.dimen.activity_vertical_margin, R.dimen.activity_vertical_margin).size(1).build());
+        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).marginResId(R.dimen.padding_left_divider2, R.dimen.activity_vertical_margin).size(1).build());
 
         menu = new PopupMenu(mContext, optionButton);
         menu.getMenuInflater().inflate(R.menu.view_marks_menu, menu.getMenu());
@@ -114,10 +114,18 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
         setLimitLines(subject.getTarget(), media);
 
         adapter = new MarkAdapter(mContext, subject);
-        adapter.setTarget(subject.getTarget());
+        setTarget(subject);
         mRecyclerView.setAdapter(adapter);
+        mRecyclerView.invalidate();
+    }
 
+    public void setTarget(Float target) {
+        adapter.setTarget(target.equals(0f) ? Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(mContext).getString("voto_obiettivo", "8")) : target);
+    }
 
+    public void setTarget(Subject subject) {
+        float target = ((Float) subject.getTarget()).equals(0f) ? Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(mContext).getString("voto_obiettivo", "8")) : subject.getTarget();
+        adapter.setTarget(target);
     }
 
     public void addAll(List<Mark> marks) {
