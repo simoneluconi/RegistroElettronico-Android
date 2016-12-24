@@ -71,13 +71,13 @@ public class EditSubjectDetailsActivity extends AppCompatActivity {
         if (code != -1) {
             subject = db.getSubject(code);
 
-            name.setText(getSubjectName(subject));
+            name.setText(beautifyName(getSubjectName(subject)));
             if (subject.getProfessor() != null)
-                prof.setText(subject.getProfessor());
+                prof.setText(NomeDecente(subject.getProfessor()));
             if (subject.getClassroom() != null)
-                classroom.setText(subject.getClassroom());
+                classroom.setText(beautifyName(subject.getClassroom()));
             if (subject.getNotes() != null)
-                notes.setText(subject.getNotes());
+                notes.setText(beautifyName(subject.getNotes()));
         }
     }
 
@@ -86,13 +86,13 @@ public class EditSubjectDetailsActivity extends AppCompatActivity {
 
         String name, prof, classroom, notes;
 
-        name = this.name.getText().toString().trim();
-        prof = this.prof.getText().toString().trim();
-        classroom = this.classroom.getText().toString().trim();
-        notes = this.notes.getText().toString().trim();
+        name = this.name.getText().toString().trim().toLowerCase();
+        prof = this.prof.getText().toString().trim().toLowerCase();
+        classroom = this.classroom.getText().toString().trim().toLowerCase();
+        notes = this.notes.getText().toString().trim().toLowerCase();
 
-        values.put("name", beautifyName(name));
-        values.put("professor", NomeDecente(prof));
+        values.put("name", name);
+        values.put("professor", prof);
         values.put("classroom", classroom);
         values.put("notes", beautifyName(notes));
 

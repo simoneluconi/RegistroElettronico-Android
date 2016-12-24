@@ -14,7 +14,7 @@
         android:id="@+id/relativeLayout2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/divider">
+        android:layout_centerVertical="true">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/type_color"

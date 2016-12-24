@@ -37,6 +37,7 @@ import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.sharpdroid.registro.Utils.Metodi.beautifyName;
 import static com.sharpdroid.registro.Utils.Metodi.dpToPx;
 import static com.sharpdroid.registro.Utils.Metodi.getSubjectName;
 
@@ -97,7 +98,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         super.onResume();
 
         subject = db.getSubject(data.getName().toLowerCase());
-        setTitle(getSubjectName(subject));
+        setTitle(beautifyName(getSubjectName(subject)));
 
         setInfo(subject);
         setOverall(data.getMarks());
