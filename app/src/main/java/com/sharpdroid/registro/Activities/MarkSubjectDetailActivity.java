@@ -92,7 +92,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        subject = db.getSubject(data.getName());
+        subject = db.getSubject(data.getName().toLowerCase());
         setTitle(getSubjectName(subject));
 
         setInfo(subject);
@@ -156,7 +156,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
 
                         ContentValues values = new ContentValues();
                         values.put("target", input.getText().toString());
-                        db.editTarget(subject.getCode(), values);
+                        db.editSubject(subject.getCode(), values);
                         marksView.setLimitLines(new_target, media.getMediaGenerale());
                     }
                 } catch (NumberFormatException e) {

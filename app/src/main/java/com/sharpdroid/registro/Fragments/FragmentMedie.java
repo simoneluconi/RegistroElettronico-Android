@@ -2,7 +2,6 @@ package com.sharpdroid.registro.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Debug;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -151,8 +150,6 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(marks -> {
-                        if (Debug.isDebuggerConnected())
-                            Debug.waitForDebugger();
                         addSubjects(marks, true);
                         mSwipeRefreshLayout.setRefreshing(false);
                         snackbar = Snackbar.make(mCoordinatorLayout, "Media totale: " + String.format(Locale.getDefault(), "%.2f", getOverallAverage(marks)), Snackbar.LENGTH_INDEFINITE);

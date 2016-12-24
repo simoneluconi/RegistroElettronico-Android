@@ -236,7 +236,11 @@ public class Metodi {
     }
 
     public static String getSubjectName(Subject subject) {
-        return (!isEmptyOrNull(subject.getName())) ? subject.getName() : subject.getOriginalName();
+        try {
+            return (!isEmptyOrNull(subject.getName())) ? subject.getName() : subject.getOriginalName();
+        } catch (NullPointerException ignored) {
+            return subject.getOriginalName();
+        }
     }
 
     public static float getOverallAverage(List<MarkSubject> subjects) {

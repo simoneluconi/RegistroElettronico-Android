@@ -10,15 +10,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        app:elevation="0dp">
+        android:background="?attr/colorPrimary"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
-            android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:layout_width="match_parent"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        <com.github.sundeepk.compactcalendarview.CompactCalendarView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:id="@+id/calendar"
+            android:visibility="gone"
+            app:compactCalendarTextColor="#ffffffff"
+            app:compactCalendarBackgroundColor="?attr/colorPrimary"
+            app:compactCalendarCurrentDayBackgroundColor="@color/bluematerial"
+            app:compactCalendarCurrentSelectedDayBackgroundColor="?attr/colorPrimaryDark"
+            app:compactCalendarMultiEventIndicatorColor="#ff76ff03"
+            app:compactCalendarTextSize="12.0sp" />
 
     </android.support.design.widget.AppBarLayout>
 

@@ -12,8 +12,6 @@ import com.sharpdroid.registro.Interfaces.Client.Subject;
 import java.util.List;
 
 import static com.sharpdroid.registro.Databases.DatabaseInfo.DB_VERSION;
-import static com.sharpdroid.registro.Utils.Metodi.NomeDecente;
-import static com.sharpdroid.registro.Utils.Metodi.beautifyName;
 
 public class SubjectsDB extends SQLiteOpenHelper {
     private final static String DB_NAME = "SubjectsDB";
@@ -62,8 +60,13 @@ public class SubjectsDB extends SQLiteOpenHelper {
     public Subject getSubject(String name) {
         SQLiteDatabase db = this.getReadableDatabase();
         Subject subject = null;
-
-        Cursor c = db.rawQuery("SELECT * FROM " + DB_NAME + " WHERE " + columns[2] + " = ? OR " + columns[3] + " = ?", new String[]{beautifyName(name), beautifyName(name)});
+        Cursor c;
+        if (name.contains("...")) {
+            name = name.replace("...", "%");
+            c = db.rawQuery("SELECT * FROM " + DB_NAME + " WHERE " + columns[2] + " LIKE ? OR " + columns[3] + " LIKE ?", new String[]{name, name});
+        } else {
+            c = db.rawQuery("SELECT * FROM " + DB_NAME + " WHERE " + columns[2] + " = ? OR " + columns[3] + " = ?", new String[]{name, name});
+        }
 
         if (c.moveToFirst())
             subject = new Subject(c.getInt(0), c.getInt(1), c.getString(2), c.getString(3), c.getFloat(4), c.getString(5), c.getString(6), c.getString(7));
@@ -78,33 +81,6 @@ public class SubjectsDB extends SQLiteOpenHelper {
         return this;
     }
 
-    public SubjectsDB editTarget(int code, ContentValues contentValues) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.update(DB_NAME, contentValues, columns[1] + " = ?", new String[]{String.valueOf(code)});
-        return this;
-    }
-
-    public SubjectsDB addAllSubjects(List<Subject> subjects) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues;
-
-        for (Subject subject : subjects) {
-            contentValues = new ContentValues();
-            contentValues.put(columns[0], subject.getId());
-            contentValues.put(columns[1], subject.getCode());
-            contentValues.put(columns[2], beautifyName(subject.getOriginalName()));
-            contentValues.put(columns[3], beautifyName(subject.getName()));
-            contentValues.put(columns[4], subject.getTarget());
-            contentValues.put(columns[5], NomeDecente(subject.getProfessor()));
-            contentValues.put(columns[6], subject.getClassroom());
-            contentValues.put(columns[7], subject.getNotes());
-
-            db.insert(DB_NAME, null, contentValues);
-        }
-
-        return this;
-    }
-
     public SubjectsDB addCODEandNAME(List<LessonSubject> subjects) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues;
@@ -112,7 +88,7 @@ public class SubjectsDB extends SQLiteOpenHelper {
         for (LessonSubject subject : subjects) {
             contentValues = new ContentValues();
             contentValues.put(columns[1], subject.getCode());
-            contentValues.put(columns[2], beautifyName(subject.getName()));
+            contentValues.put(columns[2], subject.getName().toLowerCase());
 
             db.insert(DB_NAME, null, contentValues);
         }
