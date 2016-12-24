@@ -188,34 +188,6 @@ public class Metodi {
         }
         return list;
     }
-
-    public static int getUndoneCountAbsences(List<Absence> absences) {
-        int c = 0;
-        if (absences == null) return c;
-        for (Absence a : absences) {
-            if (!a.isDone()) c++;
-        }
-        return c;
-    }
-
-    public static int getUndoneCountDelays(List<Delay> delays) {
-        int c = 0;
-        if (delays == null) return c;
-        for (Delay d : delays) {
-            if (!d.isDone()) c++;
-        }
-        return c;
-    }
-
-    public static int getUndoneCountExits(List<Exit> exits) {
-        int c = 0;
-        if (exits == null) return c;
-        for (Exit e : exits) {
-            if (!e.isDone()) c++;
-        }
-        return c;
-    }
-
     public static String NomeDecente(String name) {
         if (!isEmptyOrNull(name)) {
             String new_name = "";
