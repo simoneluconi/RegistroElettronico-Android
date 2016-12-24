@@ -1,6 +1,7 @@
 package com.sharpdroid.registro.Utils;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
@@ -151,6 +152,9 @@ public class Metodi {
         }
     }
 
+    public static int dpToPx(int dp) {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+    }
     public static int getMediaColor(Media media, String tipo, float voto_obiettivo) {
         switch (tipo) {
             case SpiaggiariAPI.ORALE:
