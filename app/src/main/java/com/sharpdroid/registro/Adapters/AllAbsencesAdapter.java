@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,16 +24,16 @@ import com.sharpdroid.registro.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.sharpdroid.registro.Utils.Metodi.convertAbsencesToHashmap;
+import static com.sharpdroid.registro.Utils.Metodi.sortByDate;
 
 public class AllAbsencesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
@@ -105,10 +104,9 @@ public class AllAbsencesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private List<Entry> convertToChronologic(Absences absences) {
         List<Entry> chronologic = new ArrayList<>();
 
-        HashMap<String, List<Entry>> hashMap = convertAbsencesToHashmap(absences);
-        List<String> keys = new ArrayList<>(hashMap.keySet());
-        Collections.reverse(keys);
-        for (String header : keys) {
+        Map<String, List<Entry>> hashMap = sortByDate(convertAbsencesToHashmap(absences));
+
+        for (String header : hashMap.keySet()) {
             chronologic.add(new HeaderEntry(header));
             chronologic.addAll(hashMap.get(header));
         }
@@ -116,7 +114,6 @@ public class AllAbsencesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     public void addAll(Absences absences) {
-        Log.d("ADAPTER", "CONVERT");
         CVDataList = convertToChronologic(absences);
         notifyDataSetChanged();
     }

@@ -3,6 +3,7 @@ package com.sharpdroid.registro.Utils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 import com.sharpdroid.registro.API.SpiaggiariAPI;
 import com.sharpdroid.registro.Interfaces.API.Absence;
@@ -14,6 +15,7 @@ import com.sharpdroid.registro.Interfaces.API.Folder;
 import com.sharpdroid.registro.Interfaces.API.Mark;
 import com.sharpdroid.registro.Interfaces.API.MarkSubject;
 import com.sharpdroid.registro.Interfaces.Client.AbsenceEntry;
+import com.sharpdroid.registro.Interfaces.Client.AbsencesEntry;
 import com.sharpdroid.registro.Interfaces.Client.DelayEntry;
 import com.sharpdroid.registro.Interfaces.Client.Entry;
 import com.sharpdroid.registro.Interfaces.Client.ExitEntry;
@@ -26,12 +28,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import okhttp3.ResponseBody;
 
@@ -171,14 +176,6 @@ public class Metodi {
         return days;
     }
 
-    public static FileTeacher getFileTeacherFromPositionInList(List<FileTeacher> list, int p) {
-        int acc = 0;
-        for (FileTeacher fileTeacher : list) {
-            acc += 1 + fileTeacher.getFolders().size();
-            if (p < acc) return fileTeacher;
-        }
-        return null;
-    }
 
     public static List<Integer> getListLayouts(List<FileTeacher> data) {
         List<Integer> list = new ArrayList<>();
@@ -306,8 +303,8 @@ public class Metodi {
         return marks;
     }
 
-    public static HashMap<String, List<Entry>> convertAbsencesToHashmap(Absences absences) {
-        HashMap<String, List<Entry>> hashMap = new HashMap<>();
+    public static Map<String, List<Entry>> convertAbsencesToHashmap(Absences absences) {
+        Map<String, List<Entry>> hashMap = new HashMap<>();
 
         //assenze
         for (Absence absence : absences.getAbsences()) {
@@ -343,5 +340,41 @@ public class Metodi {
             }
         }
         return hashMap;
+    }
+
+    public static LinkedHashMap<String, List<Entry>> sortByDate(Map<String, List<Entry>> unsort) {
+        LinkedHashMap<String, List<Entry>> sort = new LinkedHashMap<>();
+        List<String> keys = new ArrayList<>(unsort.keySet());
+
+        //ordina i mesi
+        Collections.sort(keys, (s, t1) -> {
+            try {
+                return month_year.parse(t1).compareTo(month_year.parse(s));
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return 0;
+            }
+        });
+
+        List<Entry> entries;
+        Log.d("METHODS", keys.toString());
+
+        for (String key : keys) {
+            entries = new ArrayList<>(unsort.get(key));
+
+            //ordina valori di ogni mese
+            Collections.sort(entries, (entry, t1) -> {
+                        if (entry instanceof AbsencesEntry && t1 instanceof AbsencesEntry) {
+                            return ((AbsencesEntry) entry).getTime().compareTo(((AbsencesEntry) t1).getTime());
+                        } else
+                            return 0;
+                    }
+            );
+
+            sort.put(key, entries);
+            Log.d(key, entries.toString());
+        }
+
+        return sort;
     }
 }

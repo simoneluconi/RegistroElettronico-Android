@@ -2,6 +2,8 @@ package com.sharpdroid.registro.Interfaces.Client;
 
 import com.sharpdroid.registro.Interfaces.API.Exit;
 
+import java.util.Date;
+
 public class ExitEntry extends AbsencesEntry {
     private Exit exit;
 
@@ -11,5 +13,10 @@ public class ExitEntry extends AbsencesEntry {
 
     public Exit getExit() {
         return exit;
+    }
+
+    @Override
+    public Date getTime() {
+        return exit.getDay();
     }
 }

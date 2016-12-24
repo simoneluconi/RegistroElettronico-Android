@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:letterSpacing=".07"
         android:textAllCaps="true"
-        android:textColor="@color/textcolorgrey"
+        android:textColor="@color/textcolorgrey1"
         android:textSize="12sp" />
 
 </LinearLayout>

@@ -11,7 +11,8 @@
     <color name="orangematerial">#FDD835</color>
     <color name="material_blue_grey">#37474f</color>
 
-    <color name="textcolorgrey">#888</color>
+    <color name="textcolorgrey">#636363</color>
+    <color name="textcolorgrey1">#888</color>
 
     <color name="intro_blue">#03A9F4</color>
     <color name="intro_blue_dark">#0288D1</color>

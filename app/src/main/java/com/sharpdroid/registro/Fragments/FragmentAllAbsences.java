@@ -129,7 +129,6 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(absences -> {
-                        Log.d(TAG, absences.toString());
                         addAbsences(absences, true);
                         mSwipeRefreshLayout.setRefreshing(false);
                     }, error -> mSwipeRefreshLayout.setRefreshing(false));
