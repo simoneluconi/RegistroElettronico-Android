@@ -157,10 +157,8 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
             textInputLayout.getEditText().setImeOptions(EditorInfo.IME_ACTION_DONE);
             textInputLayout.getEditText().requestFocus();
             alert.setView(textInputLayout);
-            textInputLayout.getEditText().setOnEditorActionListener((textView, i, keyEvent) -> {
-                return i == EditorInfo.IME_ACTION_DONE &&
-                        register(textInputLayout);
-            });
+            textInputLayout.getEditText().setOnEditorActionListener((textView, i, keyEvent) -> i == EditorInfo.IME_ACTION_DONE &&
+                    register(textInputLayout));
             textInputLayout.getEditText().addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
