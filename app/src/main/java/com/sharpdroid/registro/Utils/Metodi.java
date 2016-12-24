@@ -155,6 +155,7 @@ public class Metodi {
     public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
+
     public static int getMediaColor(Media media, String tipo, float voto_obiettivo) {
         switch (tipo) {
             case SpiaggiariAPI.ORALE:
@@ -192,6 +193,7 @@ public class Metodi {
         }
         return list;
     }
+
     public static String NomeDecente(String name) {
         if (!isEmptyOrNull(name)) {
             String new_name = "";
