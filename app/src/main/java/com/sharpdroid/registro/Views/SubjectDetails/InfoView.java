@@ -23,6 +23,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.sharpdroid.registro.Utils.Metodi.NomeDecente;
+import static com.sharpdroid.registro.Utils.Metodi.beautifyName;
 import static com.sharpdroid.registro.Utils.Metodi.isEmptyOrNull;
 
 public class InfoView extends CardView {
@@ -76,7 +78,6 @@ public class InfoView extends CardView {
 
         private Context mContext;
 
-        private Subject subject;
         private List<Pair<Integer, String>> data;
 
         InfoAdapter(Context mContext) {
@@ -103,13 +104,11 @@ public class InfoView extends CardView {
         }
 
         public void clear() {
-            subject = null;
             data.clear();
             notifyDataSetChanged();
         }
 
         public void setData(Subject data) {
-            subject = data;
             this.data = convertToList(data);
             notifyDataSetChanged();
         }
@@ -119,14 +118,15 @@ public class InfoView extends CardView {
 
             if (data != null) {
                 if (!isEmptyOrNull(data.getName()))
-                    list.add(new Pair<>(R.drawable.ic_title, data.getName()));
-                else list.add(new Pair<>(R.drawable.ic_title, data.getOriginalName()));
+                    list.add(new Pair<>(R.drawable.ic_title, beautifyName(data.getName())));
+                else
+                    list.add(new Pair<>(R.drawable.ic_title, beautifyName(data.getOriginalName())));
                 if (!isEmptyOrNull(data.getProfessor()))
-                    list.add(new Pair<>(R.drawable.ic_person, data.getProfessor()));
+                    list.add(new Pair<>(R.drawable.ic_person, NomeDecente(data.getProfessor())));
                 if (!isEmptyOrNull(data.getClassroom()))
-                    list.add(new Pair<>(R.drawable.ic_room, data.getClassroom()));
+                    list.add(new Pair<>(R.drawable.ic_room, beautifyName(data.getClassroom())));
                 if (!isEmptyOrNull(data.getNotes()))
-                    list.add(new Pair<>(R.drawable.ic_description, data.getNotes()));
+                    list.add(new Pair<>(R.drawable.ic_description, beautifyName(data.getNotes())));
             }
 
             return list;

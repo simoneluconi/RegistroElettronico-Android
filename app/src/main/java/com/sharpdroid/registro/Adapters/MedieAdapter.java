@@ -27,6 +27,7 @@ import butterknife.ButterKnife;
 import devlight.io.library.ArcProgressStackView;
 
 import static com.sharpdroid.registro.Utils.Metodi.MessaggioVoto;
+import static com.sharpdroid.registro.Utils.Metodi.beautifyName;
 import static com.sharpdroid.registro.Utils.Metodi.getMediaColor;
 import static com.sharpdroid.registro.Utils.Metodi.getSubjectName;
 
@@ -65,7 +66,7 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
     @Override
     public void onBindViewHolder(MedieHolder ViewHolder, int position) {
         final MarkSubject marksubject = CVDataList.get(position);
-        final String subjectname = getSubjectName(db.getSubject(marksubject.getName().toLowerCase()));
+        final String subjectname = beautifyName(getSubjectName(db.getSubject(marksubject.getName().toLowerCase())));
 
         Media media = new Media();
         media.setMateria(subjectname);
