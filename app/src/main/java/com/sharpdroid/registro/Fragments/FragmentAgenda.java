@@ -24,7 +24,6 @@ public class FragmentAgenda extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         mContext = getContext();
         View layout = inflater.inflate(R.layout.fragment_calendar, container, false);
-
         ButterKnife.bind(this, layout);
 
         return layout;
