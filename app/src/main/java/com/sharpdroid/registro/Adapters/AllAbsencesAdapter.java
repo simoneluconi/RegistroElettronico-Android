@@ -37,7 +37,7 @@ import static com.sharpdroid.registro.Utils.Metodi.sortByDate;
 
 public class AllAbsencesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
-    private SimpleDateFormat long_date_format = new SimpleDateFormat("EEEE, d MMMM yyyy", Locale.getDefault());
+    private SimpleDateFormat long_date_format = new SimpleDateFormat("EEEE, d MMMM yyyy", Locale.ITALIAN);
 
     private List<Entry> CVDataList;
 

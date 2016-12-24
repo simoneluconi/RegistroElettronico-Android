@@ -18,7 +18,7 @@ import java.util.Locale;
 import static com.sharpdroid.registro.Utils.Metodi.beautifyName;
 
 public class LessonsAdapter extends RecyclerView.Adapter<LessonHolder> {
-    private final SimpleDateFormat formatter = new SimpleDateFormat("d MMM", Locale.getDefault());
+    private final SimpleDateFormat formatter = new SimpleDateFormat("d MMM", Locale.ITALIAN);
 
     private Context mContext;
 

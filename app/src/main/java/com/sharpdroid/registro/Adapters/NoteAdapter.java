@@ -23,7 +23,7 @@ import butterknife.ButterKnife;
  * Adapter per RecyclerView con Note disciplinari & Annotazioni
  */
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
-    private final SimpleDateFormat formatter = new SimpleDateFormat("d MMM", Locale.getDefault());
+    private final SimpleDateFormat formatter = new SimpleDateFormat("d MMM", Locale.ITALIAN);
 
     private final List<Note> CVDataList;
     private final Context mContext;

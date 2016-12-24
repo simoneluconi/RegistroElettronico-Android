@@ -42,7 +42,7 @@ import butterknife.ButterKnife;
 
 public class MarksView extends CardView implements PopupMenu.OnMenuItemClickListener {
     Context mContext;
-    SimpleDateFormat format = new SimpleDateFormat("d MMM", Locale.getDefault());
+    SimpleDateFormat format = new SimpleDateFormat("d MMM", Locale.ITALIAN);
 
     @BindView(R.id.recycler)
     RecyclerView mRecyclerView;

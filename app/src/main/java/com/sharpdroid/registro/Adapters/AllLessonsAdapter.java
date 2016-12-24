@@ -24,7 +24,7 @@ import static com.sharpdroid.registro.Utils.Metodi.month_year;
 
 public class AllLessonsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE d", Locale.getDefault());
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE d", Locale.ITALIAN);
 
     private Context mContext;
     private int n_headers = 0, n_rows = 0;

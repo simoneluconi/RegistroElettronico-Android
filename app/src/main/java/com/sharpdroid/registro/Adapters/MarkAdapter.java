@@ -28,7 +28,7 @@ import static com.sharpdroid.registro.Utils.Metodi.sortMarksByDate;
 public class MarkAdapter extends RecyclerView.Adapter<MarkAdapter.MarkHolder> {
     float target;
     private Context mContext;
-    private SimpleDateFormat format = new SimpleDateFormat("d MMMM yyyy", Locale.getDefault());
+    private SimpleDateFormat format = new SimpleDateFormat("d MMMM yyyy", Locale.ITALIAN);
     private List<Mark> CVDataList;
     private Subject subject;
 
@@ -72,7 +72,7 @@ public class MarkAdapter extends RecyclerView.Adapter<MarkAdapter.MarkHolder> {
         return CVDataList.size();
     }
 
-    protected class MarkHolder extends RecyclerView.ViewHolder {
+    class MarkHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.color)
         CircleImageView color;
         @BindView(R.id.mark)

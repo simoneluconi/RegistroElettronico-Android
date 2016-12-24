@@ -41,7 +41,7 @@ import java.util.Map;
 import okhttp3.ResponseBody;
 
 public class Metodi {
-    public static SimpleDateFormat month_year = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
+    public static SimpleDateFormat month_year = new SimpleDateFormat("MMMM yyyy", Locale.ITALIAN);
 
     public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager
