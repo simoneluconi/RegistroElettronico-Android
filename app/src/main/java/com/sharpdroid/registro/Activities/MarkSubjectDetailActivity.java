@@ -3,14 +3,17 @@ package com.sharpdroid.registro.Activities;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.InputType;
-import android.util.Log;
+import android.text.TextWatcher;
 import android.view.MenuItem;
-import android.widget.EditText;
+import android.view.inputmethod.EditorInfo;
 
 import com.sharpdroid.registro.API.SpiaggiariApiClient;
 import com.sharpdroid.registro.Databases.SubjectsDB;
@@ -34,6 +37,7 @@ import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.sharpdroid.registro.Utils.Metodi.dpToPx;
 import static com.sharpdroid.registro.Utils.Metodi.getSubjectName;
 
 // DONE: 03/12/2016 Dettagli (nome, aula, prof, ora, note, colore)
@@ -144,26 +148,46 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
             alert.setMessage(getString(R.string.obiettivo_summary));
 
             // Set an EditText view to get user input
-            final EditText input = new EditText(this);
-            input.setInputType(InputType.TYPE_CLASS_NUMBER);
+            final TextInputLayout textInputLayout = new TextInputLayout(this);
+            final TextInputEditText input = new TextInputEditText(this);
+            textInputLayout.addView(input);
+            textInputLayout.setPadding(dpToPx(16), 0, dpToPx(16), 0);
 
-            alert.setView(input);
-            alert.setPositiveButton("Ok", (dialog, whichButton) -> {
-                try {
-                    float new_target = Float.parseFloat(input.getText().toString());
-                    if (new_target <= 10 && new_target >= 0) {
-                        targetView.setTarget(new_target);
+            textInputLayout.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
+            textInputLayout.getEditText().setImeOptions(EditorInfo.IME_ACTION_DONE);
+            textInputLayout.getEditText().requestFocus();
+            alert.setView(textInputLayout);
+            textInputLayout.getEditText().setOnEditorActionListener((textView, i, keyEvent) -> {
+                return i == EditorInfo.IME_ACTION_DONE &&
+                        register(textInputLayout);
+            });
+            textInputLayout.getEditText().addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                        ContentValues values = new ContentValues();
-                        values.put("target", input.getText().toString());
-                        db.editSubject(subject.getCode(), values);
-                        marksView.setLimitLines(new_target, media.getMediaGenerale());
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    if (charSequence.length() > 0) {
+                        float new_target = Float.parseFloat(charSequence.toString());
+                        if (new_target <= 10 && new_target >= 0) {
+                            textInputLayout.setErrorEnabled(false);
+                        } else {
+                            textInputLayout.setErrorEnabled(true);
+                            textInputLayout.setError("Numero non valido");
+                        }
+                    } else {
+                        textInputLayout.setErrorEnabled(false);
                     }
-                } catch (NumberFormatException e) {
-                    Log.d(TAG, "Could not parse " + e);
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+
                 }
             });
-
+            alert.setPositiveButton("Ok", (dialog, whichButton) -> register(textInputLayout));
             alert.setNegativeButton("Cancel", (dialog, whichButton) -> {
                 // Canceled. Do nothing;
             });
@@ -171,6 +195,25 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    boolean register(TextInputLayout layout) {
+        try {
+            layout.setErrorEnabled(false);
+            float new_target = Float.parseFloat(layout.getEditText().getText().toString());
+            if (new_target <= 10 && new_target >= 0) {
+                targetView.setTarget(new_target);
+                marksView.invalidate();
+
+                ContentValues values = new ContentValues();
+                values.put("target", layout.getEditText().getText().toString());
+                db.editSubject(subject.getCode(), values);
+                marksView.setLimitLines(new_target, media.getMediaGenerale());
+                return true;
+            }
+        } catch (NumberFormatException ignored) {
+        }
+        return false;
     }
 
     private void setLessons(int id) {
