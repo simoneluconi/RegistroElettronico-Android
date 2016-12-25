@@ -37,4 +37,9 @@ public class File implements Serializable {
     public String getCksum() {
         return cksum;
     }
+
+    public boolean isLink()
+    {
+        return type.equals("link");
+    }
 }
