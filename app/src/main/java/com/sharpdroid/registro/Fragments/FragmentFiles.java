@@ -22,8 +22,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import butterknife.BindView;
-
 public class FragmentFiles extends Fragment {
     final static String TAG = FragmentFiles.class.getSimpleName();
     private final SimpleDateFormat formatter = new SimpleDateFormat("MMM d, yyyy", Locale.ITALIAN);
@@ -43,6 +41,8 @@ public class FragmentFiles extends Fragment {
         mContext = getContext();
 
         RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
+        CoordinatorLayout mCoordinatorLayout = (CoordinatorLayout) layout.findViewById(R.id.coordinator_layout);
+
 
         //region FOLDER LAYOUT & VIEWS
         View folder_layout = layout.findViewById(R.id.relative_layout);
@@ -64,7 +64,7 @@ public class FragmentFiles extends Fragment {
             if (data != null) {
                 folder_title.setText(data.getName().trim());
                 folder_date.setText(formatter.format(data.getLast()));
-                mRVAdapter = new FileAdapter(mContext);
+                mRVAdapter = new FileAdapter(mContext, mCoordinatorLayout);
                 addSubjects(data);
             }
         }
