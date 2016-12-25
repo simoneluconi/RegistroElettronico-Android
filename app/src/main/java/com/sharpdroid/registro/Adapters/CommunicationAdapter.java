@@ -8,9 +8,11 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -19,15 +21,25 @@ import com.sharpdroid.registro.Interfaces.API.Communication;
 import com.sharpdroid.registro.R;
 
 import java.io.File;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.Headers;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.sharpdroid.registro.Utils.Metodi.writeResponseBodyToDisk;
 
@@ -78,27 +90,24 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
                             File.separator +
                             "Registro Elettronico");
 
-            File file = new File(dir +
-                    File.separator +
-                    communication.getId() + ".pdf");
+            DownloadProgressSnak.show();
 
-            if (!file.exists()) {
-                DownloadProgressSnak.show();
+            if (!dir.exists()) dir.mkdir();
+            new SpiaggiariApiClient(mContext).mService.getcommunicationDownload(communication.getId())
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(communication_file -> {
+                        String mime = communication_file.contentType().toString();
+                        String ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(mime);
+                        File file = new File(dir + File.separator + communication.getId() + "." + ext);
+                        writeResponseBodyToDisk(communication_file, file);
+                        askfileopen(file, DownloadProgressSnak);
+                    }, error -> {
+                        DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, error.getCause()));
+                        DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT).show();
+                    });
 
-                if (!dir.exists()) dir.mkdir();
-                new SpiaggiariApiClient(mContext).mService.getcommunicationDownload(communication.getId())
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(communication_file -> {
-                            writeResponseBodyToDisk(communication_file, file);
-                            openpdf(file, DownloadProgressSnak);
-                        }, error -> {
-                            DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, error.getCause()));
-                            DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT).show();
-                        });
-            } else {
-                openpdf(file, DownloadProgressSnak);
-            }
+
         });
     }
 
@@ -107,20 +116,25 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
         return CVDataList.size();
     }
 
-    private void openpdf(File file, Snackbar DownloadProgressSnak) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(FileProvider.getUriForFile(mContext, "com.sharpdroid.registro.fileprovider", file), "application/pdf");
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-        DownloadProgressSnak.setText(R.string.click_to_open);
+    private void askfileopen(File file, Snackbar DownloadProgressSnak) {
+        DownloadProgressSnak.setText(mContext.getString(R.string.file_downloaded, file.getName()));
         DownloadProgressSnak.setAction(R.string.open, v -> {
-            try {
-                mContext.startActivity(intent);
-            } catch (ActivityNotFoundException e) {
-                Snackbar.make(mCoordinatorLayout, mContext.getResources().getString(R.string.missing_pdf_app), Snackbar.LENGTH_SHORT).show();
-            }
+            openfile(file);
         });
         DownloadProgressSnak.show();
+    }
+
+    private void openfile(File file) {
+        String mime = URLConnection.guessContentTypeFromName(file.toString());
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(FileProvider.getUriForFile(mContext, "com.sharpdroid.registro.fileprovider", file), mime);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        try {
+            mContext.startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Snackbar.make(mCoordinatorLayout, mContext.getResources().getString(R.string.missing_app, file.getName()), Snackbar.LENGTH_SHORT).show();
+        }
+
     }
 
     class CommunicationHolder extends RecyclerView.ViewHolder {

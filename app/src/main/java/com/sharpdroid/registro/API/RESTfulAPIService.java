@@ -17,6 +17,7 @@ import java.util.List;
 
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;
+import retrofit2.Callback;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -64,8 +65,7 @@ public interface RESTfulAPIService {
             @Path("id") int id);
 
     @GET("communication/{id}/download")
-    Observable<ResponseBody> getcommunicationDownload(
-            @Path("id") int id);
+    Observable<ResponseBody> getcommunicationDownload(@Path("id") int id);
 
     @GET("scrutinies")
     Observable<List<Scrutiny>> getScrutines();
