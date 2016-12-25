@@ -95,11 +95,11 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
                     new SpiaggiariApiClient(mContext).mService.getDownload(file.getId(), file.getCksum())
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(communication_file -> {
-                                String mime = communication_file.contentType().toString();
+                            .subscribe(files_file -> {
+                                String mime = files_file.contentType().toString();
                                 String ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(mime);
                                 java.io.File files = new java.io.File(dir + java.io.File.separator + file.getId() + "." + ext);
-                                writeResponseBodyToDisk(communication_file, files);
+                                writeResponseBodyToDisk(files_file, files);
                                 askfileopen(files, DownloadProgressSnak);
                             }, error -> {
                                 DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, error.getCause()));
