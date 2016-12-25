@@ -65,8 +65,6 @@ public class FragmentLogin extends SlideFragment {
         mEditTextPassword.setEnabled(!loggedIn);
         mButtonLogin.setEnabled(!loggedIn);
 
-        mEditTextMail.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-
         mButtonLogin.setOnClickListener(v -> Login());
         mEditTextPassword.setOnEditorActionListener((textView, i, keyEvent) -> {
             if (i == EditorInfo.IME_ACTION_DONE) {
