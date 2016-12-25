@@ -90,24 +90,28 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
                             File.separator +
                             "Registro Elettronico");
 
-            DownloadProgressSnak.show();
 
             if (!dir.exists()) dir.mkdir();
-            new SpiaggiariApiClient(mContext).mService.getcommunicationDownload(communication.getId())
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(communication_file -> {
-                        String mime = communication_file.contentType().toString();
-                        String ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(mime);
-                        File file = new File(dir + File.separator + communication.getId() + "." + ext);
-                        writeResponseBodyToDisk(communication_file, file);
-                        askfileopen(file, DownloadProgressSnak);
-                    }, error -> {
-                        DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, error.getCause()));
-                        DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT).show();
-                    });
 
+            int index = fileexists(communication.getId(), dir);
 
+            if (index < 0) {
+                DownloadProgressSnak.show();
+                new SpiaggiariApiClient(mContext).mService.getcommunicationDownload(communication.getId())
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(communication_file -> {
+                            String mime = communication_file.contentType().toString();
+                            String ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(mime);
+                            File file = new File(dir + File.separator + communication.getId() + "." + ext);
+                            writeResponseBodyToDisk(communication_file, file);
+                            askfileopen(file, DownloadProgressSnak);
+                        }, error -> {
+                            DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, error.getCause()));
+                            DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT).show();
+                        });
+
+            } else openfile(index, dir);
         });
     }
 
@@ -135,6 +139,21 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
             Snackbar.make(mCoordinatorLayout, mContext.getResources().getString(R.string.missing_app, file.getName()), Snackbar.LENGTH_SHORT).show();
         }
 
+    }
+
+    private void openfile(int index, File dir) {
+        File file = dir.listFiles()[index];
+        openfile(file);
+    }
+
+    private int fileexists(int id, File dir) {
+        File[] files = dir.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            String name = files[i].getName().substring(0, files[i].getName().lastIndexOf("."));
+            if (name.equals(String.valueOf(id))) return i;
+        }
+
+        return -1;
     }
 
     class CommunicationHolder extends RecyclerView.ViewHolder {
