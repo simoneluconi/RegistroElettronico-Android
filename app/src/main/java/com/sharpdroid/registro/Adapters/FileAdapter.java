@@ -42,8 +42,9 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
     private CoordinatorLayout mCoordinatorLayout;
     private List<File> CVDataList;
 
-    public FileAdapter(Context mContext) {
+    public FileAdapter(Context mContext, CoordinatorLayout mCoordinatorLayout) {
         this.mContext = mContext;
+        this.mCoordinatorLayout = mCoordinatorLayout;
         CVDataList = new ArrayList<>();
     }
 
