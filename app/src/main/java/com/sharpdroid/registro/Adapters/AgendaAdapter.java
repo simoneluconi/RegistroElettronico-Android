@@ -1,12 +1,7 @@
 package com.sharpdroid.registro.Adapters;
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Environment;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +9,9 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.sharpdroid.registro.API.SpiaggiariApiClient;
 import com.sharpdroid.registro.Interfaces.API.Communication;
 import com.sharpdroid.registro.R;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.List;
@@ -26,10 +19,6 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-
-import static com.sharpdroid.registro.Utils.Metodi.writeResponseBodyToDisk;
 
 public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.CommunicationHolder> {
     private final List<Communication> CVDataList;

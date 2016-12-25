@@ -26,10 +26,10 @@
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/mail"
-            android:inputType="textEmailAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawablePadding="16dp" />
+            android:drawablePadding="16dp"
+            android:inputType="textEmailAddress" />
 
     </android.support.design.widget.TextInputLayout>
 
