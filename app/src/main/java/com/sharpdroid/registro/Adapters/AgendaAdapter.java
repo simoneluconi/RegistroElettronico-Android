@@ -69,7 +69,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.Communicat
         ViewHolder.Type.setText(communication.getType());
 
         // TODO: 18/11/2016 aggiungere listener solo con allegati presenti
-        ViewHolder.mRelativeLayout.setOnClickListener(v -> {
+       /* ViewHolder.mRelativeLayout.setOnClickListener(v -> {
             Snackbar DownloadProgressSnak = Snackbar.make(mCoordinatorLayout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE);
 
             File dir = new File(
@@ -102,6 +102,8 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.Communicat
                 openpdf(file, DownloadProgressSnak);
             }
         });
+
+        */
     }
 
     @Override
@@ -109,21 +111,6 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.Communicat
         return CVDataList.size();
     }
 
-    private void openpdf(File file, Snackbar DownloadProgressSnak) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(FileProvider.getUriForFile(mContext, "com.sharpdroid.registro.fileprovider", file), "application/pdf");
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-        DownloadProgressSnak.setText(R.string.click_to_open);
-        DownloadProgressSnak.setAction(R.string.open, v -> {
-            try {
-                mContext.startActivity(intent);
-            } catch (ActivityNotFoundException e) {
-                Snackbar.make(mCoordinatorLayout, mContext.getResources().getString(R.string.missing_pdf_app), Snackbar.LENGTH_SHORT).show();
-            }
-        });
-        DownloadProgressSnak.show();
-    }
 
     class CommunicationHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.relative_layout)

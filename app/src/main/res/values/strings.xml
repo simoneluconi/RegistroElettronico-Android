@@ -55,6 +55,8 @@
     <string name="click_to_open">Clicca per aprire</string>
     <string name="open">Apri</string>
     <string name="missing_pdf_app">Nessuna app può aprire questo documento</string>
+    <string name="missing_app">Nessuna app può aprire questo file (%1$s)</string>
+    <string name="file_downloaded">%1$s scaricato</string>
     <string name="download_fallito">Download fallito (%1$s)</string>
     <string name="obiettivo_summary">Seleziona il voto obiettivo</string>
     <string name="obiettivo_title">Obiettivo</string>
