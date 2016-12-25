@@ -94,7 +94,7 @@ public class EditSubjectDetailsActivity extends AppCompatActivity {
         values.put("name", name);
         values.put("professor", prof);
         values.put("classroom", classroom);
-        values.put("notes", beautifyName(notes));
+        values.put("notes", notes);
 
         db.editSubject(subject.getCode(), values);
 
