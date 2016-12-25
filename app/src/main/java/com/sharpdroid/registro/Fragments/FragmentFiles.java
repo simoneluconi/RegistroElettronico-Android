@@ -30,17 +30,10 @@ public class FragmentFiles extends Fragment {
 
     Context mContext;
     FileAdapter mRVAdapter;
-    CoordinatorLayout mCoordinatorLayout;
 
     public FragmentFiles() {
     }
 
-
-
-    public void addCoordinator(CoordinatorLayout mCoordinatorLayout)
-    {
-        this.mCoordinatorLayout = mCoordinatorLayout;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
