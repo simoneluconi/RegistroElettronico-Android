@@ -2,6 +2,7 @@ package com.sharpdroid.registro.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,15 +22,24 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import butterknife.BindView;
+
 public class FragmentFiles extends Fragment {
     final static String TAG = FragmentFiles.class.getSimpleName();
-
     private final SimpleDateFormat formatter = new SimpleDateFormat("MMM d, yyyy", Locale.ITALIAN);
 
     Context mContext;
     FileAdapter mRVAdapter;
+    CoordinatorLayout mCoordinatorLayout;
 
     public FragmentFiles() {
+    }
+
+
+
+    public void addCoordinator(CoordinatorLayout mCoordinatorLayout)
+    {
+        this.mCoordinatorLayout = mCoordinatorLayout;
     }
 
     @Override
