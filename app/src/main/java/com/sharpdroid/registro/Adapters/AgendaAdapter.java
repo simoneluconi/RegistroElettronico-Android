@@ -57,42 +57,8 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.Communicat
         ViewHolder.Date.setText(formatter.format(communication.getDate()));
         ViewHolder.Type.setText(communication.getType());
 
-        // TODO: 18/11/2016 aggiungere listener solo con allegati presenti
-       /* ViewHolder.mRelativeLayout.setOnClickListener(v -> {
-            Snackbar DownloadProgressSnak = Snackbar.make(mCoordinatorLayout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE);
-
-            File dir = new File(
-                    Environment.getExternalStoragePublicDirectory(
-                            Environment.DIRECTORY_DOWNLOADS).toString() +
-                            File.separator +
-                            "Registro Elettronico");
-
-            File file = new File(dir +
-                    File.separator +
-                    communication.getId() + ".pdf");
-
-            communication.getId();
-
-            if (!file.exists()) {
-                DownloadProgressSnak.show();
-
-                if (!dir.exists()) dir.mkdir();
-                new SpiaggiariApiClient(mContext).mService.getcommunicationDownload(communication.getId())
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(communication_file -> {
-                            writeResponseBodyToDisk(communication_file, file);
-                            openpdf(file, DownloadProgressSnak);
-                        }, error -> {
-                            DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, error.getCause()));
-                            DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT).show();
-                        });
-            } else {
-                openpdf(file, DownloadProgressSnak);
-            }
+        ViewHolder.mRelativeLayout.setOnClickListener(v -> {
         });
-
-        */
     }
 
     @Override
