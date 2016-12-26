@@ -75,6 +75,8 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
 
         if (file.isLink()) {
             holder.image.setImageResource(R.drawable.link);
+        } else {
+            holder.image.setImageResource(R.drawable.file);
         }
 
         holder.mRelativeLayout.setOnClickListener(v -> {
@@ -147,11 +149,6 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
     private void openlink(String url, Context context) {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         context.startActivity(browserIntent);
-    }
-
-    private void openfile(int index, java.io.File dir) {
-        java.io.File file = dir.listFiles()[index];
-        openfile(file);
     }
 
     @Override
