@@ -119,7 +119,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
                 }
 
                 db.close();
-            } else openlink("http://google.it/", mContext);
+            } else openlink(file.getLink(), mContext);
         });
     }
 
