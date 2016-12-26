@@ -38,8 +38,7 @@ public class File implements Serializable {
         return cksum;
     }
 
-    public boolean isLink()
-    {
+    public boolean isLink() {
         return type.equals("link");
     }
 }

@@ -2,7 +2,6 @@ package com.sharpdroid.registro.API;
 
 import android.support.annotation.NonNull;
 
-import com.jakewharton.retrofit2.adapter.rxjava2.Result;
 import com.sharpdroid.registro.Interfaces.API.Absences;
 import com.sharpdroid.registro.Interfaces.API.Communication;
 import com.sharpdroid.registro.Interfaces.API.CommunicationDescription;
