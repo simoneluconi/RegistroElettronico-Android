@@ -12,11 +12,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.MimeTypeMap;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sharpdroid.registro.API.SpiaggiariApiClient;
+import com.sharpdroid.registro.Databases.FilesDB;
 import com.sharpdroid.registro.Interfaces.API.File;
 import com.sharpdroid.registro.R;
 
@@ -31,7 +31,9 @@ import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.Headers;
 
+import static com.sharpdroid.registro.Utils.Metodi.getFileNamefromHeaders;
 import static com.sharpdroid.registro.Utils.Metodi.writeResponseBodyToDisk;
 
 public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
@@ -89,25 +91,34 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
 
                 if (!dir.exists()) dir.mkdir();
 
-                int index = fileexists(file.getId(), dir);
+                FilesDB db = new FilesDB(mContext);
 
-                if (index < 0) {
+                if (!db.isPresent(file.getId(), file.getCksum())) {
                     DownloadProgressSnak.show();
                     new SpiaggiariApiClient(mContext).mService.getDownload(file.getId(), file.getCksum())
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(files_file -> {
-                                String mime = files_file.contentType().toString();
-                                String ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(mime);
-                                java.io.File files = new java.io.File(dir + java.io.File.separator + file.getId() + "." + ext);
-                                writeResponseBodyToDisk(files_file, files);
-                                askfileopen(files, DownloadProgressSnak);
+                                Headers headers = files_file.headers();
+                                String filename = getFileNamefromHeaders(headers);
+                                java.io.File f = new java.io.File(dir + java.io.File.separator + filename);
+                                writeResponseBodyToDisk(files_file.body(), f);
+                                db.addRecord(filename, file.getId(), file.getCksum());
+                                askfileopen(f, DownloadProgressSnak);
+
                             }, error -> {
+                                error.printStackTrace();
                                 DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, error.getCause()));
                                 DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT).show();
                             });
 
-                } else openfile(index, dir);
+                } else {
+                    String filename = db.getFileName(file.getId(), file.getCksum());
+                    java.io.File f = new java.io.File(dir + java.io.File.separator + filename);
+                    openfile(f);
+                }
+
+                db.close();
             } else openlink("http://google.it/", mContext);
         });
     }
@@ -141,16 +152,6 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
     private void openfile(int index, java.io.File dir) {
         java.io.File file = dir.listFiles()[index];
         openfile(file);
-    }
-
-    private int fileexists(String id, java.io.File dir) {
-        java.io.File[] files = dir.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            String name = files[i].getName().substring(0, files[i].getName().lastIndexOf("."));
-            if (name.equals(id)) return i;
-        }
-
-        return -1;
     }
 
     @Override

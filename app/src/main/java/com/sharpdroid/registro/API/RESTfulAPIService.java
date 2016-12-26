@@ -2,6 +2,7 @@ package com.sharpdroid.registro.API;
 
 import android.support.annotation.NonNull;
 
+import com.jakewharton.retrofit2.adapter.rxjava2.Result;
 import com.sharpdroid.registro.Interfaces.API.Absences;
 import com.sharpdroid.registro.Interfaces.API.Communication;
 import com.sharpdroid.registro.Interfaces.API.CommunicationDescription;
@@ -17,6 +18,7 @@ import java.util.List;
 
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;
+import retrofit2.Response;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -36,7 +38,7 @@ public interface RESTfulAPIService {
     Observable<List<FileTeacher>> getFiles();
 
     @GET("file/{id}/{cksum}/download")
-    Observable<ResponseBody> getDownload(
+    Observable<Response<ResponseBody>> getDownload(
             @NonNull @Path("id") String id,
             @NonNull @Path("cksum") String cksum);
 
@@ -64,7 +66,7 @@ public interface RESTfulAPIService {
             @Path("id") int id);
 
     @GET("communication/{id}/download")
-    Observable<ResponseBody> getcommunicationDownload(@Path("id") int id);
+    Observable<Response<ResponseBody>> getcommunicationDownload(@Path("id") int id);
 
     @GET("scrutinies")
     Observable<List<Scrutiny>> getScrutines();
