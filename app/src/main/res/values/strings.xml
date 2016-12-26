@@ -8,8 +8,8 @@
     <string name="agenda">Agenda</string>
     <string name="medie">Medie</string>
     <string name="timetable">Orario</string>
-    <string name="share">Share</string>
-    <string name="send">Send</string>
+    <string name="share">Condividi</string>
+    <string name="send">Contattaci</string>
     <string name="communicate">Communicate</string>
     <string name="justifications">Giustificazioni</string>
     <string name="communications">Comunicazioni</string>
@@ -41,6 +41,9 @@
     <string name="caricamento">Caricamento…</string>
     <string name="login_msg_failer">Login fallito</string>
     <string name="absences">Assenze</string>
+
+    <string name="select_email_client">Seleziona un client email</string>
+    <string name="select_app">Seleziona un\'applicazione</string>
 
     <string name="login_riuscito">Login completato</string>
     <string name="from_to">from - to</string>

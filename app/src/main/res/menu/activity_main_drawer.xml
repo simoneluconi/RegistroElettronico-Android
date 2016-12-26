@@ -21,7 +21,7 @@
         <item
             android:id="@+id/absences"
             android:icon="@drawable/ic_supervisor"
-            android:title="@string/justifications" />
+            android:title="@string/absences" />
         <item
             android:id="@+id/notes"
             android:icon="@drawable/ic_error"
