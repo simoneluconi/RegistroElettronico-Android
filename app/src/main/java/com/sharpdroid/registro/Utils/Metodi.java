@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import okhttp3.Headers;
 import okhttp3.ResponseBody;
 
 public class Metodi {
@@ -274,6 +275,14 @@ public class Metodi {
         } catch (IOException e) {
             return false;
         }
+    }
+
+    public static String getFileNamefromHeaders(Headers headers) {
+        String contentd = headers.get("Content-Disposition");
+        contentd = contentd.replace("attachment; filename=", "");
+        contentd = contentd.replaceAll("\"", "");
+        contentd = contentd.trim();
+        return contentd;
     }
 
     public static boolean isEmptyOrNull(String string) {
