@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import com.sharpdroid.registro.API.SpiaggiariApiClient;
 import com.sharpdroid.registro.Databases.FilesDB;
 import com.sharpdroid.registro.Interfaces.API.File;
+import com.sharpdroid.registro.Interfaces.API.Mark;
 import com.sharpdroid.registro.R;
 
 import java.net.URLConnection;
@@ -70,8 +72,22 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
     public void onBindViewHolder(FileHolder holder, int position) {
         File file = CVDataList.get(position);
 
+        java.io.File dir = new java.io.File(
+                Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_DOWNLOADS).toString() +
+                        java.io.File.separator +
+                        "Registro Elettronico");
+
         holder.title.setText(file.getName().trim());
         holder.date.setText(formatter.format(file.getDate()));
+
+        FilesDB tmpdb = new FilesDB(mContext);
+
+        String fname = null;
+
+        if (tmpdb.isPresent(file.getId(), file.getCksum())) {
+            fname = tmpdb.getFileName(file.getId(), file.getCksum());
+        }
 
         if (file.isLink()) {
             holder.image.setImageResource(R.drawable.link);
@@ -79,17 +95,12 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
             holder.image.setImageResource(R.drawable.file);
         }
 
+        tmpdb.close();
+
         holder.mRelativeLayout.setOnClickListener(v -> {
 
             if (!file.isLink()) {
                 Snackbar DownloadProgressSnak = Snackbar.make(mCoordinatorLayout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE);
-
-                java.io.File dir = new java.io.File(
-                        Environment.getExternalStoragePublicDirectory(
-                                Environment.DIRECTORY_DOWNLOADS).toString() +
-                                java.io.File.separator +
-                                "Registro Elettronico");
-
 
                 if (!dir.exists()) dir.mkdir();
 
@@ -131,6 +142,11 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
             openfile(file);
         });
         DownloadProgressSnak.show();
+    }
+
+    private static boolean isImageFile(String path) {
+        String mimeType = URLConnection.guessContentTypeFromName(path);
+        return mimeType != null && mimeType.startsWith("image");
     }
 
     private void openfile(java.io.File file) {

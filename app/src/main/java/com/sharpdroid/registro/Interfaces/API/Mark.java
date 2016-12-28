@@ -11,6 +11,10 @@ public class Mark implements Serializable {
     private String mark;
     private String desc;
 
+    public static final String PRIMO_PERIODO = "q1";
+    public static final String SECONDO_PERIODO = "q3";
+
+
     Mark(String q, boolean ns, String type, Date date, String mark, String desc) {
         this.q = q;
         this.ns = ns;
