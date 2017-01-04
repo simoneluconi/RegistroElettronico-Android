@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Environment;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,7 +18,6 @@ import android.widget.TextView;
 import com.sharpdroid.registro.API.SpiaggiariApiClient;
 import com.sharpdroid.registro.Databases.FilesDB;
 import com.sharpdroid.registro.Interfaces.API.File;
-import com.sharpdroid.registro.Interfaces.API.Mark;
 import com.sharpdroid.registro.R;
 
 import java.net.URLConnection;
@@ -76,19 +74,12 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
                 Environment.getExternalStoragePublicDirectory(
                         Environment.DIRECTORY_DOWNLOADS).toString() +
                         java.io.File.separator +
-                        "Registro Elettronico");
+                        "Registro Elettronico" + java.io.File.separator + "Didattica");
 
         holder.title.setText(file.getName().trim());
         holder.date.setText(formatter.format(file.getDate()));
 
         FilesDB tmpdb = new FilesDB(mContext);
-
-        String fname = null;
-
-        if (tmpdb.isPresent(file.getId(), file.getCksum())) {
-            fname = tmpdb.getFileName(file.getId(), file.getCksum());
-        }
-
         if (file.isLink()) {
             holder.image.setImageResource(R.drawable.link);
         } else {
@@ -107,33 +98,40 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
                 FilesDB db = new FilesDB(mContext);
 
                 if (!db.isPresent(file.getId(), file.getCksum())) {
-                    DownloadProgressSnak.show();
-                    new SpiaggiariApiClient(mContext).mService.getDownload(file.getId(), file.getCksum())
-                            .subscribeOn(Schedulers.newThread())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(files_file -> {
-                                Headers headers = files_file.headers();
-                                String filename = getFileNamefromHeaders(headers);
-                                java.io.File f = new java.io.File(dir + java.io.File.separator + filename);
-                                writeResponseBodyToDisk(files_file.body(), f);
-                                db.addRecord(filename, file.getId(), file.getCksum());
-                                askfileopen(f, DownloadProgressSnak);
-
-                            }, error -> {
-                                error.printStackTrace();
-                                DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, error.getCause()));
-                                DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT).show();
-                            });
-
+                    DownloadFile(file, dir, db, DownloadProgressSnak, true);
                 } else {
                     String filename = db.getFileName(file.getId(), file.getCksum());
                     java.io.File f = new java.io.File(dir + java.io.File.separator + filename);
-                    openfile(f);
+                    if (f.exists())
+                        openfile(f);
+                    else DownloadFile(file, dir, db, DownloadProgressSnak, false);
                 }
 
                 db.close();
             } else openlink(file.getLink(), mContext);
         });
+    }
+
+    private void DownloadFile(File file, java.io.File dir, FilesDB db, Snackbar DownloadProgressSnak, boolean addRecord) {
+
+        DownloadProgressSnak.show();
+        new SpiaggiariApiClient(mContext).mService.getDownload(file.getId(), file.getCksum())
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(files_file -> {
+                    Headers headers = files_file.headers();
+                    String filename = getFileNamefromHeaders(headers);
+                    java.io.File f = new java.io.File(dir + java.io.File.separator + filename);
+                    writeResponseBodyToDisk(files_file.body(), f);
+                    if (addRecord)
+                        db.addRecord(filename, file.getId(), file.getCksum());
+                    askfileopen(f, DownloadProgressSnak);
+
+                }, error -> {
+                    error.printStackTrace();
+                    DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, error.getCause()));
+                    DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT).show();
+                });
     }
 
     private void askfileopen(java.io.File file, Snackbar DownloadProgressSnak) {
@@ -142,11 +140,6 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
             openfile(file);
         });
         DownloadProgressSnak.show();
-    }
-
-    private static boolean isImageFile(String path) {
-        String mimeType = URLConnection.guessContentTypeFromName(path);
-        return mimeType != null && mimeType.startsWith("image");
     }
 
     private void openfile(java.io.File file) {
