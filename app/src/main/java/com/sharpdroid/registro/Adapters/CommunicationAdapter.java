@@ -80,7 +80,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
                     Environment.getExternalStoragePublicDirectory(
                             Environment.DIRECTORY_DOWNLOADS).toString() +
                             File.separator +
-                            "Registro Elettronico");
+                            "Registro Elettronico" + File.separator + "Circolari");
 
 
             if (!dir.exists()) dir.mkdir();
@@ -88,27 +88,14 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
             CommunicationsDB db = new CommunicationsDB(mContext);
 
             if (!db.isPresent(communication.getId())) {
-                DownloadProgressSnak.show();
-                new SpiaggiariApiClient(mContext).mService.getcommunicationDownload(communication.getId())
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(communication_file -> {
-                            Headers headers = communication_file.headers();
-                            String filename = getFileNamefromHeaders(headers);
-                            File file = new File(dir + File.separator + filename);
-                            writeResponseBodyToDisk(communication_file.body(), file);
-                            db.addRecord(filename, communication.getId());
-                            askfileopen(file, DownloadProgressSnak);
-                        }, error -> {
-                            error.printStackTrace();
-                            DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, error.getCause()));
-                            DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT).show();
-                        });
+                DownloadFile(communication, dir, db, DownloadProgressSnak, true);
 
             } else {
                 String filename = db.getFileName(communication.getId());
                 File file = new File(dir + File.separator + filename);
-                openfile(file);
+                if (file.exists())
+                    openfile(file);
+                else DownloadFile(communication, dir, db, DownloadProgressSnak, false);
             }
 
             db.close();
@@ -126,6 +113,27 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
             openfile(file);
         });
         DownloadProgressSnak.show();
+    }
+
+    private void DownloadFile(Communication communication, File dir, CommunicationsDB db, Snackbar DownloadProgressSnak, boolean addRecord) {
+        DownloadProgressSnak.show();
+        new SpiaggiariApiClient(mContext).mService.getcommunicationDownload(communication.getId())
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(communication_file -> {
+                    Headers headers = communication_file.headers();
+                    String filename = getFileNamefromHeaders(headers);
+                    File file = new File(dir + File.separator + filename);
+                    writeResponseBodyToDisk(communication_file.body(), file);
+                    if (addRecord)
+                        db.addRecord(filename, communication.getId());
+                    askfileopen(file, DownloadProgressSnak);
+                }, error -> {
+                    error.printStackTrace();
+                    DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, error.getCause()));
+                    DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT).show();
+                });
+
     }
 
     private void openfile(File file) {
