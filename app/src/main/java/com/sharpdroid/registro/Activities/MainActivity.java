@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity
     NavigationView mNavigationView;
     @BindView(R.id.calendar)
     CompactCalendarView calendarView;
+    @BindView(R.id.month)
+    TextView monthView;
 
     SharedPreferences settings;
 
@@ -93,8 +95,10 @@ public class MainActivity extends AppCompatActivity
 
             if (isAgendaSelected()) {
                 calendarView.setVisibility(View.VISIBLE);
+                monthView.setVisibility(View.VISIBLE);
             } else {
                 calendarView.setVisibility(View.GONE);
+                monthView.setVisibility(View.GONE);
             }
         }
     }
@@ -104,10 +108,12 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         Fragment fragment;
         calendarView.setVisibility(View.GONE);
+        monthView.setVisibility(View.GONE);
         switch (item.getItemId()) {
             case R.id.agenda:
-                fragment = FragmentAgenda.getInstance(calendarView);
+                fragment = FragmentAgenda.getInstance(calendarView, monthView);
                 calendarView.setVisibility(View.VISIBLE);
+                monthView.setVisibility(View.VISIBLE);
                 break;
             case R.id.medie:
                 fragment = new FragmentMedie();

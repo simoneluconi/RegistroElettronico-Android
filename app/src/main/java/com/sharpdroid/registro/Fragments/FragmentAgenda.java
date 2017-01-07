@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.sharpdroid.registro.API.SpiaggiariApiClient;
@@ -28,13 +29,16 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     final private String TAG = FragmentAgenda.class.getSimpleName();
 
     SimpleDateFormat format = new SimpleDateFormat("d MMMM yyyy", Locale.getDefault());
+    SimpleDateFormat month = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
 
     private Context mContext;
     private static CompactCalendarView calendarView;
+    private static TextView monthView;
     private AgendaDB db;
 
-    public static FragmentAgenda getInstance(CompactCalendarView c) {
+    public static FragmentAgenda getInstance(CompactCalendarView c, TextView month) {
         calendarView = c;
+        monthView = month;
         return new FragmentAgenda();
     }
 
@@ -49,15 +53,15 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         ButterKnife.bind(this, layout);
         db = AgendaDB.from(mContext);
 
+        monthView.setText(month.format(new Date()));
         calendarView.setLocale(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALIAN);
         calendarView.setUseThreeLetterAbbreviation(true);
         calendarView.setListener(this);
-
         calendarView.removeAllEvents();
         calendarView.addEvents(convertEvents(db.getEvents()));
         calendarView.invalidate();
-
         updateDB();
+
         return layout;
     }
 
@@ -81,7 +85,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
 
     @Override
     public void onMonthScroll(Date firstDayOfNewMonth) {
-        //// TODO: 07/01/2017 update textView
+        monthView.setText(month.format(firstDayOfNewMonth));
     }
 
     @Override
