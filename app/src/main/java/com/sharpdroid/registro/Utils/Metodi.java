@@ -197,6 +197,10 @@ public class Metodi {
         return list;
     }
 
+    public static String toLowerCase(String s) {
+        return (s != null) ? s.toLowerCase() : null;
+    }
+
     public static String NomeDecente(String name) {
         if (!isEmptyOrNull(name)) {
             String new_name = "";

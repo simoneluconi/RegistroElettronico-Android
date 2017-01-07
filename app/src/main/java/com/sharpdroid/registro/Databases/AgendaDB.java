@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.sharpdroid.registro.Databases.DatabaseInfo.DB_VERSION;
+import static com.sharpdroid.registro.Utils.Metodi.toLowerCase;
 
 public class AgendaDB extends SQLiteOpenHelper {
 
@@ -72,20 +73,20 @@ public class AgendaDB extends SQLiteOpenHelper {
         for (Event e : events) {
             values = new ContentValues();
             values.put("code", e.getId());
-            values.put("title", e.getTitle().toLowerCase());
+            values.put("title", toLowerCase(e.getTitle()));
             values.put("start", e.getStart().getTime());
             values.put("end", e.getEnd().getTime());
             values.put("allDay", e.isAllDay() ? 1 : 0);
             values.put("data_inserimento", e.getData_inserimento().getTime());
-            values.put("nota_2", e.getNota_2().toLowerCase());
+            values.put("nota_2", toLowerCase(e.getNota_2()));
             values.put("master_id", e.getMaster_id());
             values.put("classe_id", e.getClasse_id());
             values.put("classe_desc", e.getClasse_desc());
             values.put("gruppo", e.getGruppo());
-            values.put("autore_desc", e.getAutore_desc().toLowerCase());
+            values.put("autore_desc", toLowerCase(e.getAutore_desc()));
             values.put("autore_id", e.getAutore_id());
-            values.put("tipo", e.getTipo().toLowerCase());
-            values.put("materia_desc", e.getMateria_desc().toLowerCase());
+            values.put("tipo", toLowerCase(e.getTipo()));
+            values.put("materia_desc", toLowerCase(e.getMateria_desc()));
             values.put("materia_id", e.getMateria_id());
             db.insert(DB_NAME, null, values);
         }
