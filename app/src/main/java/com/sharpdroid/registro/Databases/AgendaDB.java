@@ -67,6 +67,7 @@ public class AgendaDB extends SQLiteOpenHelper {
 
     public void addEvents(List<Event> events) {
         SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(DB_NAME, null, null);
         ContentValues values;
         for (Event e : events) {
             values = new ContentValues();

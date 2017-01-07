@@ -2,10 +2,12 @@ package com.sharpdroid.registro.Utils;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.sharpdroid.registro.API.SpiaggiariAPI;
 import com.sharpdroid.registro.Interfaces.API.Absence;
 import com.sharpdroid.registro.Interfaces.API.Absences;
@@ -235,6 +237,17 @@ public class Metodi {
         return media / n;
     }
 
+    public static List<Event> convertEvents(List<com.sharpdroid.registro.Interfaces.API.Event> events) {
+        List<Event> list = new ArrayList<>();
+        for (com.sharpdroid.registro.Interfaces.API.Event event : events) {
+            list.add(new Event(isEventTest(event) ? Color.RED : Color.GREEN, event.getStart().getTime(), event));
+        }
+        return list;
+    }
+
+    public static boolean isEventTest(com.sharpdroid.registro.Interfaces.API.Event event) {
+        return event.getTitle().contains("compito") || event.getTitle().contains("interrogazione scritta") || event.getTitle().contains("verifica");
+    }
 
     public static boolean writeResponseBodyToDisk(ResponseBody body, File file) {
         try {

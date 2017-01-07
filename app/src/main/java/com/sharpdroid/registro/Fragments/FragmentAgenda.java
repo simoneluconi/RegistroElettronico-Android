@@ -3,12 +3,14 @@ package com.sharpdroid.registro.Fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
+import com.sharpdroid.registro.API.SpiaggiariApiClient;
 import com.sharpdroid.registro.Databases.AgendaDB;
 import com.sharpdroid.registro.R;
 
@@ -18,6 +20,10 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import butterknife.ButterKnife;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+
+import static com.sharpdroid.registro.Utils.Metodi.convertEvents;
 
 public class FragmentAgenda extends Fragment implements CompactCalendarView.CompactCalendarViewListener {
     final private String TAG = FragmentAgenda.class.getSimpleName();
@@ -48,18 +54,33 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         calendarView.setUseThreeLetterAbbreviation(true);
         calendarView.setListener(this);
 
+        calendarView.addEvents(convertEvents(db.getEvents()));
+        calendarView.invalidate();
+
+        updateDB();
         return layout;
+    }
+
+    private void updateDB() {
+        new SpiaggiariApiClient(mContext).mService.getEvents(0L, Long.MAX_VALUE)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(objects -> {
+                    db.addEvents(objects);
+                    calendarView.addEvents(convertEvents(db.getEvents()));
+                    calendarView.invalidate();
+                }, throwable -> Log.e(TAG, throwable.getLocalizedMessage()));
     }
 
     @Override
     public void onDayClick(Date dateClicked) {
-        Toast.makeText(mContext, format.format(dateClicked), Toast.LENGTH_LONG).show();
+        Toast.makeText(mContext, dateClicked.toLocaleString(), Toast.LENGTH_LONG).show();
 
     }
 
     @Override
     public void onMonthScroll(Date firstDayOfNewMonth) {
-        Toast.makeText(mContext, format.format(firstDayOfNewMonth), Toast.LENGTH_LONG).show();
+        Toast.makeText(mContext, firstDayOfNewMonth.toLocaleString(), Toast.LENGTH_LONG).show();
     }
 
     @Override
