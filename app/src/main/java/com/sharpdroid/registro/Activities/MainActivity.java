@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.sharpdroid.registro.Fragments.FragmentAgenda;
 import com.sharpdroid.registro.Fragments.FragmentAllAbsences;
 import com.sharpdroid.registro.Fragments.FragmentCommunications;
@@ -34,6 +35,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     @BindView(R.id.nav_view)
     NavigationView mNavigationView;
+    @BindView(R.id.calendar)
+    CompactCalendarView calendarView;
 
     SharedPreferences settings;
 
@@ -46,7 +49,6 @@ public class MainActivity extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -88,6 +90,12 @@ public class MainActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+
+            if (isAgendaSelected()) {
+                calendarView.setVisibility(View.VISIBLE);
+            } else {
+                calendarView.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -95,10 +103,11 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         Fragment fragment;
-
+        calendarView.setVisibility(View.GONE);
         switch (item.getItemId()) {
             case R.id.agenda:
-                fragment = new FragmentAgenda();
+                fragment = FragmentAgenda.getInstance(calendarView);
+                calendarView.setVisibility(View.VISIBLE);
                 break;
             case R.id.medie:
                 fragment = new FragmentMedie();
@@ -180,5 +189,9 @@ public class MainActivity extends AppCompatActivity
             mNavigationView.getMenu().getItem(drawer_to_open).setChecked(true);
             onNavigationItemSelected(mNavigationView.getMenu().getItem(drawer_to_open));
         }
+    }
+
+    boolean isAgendaSelected() {
+        return mNavigationView.getMenu().findItem(R.id.agenda).isChecked();
     }
 }
