@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.sharpdroid.registro.Interfaces.API.Absences;
 import com.sharpdroid.registro.Interfaces.API.Communication;
 import com.sharpdroid.registro.Interfaces.API.CommunicationDescription;
+import com.sharpdroid.registro.Interfaces.API.Event;
 import com.sharpdroid.registro.Interfaces.API.FileTeacher;
 import com.sharpdroid.registro.Interfaces.API.Lesson;
 import com.sharpdroid.registro.Interfaces.API.LessonSubject;
@@ -23,6 +24,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface RESTfulAPIService {
 
@@ -70,6 +72,6 @@ public interface RESTfulAPIService {
     @GET("scrutinies")
     Observable<List<Scrutiny>> getScrutines();
 
-    @GET("events?start={start}&end={end}")
-    Observable<List<Object>> getEvents(@Path("start") long start, @Path("end") long end);
+    @GET("events")
+    Observable<List<Event>> getEvents(@Query(value = "start") long start, @Query(value = "end") long end);
 }
