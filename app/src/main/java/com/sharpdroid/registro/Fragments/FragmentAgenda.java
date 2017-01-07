@@ -54,6 +54,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         calendarView.setUseThreeLetterAbbreviation(true);
         calendarView.setListener(this);
 
+        calendarView.removeAllEvents();
         calendarView.addEvents(convertEvents(db.getEvents()));
         calendarView.invalidate();
 
@@ -67,6 +68,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(objects -> {
                     db.addEvents(objects);
+                    calendarView.removeAllEvents();
                     calendarView.addEvents(convertEvents(db.getEvents()));
                     calendarView.invalidate();
                 }, throwable -> Log.e(TAG, throwable.getLocalizedMessage()));
