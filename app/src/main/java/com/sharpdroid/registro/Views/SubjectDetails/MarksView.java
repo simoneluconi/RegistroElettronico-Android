@@ -76,6 +76,7 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
         inflate(mContext, R.layout.view_marks, this);
         ButterKnife.bind(this);
 
+        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).marginResId(R.dimen.padding_left_divider2, R.dimen.activity_vertical_margin).size(1).build());
 
@@ -180,9 +181,9 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
         line.setDrawValues(false);
         line.setDrawFilled(true);
         line.setDrawCircles(false);
+        line.setDrawCircleHole(false);
         line.setCircleRadius(1.5f);
         line.setCircleColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
-        line.setDrawCircleHole(false);
         line.setAxisDependency(YAxis.AxisDependency.LEFT);
         //drawable gradient
         if (Utils.getSDKInt() >= 18) {

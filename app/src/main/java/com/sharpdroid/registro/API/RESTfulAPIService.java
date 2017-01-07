@@ -69,4 +69,7 @@ public interface RESTfulAPIService {
 
     @GET("scrutinies")
     Observable<List<Scrutiny>> getScrutines();
+
+    @GET("events?start={start}&end={end}")
+    Observable<List<Object>> getEvents(@Path("start") long start, @Path("end") long end);
 }
