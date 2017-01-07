@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.sharpdroid.registro.API.SpiaggiariApiClient;
@@ -77,13 +76,12 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
 
     @Override
     public void onDayClick(Date dateClicked) {
-        Toast.makeText(mContext, dateClicked.toLocaleString(), Toast.LENGTH_LONG).show();
-
+        // TODO: 07/01/2017 update recycler
     }
 
     @Override
     public void onMonthScroll(Date firstDayOfNewMonth) {
-        Toast.makeText(mContext, firstDayOfNewMonth.toLocaleString(), Toast.LENGTH_LONG).show();
+        //// TODO: 07/01/2017 update textView
     }
 
     @Override
