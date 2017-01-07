@@ -208,9 +208,9 @@ public class Metodi {
             for (String ins : insV) {
                 new_name += ins.substring(0, 1).toUpperCase() + ins.substring(1).toLowerCase() + " ";
             }
-            return new_name;
+            return new_name.trim();
         } else {
-            return name;
+            return name.trim();
         }
     }
 
@@ -250,7 +250,8 @@ public class Metodi {
     }
 
     public static boolean isEventTest(com.sharpdroid.registro.Interfaces.API.Event event) {
-        return event.getTitle().contains("compito") || event.getTitle().contains("interrogazione scritta") || event.getTitle().contains("verifica");
+        return event.getTitle().contains("compito in classe") || event.getTitle().contains("interrogazione scritta") || event.getTitle().contains("verifica ")
+                || event.getTitle().contains("prova ") || event.getTitle().contains("test ") || event.getTitle().endsWith("test");
     }
 
     public static boolean writeResponseBodyToDisk(ResponseBody body, File file) {
