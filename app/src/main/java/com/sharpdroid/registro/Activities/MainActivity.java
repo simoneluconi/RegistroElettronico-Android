@@ -7,22 +7,17 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.graphics.drawable.DrawerArrowDrawable;
-import android.util.Log;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
-import com.rokpetek.breadcrumbtoolbar.BreadcrumbToolbar;
-import com.sharpdroid.registro.Fragments.BreadCrumbFragment;
 import com.sharpdroid.registro.Fragments.FragmentAgenda;
 import com.sharpdroid.registro.Fragments.FragmentAllAbsences;
 import com.sharpdroid.registro.Fragments.FragmentCommunications;
@@ -37,13 +32,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, BreadcrumbToolbar.BreadcrumbToolbarListener, FragmentManager.OnBackStackChangedListener {
+        implements NavigationView.OnNavigationItemSelectedListener {
     @BindView(R.id.nav_view)
     NavigationView mNavigationView;
     @BindView(R.id.calendar)
     CompactCalendarView calendarView;
-    @BindView(R.id.breadcrumb_toolbar)
-    BreadcrumbToolbar toolbar;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
 
@@ -54,23 +49,18 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         ButterKnife.bind(this);
 
-        //setSupportActionBar(toolbar);
-        toolbar.setBreadcrumbToolbarListener(this);
-        DrawerArrowDrawable drawerArrow = new DrawerArrowDrawable(this);
-        drawerArrow.setColor(ContextCompat.getColor(this, android.R.color.white));
-        toolbar.setNavigationIcon(drawerArrow);
+        //  actionBar
+        setSupportActionBar(toolbar);
 
-        getSupportFragmentManager().addOnBackStackChangedListener(this);
-
+        //  Back/Menu Icon
         bindDrawerToggle();
 
         mNavigationView.setNavigationItemSelectedListener(this);
 
+        //  first run
         settings = getSharedPreferences("REGISTRO", MODE_PRIVATE);
-
         if (settings.getBoolean("primo_avvio", true)) {
             // first time task
             startActivityForResult(new Intent(this, Intro.class), 1);
@@ -120,28 +110,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onBackStackChanged() {
-        int stackSize = getSupportFragmentManager().getBackStackEntryCount();
-        Log.d("STACK", "CHANGED - " + stackSize);
-        if (stackSize >= 0) {
-            // Drawer shouldn't affect the toggle icon if breadcrumbs are displayed
-            if (drawer != null && toggle != null) {
-                drawer.removeDrawerListener(toggle);
-            }
-        }
-        if (toolbar != null) {
-            // Handle breadcrumb items add/remove anywhere, as long as you track their size
-            toolbar.onBreadcrumbAction(stackSize);
-        }
-    }
-
-    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         Fragment fragment;
         calendarView.setVisibility(View.GONE);
-
-        clearFragmentBackStack();
 
         switch (item.getItemId()) {
             case R.id.agenda:
@@ -195,9 +167,7 @@ public class MainActivity extends AppCompatActivity
         // Replace whatever is in the fragment_container view with this fragment,
         // and add the transaction to the back stack so the user can navigate back
         transaction.replace(R.id.fragment_container, fragment);
-        if (item.getItemId() == R.id.files) {
-            transaction.addToBackStack(null);
-        }
+
         // Commit the transaction
         transaction.commit();
 
@@ -234,35 +204,5 @@ public class MainActivity extends AppCompatActivity
 
     boolean isAgendaSelected() {
         return mNavigationView.getMenu().findItem(R.id.agenda).isChecked();
-    }
-
-    @Override
-    public void onBreadcrumbToolbarItemPop(int stackSize) {
-        getSupportFragmentManager().popBackStack();
-        Log.d("BREADCRUMB", "Toolbar is now of size " + stackSize + " -> " + getSupportFragmentManager().getBackStackEntryCount());
-
-    }
-
-    @Override
-    public void onBreadcrumbToolbarEmpty() {
-        bindDrawerToggle();
-        Log.d("BREADCRUMB", "Toolbar is now EMPTY");
-    }
-
-    @Override
-    public String getFragmentName() {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if (fragment instanceof BreadCrumbFragment) {
-            return ((BreadCrumbFragment) fragment).getFragmentName();
-        }
-        return null;
-    }
-
-    private void clearFragmentBackStack() {
-        FragmentManager fm = getSupportFragmentManager();
-        int count = fm.getBackStackEntryCount();
-        for (int i = 0; i < count; ++i) {
-            fm.popBackStack();
-        }
     }
 }

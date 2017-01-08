@@ -13,23 +13,19 @@
         android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <!--
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
--->
-        <com.rokpetek.breadcrumbtoolbar.BreadcrumbToolbar
-            android:id="@+id/breadcrumb_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize" />
+
 
         <com.github.sundeepk.compactcalendarview.CompactCalendarView
             android:id="@+id/calendar"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:visibility="gone"
+            android:layout_marginBottom="16dp"
             app:compactCalendarBackgroundColor="?attr/colorPrimary"
             app:compactCalendarCurrentDayBackgroundColor="@color/bluematerial"
             app:compactCalendarCurrentSelectedDayBackgroundColor="?attr/colorPrimaryDark"
