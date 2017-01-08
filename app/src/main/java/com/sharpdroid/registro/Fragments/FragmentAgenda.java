@@ -45,6 +45,8 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
 
     @BindView(R.id.recycler)
     RecyclerView recycler;
+    @BindView(R.id.place_holder)
+    View place_holder;
 
     public static FragmentAgenda getInstance(CompactCalendarView c, Toolbar month) {
         calendarView = c;
@@ -73,9 +75,10 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         calendarView.invalidate();
         updateDB();
 
-        adapter = new AgendaAdapter(mContext);
+        adapter = new AgendaAdapter(mContext, place_holder);
         recycler.setLayoutManager(new LinearLayoutManager(mContext));
         recycler.setAdapter(adapter);
+
 
         return layout;
     }
