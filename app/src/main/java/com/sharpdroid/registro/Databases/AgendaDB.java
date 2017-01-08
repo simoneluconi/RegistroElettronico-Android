@@ -28,13 +28,13 @@ public class AgendaDB extends SQLiteOpenHelper {
     };  //COUNT = 17
     private Context mContext;
 
-    public static AgendaDB from(Context c) {
-        return new AgendaDB(c);
-    }
-
     private AgendaDB(Context c) {
         super(c, DB_NAME, null, DB_VERSION);
         mContext = c;
+    }
+
+    public static AgendaDB from(Context c) {
+        return new AgendaDB(c);
     }
 
     @Override

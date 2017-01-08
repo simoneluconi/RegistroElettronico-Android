@@ -33,29 +33,26 @@ import io.reactivex.schedulers.Schedulers;
 import static com.sharpdroid.registro.Utils.Metodi.convertEvents;
 
 public class FragmentAgenda extends Fragment implements CompactCalendarView.CompactCalendarViewListener {
-    final private String TAG = FragmentAgenda.class.getSimpleName();
-
-    SimpleDateFormat month = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
-
-    private Context mContext;
     private static CompactCalendarView calendarView;
     private static Toolbar actionBar;
-    private AgendaDB db;
-    private AgendaAdapter adapter;
-
+    final private String TAG = FragmentAgenda.class.getSimpleName();
+    SimpleDateFormat month = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
     @BindView(R.id.recycler)
     RecyclerView recycler;
     @BindView(R.id.place_holder)
     View place_holder;
+    private Context mContext;
+    private AgendaDB db;
+    private AgendaAdapter adapter;
+
+    public FragmentAgenda() {
+    }
 
     public static FragmentAgenda getInstance(CompactCalendarView c, Toolbar month) {
         calendarView = c;
         actionBar = month;
 
         return new FragmentAgenda();
-    }
-
-    public FragmentAgenda() {
     }
 
     @Override

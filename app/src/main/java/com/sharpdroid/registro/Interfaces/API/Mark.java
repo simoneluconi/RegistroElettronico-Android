@@ -4,15 +4,14 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Mark implements Serializable {
+    public static final String PRIMO_PERIODO = "q1";
+    public static final String SECONDO_PERIODO = "q3";
     private String q;
     private boolean ns;
     private String type;
     private Date date;
     private String mark;
     private String desc;
-
-    public static final String PRIMO_PERIODO = "q1";
-    public static final String SECONDO_PERIODO = "q3";
 
 
     Mark(String q, boolean ns, String type, Date date, String mark, String desc) {

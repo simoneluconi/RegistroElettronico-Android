@@ -39,23 +39,21 @@ import io.reactivex.schedulers.Schedulers;
 import static com.sharpdroid.registro.Utils.Metodi.isNetworkAvailable;
 
 public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+    static FragmentManager fragmentManager;
     final private String TAG = FragmentFolders.class.getSimpleName();
-
     @BindView(R.id.coordinator_layout)
     CoordinatorLayout mCoordinatorLayout;
     @BindView(R.id.swiperefresh)
     SwipeRefreshLayout mSwipeRefreshLayout;
-
     Context mContext;
     FolderAdapter mRVAdapter;
-    static FragmentManager fragmentManager;
+
+    public FragmentFolders() {
+    }
 
     public static FragmentFolders getInstance(FragmentManager fm) {
         fragmentManager = fm;
         return new FragmentFolders();
-    }
-
-    public FragmentFolders() {
     }
 
     @Override

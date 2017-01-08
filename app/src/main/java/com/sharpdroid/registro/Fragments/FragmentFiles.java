@@ -32,6 +32,7 @@ public class FragmentFiles extends Fragment {
     FileAdapter mRVAdapter;
     FilesDB db;
     Folder data;
+
     public FragmentFiles() {
     }
 
