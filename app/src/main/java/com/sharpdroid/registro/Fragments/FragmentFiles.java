@@ -1,8 +1,10 @@
 package com.sharpdroid.registro.Fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,7 +24,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public class FragmentFiles extends BreadCrumbFragment {
+public class FragmentFiles extends Fragment {
     final static String TAG = FragmentFiles.class.getSimpleName();
     private final SimpleDateFormat formatter = new SimpleDateFormat("MMM d, yyyy", Locale.ITALIAN);
 
@@ -80,9 +82,9 @@ public class FragmentFiles extends BreadCrumbFragment {
 
             @Override
             public int dividerRightMargin(int position, RecyclerView parent) {
-                return 0;
+                return (int) getContext().getResources().getDimension(R.dimen.activity_horizontal_margin);
             }
-        }).size(1).build());
+        }).color(Color.parseColor("#11000000")).size(1).build());
         mRecyclerView.setItemAnimator(null);
 
         mRecyclerView.setAdapter(mRVAdapter);
@@ -99,10 +101,5 @@ public class FragmentFiles extends BreadCrumbFragment {
     public void onDestroyView() {
         super.onDestroyView();
         db.close();
-    }
-
-    @Override
-    public String getFragmentName() {
-        return data.getName().trim();
     }
 }
