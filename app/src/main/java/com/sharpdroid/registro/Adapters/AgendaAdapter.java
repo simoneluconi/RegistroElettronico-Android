@@ -26,6 +26,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.sharpdroid.registro.Utils.Metodi.NomeDecente;
+import static com.sharpdroid.registro.Utils.Metodi.convertCalendarEvents;
 import static com.sharpdroid.registro.Utils.Metodi.isEventTest;
 
 public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -82,6 +83,16 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public void addAll(List<Event> events) {
         CVDataList = convert(events);
+        if (CVDataList.size() == 0) {
+            place_holder.setVisibility(View.VISIBLE);
+        } else {
+            place_holder.setVisibility(View.GONE);
+        }
+        notifyDataSetChanged();
+    }
+
+    public void addAllCalendarEvents(List<com.github.sundeepk.compactcalendarview.domain.Event> events) {
+        CVDataList = convert(convertCalendarEvents(events));
         if (CVDataList.size() == 0) {
             place_holder.setVisibility(View.VISIBLE);
         } else {

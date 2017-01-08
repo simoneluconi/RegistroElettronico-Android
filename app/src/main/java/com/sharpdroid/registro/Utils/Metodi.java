@@ -184,6 +184,13 @@ public class Metodi {
         return days;
     }
 
+    public static List<com.sharpdroid.registro.Interfaces.API.Event> convertCalendarEvents(List<Event> events) {
+        List<com.sharpdroid.registro.Interfaces.API.Event> convert = new ArrayList<>();
+        for (Event e : events) {
+            convert.add((com.sharpdroid.registro.Interfaces.API.Event) e.getData());
+        }
+        return convert;
+    }
 
     public static List<Integer> getListLayouts(List<FileTeacher> data) {
         List<Integer> list = new ArrayList<>();

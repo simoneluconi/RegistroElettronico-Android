@@ -12,16 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
-import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.sharpdroid.registro.API.SpiaggiariApiClient;
 import com.sharpdroid.registro.Adapters.AgendaAdapter;
 import com.sharpdroid.registro.Databases.AgendaDB;
 import com.sharpdroid.registro.R;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -75,6 +72,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         adapter = new AgendaAdapter(mContext, place_holder);
         recycler.setLayoutManager(new LinearLayoutManager(mContext));
         recycler.setAdapter(adapter);
+        adapter.addAllCalendarEvents(calendarView.getEvents(new Date()));
 
 
         return layout;
@@ -101,12 +99,8 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
 
     @Override
     public void onDayClick(Date dateClicked) {
-        List<com.sharpdroid.registro.Interfaces.API.Event> events = new ArrayList<>();
-        for (Event e : calendarView.getEvents(dateClicked)) {
-            events.add((com.sharpdroid.registro.Interfaces.API.Event) e.getData());
-        }
         adapter.clear();
-        adapter.addAll(events);
+        adapter.addAllCalendarEvents(calendarView.getEvents(dateClicked));
     }
 
     @Override
