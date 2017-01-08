@@ -82,6 +82,8 @@ public class MainActivity extends AppCompatActivity
                 //User cancelled the intro so we'll finish this activity too.
                 finish();
             }
+        } else if (requestCode == 2) {
+            toggleAgenda();
         }
     }
 
@@ -100,13 +102,8 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
+            toggleAgenda();
             super.onBackPressed();
-
-            if (isAgendaSelected()) {
-                calendarView.setVisibility(View.VISIBLE);
-            } else {
-                calendarView.setVisibility(View.GONE);
-            }
         }
     }
 
@@ -150,14 +147,14 @@ public class MainActivity extends AppCompatActivity
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Registro Elettronico");
                 String url = "https://play.google.com/store/apps/details?id=com.sharpdroid.registroelettronico";
                 intent.putExtra(Intent.EXTRA_TEXT, url);
-                startActivity(Intent.createChooser(intent, getString(R.string.select_app)));
+                startActivityForResult(Intent.createChooser(intent, getString(R.string.select_app)), 2);
             case R.id.nav_send:
                 Intent intent_mail = new Intent(Intent.ACTION_SENDTO);
                 intent_mail.setType("text/plain");
                 intent_mail.setData(Uri.parse("mailto:bugreport@registroelettronico.ml"));
                 intent_mail.putExtra(Intent.EXTRA_SUBJECT, "Registro Elettronico");
                 intent_mail.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(Intent.createChooser(intent_mail, getString(R.string.select_email_client)));
+                startActivityForResult(Intent.createChooser(intent_mail, getString(R.string.select_email_client)), 2);
             default:
                 return false;
         }
@@ -202,7 +199,11 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    boolean isAgendaSelected() {
-        return mNavigationView.getMenu().findItem(R.id.agenda).isChecked();
+    void toggleAgenda() {
+        if (mNavigationView.getMenu().findItem(R.id.agenda).isChecked()) {
+            calendarView.setVisibility(View.VISIBLE);
+        } else {
+            calendarView.setVisibility(View.GONE);
+        }
     }
 }
