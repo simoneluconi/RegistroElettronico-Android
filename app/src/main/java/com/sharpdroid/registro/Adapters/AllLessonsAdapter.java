@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.IdRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.sharpdroid.registro.Adapters.Holders.HeaderHolder;
@@ -57,6 +58,12 @@ public class AllLessonsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             ((HeaderHolder) holder).content.setText(beautifyName(((HeaderEntry) types.get(position)).getContent()));
         } else {
             LessonHolder lessonHolder = (LessonHolder) holder;
+
+            if (getItemViewType(position - 1) == HeaderEntry.ID)
+                lessonHolder.divider.setVisibility(View.INVISIBLE);
+            else
+                lessonHolder.divider.setVisibility(View.VISIBLE);
+
             LessonEntry entry = (LessonEntry) types.get(position);
 
             lessonHolder.content.setText(entry.getLesson().getContent());
