@@ -3,7 +3,6 @@ package com.sharpdroid.registro.Fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,14 +22,14 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public class FragmentFiles extends Fragment {
+public class FragmentFiles extends BreadCrumbFragment {
     final static String TAG = FragmentFiles.class.getSimpleName();
     private final SimpleDateFormat formatter = new SimpleDateFormat("MMM d, yyyy", Locale.ITALIAN);
 
     Context mContext;
     FileAdapter mRVAdapter;
     FilesDB db;
-
+    Folder data;
     public FragmentFiles() {
     }
 
@@ -56,7 +55,6 @@ public class FragmentFiles extends Fragment {
         folder_layout.setClickable(false);
         folder_layout.setFocusable(false);
 
-        Folder data = null;
         try {
             //GET DATA VIA JSON
             data = new Gson().getAdapter(Folder.class).fromJson(getArguments().getString("folder"));
@@ -101,5 +99,10 @@ public class FragmentFiles extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         db.close();
+    }
+
+    @Override
+    public String getFragmentName() {
+        return data.getName().trim();
     }
 }

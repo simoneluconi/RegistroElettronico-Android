@@ -5,7 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,7 +37,7 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.sharpdroid.registro.Utils.Metodi.isNetworkAvailable;
 
-public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class FragmentFolders extends BreadCrumbFragment implements SwipeRefreshLayout.OnRefreshListener {
     final private String TAG = FragmentFolders.class.getSimpleName();
 
     @BindView(R.id.coordinator_layout)
@@ -47,6 +47,12 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
 
     Context mContext;
     FolderAdapter mRVAdapter;
+    static FragmentManager fragmentManager;
+
+    public static FragmentFolders getInstance(FragmentManager fm) {
+        fragmentManager = fm;
+        return new FragmentFolders();
+    }
 
     public FragmentFolders() {
     }
@@ -70,7 +76,7 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerView.setItemAnimator(null);
 
-        mRVAdapter = new FolderAdapter(mContext, getFragmentManager());
+        mRVAdapter = new FolderAdapter(mContext, fragmentManager);
         mRecyclerView.setAdapter(mRVAdapter);
 
         bindFileTeacherCache();
@@ -143,5 +149,10 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);
         }
+    }
+
+    @Override
+    public String getFragmentName() {
+        return mContext.getString(R.string.files);
     }
 }

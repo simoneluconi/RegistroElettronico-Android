@@ -3,9 +3,9 @@ package com.sharpdroid.registro.Fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,14 +39,14 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
 
     private Context mContext;
     private static CompactCalendarView calendarView;
-    private static ActionBar actionBar;
+    private static Toolbar actionBar;
     private AgendaDB db;
     private AgendaAdapter adapter;
 
     @BindView(R.id.recycler)
     RecyclerView recycler;
 
-    public static FragmentAgenda getInstance(CompactCalendarView c, ActionBar month) {
+    public static FragmentAgenda getInstance(CompactCalendarView c, Toolbar month) {
         calendarView = c;
         actionBar = month;
 
