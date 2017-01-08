@@ -251,7 +251,7 @@ public class Metodi {
     public static List<Event> convertEvents(List<com.sharpdroid.registro.Interfaces.API.Event> events) {
         List<Event> list = new ArrayList<>();
         for (com.sharpdroid.registro.Interfaces.API.Event event : events) {
-            list.add(new Event(isEventTest(event) ? Color.RED : Color.GREEN, event.getStart().getTime(), event));
+            list.add(new Event(isEventTest(event) ? Color.RED : Color.parseColor("#FFC200"), event.getStart().getTime(), event));
         }
         return list;
     }
