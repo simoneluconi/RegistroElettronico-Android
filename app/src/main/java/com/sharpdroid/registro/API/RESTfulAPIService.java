@@ -67,11 +67,14 @@ public interface RESTfulAPIService {
             @Path("id") int id);
 
     @GET("communication/{id}/download")
-    Observable<Response<ResponseBody>> getcommunicationDownload(@Path("id") int id);
+    Observable<Response<ResponseBody>> getcommunicationDownload(
+            @Path("id") int id);
 
     @GET("scrutinies")
     Observable<List<Scrutiny>> getScrutines();
 
     @GET("events")
-    Observable<List<Event>> getEvents(@Query(value = "start") long start, @Query(value = "end") long end);
+    Observable<List<Event>> getEvents(
+            @Query(value = "start") long start,
+            @Query(value = "end") long end);
 }
