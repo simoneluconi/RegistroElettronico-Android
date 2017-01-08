@@ -60,17 +60,25 @@ public class TargetView extends CardView {
         ButterKnife.bind(this);
     }
 
-    private void setMedia(float media) {
-        this.media = media;
-        this.mediaView.setText(String.format(Locale.getDefault(), "%.2f", media));
-    }
-
     public void setProgress(Float media) {
         setMedia(media);
 
         //bar
         progressBar.setProgress(media);
         progressBar.setProgressColor(getColor(getMarkColor(media, target)));
+    }
+
+    public float getMedia() {
+        return media;
+    }
+
+    private void setMedia(float media) {
+        this.media = media;
+        this.mediaView.setText(String.format(Locale.getDefault(), "%.2f", media));
+    }
+
+    public float getTarget() {
+        return target;
     }
 
     public void setTarget(float target) {
@@ -80,14 +88,6 @@ public class TargetView extends CardView {
         //bar
         progressBar.setMax(target);
         setProgress(media);
-    }
-
-    public float getMedia() {
-        return media;
-    }
-
-    public float getTarget() {
-        return target;
     }
 
     public void clear() {
