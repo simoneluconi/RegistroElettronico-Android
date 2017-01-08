@@ -1,5 +1,7 @@
 package com.sharpdroid.registro.Interfaces.Client;
 
+import android.util.Log;
+
 import com.sharpdroid.registro.API.SpiaggiariAPI;
 import com.sharpdroid.registro.Interfaces.API.Mark;
 
@@ -84,29 +86,44 @@ public class Media implements Serializable {
     public void addMarks(List<Mark> marks) {
         for (Mark mark : marks) {
             if (!mark.isNs()) {
-                if (Float.parseFloat(mark.getMark()) > 0) {
-                    switch (mark.getType()) {
-                        case SpiaggiariAPI.ORALE:
-                            this.somma_orale += Float.parseFloat(mark.getMark());
-                            this.numero_voti_orale++;
-                            break;
-                        case SpiaggiariAPI.PRATICO:
-                            this.somma_pratico += Float.parseFloat(mark.getMark());
-                            this.numero_voti_pratico++;
-                            break;
-                        case SpiaggiariAPI.SCRITTO:
-                            this.somma_scritto += Float.parseFloat(mark.getMark());
-                            this.numero_voti_scritto++;
-                            break;
+                if (isNumericMark(mark))
+                    if (Float.parseFloat(mark.getMark()) > 0) {
+                        switch (mark.getType()) {
+                            case SpiaggiariAPI.ORALE:
+                                this.somma_orale += Float.parseFloat(mark.getMark());
+                                this.numero_voti_orale++;
+                                break;
+                            case SpiaggiariAPI.PRATICO:
+                                this.somma_pratico += Float.parseFloat(mark.getMark());
+                                this.numero_voti_pratico++;
+                                break;
+                            case SpiaggiariAPI.SCRITTO:
+                                this.somma_scritto += Float.parseFloat(mark.getMark());
+                                this.numero_voti_scritto++;
+                                break;
+                        }
+                        this.somma_generale += Float.parseFloat(mark.getMark());
+                        this.numero_voti_generale++;
+                    } else {
+                        //Log.e(Media.class.getCanonicalName(), "Voto inferiore a 0");
                     }
-                    this.somma_generale += Float.parseFloat(mark.getMark());
-                    this.numero_voti_generale++;
-                } else {
-                    //Log.e(Media.class.getCanonicalName(), "Voto inferiore a 0");
-                }
             } else {
                 //Log.d(Media.class.getCanonicalName(), String.format("%s %s non è significativo", materia, mark.getMark()));
             }
         }
+    }
+
+    private boolean isNumericMark(Mark mark) {
+        try {
+            Float.parseFloat(mark.getMark());
+        } catch (java.lang.NumberFormatException ex) {
+            Log.d("isNumericMark", String.format("Voto non valido: %s ", mark.getMark()));
+            return false;
+        }
+        return true;
+    }
+
+    public boolean containsValidMarks() {
+        return (numero_voti_generale > 0);
     }
 }
