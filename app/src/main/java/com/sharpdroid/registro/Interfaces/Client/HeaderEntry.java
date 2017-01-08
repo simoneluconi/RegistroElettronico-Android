@@ -19,6 +19,6 @@ public class HeaderEntry extends Entry {
 
     @Override
     public int getID() {
-        return 0;
+        return ID;
     }
 }

@@ -19,16 +19,6 @@
             android:layout_height="?attr/actionBarSize"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-        <TextView
-            android:id="@+id/month"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingBottom="4dp"
-            android:textColor="@color/md_white_1000"
-            android:textSize="13sp"
-            android:textStyle="bold" />
-
         <com.github.sundeepk.compactcalendarview.CompactCalendarView
             android:id="@+id/calendar"
             android:layout_width="match_parent"
