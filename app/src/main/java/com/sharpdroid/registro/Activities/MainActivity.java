@@ -9,10 +9,12 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,6 +59,9 @@ public class MainActivity extends AppCompatActivity
 
         //setSupportActionBar(toolbar);
         toolbar.setBreadcrumbToolbarListener(this);
+        DrawerArrowDrawable drawerArrow = new DrawerArrowDrawable(this);
+        drawerArrow.setColor(ContextCompat.getColor(this, android.R.color.white));
+        toolbar.setNavigationIcon(drawerArrow);
 
         getSupportFragmentManager().addOnBackStackChangedListener(this);
 
@@ -190,7 +195,9 @@ public class MainActivity extends AppCompatActivity
         // Replace whatever is in the fragment_container view with this fragment,
         // and add the transaction to the back stack so the user can navigate back
         transaction.replace(R.id.fragment_container, fragment);
-
+        if (item.getItemId() == R.id.files) {
+            transaction.addToBackStack(null);
+        }
         // Commit the transaction
         transaction.commit();
 
@@ -232,11 +239,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBreadcrumbToolbarItemPop(int stackSize) {
         getSupportFragmentManager().popBackStack();
+        Log.d("BREADCRUMB", "Toolbar is now of size " + stackSize + " -> " + getSupportFragmentManager().getBackStackEntryCount());
+
     }
 
     @Override
     public void onBreadcrumbToolbarEmpty() {
         bindDrawerToggle();
+        Log.d("BREADCRUMB", "Toolbar is now EMPTY");
     }
 
     @Override
