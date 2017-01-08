@@ -17,7 +17,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class AllLessonsActivity extends AppCompatActivity {
-
     @BindView(R.id.recycler)
     RecyclerView mRecyclerView;
 
