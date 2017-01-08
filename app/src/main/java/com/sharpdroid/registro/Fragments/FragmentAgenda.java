@@ -31,7 +31,7 @@ import static com.sharpdroid.registro.Utils.Metodi.convertEvents;
 
 public class FragmentAgenda extends Fragment implements CompactCalendarView.CompactCalendarViewListener {
     private static CompactCalendarView calendarView;
-    private static Toolbar actionBar;
+    private Toolbar actionBar;
     final private String TAG = FragmentAgenda.class.getSimpleName();
     SimpleDateFormat month = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
     @BindView(R.id.recycler)
@@ -45,11 +45,9 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     public FragmentAgenda() {
     }
 
-    public static FragmentAgenda getInstance(CompactCalendarView c, Toolbar month) {
+    public void getInstance(CompactCalendarView c, Toolbar month) {
         calendarView = c;
         actionBar = month;
-
-        return new FragmentAgenda();
     }
 
     @Override
@@ -74,14 +72,12 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         recycler.setAdapter(adapter);
         adapter.addAllCalendarEvents(calendarView.getEvents(new Date()));
 
-
         return layout;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
     }
 
     private void updateDB() {

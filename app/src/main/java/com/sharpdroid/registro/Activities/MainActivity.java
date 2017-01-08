@@ -117,7 +117,9 @@ public class MainActivity extends AppCompatActivity
 
         switch (item.getItemId()) {
             case R.id.agenda:
-                fragment = FragmentAgenda.getInstance(calendarView, toolbar);
+                FragmentAgenda fragmentAgenda = new FragmentAgenda();
+                fragmentAgenda.getInstance(calendarView, toolbar);
+                fragment = fragmentAgenda;
                 calendarView.setVisibility(View.VISIBLE);
                 break;
             case R.id.medie:
