@@ -73,20 +73,29 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
         media.addMarks(marksubject.getMarks());
 
         ViewHolder.mTextViewMateria.setText(subjectname);
-        ViewHolder.mTextViewMedia.setText(String.format(Locale.getDefault(), "%.2f", media.getMediaGenerale()));
 
-        final float voto_obiettivo = Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(mContext)
-                .getString("voto_obiettivo", "8"));
+        if (media.containsValidMarks()) {
+            ViewHolder.mTextViewMedia.setText(String.format(Locale.getDefault(), "%.2f", media.getMediaGenerale()));
 
-        List<ArcProgressStackView.Model> models = new ArrayList<>();
-        models.add(new ArcProgressStackView.Model("media", media.getMediaGenerale() * 10, ContextCompat.getColor(mContext, getMediaColor(media, voto_obiettivo))));
+            final float voto_obiettivo = Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(mContext)
+                    .getString("voto_obiettivo", "8"));
 
-        ViewHolder.mArcProgressStackView.setModels(models);
+            List<ArcProgressStackView.Model> models = new ArrayList<>();
+            models.add(new ArcProgressStackView.Model("media", media.getMediaGenerale() * 10, ContextCompat.getColor(mContext, getMediaColor(media, voto_obiettivo))));
 
-        String obbiettivo_string = MessaggioVoto(voto_obiettivo, media.getMediaGenerale(), media.getNumeroVoti());
-        ViewHolder.mTextViewDesc.setText(obbiettivo_string);
+            ViewHolder.mArcProgressStackView.setModels(models);
 
-        ViewHolder.mCardViewMedia.setOnClickListener(v -> mContext.startActivity(new Intent(mContext, MarkSubjectDetailActivity.class).putExtra("data", marksubject)));
+            String obbiettivo_string = MessaggioVoto(voto_obiettivo, media.getMediaGenerale(), media.getNumeroVoti());
+            ViewHolder.mTextViewDesc.setText(obbiettivo_string);
+
+            ViewHolder.mCardViewMedia.setOnClickListener(v -> mContext.startActivity(new Intent(mContext, MarkSubjectDetailActivity.class).putExtra("data", marksubject)));
+        } else {
+            List<ArcProgressStackView.Model> models = new ArrayList<>();
+            models.add(new ArcProgressStackView.Model("media", 100, ContextCompat.getColor(mContext, R.color.intro_blue)));
+            ViewHolder.mArcProgressStackView.setModels(models);
+            ViewHolder.mTextViewMedia.setText("-");
+            ViewHolder.mTextViewDesc.setText(mContext.getString(R.string.nessun_voto_numerico));
+        }
     }
 
     @Override
