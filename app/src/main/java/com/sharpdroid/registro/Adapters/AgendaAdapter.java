@@ -25,6 +25,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.sharpdroid.registro.Utils.Metodi.NomeDecente;
 import static com.sharpdroid.registro.Utils.Metodi.isEventTest;
 
 public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -61,7 +62,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             }
 
             eventHolder.date.setText(dateFormat.format(event.getStart()));
-            eventHolder.subject.setText(event.getClasse_desc());
+            eventHolder.subject.setText(NomeDecente(event.getAutore_desc()));
             eventHolder.title.setText(event.getTitle());
         }
     }
@@ -91,20 +92,20 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         HashMap<String, List<Event>> organized = new HashMap<>();
         for (Event e : events) {
             if (isEventTest(e)) {
-                if (organized.containsKey("Verifiche")) {
-                    List<Event> verifiche = new ArrayList<>(organized.get("Verifiche"));
+                if (organized.containsKey(mContext.getString(R.string.verifiche))) {
+                    List<Event> verifiche = new ArrayList<>(organized.get(mContext.getString(R.string.verifiche)));
                     verifiche.add(e);
-                    organized.put("Verifiche", verifiche);
+                    organized.put(mContext.getString(R.string.verifiche), verifiche);
                 } else {
-                    organized.put("Verifiche", Collections.singletonList(e));
+                    organized.put(mContext.getString(R.string.verifiche), Collections.singletonList(e));
                 }
             } else {
-                if (organized.containsKey("Alti Eventi")) {
-                    List<Event> verifiche = new ArrayList<>(organized.get("Alti Eventi"));
-                    verifiche.add(e);
-                    organized.put("Alti Eventi", verifiche);
+                if (organized.containsKey(mContext.getString(R.string.altri_eventi))) {
+                    List<Event> otherEvents = new ArrayList<>(organized.get(mContext.getString(R.string.altri_eventi)));
+                    otherEvents.add(e);
+                    organized.put(mContext.getString(R.string.altri_eventi), otherEvents);
                 } else {
-                    organized.put("Alti Eventi", Collections.singletonList(e));
+                    organized.put(mContext.getString(R.string.altri_eventi), Collections.singletonList(e));
                 }
             }
         }
