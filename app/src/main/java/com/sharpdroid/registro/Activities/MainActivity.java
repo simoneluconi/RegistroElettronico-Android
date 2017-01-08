@@ -2,6 +2,7 @@ package com.sharpdroid.registro.Activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -151,10 +152,11 @@ public class MainActivity extends AppCompatActivity
                 intent.putExtra(Intent.EXTRA_TEXT, url);
                 startActivity(Intent.createChooser(intent, getString(R.string.select_app)));
             case R.id.nav_send:
-                Intent intent_mail = new Intent(Intent.ACTION_SEND);
-                intent_mail.putExtra(Intent.EXTRA_EMAIL, new String[]{"bugreport@registroelettronico.ml"});
-                intent_mail.putExtra(Intent.EXTRA_SUBJECT, "Registro Elettronico");
+                Intent intent_mail = new Intent(Intent.ACTION_SENDTO);
                 intent_mail.setType("text/plain");
+                intent_mail.setData(Uri.parse("mailto:bugreport@registroelettronico.ml"));
+                intent_mail.putExtra(Intent.EXTRA_SUBJECT, "Registro Elettronico");
+                intent_mail.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(Intent.createChooser(intent_mail, getString(R.string.select_email_client)));
             default:
                 return false;
