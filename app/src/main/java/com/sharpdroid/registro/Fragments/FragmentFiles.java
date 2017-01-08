@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.sharpdroid.registro.Adapters.FileAdapter;
+import com.sharpdroid.registro.Databases.FilesDB;
 import com.sharpdroid.registro.Interfaces.API.Folder;
 import com.sharpdroid.registro.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -28,6 +29,7 @@ public class FragmentFiles extends Fragment {
 
     Context mContext;
     FileAdapter mRVAdapter;
+    FilesDB db;
 
     public FragmentFiles() {
     }
@@ -39,7 +41,7 @@ public class FragmentFiles extends Fragment {
         View layout = inflater.inflate(R.layout.fragmentfiles, container, false);
 
         mContext = getContext();
-
+        db = FilesDB.from(mContext);
         RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
         CoordinatorLayout mCoordinatorLayout = (CoordinatorLayout) layout.findViewById(R.id.coordinator_layout);
 
@@ -64,7 +66,7 @@ public class FragmentFiles extends Fragment {
             if (data != null) {
                 folder_title.setText(data.getName().trim());
                 folder_date.setText(formatter.format(data.getLast()));
-                mRVAdapter = new FileAdapter(mContext, mCoordinatorLayout);
+                mRVAdapter = new FileAdapter(mContext, mCoordinatorLayout, db);
                 addSubjects(data);
             }
         }
@@ -93,5 +95,11 @@ public class FragmentFiles extends Fragment {
     private void addSubjects(Folder folder) {
         mRVAdapter.clear();
         mRVAdapter.addAll(folder.getElements());
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        db.close();
     }
 }

@@ -68,6 +68,7 @@ public class AgendaDB extends SQLiteOpenHelper {
 
     public void addEvents(List<Event> events) {
         SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
         db.delete(DB_NAME, null, null);
         ContentValues values;
         for (Event e : events) {
@@ -90,7 +91,8 @@ public class AgendaDB extends SQLiteOpenHelper {
             values.put("materia_id", e.getMateria_id());
             db.insert(DB_NAME, null, values);
         }
-        mContext.getSharedPreferences("agenda", Context.MODE_PRIVATE).edit().putLong("updated_at", new Date().getTime()).apply();
+        db.setTransactionSuccessful();
+        db.endTransaction();
     }
 
     public List<Event> getEvents() {

@@ -77,7 +77,10 @@ public class SubjectsDB extends SQLiteOpenHelper {
 
     public SubjectsDB editSubject(int code, ContentValues contentValues) {
         SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
         db.update(DB_NAME, contentValues, columns[1] + " = ?", new String[]{String.valueOf(code)});
+        db.setTransactionSuccessful();
+        db.endTransaction();
         return this;
     }
 
@@ -85,6 +88,7 @@ public class SubjectsDB extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues;
 
+        db.beginTransaction();
         for (LessonSubject subject : subjects) {
             contentValues = new ContentValues();
             contentValues.put(columns[1], subject.getCode());
@@ -92,6 +96,8 @@ public class SubjectsDB extends SQLiteOpenHelper {
 
             db.insert(DB_NAME, null, contentValues);
         }
+        db.setTransactionSuccessful();
+        db.endTransaction();
 
         return this;
     }

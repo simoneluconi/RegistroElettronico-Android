@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import static com.sharpdroid.registro.Databases.DatabaseInfo.DB_VERSION;
 
@@ -38,7 +37,12 @@ public class FilesDB extends SQLiteOpenHelper {
     }
 
     public boolean isPresent(String code, String cksum) {
-        return getFileName(code, cksum) != null;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT " + columns[0] + " FROM " + DB_NAME + " WHERE " + columns[1] + " = ? AND " + columns[2] + " = ?", new String[]{code, cksum});
+        boolean exists = c.moveToFirst();
+        c.close();
+
+        return exists;
     }
 
 
@@ -54,18 +58,16 @@ public class FilesDB extends SQLiteOpenHelper {
     }
 
     public void addRecord(String filename, String code, String cksum) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(columns[1], code);
         contentValues.put(columns[2], cksum);
         contentValues.put(columns[3], filename);
 
-        long newRowId = db.insert(
-                DB_NAME,
-                null,
-                contentValues);
-        db.close();
-        Log.v("RecordInserito", "Riga: " + newRowId);
+        db.beginTransaction();
+        db.insert(DB_NAME, null, contentValues);
+        db.setTransactionSuccessful();
+        db.endTransaction();
     }
 
 }

@@ -43,11 +43,13 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
     private Context mContext;
     private CoordinatorLayout mCoordinatorLayout;
     private List<File> CVDataList;
+    FilesDB db;
 
-    public FileAdapter(Context mContext, CoordinatorLayout mCoordinatorLayout) {
+    public FileAdapter(Context mContext, CoordinatorLayout mCoordinatorLayout, FilesDB db) {
         this.mContext = mContext;
         this.mCoordinatorLayout = mCoordinatorLayout;
         CVDataList = new ArrayList<>();
+        this.db = db;
     }
 
     public void addAll(List<File> CVDataList) {
@@ -94,8 +96,6 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
                 Snackbar DownloadProgressSnak = Snackbar.make(mCoordinatorLayout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE);
 
                 if (!dir.exists()) dir.mkdir();
-
-                FilesDB db = new FilesDB(mContext);
 
                 if (!db.isPresent(file.getId(), file.getCksum())) {
                     DownloadFile(file, dir, db, DownloadProgressSnak, true);
