@@ -40,10 +40,10 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
     final static String TAG = FileAdapter.class.getSimpleName();
 
     private final SimpleDateFormat formatter = new SimpleDateFormat("MMM d, yyyy", Locale.ITALIAN);
+    FilesDB db;
     private Context mContext;
     private CoordinatorLayout mCoordinatorLayout;
     private List<File> CVDataList;
-    FilesDB db;
 
     public FileAdapter(Context mContext, CoordinatorLayout mCoordinatorLayout, FilesDB db) {
         this.mContext = mContext;

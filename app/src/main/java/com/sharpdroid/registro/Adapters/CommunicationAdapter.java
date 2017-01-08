@@ -40,8 +40,8 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
     private final List<Communication> CVDataList;
     private final Context mContext;
     private final CoordinatorLayout mCoordinatorLayout;
-    CommunicationsDB db;
     private final SimpleDateFormat formatter = new SimpleDateFormat("d MMMM", Locale.ITALIAN);
+    CommunicationsDB db;
 
     public CommunicationAdapter(Context mContext, CoordinatorLayout mCoordinatorLayout, CommunicationsDB db) {
         this.CVDataList = new CopyOnWriteArrayList<>();
