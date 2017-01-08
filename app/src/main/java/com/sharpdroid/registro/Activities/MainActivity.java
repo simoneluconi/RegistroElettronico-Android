@@ -198,12 +198,4 @@ public class MainActivity extends AppCompatActivity
             onNavigationItemSelected(mNavigationView.getMenu().getItem(drawer_to_open));
         }
     }
-/*
-    void toggleAgenda() {
-        if (mNavigationView.getMenu().findItem(R.id.agenda).isChecked()) {
-            calendarView.setVisibility(View.VISIBLE);
-        } else {
-            calendarView.setVisibility(View.GONE);
-        }
-    }*/
 }
