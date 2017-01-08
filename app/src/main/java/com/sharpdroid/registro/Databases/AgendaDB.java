@@ -73,7 +73,7 @@ public class AgendaDB extends SQLiteOpenHelper {
         for (Event e : events) {
             values = new ContentValues();
             values.put("code", e.getId());
-            values.put("title", toLowerCase(e.getTitle()));
+            values.put("title", e.getTitle());
             values.put("start", e.getStart().getTime());
             values.put("end", e.getEnd().getTime());
             values.put("allDay", e.isAllDay() ? 1 : 0);

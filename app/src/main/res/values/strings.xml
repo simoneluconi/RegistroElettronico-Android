@@ -79,5 +79,8 @@
         <item quantity="other">Assente %d giorni</item>
     </plurals>
 
+    <string name="verifiche">Verifiche</string>
+    <string name="altri_eventi">Altri Eventi</string>
+
     <string name="hour">Sei %1$s alla %2$dª ora</string>
 </resources>
