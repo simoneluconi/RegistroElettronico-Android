@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.sharpdroid.registro.API.SpiaggiariApiClient;
 import com.sharpdroid.registro.Adapters.CommunicationAdapter;
+import com.sharpdroid.registro.Databases.CommunicationsDB;
 import com.sharpdroid.registro.Interfaces.API.Communication;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Tasks.CacheListTask;
@@ -29,7 +30,6 @@ import java.io.ObjectInputStream;
 import java.io.StreamCorruptedException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,6 +48,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
 
     private CommunicationAdapter mRVAdapter;
     private Context mContext;
+    private CommunicationsDB db;
 
     public FragmentCommunications() {
 
@@ -58,7 +59,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
                              ViewGroup container, Bundle savedInstanceState) {
         mContext = getContext();
         View layout = inflater.inflate(R.layout.fragment_communications, container, false);
-
+        db = CommunicationsDB.from(mContext);
         ButterKnife.bind(this, layout);
 
         mSwipeRefreshLayout.setOnRefreshListener(this);
@@ -74,7 +75,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
         mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).size(1).build());
         mRecyclerView.setItemAnimator(null);
 
-        mRVAdapter = new CommunicationAdapter(mContext, mCoordinatorLayout, new CopyOnWriteArrayList<>());
+        mRVAdapter = new CommunicationAdapter(mContext, mCoordinatorLayout, db);
         mRecyclerView.setAdapter(mRVAdapter);
 
         bindCommunicationsCache();
@@ -147,5 +148,11 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        db.close();
     }
 }

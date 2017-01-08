@@ -80,17 +80,23 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         return layout;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
+
     private void updateDB() {
         new SpiaggiariApiClient(mContext).mService.getEvents(0L, Long.MAX_VALUE)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(objects -> {
+                    Log.d(TAG, "Scaricati " + objects.size() + " eventi");
                     db.addEvents(objects);
                     calendarView.removeAllEvents();
-                    Log.d(TAG, "Scaricati " + objects.size() + " eventi");
                     calendarView.addEvents(convertEvents(db.getEvents()));
                     calendarView.invalidate();
-                }, throwable -> throwable.printStackTrace());
+                }, Throwable::printStackTrace);
     }
 
     @Override

@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,13 +40,14 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
     private final List<Communication> CVDataList;
     private final Context mContext;
     private final CoordinatorLayout mCoordinatorLayout;
-
+    CommunicationsDB db;
     private final SimpleDateFormat formatter = new SimpleDateFormat("d MMMM", Locale.ITALIAN);
 
-    public CommunicationAdapter(Context mContext, CoordinatorLayout mCoordinatorLayout, List<Communication> CVDataList) {
-        this.CVDataList = CVDataList;
+    public CommunicationAdapter(Context mContext, CoordinatorLayout mCoordinatorLayout, CommunicationsDB db) {
+        this.CVDataList = new CopyOnWriteArrayList<>();
         this.mContext = mContext;
         this.mCoordinatorLayout = mCoordinatorLayout;
+        this.db = db;
     }
 
     public void addAll(Collection<Communication> list) {
@@ -84,8 +86,6 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
 
 
             if (!dir.exists()) dir.mkdir();
-
-            CommunicationsDB db = new CommunicationsDB(mContext);
 
             if (!db.isPresent(communication.getId())) {
                 DownloadFile(communication, dir, db, DownloadProgressSnak, true);

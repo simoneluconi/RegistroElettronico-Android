@@ -77,7 +77,11 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             case R.layout.adapter_folder:
                 FileTeacherHolder folderHolder = (FileTeacherHolder) holder;
                 Folder folder = fileteachers.get(current_subheader - 1).getFolders().get(current_folder);
-
+                if (getItemViewType(position - 1) == R.layout.adapter_file_teacher) {
+                    folderHolder.divider.setVisibility(View.INVISIBLE);
+                } else {
+                    folderHolder.divider.setVisibility(View.VISIBLE);
+                }
                 folderHolder.layout.setOnClickListener(view -> {
                     FragmentFiles fragment = new FragmentFiles();
                     Bundle intent_data = new Bundle();
@@ -141,6 +145,8 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     class FileTeacherHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.divider)
+        View divider;
         @BindView(R.id.title)
         TextView title;
         @BindView(R.id.date)

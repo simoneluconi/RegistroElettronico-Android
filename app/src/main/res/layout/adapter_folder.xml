@@ -6,29 +6,26 @@
     android:layout_height="60dp"
     android:clickable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    android:paddingLeft="16dp"
-    android:paddingStart="16dp"
     android:transitionName="folder_layout"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
     tools:targetApi="lollipop">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/circleImageView"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:src="@drawable/folder"
-        android:transitionName="folder_image"
-        tools:targetApi="lollipop" />
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#11000000"
+        android:layout_alignLeft="@+id/linearLayout"
+        android:layout_alignStart="@+id/linearLayout" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         android:layout_toEndOf="@+id/circleImageView"
         android:layout_toRightOf="@+id/circleImageView"
         android:orientation="vertical">
@@ -53,14 +50,15 @@
             tools:targetApi="lollipop" />
     </LinearLayout>
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="0.75dp"
-        android:layout_alignLeft="@+id/linearLayout"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/linearLayout"
-        android:background="#e5e5e5"
-        tools:targetApi="lollipop" />
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/circleImageView"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/folder"
+        android:transitionName="folder_image"
+        tools:targetApi="lollipop"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>
