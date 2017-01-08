@@ -7,17 +7,20 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
+import com.rokpetek.breadcrumbtoolbar.BreadcrumbToolbar;
+import com.sharpdroid.registro.Fragments.BreadCrumbFragment;
 import com.sharpdroid.registro.Fragments.FragmentAgenda;
 import com.sharpdroid.registro.Fragments.FragmentAllAbsences;
 import com.sharpdroid.registro.Fragments.FragmentCommunications;
@@ -32,13 +35,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, BreadcrumbToolbar.BreadcrumbToolbarListener, FragmentManager.OnBackStackChangedListener {
     @BindView(R.id.nav_view)
     NavigationView mNavigationView;
     @BindView(R.id.calendar)
     CompactCalendarView calendarView;
+    @BindView(R.id.breadcrumb_toolbar)
+    BreadcrumbToolbar toolbar;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawer;
 
     SharedPreferences settings;
+    ActionBarDrawerToggle toggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,14 +55,12 @@ public class MainActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
+        toolbar.setBreadcrumbToolbarListener(this);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
+
+        bindDrawerToggle();
 
         mNavigationView.setNavigationItemSelectedListener(this);
 
@@ -83,6 +89,15 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    private void bindDrawerToggle() {
+        if (drawer != null && toolbar != null) {
+            toggle = new ActionBarDrawerToggle(
+                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawer.addDrawerListener(toggle);
+            toggle.syncState();
+        }
+    }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -100,13 +115,32 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onBackStackChanged() {
+        int stackSize = getSupportFragmentManager().getBackStackEntryCount();
+        Log.d("STACK", "CHANGED - " + stackSize);
+        if (stackSize >= 0) {
+            // Drawer shouldn't affect the toggle icon if breadcrumbs are displayed
+            if (drawer != null && toggle != null) {
+                drawer.removeDrawerListener(toggle);
+            }
+        }
+        if (toolbar != null) {
+            // Handle breadcrumb items add/remove anywhere, as long as you track their size
+            toolbar.onBreadcrumbAction(stackSize);
+        }
+    }
+
+    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         Fragment fragment;
         calendarView.setVisibility(View.GONE);
+
+        clearFragmentBackStack();
+
         switch (item.getItemId()) {
             case R.id.agenda:
-                fragment = FragmentAgenda.getInstance(calendarView, getSupportActionBar());
+                fragment = FragmentAgenda.getInstance(calendarView, toolbar);
                 calendarView.setVisibility(View.VISIBLE);
                 break;
             case R.id.medie:
@@ -128,7 +162,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = new FragmentSettings();
                 break;
             case R.id.files:
-                fragment = new FragmentFolders();
+                fragment = FragmentFolders.getInstance(getSupportFragmentManager());
                 break;
             case R.id.nav_share:
                 Intent intent = new Intent(Intent.ACTION_SEND);
@@ -161,7 +195,7 @@ public class MainActivity extends AppCompatActivity
         transaction.commit();
 
         // Set action bar title
-        getSupportActionBar().setTitle(item.getTitle());
+        toolbar.setTitle(item.getTitle());
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -193,5 +227,32 @@ public class MainActivity extends AppCompatActivity
 
     boolean isAgendaSelected() {
         return mNavigationView.getMenu().findItem(R.id.agenda).isChecked();
+    }
+
+    @Override
+    public void onBreadcrumbToolbarItemPop(int stackSize) {
+        getSupportFragmentManager().popBackStack();
+    }
+
+    @Override
+    public void onBreadcrumbToolbarEmpty() {
+        bindDrawerToggle();
+    }
+
+    @Override
+    public String getFragmentName() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (fragment instanceof BreadCrumbFragment) {
+            return ((BreadCrumbFragment) fragment).getFragmentName();
+        }
+        return null;
+    }
+
+    private void clearFragmentBackStack() {
+        FragmentManager fm = getSupportFragmentManager();
+        int count = fm.getBackStackEntryCount();
+        for (int i = 0; i < count; ++i) {
+            fm.popBackStack();
+        }
     }
 }
