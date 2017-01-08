@@ -111,9 +111,12 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         Fragment fragment;
-        calendarView.setVisibility(View.GONE);
+        int id = item.getItemId();
 
-        switch (item.getItemId()) {
+        if (id != R.id.nav_send && id != R.id.nav_share)
+            calendarView.setVisibility(View.GONE);
+
+        switch (id) {
             case R.id.agenda:
                 FragmentAgenda fragmentAgenda = new FragmentAgenda();
                 fragmentAgenda.getInstance(calendarView, toolbar);
