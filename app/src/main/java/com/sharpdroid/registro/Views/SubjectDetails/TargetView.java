@@ -82,6 +82,14 @@ public class TargetView extends CardView {
         setProgress(media);
     }
 
+    public float getMedia() {
+        return media;
+    }
+
+    public float getTarget() {
+        return target;
+    }
+
     public void clear() {
         target = 0f;
         targetView.setText("-");
@@ -91,8 +99,9 @@ public class TargetView extends CardView {
         progressBar.setMax(0f);
     }
 
-    public void setClickListener(OnClickListener listener) {
-        set.setOnClickListener(listener);
+    public void setListener(OnClickListener target, OnClickListener details) {
+        set.setOnClickListener(target);
+        this.details.setOnClickListener(details);
     }
 
     private int getColor(int color) {

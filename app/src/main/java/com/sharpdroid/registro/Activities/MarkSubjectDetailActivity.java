@@ -37,6 +37,7 @@ import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.sharpdroid.registro.Utils.Metodi.MessaggioVoto;
 import static com.sharpdroid.registro.Utils.Metodi.beautifyName;
 import static com.sharpdroid.registro.Utils.Metodi.dpToPx;
 import static com.sharpdroid.registro.Utils.Metodi.getSubjectName;
@@ -143,7 +144,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         targetView.setProgress(media.getMediaGenerale());
 
         //set listener for button
-        targetView.setClickListener(view -> {
+        targetView.setListener(view -> {
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
             alert.setTitle(getString(R.string.obiettivo_title));
             alert.setMessage(getString(R.string.obiettivo_summary));
@@ -191,9 +192,16 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
                 // Canceled. Do nothing;
             });
             alert.show();
+        }, view -> {
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setTitle(getString(R.string.obiettivo_title));
+            alert.setMessage(MessaggioVoto(targetView.getTarget(), media.getMediaGenerale(), media.getNumeroVoti()));
+
+            alert.setNegativeButton("Cancel", (dialog, whichButton) -> {
+                // Canceled. Do nothing;
+            });
+            alert.show();
         });
-
-
     }
 
     boolean register(TextInputLayout layout) {
