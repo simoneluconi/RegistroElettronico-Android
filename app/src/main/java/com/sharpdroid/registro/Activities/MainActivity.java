@@ -82,8 +82,6 @@ public class MainActivity extends AppCompatActivity
                 //User cancelled the intro so we'll finish this activity too.
                 finish();
             }
-        } else if (requestCode == 2) {
-            toggleAgenda();
         }
     }
 
@@ -102,7 +100,6 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            toggleAgenda();
             super.onBackPressed();
         }
     }
@@ -201,12 +198,12 @@ public class MainActivity extends AppCompatActivity
             onNavigationItemSelected(mNavigationView.getMenu().getItem(drawer_to_open));
         }
     }
-
+/*
     void toggleAgenda() {
         if (mNavigationView.getMenu().findItem(R.id.agenda).isChecked()) {
             calendarView.setVisibility(View.VISIBLE);
         } else {
             calendarView.setVisibility(View.GONE);
         }
-    }
+    }*/
 }
