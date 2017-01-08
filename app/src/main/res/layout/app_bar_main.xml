@@ -30,6 +30,7 @@
             app:compactCalendarCurrentDayBackgroundColor="@color/bluematerial"
             app:compactCalendarCurrentSelectedDayBackgroundColor="?attr/colorPrimaryDark"
             app:compactCalendarMultiEventIndicatorColor="#FFC200"
+            app:compactCalendarTargetHeight="200dp"
             app:compactCalendarTextColor="#ffffffff"
             app:compactCalendarTextSize="12.0sp" />
 
