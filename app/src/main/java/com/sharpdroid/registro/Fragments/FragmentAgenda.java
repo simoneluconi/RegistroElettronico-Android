@@ -31,13 +31,13 @@ import static com.sharpdroid.registro.Utils.Metodi.convertEvents;
 
 public class FragmentAgenda extends Fragment implements CompactCalendarView.CompactCalendarViewListener {
     private static CompactCalendarView calendarView;
-    private Toolbar actionBar;
     final private String TAG = FragmentAgenda.class.getSimpleName();
     SimpleDateFormat month = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
     @BindView(R.id.recycler)
     RecyclerView recycler;
     @BindView(R.id.place_holder)
     View place_holder;
+    private Toolbar actionBar;
     private Context mContext;
     private AgendaDB db;
     private AgendaAdapter adapter;
@@ -57,6 +57,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         View layout = inflater.inflate(R.layout.fragment_calendar, container, false);
         ButterKnife.bind(this, layout);
         db = AgendaDB.from(mContext);
+        calendarView.setVisibility(View.VISIBLE);
 
         actionBar.setTitle(month.format(new Date()));
         calendarView.setLocale(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALIAN);
@@ -107,6 +108,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        calendarView.setVisibility(View.GONE);
         db.close();
     }
 }

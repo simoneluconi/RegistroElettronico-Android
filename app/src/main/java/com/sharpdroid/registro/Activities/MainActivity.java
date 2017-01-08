@@ -110,15 +110,11 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment;
         int id = item.getItemId();
 
-        if (id != R.id.nav_send && id != R.id.nav_share)
-            calendarView.setVisibility(View.GONE);
-
         switch (id) {
             case R.id.agenda:
                 FragmentAgenda fragmentAgenda = new FragmentAgenda();
                 fragmentAgenda.getInstance(calendarView, toolbar);
                 fragment = fragmentAgenda;
-                calendarView.setVisibility(View.VISIBLE);
                 break;
             case R.id.medie:
                 fragment = new FragmentMedie();
@@ -147,14 +143,14 @@ public class MainActivity extends AppCompatActivity
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Registro Elettronico");
                 String url = "https://play.google.com/store/apps/details?id=com.sharpdroid.registroelettronico";
                 intent.putExtra(Intent.EXTRA_TEXT, url);
-                startActivityForResult(Intent.createChooser(intent, getString(R.string.select_app)), 2);
+                startActivity(Intent.createChooser(intent, getString(R.string.select_app)));
             case R.id.nav_send:
                 Intent intent_mail = new Intent(Intent.ACTION_SENDTO);
                 intent_mail.setType("text/plain");
                 intent_mail.setData(Uri.parse("mailto:bugreport@registroelettronico.ml"));
                 intent_mail.putExtra(Intent.EXTRA_SUBJECT, "Registro Elettronico");
                 intent_mail.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivityForResult(Intent.createChooser(intent_mail, getString(R.string.select_email_client)), 2);
+                startActivity(Intent.createChooser(intent_mail, getString(R.string.select_email_client)));
             default:
                 return false;
         }
