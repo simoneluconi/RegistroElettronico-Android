@@ -32,10 +32,12 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private List<Entry> CVDataList;
     private final Context mContext;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM", Locale.getDefault());
+    private View place_holder;
 
-    public AgendaAdapter(Context mContext) {
+    public AgendaAdapter(Context mContext, View ph) {
         this.mContext = mContext;
         CVDataList = new ArrayList<>();
+        place_holder = ph;
     }
 
     @Override
@@ -80,6 +82,11 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public void addAll(List<Event> events) {
         CVDataList = convert(events);
+        if (CVDataList.size() == 0) {
+            place_holder.setVisibility(View.VISIBLE);
+        } else {
+            place_holder.setVisibility(View.GONE);
+        }
         notifyDataSetChanged();
     }
 
