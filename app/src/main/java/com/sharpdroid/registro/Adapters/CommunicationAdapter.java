@@ -41,7 +41,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
     private final Context mContext;
     private final CoordinatorLayout mCoordinatorLayout;
     private final SimpleDateFormat formatter = new SimpleDateFormat("d MMMM", Locale.ITALIAN);
-    CommunicationsDB db;
+    private CommunicationsDB db;
 
     public CommunicationAdapter(Context mContext, CoordinatorLayout mCoordinatorLayout, CommunicationsDB db) {
         this.CVDataList = new CopyOnWriteArrayList<>();
@@ -84,12 +84,10 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
                             File.separator +
                             "Registro Elettronico" + File.separator + "Circolari");
 
-
             if (!dir.exists()) dir.mkdir();
 
             if (!db.isPresent(communication.getId())) {
                 DownloadFile(communication, dir, db, DownloadProgressSnak, true);
-
             } else {
                 String filename = db.getFileName(communication.getId());
                 File file = new File(dir + File.separator + filename);
@@ -109,9 +107,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
 
     private void askfileopen(File file, Snackbar DownloadProgressSnak) {
         DownloadProgressSnak.setText(mContext.getString(R.string.file_downloaded, file.getName()));
-        DownloadProgressSnak.setAction(R.string.open, v -> {
-            openfile(file);
-        });
+        DownloadProgressSnak.setAction(R.string.open, v -> openfile(file));
         DownloadProgressSnak.show();
     }
 

@@ -136,9 +136,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
 
     private void askfileopen(java.io.File file, Snackbar DownloadProgressSnak) {
         DownloadProgressSnak.setText(mContext.getString(R.string.file_downloaded, file.getName()));
-        DownloadProgressSnak.setAction(R.string.open, v -> {
-            openfile(file);
-        });
+        DownloadProgressSnak.setAction(R.string.open, v -> openfile(file));
         DownloadProgressSnak.show();
     }
 
