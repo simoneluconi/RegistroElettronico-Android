@@ -86,10 +86,10 @@ public class EditSubjectDetailsActivity extends AppCompatActivity {
 
         String name, prof, classroom, notes;
 
-        name = this.name.getText().toString().trim().toLowerCase();
-        prof = this.prof.getText().toString().trim().toLowerCase();
-        classroom = this.classroom.getText().toString().trim().toLowerCase();
-        notes = this.notes.getText().toString().trim().toLowerCase();
+        name = this.name.getText().toString().trim();
+        prof = this.prof.getText().toString().trim();
+        classroom = this.classroom.getText().toString().trim();
+        notes = this.notes.getText().toString().trim();
 
         values.put("name", name);
         values.put("professor", prof);
