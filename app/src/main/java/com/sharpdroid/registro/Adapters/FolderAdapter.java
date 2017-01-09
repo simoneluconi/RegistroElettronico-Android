@@ -92,6 +92,7 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         fragment.setSharedElementEnterTransition(TransitionInflater.from(mContext).inflateTransition(R.transition.shared_element));
                     }
 
+
                     fragmentManager.beginTransaction()
                             .addSharedElement(folderHolder.date, "folder_date")
                             .addSharedElement(folderHolder.title, "folder_title")
