@@ -33,7 +33,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public class SpiaggiariApiClient implements RESTfulAPIService {
-    public final RESTfulAPIService mService;
+    private final RESTfulAPIService mService;
 
     public SpiaggiariApiClient(Context context) {
         CookieJar cookieJar =
