@@ -1,23 +1,20 @@
-package com.sharpdroid.registro.Fragments;
+package com.sharpdroid.registro.Activities;
 
-
-import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.MenuItem;
 
 import com.sharpdroid.registro.API.SpiaggiariApiClient;
-import com.sharpdroid.registro.Adapters.FolderAdapter;
-import com.sharpdroid.registro.Interfaces.API.FileTeacher;
+import com.sharpdroid.registro.Adapters.AllLessonsAdapter;
+import com.sharpdroid.registro.Interfaces.API.Lesson;
+import com.sharpdroid.registro.Listeners.OnScrollLessonsListener;
 import com.sharpdroid.registro.R;
 import com.sharpdroid.registro.Tasks.CacheListTask;
 
@@ -38,75 +35,73 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.sharpdroid.registro.Utils.Metodi.isNetworkAvailable;
 
-public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-    final private String TAG = FragmentFolders.class.getSimpleName();
+public class AllLessonsWithDownloadActivity extends AppCompatActivity {
+    private final static String TAG = "Lessons";
+    static int code;
+    @BindView(R.id.recycler)
+    RecyclerView mRecyclerView;
     @BindView(R.id.coordinator_layout)
     CoordinatorLayout mCoordinatorLayout;
     @BindView(R.id.swiperefresh)
     SwipeRefreshLayout mSwipeRefreshLayout;
-    Context mContext;
-    FolderAdapter mRVAdapter;
-    ActionBar supportActionBar;
+    AllLessonsAdapter mRVAdapter;
+    RecyclerView.LayoutManager layoutManager;
 
-    public FragmentFolders() {
-    }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_recycler_refresh);
+        ButterKnife.bind(this);
 
-    public void getInstance(ActionBar supportActionBar) {
-        this.supportActionBar = supportActionBar;
+        code = getIntent().getIntExtra("code", -1);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+        setTitle("Lezioni");
+        mRVAdapter = new AllLessonsAdapter(this);
+        layoutManager = new LinearLayoutManager(this);
+        mRecyclerView.addOnScrollListener(new OnScrollLessonsListener());
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setAdapter(mRVAdapter);
+
+        bindLessonsCache();
+
+        UpdateLessons();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.fragment_files, container, false);
-        ButterKnife.bind(this, layout);
-        mContext = getContext();
-
-        mSwipeRefreshLayout.setOnRefreshListener(this);
-        mSwipeRefreshLayout.setColorSchemeResources(
-                R.color.bluematerial,
-                R.color.redmaterial,
-                R.color.greenmaterial,
-                R.color.orangematerial);
-
-        RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-        mRecyclerView.setItemAnimator(null);
-
-        mRVAdapter = new FolderAdapter(mContext, getFragmentManager());
-        mRecyclerView.setAdapter(mRVAdapter);
-
-        bindFileTeacherCache();
-
-        UpdateFiles();
-
-        return layout;
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) finish();
+        return super.onOptionsItemSelected(item);
     }
 
-    private void addFiles(List<FileTeacher> result, boolean docache) {
-        if (!result.isEmpty()) {
+    private void addLessons(List<Lesson> lessons, boolean docache) {
+        if (!lessons.isEmpty()) {
             mRVAdapter.clear();
-            mRVAdapter.setFileTeachers(result);
+            mRVAdapter.addAll(lessons);
 
             if (docache) {
                 // Update cache
-                new CacheListTask(mContext.getCacheDir(), TAG).execute((List) result);
+                new CacheListTask(getCacheDir(), TAG).execute((List) lessons);
             }
         }
     }
 
-    private void bindFileTeacherCache() {
+    private void bindLessonsCache() {
         ObjectInputStream objectInputStream = null;
         try {
-            FileInputStream fileInputStream = new FileInputStream(new File(mContext.getCacheDir(), TAG));
+            FileInputStream fileInputStream = new FileInputStream(new File(getCacheDir().getAbsolutePath() + File.pathSeparator + TAG + File.pathSeparator + code));
             objectInputStream = new ObjectInputStream(fileInputStream);
-            List<FileTeacher> cachedData = new LinkedList<>();
-            FileTeacher temp;
-            while ((temp = (FileTeacher) objectInputStream.readObject()) != null) {
+            List<Lesson> cachedData = new LinkedList<>();
+            Lesson temp;
+            while ((temp = (Lesson) objectInputStream.readObject()) != null) {
                 cachedData.add(temp);
             }
-            addFiles(cachedData, false);
+            addLessons(cachedData, false);
             Log.d(TAG, "Restored cache");
         } catch (FileNotFoundException e) {
             Log.w(TAG, "Cache not found.");
@@ -130,17 +125,17 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
     }
 
     public void onRefresh() {
-        UpdateFiles();
+        UpdateLessons();
     }
 
-    private void UpdateFiles() {
-        if (isNetworkAvailable(mContext)) {
+    private void UpdateLessons() {
+        if (isNetworkAvailable(this)) {
             mSwipeRefreshLayout.setRefreshing(true);
-            new SpiaggiariApiClient(mContext).mService.getFiles()
+            new SpiaggiariApiClient(this).mService.getLessons(code)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(files -> {
-                        addFiles(files, true);
+                    .subscribe(lessons -> {
+                        addLessons(lessons, true);
                         mSwipeRefreshLayout.setRefreshing(false);
                     }, error -> mSwipeRefreshLayout.setRefreshing(false));
         } else {

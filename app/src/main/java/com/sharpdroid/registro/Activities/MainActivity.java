@@ -136,7 +136,9 @@ public class MainActivity extends AppCompatActivity
                 fragment = new FragmentSettings();
                 break;
             case R.id.files:
-                fragment = FragmentFolders.getInstance(getSupportFragmentManager());
+                FragmentFolders fragmentFolders = new FragmentFolders();
+                fragmentFolders.getInstance(getSupportActionBar());
+                fragment = fragmentFolders;
                 break;
             case R.id.lessons:
                 fragment = new FragmentSubjects();

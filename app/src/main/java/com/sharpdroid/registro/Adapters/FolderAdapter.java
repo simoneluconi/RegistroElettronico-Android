@@ -76,7 +76,8 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 break;
             case R.layout.adapter_folder:
                 FileTeacherHolder folderHolder = (FileTeacherHolder) holder;
-                Folder folder = fileteachers.get(current_subheader - 1).getFolders().get(current_folder);
+                FileTeacher fileTeacher = fileteachers.get(current_subheader - 1);
+                Folder folder = fileTeacher.getFolders().get(current_folder);
                 if (getItemViewType(position - 1) == R.layout.adapter_file_teacher) {
                     folderHolder.divider.setVisibility(View.INVISIBLE);
                 } else {
@@ -86,6 +87,7 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     FragmentFiles fragment = new FragmentFiles();
                     Bundle intent_data = new Bundle();
                     intent_data.putString("folder", new Gson().toJson(folder));
+                    intent_data.putString("name", fileTeacher.getName().toLowerCase());
                     fragment.setArguments(intent_data);
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

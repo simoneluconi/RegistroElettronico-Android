@@ -1,6 +1,7 @@
 package com.sharpdroid.registro.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.sharpdroid.registro.Activities.AllLessonsWithDownloadActivity;
 import com.sharpdroid.registro.Adapters.Holders.AbsencesHolder;
 import com.sharpdroid.registro.Interfaces.Client.Subject;
 import com.sharpdroid.registro.R;
@@ -45,10 +47,10 @@ public class SubjectsAdapter extends RecyclerView.Adapter<AbsencesHolder> {
 
     @Override
     public void onBindViewHolder(AbsencesHolder holder, int position) {
+        Subject item = CVDataList.get(position);
+
         holder.done.setVisibility(View.GONE);
         holder.type_color.setImageDrawable(new ColorDrawable(material_colors[random.nextInt(material_colors.length - 1)]));
-
-        Subject item = CVDataList.get(position);
 
         holder.type_text.setText(getSubjectName(item).substring(0, 1).toUpperCase());
         holder.divider.setVisibility((position == 0) ? View.INVISIBLE : View.VISIBLE);
@@ -60,7 +62,9 @@ public class SubjectsAdapter extends RecyclerView.Adapter<AbsencesHolder> {
             holder.hour.setText(NomeDecente(item.getProfessor()));
         }
         holder.layout.setOnClickListener(view -> {
-            //start other fragment here
+            Intent intent = new Intent(mContext, AllLessonsWithDownloadActivity.class);
+            intent.putExtra("code", item.getCode());
+            mContext.startActivity(intent);
         });
     }
 
