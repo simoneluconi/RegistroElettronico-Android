@@ -26,7 +26,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface RESTfulAPIService {
+interface RESTfulAPIService {
 
     @POST("login")
     @FormUrlEncoded
@@ -63,11 +63,11 @@ public interface RESTfulAPIService {
     Observable<List<Communication>> getCommunications();
 
     @GET("communication/{id}/desc")
-    Observable<CommunicationDescription> getcommunicationDesc(
+    Observable<CommunicationDescription> getCommunicationDesc(
             @Path("id") int id);
 
     @GET("communication/{id}/download")
-    Observable<Response<ResponseBody>> getcommunicationDownload(
+    Observable<Response<ResponseBody>> getCommunicationDownload(
             @Path("id") int id);
 
     @GET("scrutinies")

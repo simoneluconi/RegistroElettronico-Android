@@ -224,7 +224,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     }
 
     private void setLessons(int id) {
-        new SpiaggiariApiClient(this).mService.getLessons(id)
+        new SpiaggiariApiClient(this).getLessons(id)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(lessons -> lessonsView.addAll(new ArrayList<>(lessons)), error -> {

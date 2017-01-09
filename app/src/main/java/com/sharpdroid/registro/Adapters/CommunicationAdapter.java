@@ -113,7 +113,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
 
     private void DownloadFile(Communication communication, File dir, CommunicationsDB db, Snackbar DownloadProgressSnak, boolean addRecord) {
         DownloadProgressSnak.show();
-        new SpiaggiariApiClient(mContext).mService.getcommunicationDownload(communication.getId())
+        new SpiaggiariApiClient(mContext).getCommunicationDownload(communication.getId())
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(communication_file -> {

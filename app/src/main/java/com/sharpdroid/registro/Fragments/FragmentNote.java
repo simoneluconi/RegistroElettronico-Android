@@ -136,7 +136,7 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
     private void UpdateNotes() {
         if (isNetworkAvailable(mContext)) {
             mSwipeRefreshLayout.setRefreshing(true);
-            new SpiaggiariApiClient(mContext).mService.getNotes()
+            new SpiaggiariApiClient(mContext).getNotes()
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(notes -> {

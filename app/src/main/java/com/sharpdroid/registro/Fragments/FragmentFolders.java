@@ -136,7 +136,7 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
     private void UpdateFiles() {
         if (isNetworkAvailable(mContext)) {
             mSwipeRefreshLayout.setRefreshing(true);
-            new SpiaggiariApiClient(mContext).mService.getFiles()
+            new SpiaggiariApiClient(mContext).getFiles()
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(files -> {

@@ -131,7 +131,7 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
     private void UpdateLessons() {
         if (isNetworkAvailable(this)) {
             mSwipeRefreshLayout.setRefreshing(true);
-            new SpiaggiariApiClient(this).mService.getLessons(code)
+            new SpiaggiariApiClient(this).getLessons(code)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(lessons -> {

@@ -137,7 +137,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
     private void UpdateCommunications() {
         if (isNetworkAvailable(mContext)) {
             mSwipeRefreshLayout.setRefreshing(true);
-            new SpiaggiariApiClient(mContext).mService.getCommunications()
+            new SpiaggiariApiClient(mContext).getCommunications()
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(communications -> {
