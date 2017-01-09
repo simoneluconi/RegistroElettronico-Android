@@ -80,7 +80,6 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
         mRecyclerView.setAdapter(mRVAdapter);
 
         bindCommunicationsCache();
-
         UpdateCommunications();
 
         return layout;
