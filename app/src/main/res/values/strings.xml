@@ -88,4 +88,7 @@
         <item quantity="other">Sei %1$s alla %2$dª ora</item>
     </plurals>
     <string name="free_day">Giornata libera!</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
