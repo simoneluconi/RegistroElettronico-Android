@@ -57,7 +57,6 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         View layout = inflater.inflate(R.layout.fragment_calendar, container, false);
         ButterKnife.bind(this, layout);
         db = AgendaDB.from(mContext);
-        calendarView.setVisibility(View.VISIBLE);
 
         actionBar.setTitle(month.format(new Date()));
         calendarView.setLocale(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALIAN);
@@ -74,11 +73,6 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         adapter.addAllCalendarEvents(calendarView.getEvents(new Date()));
 
         return layout;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 
     private void updateDB() {
@@ -106,9 +100,16 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void onDetach() {
+        super.onDetach();
         calendarView.setVisibility(View.GONE);
         db.close();
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        calendarView.setVisibility(View.VISIBLE);
     }
 }

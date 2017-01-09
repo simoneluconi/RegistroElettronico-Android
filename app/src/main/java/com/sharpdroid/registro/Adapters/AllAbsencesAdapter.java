@@ -68,6 +68,7 @@ public class AllAbsencesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                 absencesHolder.date.setText(long_date_format.format(delay.getDay()));
                 absencesHolder.hour.setText(mContext.getString(R.string.hour, "entrato", delay.getHour()));
+                absencesHolder.hour.setText(mContext.getResources().getQuantityString(R.plurals.hours, delay.getHour(), "entrato", delay.getHour()));
                 absencesHolder.done.setVisibility(delay.isDone() ? View.VISIBLE : View.INVISIBLE);
                 absencesHolder.type_color.setImageDrawable(new ColorDrawable(ContextCompat.getColor(mContext, R.color.orangematerial)));
                 absencesHolder.type_text.setText("R");
@@ -83,7 +84,7 @@ public class AllAbsencesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 Exit exit = ((ExitEntry) entry).getExit();
 
                 absencesHolder.date.setText(long_date_format.format(exit.getDay()));
-                absencesHolder.hour.setText(mContext.getString(R.string.hour, "uscito", exit.getHour()));
+                absencesHolder.hour.setText(mContext.getResources().getQuantityString(R.plurals.hours, exit.getHour(), "entrato", exit.getHour()));
                 absencesHolder.done.setVisibility(exit.isDone() ? View.VISIBLE : View.INVISIBLE);
                 absencesHolder.type_color.setImageDrawable(new ColorDrawable(ContextCompat.getColor(mContext, R.color.bluematerial)));
                 absencesHolder.type_text.setText("U");
