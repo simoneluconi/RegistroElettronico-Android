@@ -15,6 +15,10 @@
             android:icon="@drawable/ic_grid_on"
             android:title="@string/timetable" />
         <item
+            android:id="@+id/lessons"
+            android:icon="@drawable/ic_view_agenda"
+            android:title="@string/lessons" />
+        <item
             android:id="@+id/files"
             android:icon="@drawable/ic_folder"
             android:title="@string/files" />

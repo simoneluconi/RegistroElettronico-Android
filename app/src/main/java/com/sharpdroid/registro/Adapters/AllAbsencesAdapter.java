@@ -7,9 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
+import com.sharpdroid.registro.Adapters.Holders.AbsencesHolder;
 import com.sharpdroid.registro.Adapters.Holders.HeaderHolder;
 import com.sharpdroid.registro.Interfaces.API.Absence;
 import com.sharpdroid.registro.Interfaces.API.Absences;
@@ -27,10 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.sharpdroid.registro.Utils.Metodi.convertAbsencesToHashmap;
 import static com.sharpdroid.registro.Utils.Metodi.sortByDate;
@@ -121,25 +116,5 @@ public class AllAbsencesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void clear() {
         CVDataList.clear();
         notifyDataSetChanged();
-    }
-
-    class AbsencesHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.date)
-        TextView date;
-        @BindView(R.id.hour)
-        TextView hour;
-        @BindView(R.id.type)
-        TextView type_text;
-        @BindView(R.id.done)
-        ImageView done;
-        @BindView(R.id.type_color)
-        CircleImageView type_color;
-        @BindView(R.id.divider)
-        View divider;
-
-        AbsencesHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
     }
 }

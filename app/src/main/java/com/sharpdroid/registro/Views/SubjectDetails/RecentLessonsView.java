@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.Button;
 
+import com.google.gson.Gson;
 import com.sharpdroid.registro.Activities.AllLessonsActivity;
 import com.sharpdroid.registro.Adapters.LessonsAdapter;
 import com.sharpdroid.registro.Interfaces.API.Lesson;
@@ -59,7 +60,7 @@ public class RecentLessonsView extends CardView {
 
     public void addAll(ArrayList<Lesson> list) {
         adapter.addAll(list);
-        showAllButton.setOnClickListener(view -> mContext.startActivity(new Intent(mContext, AllLessonsActivity.class).putExtra("data", list)));
+        showAllButton.setOnClickListener(view -> mContext.startActivity(new Intent(mContext, AllLessonsActivity.class).putExtra("data", new Gson().toJson(list))));
     }
 
     public void clear() {
