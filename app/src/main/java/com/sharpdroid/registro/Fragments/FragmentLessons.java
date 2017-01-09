@@ -19,7 +19,7 @@ public class FragmentLessons extends Fragment {
 
     @BindView(R.id.recycler)
     RecyclerView recyclerView;
-    
+
     public FragmentLessons() {
         // Required empty public constructor
     }
