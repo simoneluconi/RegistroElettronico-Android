@@ -84,7 +84,7 @@ public class AllAbsencesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 Exit exit = ((ExitEntry) entry).getExit();
 
                 absencesHolder.date.setText(long_date_format.format(exit.getDay()));
-                absencesHolder.hour.setText(mContext.getResources().getQuantityString(R.plurals.hours, exit.getHour(), "entrato", exit.getHour()));
+                absencesHolder.hour.setText(mContext.getResources().getQuantityString(R.plurals.hours, exit.getHour(), "uscito", exit.getHour()));
                 absencesHolder.done.setVisibility(exit.isDone() ? View.VISIBLE : View.INVISIBLE);
                 absencesHolder.type_color.setImageDrawable(new ColorDrawable(ContextCompat.getColor(mContext, R.color.bluematerial)));
                 absencesHolder.type_text.setText("U");
