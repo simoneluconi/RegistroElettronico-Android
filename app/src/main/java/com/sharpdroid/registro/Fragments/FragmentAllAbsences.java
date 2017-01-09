@@ -125,7 +125,7 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
     private void UpdateAllAbsences() {
         if (isNetworkAvailable(mContext)) {
             mSwipeRefreshLayout.setRefreshing(true);
-            new SpiaggiariApiClient(mContext).mService.getAbsences()
+            new SpiaggiariApiClient(mContext).getAbsences()
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(absences -> {

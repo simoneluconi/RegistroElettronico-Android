@@ -90,7 +90,7 @@ public class FragmentLogin extends SlideFragment {
         mButtonLogin.setEnabled(false);
         mButtonLogin.setText(R.string.caricamento);
 
-        new SpiaggiariApiClient(mContext).mService.postLogin(mEmail, mPassword, new DeviceUuidFactory(mContext).getDeviceUuid().toString())
+        new SpiaggiariApiClient(mContext).postLogin(mEmail, mPassword, new DeviceUuidFactory(mContext).getDeviceUuid().toString())
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(login -> {
@@ -105,7 +105,7 @@ public class FragmentLogin extends SlideFragment {
                     Toast.makeText(mContext, R.string.login_msg, Toast.LENGTH_SHORT).show();
 
                     //scarica le materie (nome, id) per poter in seguito modificare a piacere tutte le caratteristiche nel db
-                    new SpiaggiariApiClient(mContext).mService.getSubjects()
+                    new SpiaggiariApiClient(mContext).getSubjects()
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(subjects -> SubjectsDB.from(mContext).addCODEandNAME(subjects).close(), error -> {

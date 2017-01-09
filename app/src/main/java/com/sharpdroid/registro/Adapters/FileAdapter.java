@@ -113,9 +113,8 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
     }
 
     private void DownloadFile(File file, java.io.File dir, FilesDB db, Snackbar DownloadProgressSnak, boolean addRecord) {
-
         DownloadProgressSnak.show();
-        new SpiaggiariApiClient(mContext).mService.getDownload(file.getId(), file.getCksum())
+        new SpiaggiariApiClient(mContext).getDownload(file.getId(), file.getCksum())
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(files_file -> {

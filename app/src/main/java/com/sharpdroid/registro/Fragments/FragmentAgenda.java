@@ -76,7 +76,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     }
 
     private void updateDB() {
-        new SpiaggiariApiClient(mContext).mService.getEvents(0L, Long.MAX_VALUE)
+        new SpiaggiariApiClient(mContext).getEvents(0L, Long.MAX_VALUE)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(objects -> {
