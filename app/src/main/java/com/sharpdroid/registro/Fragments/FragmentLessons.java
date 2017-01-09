@@ -9,9 +9,6 @@ import android.view.ViewGroup;
 
 import com.sharpdroid.registro.R;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class FragmentLessons extends Fragment {
 
 
