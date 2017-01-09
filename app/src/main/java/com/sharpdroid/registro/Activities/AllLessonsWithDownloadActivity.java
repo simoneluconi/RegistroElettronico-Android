@@ -86,7 +86,7 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity {
 
             if (docache) {
                 // Update cache
-                new CacheListTask(getCacheDir(), TAG).execute((List) lessons);
+                new CacheListTask(new File(getCacheDir().getAbsolutePath() + File.pathSeparator + TAG), String.valueOf(code)).execute((List) lessons);
             }
         }
     }
