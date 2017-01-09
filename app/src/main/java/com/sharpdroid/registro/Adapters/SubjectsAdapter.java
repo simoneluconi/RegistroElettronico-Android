@@ -64,6 +64,7 @@ public class SubjectsAdapter extends RecyclerView.Adapter<AbsencesHolder> {
         holder.layout.setOnClickListener(view -> {
             Intent intent = new Intent(mContext, AllLessonsWithDownloadActivity.class);
             intent.putExtra("code", item.getCode());
+            intent.putExtra("name", holder.date.getText());
             mContext.startActivity(intent);
         });
     }

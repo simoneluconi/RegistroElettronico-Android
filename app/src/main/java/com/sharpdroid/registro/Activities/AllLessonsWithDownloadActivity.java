@@ -61,7 +61,7 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        setTitle("Lezioni");
+        setTitle(getIntent().getStringExtra("name"));
         mRVAdapter = new AllLessonsAdapter(this);
         layoutManager = new LinearLayoutManager(this);
         mRecyclerView.addOnScrollListener(new OnScrollLessonsListener());
