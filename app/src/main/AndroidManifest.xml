@@ -39,6 +39,12 @@
             android:name=".Activities.EditSubjectDetailsActivity"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="InnerclassSeparator" />
+        <activity
+            android:name=".Activities.AllLessonsActivity"
+            tools:ignore="InnerclassSeparator" />
+        <activity
+            android:name=".Activities.AllLessonsWithDownloadActivity"
+            tools:ignore="InnerclassSeparator" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -49,9 +55,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
-
-        <activity android:name=".Activities.AllLessonsActivity" />
-        <activity android:name=".Activities.AllLessonsWithDownloadActivity"></activity>
     </application>
 
 </manifest>

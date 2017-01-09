@@ -35,7 +35,8 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.sharpdroid.registro.Utils.Metodi.isNetworkAvailable;
 
-public class AllLessonsWithDownloadActivity extends AppCompatActivity {
+public class AllLessonsWithDownloadActivity extends AppCompatActivity
+        implements SwipeRefreshLayout.OnRefreshListener {
     private final static String TAG = "Lessons";
     static int code;
     @BindView(R.id.recycler)
@@ -45,7 +46,6 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity {
     @BindView(R.id.swiperefresh)
     SwipeRefreshLayout mSwipeRefreshLayout;
     AllLessonsAdapter mRVAdapter;
-    RecyclerView.LayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +63,8 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity {
         }
         setTitle(getIntent().getStringExtra("name"));
         mRVAdapter = new AllLessonsAdapter(this);
-        layoutManager = new LinearLayoutManager(this);
         mRecyclerView.addOnScrollListener(new OnScrollLessonsListener());
-        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mRVAdapter);
 
         bindLessonsCache();
@@ -86,7 +85,8 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity {
 
             if (docache) {
                 // Update cache
-                new CacheListTask(new File(getCacheDir().getAbsolutePath() + File.pathSeparator + TAG), String.valueOf(code)).execute((List) lessons);
+
+                new CacheListTask(getCacheDir(), TAG + File.pathSeparator + code).execute((List) lessons);
             }
         }
     }
@@ -94,7 +94,7 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity {
     private void bindLessonsCache() {
         ObjectInputStream objectInputStream = null;
         try {
-            FileInputStream fileInputStream = new FileInputStream(new File(getCacheDir().getAbsolutePath() + File.pathSeparator + TAG + File.pathSeparator + code));
+            FileInputStream fileInputStream = new FileInputStream(new File(getCacheDir(), TAG + File.pathSeparator + code));
             objectInputStream = new ObjectInputStream(fileInputStream);
             List<Lesson> cachedData = new LinkedList<>();
             Lesson temp;
