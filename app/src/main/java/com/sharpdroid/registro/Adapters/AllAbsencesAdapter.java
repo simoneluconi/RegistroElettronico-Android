@@ -67,7 +67,6 @@ public class AllAbsencesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 Delay delay = ((DelayEntry) entry).getDelay();
 
                 absencesHolder.date.setText(long_date_format.format(delay.getDay()));
-                absencesHolder.hour.setText(mContext.getString(R.string.hour, "entrato", delay.getHour()));
                 absencesHolder.hour.setText(mContext.getResources().getQuantityString(R.plurals.hours, delay.getHour(), "entrato", delay.getHour()));
                 absencesHolder.done.setVisibility(delay.isDone() ? View.VISIBLE : View.INVISIBLE);
                 absencesHolder.type_color.setImageDrawable(new ColorDrawable(ContextCompat.getColor(mContext, R.color.orangematerial)));
