@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import static com.sharpdroid.registro.Utils.Metodi.NomeDecente;
+
 public class FragmentFiles extends Fragment {
     final static String TAG = FragmentFiles.class.getSimpleName();
     private final SimpleDateFormat formatter = new SimpleDateFormat("MMM d, yyyy", Locale.ITALIAN);
@@ -51,7 +53,7 @@ public class FragmentFiles extends Fragment {
         //region FOLDER LAYOUT & VIEWS
         View folder_layout = layout.findViewById(R.id.relative_layout);
         TextView folder_title = (TextView) folder_layout.findViewById(R.id.title);
-        TextView folder_date = (TextView) folder_layout.findViewById(R.id.date);
+        TextView folder_prof = (TextView) folder_layout.findViewById(R.id.date);
         View folder_divider = folder_layout.findViewById(R.id.divider);
 
         folder_layout.setOnClickListener(view -> getFragmentManager().popBackStack());
@@ -65,11 +67,12 @@ public class FragmentFiles extends Fragment {
         } finally {
             if (data != null) {
                 folder_title.setText(data.getName().trim());
-                folder_date.setText(formatter.format(data.getLast()));
                 mRVAdapter = new FileAdapter(mContext, mCoordinatorLayout, db);
                 addSubjects(data);
             }
         }
+        folder_prof.setText(NomeDecente(getArguments().getString("name")));
+
         //endregion
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));

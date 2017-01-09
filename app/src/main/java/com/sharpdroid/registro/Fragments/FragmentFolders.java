@@ -6,8 +6,8 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -39,7 +39,6 @@ import io.reactivex.schedulers.Schedulers;
 import static com.sharpdroid.registro.Utils.Metodi.isNetworkAvailable;
 
 public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-    static FragmentManager fragmentManager;
     final private String TAG = FragmentFolders.class.getSimpleName();
     @BindView(R.id.coordinator_layout)
     CoordinatorLayout mCoordinatorLayout;
@@ -47,13 +46,13 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
     SwipeRefreshLayout mSwipeRefreshLayout;
     Context mContext;
     FolderAdapter mRVAdapter;
+    ActionBar supportActionBar;
 
     public FragmentFolders() {
     }
 
-    public static FragmentFolders getInstance(FragmentManager fm) {
-        fragmentManager = fm;
-        return new FragmentFolders();
+    public void getInstance(ActionBar supportActionBar) {
+        this.supportActionBar = supportActionBar;
     }
 
     @Override
@@ -75,7 +74,7 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerView.setItemAnimator(null);
 
-        mRVAdapter = new FolderAdapter(mContext, fragmentManager);
+        mRVAdapter = new FolderAdapter(mContext, getFragmentManager());
         mRecyclerView.setAdapter(mRVAdapter);
 
         bindFileTeacherCache();
