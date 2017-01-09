@@ -259,7 +259,7 @@ public class Metodi {
     public static boolean isEventTest(com.sharpdroid.registro.Interfaces.API.Event event) {
         String title = event.getTitle().toLowerCase();
         return title.contains("compito") || title.contains("interrogazione scritta") || title.contains("prova ")
-                || title.contains("verifica ") || title.contains("test ") || title.contains("test");
+                || title.contains("verifica ") || title.contains("test ") || title.endsWith("test");
     }
 
     public static boolean writeResponseBodyToDisk(ResponseBody body, File file) {
