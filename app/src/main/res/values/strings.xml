@@ -13,12 +13,14 @@
     <string name="communicate">Communicate</string>
     <string name="justifications">Giustificazioni</string>
     <string name="communications">Comunicazioni</string>
+    <string name="lessons">Lezioni</string>
     <string name="note">Note</string>
     <string name="settings">Impostazioni</string>
     <string name="files">Materiale didattico</string>
 
     <!--ERRORI-->
     <string name="nointernet">Non sei connesso ad internet!</string>
+    <string name="error">Errore</string>
 
     <string name="dettaglio_voti_titolo">Dettaglio voti</string>
     <string name="dettaglio_voti_desc">Nel tab voti clicca su una scheda per visualizzare i commenti dei voti</string>
@@ -46,8 +48,6 @@
     <string name="select_app">Seleziona un\'applicazione</string>
 
     <string name="login_riuscito">Login completato</string>
-    <string name="from_to">from - to</string>
-    <string name="assenze">Assenze</string>
     <string name="ritardi">Ritardi</string>
     <string name="uscite_anticipate">Uscite anticipate</string>
     <string name="oggi">Oggi</string>
@@ -89,6 +89,4 @@
     </plurals>
     <string name="free_day">Giornata libera!</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

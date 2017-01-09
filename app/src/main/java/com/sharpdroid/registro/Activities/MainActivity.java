@@ -26,6 +26,7 @@ import com.sharpdroid.registro.Fragments.FragmentFolders;
 import com.sharpdroid.registro.Fragments.FragmentMedie;
 import com.sharpdroid.registro.Fragments.FragmentNote;
 import com.sharpdroid.registro.Fragments.FragmentSettings;
+import com.sharpdroid.registro.Fragments.FragmentSubjects;
 import com.sharpdroid.registro.Fragments.FragmentTimetable;
 import com.sharpdroid.registro.R;
 
@@ -136,6 +137,9 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.files:
                 fragment = FragmentFolders.getInstance(getSupportFragmentManager());
+                break;
+            case R.id.lessons:
+                fragment = new FragmentSubjects();
                 break;
             case R.id.nav_share:
                 Intent intent = new Intent(Intent.ACTION_SEND);

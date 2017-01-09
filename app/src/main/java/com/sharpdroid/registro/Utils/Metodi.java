@@ -47,6 +47,18 @@ import okhttp3.ResponseBody;
 public class Metodi {
     public static SimpleDateFormat month_year = new SimpleDateFormat("MMMM yyyy", Locale.ITALIAN);
 
+    public static int[] material_colors = new int[]{
+            0xFFE57373, 0xFFF44336, 0xFFD32F2F,
+            0xFFF06292, 0xFFE91E63, 0xFFC2185B,
+            0xFFBA68C8, 0xFF9C27B0, 0xFF7B1FA2,
+            0xFF7986CB, 0xFF3F51B5, 0xFF303F9F,
+            0xFF4DB6AC, 0xFF009688, 0xFF00796B,
+            0xFF81C784, 0xFF4CAF50, 0xFF388E3C,
+            0xFFFFD54F, 0xFFFFC107, 0xFFFFA000,
+            0xFFFF8A65, 0xFFFF5722, 0xFFE64A19,
+            0xFFA1887F, 0xFF795548, 0xFF5D4037
+    };
+
     public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -391,7 +403,6 @@ public class Metodi {
             sort.put(key, entries);
             Log.d(key, entries.toString());
         }
-
         return sort;
     }
 }

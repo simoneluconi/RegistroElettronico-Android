@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.sharpdroid.registro.Interfaces.API.LessonSubject;
 import com.sharpdroid.registro.Interfaces.Client.Subject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.sharpdroid.registro.Databases.DatabaseInfo.DB_VERSION;
@@ -100,5 +101,17 @@ public class SubjectsDB extends SQLiteOpenHelper {
         db.endTransaction();
 
         return this;
+    }
+
+    public List<Subject> getSubjects() {
+        List<Subject> subjects = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM " + DB_NAME, null);
+
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext())
+            subjects.add(new Subject(c.getInt(0), c.getInt(1), c.getString(2), c.getString(3), c.getFloat(4), c.getString(5), c.getString(6), c.getString(7)));
+
+        c.close();
+        return subjects;
     }
 }

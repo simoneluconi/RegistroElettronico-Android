@@ -108,6 +108,15 @@ public class AllLessonsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return n_headers + n_rows;
     }
 
+    //serve a onScrollListener per prendere le info del primo item visibile
+    public Lesson getItemAt(int position) {
+        if (types.get(position) instanceof LessonEntry) {
+            return ((LessonEntry) types.get(position)).getLesson();
+        } else {
+            return ((LessonEntry) types.get(position + 1)).getLesson();
+        }
+    }
+
     private class HeaderEntry extends Entry {
         @IdRes
         final static int ID = R.layout.adapter_header;
