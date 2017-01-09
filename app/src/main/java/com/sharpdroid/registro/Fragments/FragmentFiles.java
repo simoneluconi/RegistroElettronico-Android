@@ -54,9 +54,8 @@ public class FragmentFiles extends Fragment {
         TextView folder_date = (TextView) folder_layout.findViewById(R.id.date);
         View folder_divider = folder_layout.findViewById(R.id.divider);
 
+        folder_layout.setOnClickListener(view -> getFragmentManager().popBackStack());
         folder_divider.setVisibility(View.GONE);
-        folder_layout.setClickable(false);
-        folder_layout.setFocusable(false);
 
         try {
             //GET DATA VIA JSON
