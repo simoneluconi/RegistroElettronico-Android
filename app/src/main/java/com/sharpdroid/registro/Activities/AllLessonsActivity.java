@@ -26,7 +26,6 @@ public class AllLessonsActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;
 
     AllLessonsAdapter adapter;
-    RecyclerView.LayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +53,8 @@ public class AllLessonsActivity extends AppCompatActivity {
 
         adapter = new AllLessonsAdapter(this);
         adapter.addAll(lessons);
-        layoutManager = new LinearLayoutManager(this);
         mRecyclerView.addOnScrollListener(new OnScrollLessonsListener());
-        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(adapter);
     }
 
