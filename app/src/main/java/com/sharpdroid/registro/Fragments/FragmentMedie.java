@@ -61,7 +61,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
     public View onCreateView(final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         mContext = getContext();
-        View layout = inflater.inflate(R.layout.fragment_marks, container, false);
+        View layout = inflater.inflate(R.layout.coordinator_swipe_recycler, container, false);
 
         ButterKnife.bind(this, layout);
 

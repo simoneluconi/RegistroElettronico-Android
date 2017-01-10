@@ -40,7 +40,6 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="File"
             android:textColor="#222"
             android:textSize="13sp" />
 
@@ -48,7 +47,6 @@
             android:id="@+id/date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Jan 15, 2016"
             android:textSize="12sp" />
     </LinearLayout>
 

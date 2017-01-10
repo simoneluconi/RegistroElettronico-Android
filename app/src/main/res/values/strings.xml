@@ -88,5 +88,16 @@
         <item quantity="other">Sei %1$s alla %2$dª ora</item>
     </plurals>
     <string name="free_day">Giornata libera!</string>
+    <string name="your_averages">Le tue medie</string>
+    <string name="orale">Orale</string>
+    <string name="scritto">Scritto</string>
+    <string name="pratico">Pratico</string>
+    <string name="lezioni_recenti">Lezioni recenti</string>
+    <string name="mostra_tutti">Mostra Tutti</string>
+    <string name="your_average">La tua media</string>
+    <string name="your_target">Il tuo obiettivo</string>
+    <string name="dettagli">Dettagli</string>
+    <string name="imposta">Imposta</string>
+    <string name="edit">Modifica</string>
 
 </resources>

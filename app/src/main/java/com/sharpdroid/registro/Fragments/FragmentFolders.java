@@ -58,7 +58,7 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.fragment_files, container, false);
+        View layout = inflater.inflate(R.layout.coordinator_swipe_recycler, container, false);
         ButterKnife.bind(this, layout);
         mContext = getContext();
 
