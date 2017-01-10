@@ -151,7 +151,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
                 .subscribe(marks -> {
                     addSubjects(marks, true);
                     mSwipeRefreshLayout.setRefreshing(false);
-                    snackbar = Snackbar.make(mCoordinatorLayout, "Media totale: " + String.format(Locale.getDefault(), "%.2f", getOverallAverage(marks)), Snackbar.LENGTH_INDEFINITE);
+                    snackbar = Snackbar.make(mCoordinatorLayout, "Media totale: " + String.format(Locale.getDefault(), "%.2f", getOverallAverage(marks)), Snackbar.LENGTH_LONG);
                     snackbar.show();
                 }, error -> {
                     if (!isNetworkAvailable(mContext)) {
