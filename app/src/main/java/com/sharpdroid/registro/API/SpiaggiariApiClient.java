@@ -18,11 +18,15 @@ import com.sharpdroid.registro.Interfaces.API.Login;
 import com.sharpdroid.registro.Interfaces.API.MarkSubject;
 import com.sharpdroid.registro.Interfaces.API.Note;
 import com.sharpdroid.registro.Interfaces.API.Scrutiny;
+import com.sharpdroid.registro.Utils.Metodi;
 
+import java.io.File;
 import java.util.List;
 
 import io.reactivex.Observable;
+import okhttp3.Cache;
 import okhttp3.CookieJar;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
@@ -39,8 +43,29 @@ public class SpiaggiariApiClient implements RESTfulAPIService {
         CookieJar cookieJar =
                 new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
 
+        int cacheSize = 10 * 1024 * 1024; // 10 MiB
+        File cacheDir = context.getCacheDir();
+        Cache cache = new Cache(cacheDir, cacheSize);
+
+        Interceptor REWRITE_CACHE_CONTROL_INTERCEPTOR = chain -> {
+            okhttp3.Response originalResponse = chain.proceed(chain.request());
+            if (Metodi.isNetworkAvailable(context)) {
+                int maxAge = 60; // read from cache for 1 minute
+                return originalResponse.newBuilder()
+                        .header("Cache-Control", "public, max-age=" + maxAge)
+                        .build();
+            } else {
+                int maxStale = 60 * 60 * 24 * 28; // tolerate 4-weeks stale
+                return originalResponse.newBuilder()
+                        .header("Cache-Control", "public, only-if-cached, max-stale=" + maxStale)
+                        .build();
+            }
+        };
+
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .cookieJar(cookieJar)
+                .cache(cache)
+                .addNetworkInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
                 .build();
 
         // Retrofit

@@ -129,18 +129,18 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
     }
 
     private void UpdateLessons() {
-        if (isNetworkAvailable(this)) {
-            mSwipeRefreshLayout.setRefreshing(true);
-            new SpiaggiariApiClient(this).getLessons(code)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(lessons -> {
-                        addLessons(lessons, true);
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    }, error -> mSwipeRefreshLayout.setRefreshing(false));
-        } else {
-            Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
-            mSwipeRefreshLayout.setRefreshing(false);
-        }
+        mSwipeRefreshLayout.setRefreshing(true);
+        new SpiaggiariApiClient(this).getLessons(code)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(lessons -> {
+                    addLessons(lessons, true);
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }, error -> {
+                    if (!isNetworkAvailable(this)) {
+                        Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
+                    }
+                    mSwipeRefreshLayout.setRefreshing(false);
+                });
     }
 }

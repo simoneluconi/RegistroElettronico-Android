@@ -135,19 +135,19 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
     }
 
     private void UpdateCommunications() {
-        if (isNetworkAvailable(mContext)) {
-            mSwipeRefreshLayout.setRefreshing(true);
-            new SpiaggiariApiClient(mContext).getCommunications()
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(communications -> {
-                        addCommunications(communications, true);
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    }, error -> mSwipeRefreshLayout.setRefreshing(false));
-        } else {
-            Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
-            mSwipeRefreshLayout.setRefreshing(false);
-        }
+        mSwipeRefreshLayout.setRefreshing(true);
+        new SpiaggiariApiClient(mContext).getCommunications()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(communications -> {
+                    addCommunications(communications, true);
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }, error -> {
+                    if (!isNetworkAvailable(mContext)) {
+                        Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
+                    }
+                    mSwipeRefreshLayout.setRefreshing(false);
+                });
     }
 
     @Override

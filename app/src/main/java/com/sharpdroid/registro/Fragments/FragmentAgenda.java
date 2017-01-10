@@ -2,6 +2,7 @@ package com.sharpdroid.registro.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,6 +38,9 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     RecyclerView recycler;
     @BindView(R.id.place_holder)
     View place_holder;
+    @BindView(R.id.coordinator_layout)
+    CoordinatorLayout mCoordinatorLayout;
+
     private Toolbar actionBar;
     private Context mContext;
     private AgendaDB db;
@@ -85,7 +89,11 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
                     calendarView.removeAllEvents();
                     calendarView.addEvents(convertEvents(db.getEvents()));
                     calendarView.invalidate();
-                }, Throwable::printStackTrace);
+                }, error -> {
+                    //if (!isNetworkAvailable(mContext)) {
+                    //    Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
+                    //}
+                });
     }
 
     @Override
