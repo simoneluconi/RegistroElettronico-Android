@@ -123,18 +123,18 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
     }
 
     private void UpdateAllAbsences() {
-        if (isNetworkAvailable(mContext)) {
-            mSwipeRefreshLayout.setRefreshing(true);
-            new SpiaggiariApiClient(mContext).getAbsences()
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(absences -> {
-                        addAbsences(absences, true);
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    }, error -> mSwipeRefreshLayout.setRefreshing(false));
-        } else {
-            Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
-            mSwipeRefreshLayout.setRefreshing(false);
-        }
+        mSwipeRefreshLayout.setRefreshing(true);
+        new SpiaggiariApiClient(mContext).getAbsences()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(absences -> {
+                    addAbsences(absences, true);
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }, error -> {
+                    if (!isNetworkAvailable(mContext)) {
+                        Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
+                    }
+                    mSwipeRefreshLayout.setRefreshing(false);
+                });
     }
 }

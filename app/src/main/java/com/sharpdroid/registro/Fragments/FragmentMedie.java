@@ -144,21 +144,21 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void UpdateMedie() {
-        if (isNetworkAvailable(mContext)) {
-            mSwipeRefreshLayout.setRefreshing(true);
-            new SpiaggiariApiClient(mContext).getMarks()
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(marks -> {
-                        addSubjects(marks, true);
-                        mSwipeRefreshLayout.setRefreshing(false);
-                        snackbar = Snackbar.make(mCoordinatorLayout, "Media totale: " + String.format(Locale.getDefault(), "%.2f", getOverallAverage(marks)), Snackbar.LENGTH_INDEFINITE);
-                        snackbar.show();
-                    }, error -> mSwipeRefreshLayout.setRefreshing(false));
-        } else {
-            Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
-            mSwipeRefreshLayout.setRefreshing(false);
-        }
+        mSwipeRefreshLayout.setRefreshing(true);
+        new SpiaggiariApiClient(mContext).getMarks()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(marks -> {
+                    addSubjects(marks, true);
+                    mSwipeRefreshLayout.setRefreshing(false);
+                    snackbar = Snackbar.make(mCoordinatorLayout, "Media totale: " + String.format(Locale.getDefault(), "%.2f", getOverallAverage(marks)), Snackbar.LENGTH_INDEFINITE);
+                    snackbar.show();
+                }, error -> {
+                    if (!isNetworkAvailable(mContext)) {
+                        Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
+                    }
+                    mSwipeRefreshLayout.setRefreshing(false);
+                });
     }
 
     @Override

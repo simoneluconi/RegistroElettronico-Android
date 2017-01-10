@@ -134,18 +134,18 @@ public class FragmentTimetable extends Fragment implements SwipeRefreshLayout.On
     }
 
     private void UpdateMedie() {
-        if (isNetworkAvailable(mContext)) {
-            mSwipeRefreshLayout.setRefreshing(true);
-            new SpiaggiariApiClient(mContext).getMarks()
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(marks -> {
-                        addSubjects(marks, true);
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    }, error -> mSwipeRefreshLayout.setRefreshing(false));
-        } else {
-            Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
-            mSwipeRefreshLayout.setRefreshing(false);
-        }
+        mSwipeRefreshLayout.setRefreshing(true);
+        new SpiaggiariApiClient(mContext).getMarks()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(marks -> {
+                    addSubjects(marks, true);
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }, error -> {
+                    if (!isNetworkAvailable(mContext)) {
+                        Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
+                    }
+                    mSwipeRefreshLayout.setRefreshing(false);
+                });
     }
 }

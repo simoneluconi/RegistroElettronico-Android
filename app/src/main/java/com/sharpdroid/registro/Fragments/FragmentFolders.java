@@ -134,18 +134,18 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
     }
 
     private void UpdateFiles() {
-        if (isNetworkAvailable(mContext)) {
-            mSwipeRefreshLayout.setRefreshing(true);
-            new SpiaggiariApiClient(mContext).getFiles()
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(files -> {
-                        addFiles(files, true);
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    }, error -> mSwipeRefreshLayout.setRefreshing(false));
-        } else {
-            Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
-            mSwipeRefreshLayout.setRefreshing(false);
-        }
+        mSwipeRefreshLayout.setRefreshing(true);
+        new SpiaggiariApiClient(mContext).getFiles()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(files -> {
+                    addFiles(files, true);
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }, error -> {
+                    if (!isNetworkAvailable(mContext)) {
+                        Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
+                    }
+                    mSwipeRefreshLayout.setRefreshing(false);
+                });
     }
 }
