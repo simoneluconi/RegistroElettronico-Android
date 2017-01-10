@@ -38,7 +38,7 @@
                 android:id="@+id/text1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="La tua media"
+                android:text="@string/your_average"
                 android:textColor="@color/textcolorgrey"
                 android:textSize="12sp" />
 
@@ -64,7 +64,7 @@
                 android:id="@+id/text2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Il tuo obiettivo"
+                android:text="@string/your_target"
                 android:textColor="@color/textcolorgrey"
                 android:textSize="12sp" />
 
@@ -96,14 +96,14 @@
             style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Imposta" />
+            android:text="@string/imposta" />
 
         <Button
             android:id="@+id/dettagli"
             style="@style/Base.Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Dettagli"
+            android:text="@string/dettagli"
             android:textColor="@color/textcolorgrey" />
     </LinearLayout>
 

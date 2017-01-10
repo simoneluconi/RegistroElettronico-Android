@@ -13,7 +13,7 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingTop="8dp"
-        android:text="Le tue medie"
+        android:text="@string/your_averages"
         android:textColor="#414141" />
 
     <LinearLayout
@@ -44,7 +44,7 @@
                 android:id="@+id/text1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Orale"
+                android:text="@string/orale"
                 android:textColor="@color/textcolorgrey"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -68,7 +68,7 @@
                 android:id="@+id/text2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Scritto"
+                android:text="@string/scritto"
                 android:textColor="@color/textcolorgrey"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -92,7 +92,7 @@
                 android:id="@+id/text3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Pratico"
+                android:text="@string/pratico"
                 android:textColor="@color/textcolorgrey"
                 android:textSize="12sp" />
         </LinearLayout>

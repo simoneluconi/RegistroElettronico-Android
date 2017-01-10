@@ -12,7 +12,7 @@
 
     <include
         android:id="@+id/place_holder"
-        layout="@layout/calendar_free_day"
+        layout="@layout/placeholder_calendar_day"
         android:visibility="gone" />
 
 </android.support.design.widget.CoordinatorLayout>

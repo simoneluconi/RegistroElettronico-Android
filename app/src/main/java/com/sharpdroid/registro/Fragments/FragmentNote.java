@@ -56,7 +56,7 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mContext = getContext();
-        View layout = inflater.inflate(R.layout.fragment_note, container, false);
+        View layout = inflater.inflate(R.layout.coordinator_swipe_recycler, container, false);
 
         ButterKnife.bind(this, layout);
 

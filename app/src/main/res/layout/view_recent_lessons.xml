@@ -13,7 +13,7 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingTop="8dp"
-        android:text="Lezioni recenti"
+        android:text="@string/lezioni_recenti"
         android:textColor="#414141" />
 
     <android.support.v7.widget.RecyclerView
@@ -32,6 +32,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:text="Mostra Tutti" />
+        android:text="@string/mostra_tutti" />
 
 </LinearLayout>

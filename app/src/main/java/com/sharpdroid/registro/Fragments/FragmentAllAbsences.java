@@ -53,7 +53,7 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_all_absences, container, false);
+        View root = inflater.inflate(R.layout.coordinator_swipe_recycler, container, false);
         mContext = getContext();
 
         ButterKnife.bind(this, root);

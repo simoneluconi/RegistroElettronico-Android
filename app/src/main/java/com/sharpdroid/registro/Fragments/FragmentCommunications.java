@@ -59,7 +59,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
     public View onCreateView(final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         mContext = getContext();
-        View layout = inflater.inflate(R.layout.fragment_communications, container, false);
+        View layout = inflater.inflate(R.layout.coordinator_swipe_recycler, container, false);
         db = CommunicationsDB.from(mContext);
         ButterKnife.bind(this, layout);
 
