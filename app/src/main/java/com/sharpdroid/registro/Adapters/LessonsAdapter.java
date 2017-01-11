@@ -23,11 +23,10 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonHolder> {
 
     private Context mContext;
 
-    private List<Lesson> lessons;
+    private List<Lesson> lessons = new ArrayList<>();
 
     public LessonsAdapter(Context mContext) {
         this.mContext = mContext;
-        lessons = new ArrayList<>();
     }
 
     @Override

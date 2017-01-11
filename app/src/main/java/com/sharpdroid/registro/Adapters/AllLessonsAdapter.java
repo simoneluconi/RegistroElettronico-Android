@@ -15,7 +15,6 @@ import com.sharpdroid.registro.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -69,12 +68,13 @@ public class AllLessonsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-    public void addAll(Collection<Lesson> lessons) {
+    public void addAll(List<Lesson> lessons) {
+        Collections.reverse(lessons);
         elaborateList(lessons);
         notifyDataSetChanged();
     }
 
-    private void elaborateList(Collection<Lesson> lessons) {
+    private void elaborateList(List<Lesson> lessons) {
         HashMap<String, List<Lesson>> organizedLessons = new HashMap<>();
 
         for (Lesson lesson : lessons) {
