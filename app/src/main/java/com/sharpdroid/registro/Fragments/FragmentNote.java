@@ -17,17 +17,11 @@ import com.sharpdroid.registro.API.SpiaggiariApiClient;
 import com.sharpdroid.registro.Adapters.NoteAdapter;
 import com.sharpdroid.registro.Interfaces.API.Note;
 import com.sharpdroid.registro.R;
+import com.sharpdroid.registro.Tasks.CacheListObservable;
 import com.sharpdroid.registro.Tasks.CacheListTask;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
-import java.io.EOFException;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.StreamCorruptedException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -96,36 +90,14 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void bindNoteCache() {
-        ObjectInputStream objectInputStream = null;
-        try {
-            FileInputStream fileInputStream = new FileInputStream(new File(mContext.getCacheDir(), TAG));
-            objectInputStream = new ObjectInputStream(fileInputStream);
-            List<Note> cachedData = new LinkedList<>();
-            Note temp;
-            while ((temp = (Note) objectInputStream.readObject()) != null) {
-                cachedData.add(temp);
-            }
-            addNotes(cachedData, false);
-            Log.d(TAG, "Restored cache");
-        } catch (FileNotFoundException e) {
-            Log.w(TAG, "Cache not found.");
-        } catch (EOFException e) {
-            Log.e(TAG, "Error while reading cache! (EOF) ");
-        } catch (StreamCorruptedException e) {
-            Log.e(TAG, "Corrupted cache!");
-        } catch (IOException e) {
-            Log.e(TAG, "Error while reading cache!");
-        } catch (ClassCastException | ClassNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            if (objectInputStream != null) {
-                try {
-                    objectInputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        new CacheListObservable(new File(mContext.getCacheDir(), TAG))
+                .getCachedList(Note.class)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(marks -> {
+                    addNotes(marks, false);
+                    Log.d(TAG, "Restored cache");
+                });
     }
 
     public void onRefresh() {

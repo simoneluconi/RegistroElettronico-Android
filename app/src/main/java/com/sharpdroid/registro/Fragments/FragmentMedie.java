@@ -18,17 +18,11 @@ import com.sharpdroid.registro.Adapters.MedieAdapter;
 import com.sharpdroid.registro.Databases.SubjectsDB;
 import com.sharpdroid.registro.Interfaces.API.MarkSubject;
 import com.sharpdroid.registro.R;
+import com.sharpdroid.registro.Tasks.CacheListObservable;
 import com.sharpdroid.registro.Tasks.CacheListTask;
 import com.sharpdroid.registro.Utils.ItemOffsetDecoration;
 
-import java.io.EOFException;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.StreamCorruptedException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -98,7 +92,6 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
             mRVAdapter.clear();
             mRVAdapter.addAll(markSubjects);
 
-
             if (docache) {
                 // Update cache
                 new CacheListTask(mContext.getCacheDir(), TAG).execute((List) markSubjects);
@@ -107,36 +100,14 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void bindMarksCache() {
-        ObjectInputStream objectInputStream = null;
-        try {
-            FileInputStream fileInputStream = new FileInputStream(new File(mContext.getCacheDir(), TAG));
-            objectInputStream = new ObjectInputStream(fileInputStream);
-            List<MarkSubject> cachedData = new LinkedList<>();
-            MarkSubject temp;
-            while ((temp = (MarkSubject) objectInputStream.readObject()) != null) {
-                cachedData.add(temp);
-            }
-            addSubjects(cachedData, false);
-            Log.d(TAG, "Restored cache");
-        } catch (FileNotFoundException e) {
-            Log.w(TAG, "Cache not found.");
-        } catch (EOFException e) {
-            Log.e(TAG, "Error while reading cache! (EOF) ");
-        } catch (StreamCorruptedException e) {
-            Log.e(TAG, "Corrupted cache!");
-        } catch (IOException e) {
-            Log.e(TAG, "Error while reading cache!");
-        } catch (ClassCastException | ClassNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            if (objectInputStream != null) {
-                try {
-                    objectInputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        new CacheListObservable(new File(mContext.getCacheDir(), TAG))
+                .getCachedList(MarkSubject.class)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(marks -> {
+                    addSubjects(marks, false);
+                    Log.d(TAG, "Restored cache");
+                });
     }
 
     public void onRefresh() {
