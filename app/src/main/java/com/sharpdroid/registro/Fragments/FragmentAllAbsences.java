@@ -17,15 +17,10 @@ import com.sharpdroid.registro.API.SpiaggiariApiClient;
 import com.sharpdroid.registro.Adapters.AllAbsencesAdapter;
 import com.sharpdroid.registro.Interfaces.API.Absences;
 import com.sharpdroid.registro.R;
+import com.sharpdroid.registro.Tasks.CacheObjectObservable;
 import com.sharpdroid.registro.Tasks.CacheObjectTask;
 
-import java.io.EOFException;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.StreamCorruptedException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -86,36 +81,15 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
     }
 
     private void bindAbsencesCache() {
-        ObjectInputStream objectInputStream = null;
-        try {
-            FileInputStream fileInputStream = new FileInputStream(new File(mContext.getCacheDir(), TAG));
-            objectInputStream = new ObjectInputStream(fileInputStream);
-            Object obj = objectInputStream.readObject();
-            if (obj instanceof Absences) {
-                addAbsences((Absences) obj, false);
-                Log.d(TAG, "Restored cache");
-            } else {
-                Log.e(TAG, "Corrupted cache");
-            }
-        } catch (FileNotFoundException e) {
-            Log.w(TAG, "Cache not found.");
-        } catch (EOFException e) {
-            Log.e(TAG, "Error while reading cache! (EOF) ");
-        } catch (StreamCorruptedException e) {
-            Log.e(TAG, "Corrupted cache!");
-        } catch (IOException e) {
-            Log.e(TAG, "Error while reading cache!");
-        } catch (ClassCastException | ClassNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            if (objectInputStream != null) {
-                try {
-                    objectInputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        new CacheObjectObservable(new File(mContext.getCacheDir(), TAG))
+                .getCachedList(Absences.class)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(absences -> {
+                    addAbsences(absences, false);
+                    Log.d(TAG, "Restored cache");
+                }, error -> {
+                });
     }
 
     public void onRefresh() {
