@@ -95,8 +95,8 @@ public class FragmentTimetable extends Fragment implements SwipeRefreshLayout.On
                 .getCachedList(MarkSubject.class)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(marks -> {
-                    addSubjects(marks, false);
+                .subscribe(subjects -> {
+                    addSubjects(subjects, false);
                     Log.d(TAG, "Restored cache");
                 });
     }
@@ -107,7 +107,8 @@ public class FragmentTimetable extends Fragment implements SwipeRefreshLayout.On
 
     private void UpdateMedie() {
         mSwipeRefreshLayout.setRefreshing(true);
-        new SpiaggiariApiClient(mContext).getMarks()
+        new SpiaggiariApiClient(mContext)
+                .getMarks()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(marks -> {

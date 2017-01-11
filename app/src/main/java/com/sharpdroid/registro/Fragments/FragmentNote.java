@@ -94,8 +94,8 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
                 .getCachedList(Note.class)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(marks -> {
-                    addNotes(marks, false);
+                .subscribe(notes -> {
+                    addNotes(notes, false);
                     Log.d(TAG, "Restored cache");
                 });
     }
@@ -107,7 +107,8 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private void UpdateNotes() {
         mSwipeRefreshLayout.setRefreshing(true);
-        new SpiaggiariApiClient(mContext).getNotes()
+        new SpiaggiariApiClient(mContext)
+                .getNotes()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(notes -> {
