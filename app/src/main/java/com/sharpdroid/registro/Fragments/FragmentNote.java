@@ -92,7 +92,7 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
     private void bindNoteCache() {
         new CacheListObservable(new File(mContext.getCacheDir(), TAG))
                 .getCachedList(Note.class)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(notes -> {
                     addNotes(notes, false);
@@ -109,7 +109,6 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
         mSwipeRefreshLayout.setRefreshing(true);
         new SpiaggiariApiClient(mContext)
                 .getNotes()
-                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(notes -> {
                     addNotes(notes, true);

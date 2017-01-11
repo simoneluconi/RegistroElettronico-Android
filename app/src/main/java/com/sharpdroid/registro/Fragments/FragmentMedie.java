@@ -102,7 +102,7 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
     private void bindMarksCache() {
         new CacheListObservable(new File(mContext.getCacheDir(), TAG))
                 .getCachedList(MarkSubject.class)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(marks -> {
                     addSubjects(marks, false);
@@ -118,7 +118,6 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
         mSwipeRefreshLayout.setRefreshing(true);
         new SpiaggiariApiClient(mContext)
                 .getMarks()
-                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(marks -> {
                     addSubjects(marks, true);

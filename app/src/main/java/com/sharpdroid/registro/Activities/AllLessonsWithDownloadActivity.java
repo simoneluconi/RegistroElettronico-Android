@@ -87,7 +87,7 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
     private void bindLessonsCache() {
         new CacheListObservable(new File(this.getCacheDir(), TAG))
                 .getCachedList(Lesson.class)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(lessons -> {
                     addLessons(lessons, false);
@@ -103,7 +103,6 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
         mSwipeRefreshLayout.setRefreshing(true);
         new SpiaggiariApiClient(this)
                 .getLessons(code)
-                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(lessons -> {
                     addLessons(lessons, true);

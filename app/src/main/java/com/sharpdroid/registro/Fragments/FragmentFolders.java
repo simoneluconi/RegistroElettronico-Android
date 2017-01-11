@@ -93,7 +93,7 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
     private void bindFileTeacherCache() {
         new CacheListObservable(new File(mContext.getCacheDir(), TAG))
                 .getCachedList(FileTeacher.class)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(files -> {
                     addFiles(files, false);
@@ -109,7 +109,6 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
         mSwipeRefreshLayout.setRefreshing(true);
         new SpiaggiariApiClient(mContext)
                 .getFiles()
-                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(files -> {
                     addFiles(files, true);

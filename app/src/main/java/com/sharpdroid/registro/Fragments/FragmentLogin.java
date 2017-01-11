@@ -91,7 +91,6 @@ public class FragmentLogin extends SlideFragment {
         mButtonLogin.setText(R.string.caricamento);
 
         new SpiaggiariApiClient(mContext).postLogin(mEmail, mPassword, new DeviceUuidFactory(mContext).getDeviceUuid().toString())
-                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(login -> {
                     SharedPreferences settings = mContext.getSharedPreferences("REGISTRO", MODE_PRIVATE);
