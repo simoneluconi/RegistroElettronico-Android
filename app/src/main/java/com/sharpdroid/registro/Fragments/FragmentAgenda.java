@@ -82,7 +82,6 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     private void updateDB() {
         new SpiaggiariApiClient(mContext)
                 .getEvents(0L, Long.MAX_VALUE)
-                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(events -> {
                     Log.d(TAG, "Scaricati " + events.size() + " eventi");

@@ -83,7 +83,7 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
     private void bindAbsencesCache() {
         new CacheObjectObservable(new File(mContext.getCacheDir(), TAG))
                 .getCachedList(Absences.class)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(absences -> {
                     addAbsences(absences, false);
@@ -100,7 +100,6 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
         mSwipeRefreshLayout.setRefreshing(true);
         new SpiaggiariApiClient(mContext)
                 .getAbsences()
-                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(absences -> {
                     addAbsences(absences, true);
