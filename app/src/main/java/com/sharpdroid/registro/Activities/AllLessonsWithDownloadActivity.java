@@ -89,8 +89,8 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
                 .getCachedList(Lesson.class)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(marks -> {
-                    addLessons(marks, false);
+                .subscribe(lessons -> {
+                    addLessons(lessons, false);
                     Log.d(TAG, "Restored cache");
                 });
     }
@@ -101,7 +101,8 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
 
     private void UpdateLessons() {
         mSwipeRefreshLayout.setRefreshing(true);
-        new SpiaggiariApiClient(this).getLessons(code)
+        new SpiaggiariApiClient(this)
+                .getLessons(code)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(lessons -> {

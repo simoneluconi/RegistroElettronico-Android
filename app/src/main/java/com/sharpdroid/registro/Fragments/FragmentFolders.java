@@ -95,8 +95,8 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
                 .getCachedList(FileTeacher.class)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(marks -> {
-                    addFiles(marks, false);
+                .subscribe(files -> {
+                    addFiles(files, false);
                     Log.d(TAG, "Restored cache");
                 });
     }
@@ -107,7 +107,8 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
 
     private void UpdateFiles() {
         mSwipeRefreshLayout.setRefreshing(true);
-        new SpiaggiariApiClient(mContext).getFiles()
+        new SpiaggiariApiClient(mContext)
+                .getFiles()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(files -> {

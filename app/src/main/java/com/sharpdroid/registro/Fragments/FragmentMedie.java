@@ -116,7 +116,8 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
 
     private void UpdateMedie() {
         mSwipeRefreshLayout.setRefreshing(true);
-        new SpiaggiariApiClient(mContext).getMarks()
+        new SpiaggiariApiClient(mContext)
+                .getMarks()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(marks -> {

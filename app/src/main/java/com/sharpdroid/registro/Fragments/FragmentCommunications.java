@@ -96,8 +96,8 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
                 .getCachedList(Communication.class)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(marks -> {
-                    addCommunications(marks, false);
+                .subscribe(communications -> {
+                    addCommunications(communications, false);
                     Log.d(TAG, "Restored cache");
                 });
     }
@@ -108,7 +108,8 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
 
     private void UpdateCommunications() {
         mSwipeRefreshLayout.setRefreshing(true);
-        new SpiaggiariApiClient(mContext).getCommunications()
+        new SpiaggiariApiClient(mContext)
+                .getCommunications()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(communications -> {
