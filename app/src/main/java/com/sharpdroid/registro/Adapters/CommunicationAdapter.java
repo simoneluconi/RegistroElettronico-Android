@@ -30,7 +30,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 import okhttp3.Headers;
 
 import static com.sharpdroid.registro.Utils.Metodi.getFileNamefromHeaders;
@@ -113,8 +112,8 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
 
     private void DownloadFile(Communication communication, File dir, CommunicationsDB db, Snackbar DownloadProgressSnak, boolean addRecord) {
         DownloadProgressSnak.show();
-        new SpiaggiariApiClient(mContext).getCommunicationDownload(communication.getId())
-                .subscribeOn(Schedulers.newThread())
+        new SpiaggiariApiClient(mContext)
+                .getCommunicationDownload(communication.getId())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(communication_file -> {
                     Headers headers = communication_file.headers();

@@ -28,14 +28,12 @@ import com.sharpdroid.registro.Views.SubjectDetails.OverallView;
 import com.sharpdroid.registro.Views.SubjectDetails.RecentLessonsView;
 import com.sharpdroid.registro.Views.SubjectDetails.TargetView;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 import static com.sharpdroid.registro.Utils.Metodi.MessaggioVoto;
 import static com.sharpdroid.registro.Utils.Metodi.beautifyName;
@@ -224,10 +222,10 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     }
 
     private void setLessons(int id) {
-        new SpiaggiariApiClient(this).getLessons(id)
-                .subscribeOn(Schedulers.newThread())
+        new SpiaggiariApiClient(this)
+                .getLessons(id)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(lessons -> lessonsView.addAll(new ArrayList<>(lessons)), error -> {
+                .subscribe(lessons -> lessonsView.addAll(lessons), error -> {
                 });
     }
 

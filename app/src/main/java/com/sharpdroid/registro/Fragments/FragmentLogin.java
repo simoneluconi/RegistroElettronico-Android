@@ -22,7 +22,6 @@ import com.sharpdroid.registro.Utils.DeviceUuidFactory;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.sharpdroid.registro.Utils.Metodi.NomeDecente;
@@ -104,8 +103,8 @@ public class FragmentLogin extends SlideFragment {
                     Toast.makeText(mContext, R.string.login_msg, Toast.LENGTH_SHORT).show();
 
                     //scarica le materie (nome, id) per poter in seguito modificare a piacere tutte le caratteristiche nel db
-                    new SpiaggiariApiClient(mContext).getSubjects()
-                            .subscribeOn(Schedulers.newThread())
+                    new SpiaggiariApiClient(mContext)
+                            .getSubjects()
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(subjects -> SubjectsDB.from(mContext).addCODEandNAME(subjects).close(), error -> {
                             });
