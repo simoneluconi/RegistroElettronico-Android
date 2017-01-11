@@ -15,7 +15,7 @@ import com.sharpdroid.registro.Interfaces.API.Lesson;
 import com.sharpdroid.registro.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
-import java.util.ArrayList;
+import java.util.Collection;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,7 +58,7 @@ public class RecentLessonsView extends CardView {
         mRecyclerView.setAdapter(adapter);
     }
 
-    public void addAll(ArrayList<Lesson> list) {
+    public void addAll(Collection<Lesson> list) {
         adapter.addAll(list);
         showAllButton.setOnClickListener(view -> mContext.startActivity(new Intent(mContext, AllLessonsActivity.class).putExtra("data", new Gson().toJson(list))));
     }

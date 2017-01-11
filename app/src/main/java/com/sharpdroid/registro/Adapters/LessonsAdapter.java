@@ -11,6 +11,7 @@ import com.sharpdroid.registro.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -41,8 +42,8 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonHolder> {
         holder.date.setText(formatter.format(lesson.getDate()));
     }
 
-    public void addAll(List<Lesson> list) {
-        lessons = list;
+    public void addAll(Collection<Lesson> list) {
+        lessons.addAll(list);
         Collections.reverse(lessons);
         notifyDataSetChanged();
     }
