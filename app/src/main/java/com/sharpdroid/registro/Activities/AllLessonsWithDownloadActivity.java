@@ -16,16 +16,10 @@ import com.sharpdroid.registro.Adapters.AllLessonsAdapter;
 import com.sharpdroid.registro.Interfaces.API.Lesson;
 import com.sharpdroid.registro.Listeners.OnScrollLessonsListener;
 import com.sharpdroid.registro.R;
+import com.sharpdroid.registro.Tasks.CacheListObservable;
 import com.sharpdroid.registro.Tasks.CacheListTask;
 
-import java.io.EOFException;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.StreamCorruptedException;
-import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -91,36 +85,14 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
     }
 
     private void bindLessonsCache() {
-        ObjectInputStream objectInputStream = null;
-        try {
-            FileInputStream fileInputStream = new FileInputStream(new File(getCacheDir(), TAG + File.pathSeparator + code));
-            objectInputStream = new ObjectInputStream(fileInputStream);
-            List<Lesson> cachedData = new LinkedList<>();
-            Lesson temp;
-            while ((temp = (Lesson) objectInputStream.readObject()) != null) {
-                cachedData.add(temp);
-            }
-            addLessons(cachedData, false);
-            Log.d(TAG, "Restored cache");
-        } catch (FileNotFoundException e) {
-            Log.w(TAG, "Cache not found.");
-        } catch (EOFException e) {
-            Log.e(TAG, "Error while reading cache! (EOF) ");
-        } catch (StreamCorruptedException e) {
-            Log.e(TAG, "Corrupted cache!");
-        } catch (IOException e) {
-            Log.e(TAG, "Error while reading cache!");
-        } catch (ClassCastException | ClassNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            if (objectInputStream != null) {
-                try {
-                    objectInputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        new CacheListObservable(new File(this.getCacheDir(), TAG))
+                .getCachedList(Lesson.class)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(marks -> {
+                    addLessons(marks, false);
+                    Log.d(TAG, "Restored cache");
+                });
     }
 
     public void onRefresh() {
