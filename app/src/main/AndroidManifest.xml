@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity
-            android:name="Activities.SplashActivity"
+            android:name=".Activities.SplashActivity"
             android:label="@string/app_name"
             android:noHistory="true"
             android:theme="@style/SplashTheme"
@@ -25,25 +25,27 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <meta-data android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
         <activity
-            android:name="Activities.MainActivity"
+            android:name=".Activities.MainActivity"
             tools:ignore="InnerclassSeparator" />
         <activity
-            android:name="Activities.Intro"
+            android:name=".Activities.Intro"
             tools:ignore="InnerclassSeparator" />
         <activity
-            android:name="Activities.MarkSubjectDetailActivity"
+            android:name=".Activities.MarkSubjectDetailActivity"
             tools:ignore="InnerclassSeparator" />
         <activity
-            android:name="Activities.EditSubjectDetailsActivity"
+            android:name=".Activities.EditSubjectDetailsActivity"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="InnerclassSeparator" />
         <activity
-            android:name="Activities.AllLessonsActivity"
+            android:name=".Activities.AllLessonsActivity"
             tools:ignore="InnerclassSeparator" />
         <activity
-            android:name="Activities.AllLessonsWithDownloadActivity"
+            android:name=".Activities.AllLessonsWithDownloadActivity"
             tools:ignore="InnerclassSeparator" />
 
         <provider
