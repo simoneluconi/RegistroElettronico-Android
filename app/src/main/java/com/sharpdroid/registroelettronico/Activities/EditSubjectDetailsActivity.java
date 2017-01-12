@@ -71,13 +71,13 @@ public class EditSubjectDetailsActivity extends AppCompatActivity {
         if (code != -1) {
             subject = db.getSubject(code);
 
-            name.setText(beautifyName(getSubjectName(subject)));
+            name.setText(getSubjectName(subject));
             if (subject.getProfessor() != null)
                 prof.setText(NomeDecente(subject.getProfessor()));
             if (subject.getClassroom() != null)
-                classroom.setText(beautifyName(subject.getClassroom()));
+                classroom.setText(subject.getClassroom());
             if (subject.getNotes() != null)
-                notes.setText(beautifyName(subject.getNotes()));
+                notes.setText(subject.getNotes());
         }
     }
 
