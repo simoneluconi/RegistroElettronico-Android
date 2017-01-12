@@ -4,7 +4,7 @@
         <item
             android:id="@+id/show"
             android:checked="true"
-            android:icon="@drawable/ic_timeline_"
+            android:icon="@drawable/ic_timeline"
             android:title="@string/mostra_grafico" />
     </group>
 </menu>
