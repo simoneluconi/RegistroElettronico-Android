@@ -8,7 +8,7 @@
             android:title="@string/agenda" />
         <item
             android:id="@+id/medie"
-            android:icon="@drawable/ic_timeline_"
+            android:icon="@drawable/ic_timeline"
             android:title="@string/medie" />
         <item
             android:id="@+id/lessons"

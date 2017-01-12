@@ -76,5 +76,5 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        app:srcCompat="@drawable/ic_check_circle_black_24dp" />
+        app:srcCompat="@drawable/ic_check_circle" />
 </RelativeLayout>

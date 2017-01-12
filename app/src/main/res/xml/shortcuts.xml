@@ -2,18 +2,50 @@
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
     <shortcut
         android:enabled="true"
-        android:icon="@drawable/ic_event"
+        android:icon="@drawable/shortcut_ic_event"
         android:shortcutDisabledMessage="@string/agenda"
         android:shortcutId="agenda"
         android:shortcutLongLabel="@string/agenda"
         android:shortcutShortLabel="@string/agenda">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.sharpdroid.registroelettronico.MainActivity"
+            android:targetClass="com.sharpdroid.registroelettronico.Activities.MainActivity"
             android:targetPackage="com.sharpdroid.registroelettronico">
             <extra
                 android:name="drawer_to_open"
                 android:value="0" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/shortcut_ic_timeline"
+        android:shortcutDisabledMessage="@string/medie"
+        android:shortcutId="medie"
+        android:shortcutLongLabel="@string/medie"
+        android:shortcutShortLabel="@string/medie">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.sharpdroid.registroelettronico.Activities.MainActivity"
+            android:targetPackage="com.sharpdroid.registroelettronico">
+            <extra
+                android:name="drawer_to_open"
+                android:value="1" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/shortcut_ic_assignment"
+        android:shortcutDisabledMessage="@string/communications"
+        android:shortcutId="communications"
+        android:shortcutLongLabel="@string/communications"
+        android:shortcutShortLabel="@string/communications">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.sharpdroid.registroelettronico.Activities.MainActivity"
+            android:targetPackage="com.sharpdroid.registroelettronico">
+            <extra
+                android:name="drawer_to_open"
+                android:value="6" />
         </intent>
     </shortcut>
 </shortcuts>
