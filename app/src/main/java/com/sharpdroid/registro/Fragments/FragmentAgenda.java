@@ -26,7 +26,6 @@ import java.util.TimeZone;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 import static com.sharpdroid.registro.Utils.Metodi.convertEvents;
 

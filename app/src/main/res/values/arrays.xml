@@ -12,7 +12,7 @@
     <string-array name="tab_list">
         <item>@string/agenda</item>
         <item>@string/medie</item>
-        <item>@string/timetable</item>
+        <item>@string/lessons</item>
         <item>@string/files</item>
         <item>@string/justifications</item>
         <item>@string/note</item>
