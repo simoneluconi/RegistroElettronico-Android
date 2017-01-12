@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
-</PreferenceScreen>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_event"
+        android:shortcutDisabledMessage="@string/agenda"
+        android:shortcutId="agenda"
+        android:shortcutLongLabel="@string/agenda"
+        android:shortcutShortLabel="@string/agenda">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.sharpdroid.registroelettronico.MainActivity"
+            android:targetPackage="com.sharpdroid.registroelettronico">
+            <extra
+                android:name="drawer_to_open"
+                android:value="0" />
+        </intent>
+    </shortcut>
+</shortcuts>
