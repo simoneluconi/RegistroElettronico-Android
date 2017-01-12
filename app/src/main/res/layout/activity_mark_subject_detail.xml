@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.sharpdroid.registro.Activities.MarkSubjectDetailActivity">
+    tools:context="com.sharpdroid.registroelettronico.Activities.MarkSubjectDetailActivity">
 
     <include
         layout="@layout/app_bar_main"
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.sharpdroid.registro.Views.SubjectDetails.InfoView
+            <com.sharpdroid.registroelettronico.Views.SubjectDetails.InfoView
                 android:id="@+id/info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp" />
 
-            <com.sharpdroid.registro.Views.SubjectDetails.OverallView
+            <com.sharpdroid.registroelettronico.Views.SubjectDetails.OverallView
                 android:id="@+id/overall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp" />
 
-            <com.sharpdroid.registro.Views.SubjectDetails.TargetView
+            <com.sharpdroid.registroelettronico.Views.SubjectDetails.TargetView
                 android:id="@+id/target"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp" />
 
-            <com.sharpdroid.registro.Views.SubjectDetails.MarksView
+            <com.sharpdroid.registroelettronico.Views.SubjectDetails.MarksView
                 android:id="@+id/marks"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp" />
 
-            <com.sharpdroid.registro.Views.SubjectDetails.RecentLessonsView
+            <com.sharpdroid.registroelettronico.Views.SubjectDetails.RecentLessonsView
                 android:id="@+id/lessons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
