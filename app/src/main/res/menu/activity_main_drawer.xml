@@ -11,10 +11,6 @@
             android:icon="@drawable/ic_timeline_"
             android:title="@string/medie" />
         <item
-            android:id="@+id/timetable"
-            android:icon="@drawable/ic_grid_on"
-            android:title="@string/timetable" />
-        <item
             android:id="@+id/lessons"
             android:icon="@drawable/ic_view_agenda"
             android:title="@string/lessons" />
