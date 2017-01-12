@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
-        <shape android:shape="oval">
+        <shape
+            android:innerRadius="22dp"
+            android:shape="oval">
             <solid android:color="@color/shortcut_circle" />
         </shape>
     </item>
     <item
-        android:bottom="13dp"
+        android:bottom="10dp"
         android:drawable="@drawable/ic_timeline"
-        android:left="13dp"
-        android:right="13dp"
-        android:top="13dp" />
+        android:left="10dp"
+        android:right="10dp"
+        android:top="10dp" />
 </layer-list>
