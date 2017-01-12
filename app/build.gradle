@@ -18,8 +18,8 @@ android {
         applicationId "com.sharpdroid.registroelettronico"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 401
-        versionName "2.1"
+        versionCode 406
+        versionName "2.6"
 
         vectorDrawables.useSupportLibrary = true;
     }
@@ -62,7 +62,7 @@ android {
 
             zipAlignEnabled true
             shrinkResources true
-            minifyEnabled true
+            minifyEnabled false
             useProguard true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
