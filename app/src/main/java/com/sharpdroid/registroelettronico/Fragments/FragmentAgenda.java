@@ -3,6 +3,7 @@ package com.sharpdroid.registroelettronico.Fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -89,9 +90,8 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
                     calendarView.addEvents(convertEvents(db.getEvents()));
                     calendarView.invalidate();
                 }, error -> {
-                    //if (!isNetworkAvailable(mContext)) {
-                    //    Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
-                    //}
+                    error.printStackTrace();
+                    Snackbar.make(mCoordinatorLayout, error.getLocalizedMessage(), Snackbar.LENGTH_LONG).show();
                 });
     }
 
