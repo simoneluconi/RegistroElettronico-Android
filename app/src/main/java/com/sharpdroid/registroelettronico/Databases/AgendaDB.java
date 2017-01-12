@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.sharpdroid.registroelettronico.Interfaces.API.Event;
 
@@ -70,24 +71,24 @@ public class AgendaDB extends SQLiteOpenHelper {
         db.delete(DB_NAME, null, null);
         ContentValues values;
         for (Event e : events) {
-            values = new ContentValues();
-            values.put("code", e.getId());
-            values.put("title", e.getTitle());
-            values.put("start", e.getStart().getTime());
-            values.put("end", e.getEnd().getTime());
-            values.put("allDay", e.isAllDay() ? 1 : 0);
-            values.put("data_inserimento", e.getData_inserimento().getTime());
-            values.put("nota_2", toLowerCase(e.getNota_2()));
-            values.put("master_id", e.getMaster_id());
-            values.put("classe_id", e.getClasse_id());
-            values.put("classe_desc", e.getClasse_desc());
-            values.put("gruppo", e.getGruppo());
-            values.put("autore_desc", toLowerCase(e.getAutore_desc()));
-            values.put("autore_id", e.getAutore_id());
-            values.put("tipo", toLowerCase(e.getTipo()));
-            values.put("materia_desc", toLowerCase(e.getMateria_desc()));
-            values.put("materia_id", e.getMateria_id());
-            db.insert(DB_NAME, null, values);
+                values = new ContentValues();
+                values.put("code", e.getId());
+                values.put("title", e.getTitle());
+                values.put("start", e.getStart().getTime());
+                values.put("end", e.getEnd().getTime());
+                values.put("allDay", e.isAllDay() ? 1 : 0);
+                values.put("data_inserimento", e.getData_inserimento().getTime());
+                values.put("nota_2", toLowerCase(e.getNota_2()));
+                values.put("master_id", e.getMaster_id());
+                values.put("classe_id", e.getClasse_id());
+                values.put("classe_desc", e.getClasse_desc());
+                values.put("gruppo", e.getGruppo());
+                values.put("autore_desc", toLowerCase(e.getAutore_desc()));
+                values.put("autore_id", e.getAutore_id());
+                values.put("tipo", toLowerCase(e.getTipo()));
+                values.put("materia_desc", toLowerCase(e.getMateria_desc()));
+                values.put("materia_id", e.getMateria_id());
+                db.insert(DB_NAME, null, values);
         }
         db.setTransactionSuccessful();
         db.endTransaction();
