@@ -54,7 +54,7 @@ public class SubjectsAdapter extends RecyclerView.Adapter<AbsencesHolder> {
 
         holder.type_text.setText(getSubjectName(item).substring(0, 1).toUpperCase());
         holder.divider.setVisibility((position == 0) ? View.INVISIBLE : View.VISIBLE);
-        holder.date.setText(beautifyName(getSubjectName(item)));
+        holder.date.setText(getSubjectName(item));
         if (isEmptyOrNull(item.getProfessor())) {   //non visualizzare la textview se non serve
             holder.hour.setVisibility(View.GONE);
         } else {
