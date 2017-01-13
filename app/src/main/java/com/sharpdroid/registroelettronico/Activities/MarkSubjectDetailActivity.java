@@ -114,8 +114,9 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
 
     void setOverall(List<Mark> marks) {
         media = new Media();
+        media.addMarks(marks);
         if (media.containsValidMarks()) {
-            media.addMarks(marks);
+            overallView.setVisibility(View.VISIBLE);
             try {
                 overallView.setPratico(String.format(Locale.getDefault(), "%.2f", media.getMediaPratico()));
             } catch (Exception ignored) {
