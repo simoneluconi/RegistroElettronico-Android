@@ -13,6 +13,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
@@ -113,19 +114,21 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
 
     void setOverall(List<Mark> marks) {
         media = new Media();
-        media.addMarks(marks);
-        try {
-            overallView.setPratico(String.format(Locale.getDefault(), "%.2f", media.getMediaPratico()));
-        } catch (Exception ignored) {
-        }
-        try {
-            overallView.setOrale(String.format(Locale.getDefault(), "%.2f", media.getMediaOrale()));
-        } catch (Exception ignored) {
-        }
-        try {
-            overallView.setScritto(String.format(Locale.getDefault(), "%.2f", media.getMediaScritto()));
-        } catch (Exception ignored) {
-        }
+        if (media.containsValidMarks()) {
+            media.addMarks(marks);
+            try {
+                overallView.setPratico(String.format(Locale.getDefault(), "%.2f", media.getMediaPratico()));
+            } catch (Exception ignored) {
+            }
+            try {
+                overallView.setOrale(String.format(Locale.getDefault(), "%.2f", media.getMediaOrale()));
+            } catch (Exception ignored) {
+            }
+            try {
+                overallView.setScritto(String.format(Locale.getDefault(), "%.2f", media.getMediaScritto()));
+            } catch (Exception ignored) {
+            }
+        } else overallView.setVisibility(View.GONE);
     }
 
     private void setTarget(Subject subject) {
@@ -139,7 +142,9 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         targetView.setTarget(target);
 
         //set progress
-        targetView.setProgress(media.getMediaGenerale());
+        if (media.containsValidMarks())
+            targetView.setProgress(media.getMediaGenerale());
+        else targetView.setVisibility(View.GONE);
 
         //set listener for button
         targetView.setListener(view -> {
@@ -230,9 +235,12 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     }
 
     private void setMarks(List<Mark> marks) {
-        marksView.setSubject(subject, media.getMediaGenerale());
-        marksView.addAll(marks);
-        marksView.setShowChart(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("show_chart", true));
+        if (media.containsValidMarks()) {
+            marksView.setSubject(subject, media.getMediaGenerale());
+            marksView.addAll(marks);
+            marksView.setShowChart(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("show_chart", true));
+        } else
+            marksView.setShowChart(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("show_chart", false));
     }
 
     @Override
