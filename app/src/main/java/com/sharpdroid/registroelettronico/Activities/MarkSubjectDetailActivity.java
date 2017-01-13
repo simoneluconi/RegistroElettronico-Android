@@ -179,7 +179,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
                             textInputLayout.setErrorEnabled(false);
                         } else {
                             textInputLayout.setErrorEnabled(true);
-                            textInputLayout.setError("Numero non valido");
+                            textInputLayout.setError(getString(R.string.numero_non_valido));
                         }
                     } else {
                         textInputLayout.setErrorEnabled(false);
@@ -191,8 +191,8 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
 
                 }
             });
-            alert.setPositiveButton("Ok", (dialog, whichButton) -> register(textInputLayout));
-            alert.setNegativeButton("Cancel", (dialog, whichButton) -> {
+            alert.setPositiveButton(android.R.string.ok, (dialog, whichButton) -> register(textInputLayout));
+            alert.setNegativeButton(android.R.string.cancel, (dialog, whichButton) -> {
                 // Canceled. Do nothing;
             });
             alert.show();
@@ -201,7 +201,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
             alert.setTitle(getString(R.string.obiettivo_title));
             alert.setMessage(MessaggioVoto(targetView.getTarget(), media.getMediaGenerale(), media.getNumeroVoti()));
 
-            alert.setNegativeButton("Cancel", (dialog, whichButton) -> {
+            alert.setNegativeButton(android.R.string.ok, (dialog, whichButton) -> {
                 // Canceled. Do nothing;
             });
             alert.show();

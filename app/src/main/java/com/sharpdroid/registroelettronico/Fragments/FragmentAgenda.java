@@ -28,6 +28,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
+import static com.sharpdroid.registroelettronico.Utils.Metodi.beautifyName;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.convertEvents;
 
 public class FragmentAgenda extends Fragment implements CompactCalendarView.CompactCalendarViewListener {
@@ -62,7 +63,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         ButterKnife.bind(this, layout);
         db = AgendaDB.from(mContext);
 
-        actionBar.setTitle(month.format(new Date()));
+        actionBar.setTitle(beautifyName(month.format(new Date())));
         calendarView.setLocale(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALIAN);
         calendarView.setUseThreeLetterAbbreviation(true);
         calendarView.setListener(this);
@@ -103,7 +104,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
 
     @Override
     public void onMonthScroll(Date firstDayOfNewMonth) {
-        actionBar.setTitle(month.format(firstDayOfNewMonth));
+        actionBar.setTitle(beautifyName(month.format(firstDayOfNewMonth)));
     }
 
     @Override
