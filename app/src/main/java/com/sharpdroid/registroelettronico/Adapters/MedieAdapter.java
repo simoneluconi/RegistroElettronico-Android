@@ -74,6 +74,8 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
 
         ViewHolder.mTextViewMateria.setText(subjectname);
 
+        ViewHolder.mCardViewMedia.setOnClickListener(v -> mContext.startActivity(new Intent(mContext, MarkSubjectDetailActivity.class).putExtra("data", marksubject)));
+
         if (media.containsValidMarks()) {
             ViewHolder.mTextViewMedia.setText(String.format(Locale.getDefault(), "%.2f", media.getMediaGenerale()));
 
@@ -88,7 +90,6 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
             String obbiettivo_string = MessaggioVoto(voto_obiettivo, media.getMediaGenerale(), media.getNumeroVoti());
             ViewHolder.mTextViewDesc.setText(obbiettivo_string);
 
-            ViewHolder.mCardViewMedia.setOnClickListener(v -> mContext.startActivity(new Intent(mContext, MarkSubjectDetailActivity.class).putExtra("data", marksubject)));
         } else {
             List<ArcProgressStackView.Model> models = new ArrayList<>();
             models.add(new ArcProgressStackView.Model("media", 100, ContextCompat.getColor(mContext, R.color.intro_blue)));
