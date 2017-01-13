@@ -97,7 +97,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         super.onResume();
 
         subject = db.getSubject(data.getName().toLowerCase());
-        setTitle(beautifyName(getSubjectName(subject)));
+        setTitle(getSubjectName(subject));
 
         setInfo(subject);
         setOverall(data.getMarks());
