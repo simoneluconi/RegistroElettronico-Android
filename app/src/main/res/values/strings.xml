@@ -100,4 +100,7 @@
     <string name="imposta">Imposta</string>
     <string name="edit">Modifica</string>
 
+    <string name="numero_non_valido">Numero non valido</string>
+    <string name="senza_nome">Senza nome</string>
+
 </resources>
