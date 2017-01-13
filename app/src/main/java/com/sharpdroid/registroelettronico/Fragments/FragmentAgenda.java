@@ -63,7 +63,6 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         ButterKnife.bind(this, layout);
         db = AgendaDB.from(mContext);
 
-        actionBar.setTitle(beautifyName(month.format(new Date())));
         calendarView.setLocale(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALIAN);
         calendarView.setUseThreeLetterAbbreviation(true);
         calendarView.setListener(this);
@@ -118,6 +117,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     @Override
     public void onResume() {
         super.onResume();
+        actionBar.setTitle(beautifyName(month.format(new Date())));
         calendarView.setVisibility(View.VISIBLE);
     }
 }
