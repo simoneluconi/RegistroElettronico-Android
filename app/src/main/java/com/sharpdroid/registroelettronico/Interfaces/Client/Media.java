@@ -118,6 +118,7 @@ public class Media implements Serializable {
             Float.parseFloat(mark.getMark());
         } catch (java.lang.NumberFormatException ex) {
             Log.d("isNumericMark", String.format("Voto non valido: %s ", mark.getMark()));
+            mark.setNs(true);
             return false;
         }
         return true;
