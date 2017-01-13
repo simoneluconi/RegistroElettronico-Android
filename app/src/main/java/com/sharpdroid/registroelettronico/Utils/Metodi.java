@@ -241,7 +241,7 @@ public class Metodi {
 
     public static String getSubjectName(Subject subject) {
         try {
-            return (!isEmptyOrNull(subject.getName())) ? subject.getName() : subject.getOriginalName();
+            return (!isEmptyOrNull(subject.getName())) ? subject.getName() : beautifyName(subject.getOriginalName());
         } catch (NullPointerException ignored) {
             return subject.getOriginalName();
         }
