@@ -66,7 +66,7 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
     @Override
     public void onBindViewHolder(MedieHolder ViewHolder, int position) {
         final MarkSubject marksubject = CVDataList.get(position);
-        final String subjectname = beautifyName(getSubjectName(db.getSubject(marksubject.getName().toLowerCase())));
+        final String subjectname = getSubjectName(db.getSubject(marksubject.getName().toLowerCase()));
 
         Media media = new Media();
         media.setMateria(subjectname);
