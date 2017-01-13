@@ -46,4 +46,9 @@ public class Mark implements Serializable {
     public String getDesc() {
         return desc;
     }
+
+    public void setNs(boolean isNs)
+    {
+        ns = isNs;
+    }
 }
