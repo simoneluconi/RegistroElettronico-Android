@@ -9,7 +9,6 @@ import com.crashlytics.android.answers.Answers;
 import com.sharpdroid.registroelettronico.BuildConfig;
 
 import io.fabric.sdk.android.Fabric;
-import io.fabric.sdk.android.Kit;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -19,7 +18,7 @@ public class SplashActivity extends AppCompatActivity {
         // Install a hook to Crashlytics and Answers (only in production releases)
         if (!BuildConfig.DEBUG) {
             final Fabric fabric = new Fabric.Builder(this)
-                    .kits(new Kit[]{new Crashlytics(), new Answers()})
+                    .kits(new Crashlytics(), new Answers())
                     .build();
             Fabric.with(fabric);
         }
