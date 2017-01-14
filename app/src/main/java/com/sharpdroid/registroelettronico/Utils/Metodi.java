@@ -2,7 +2,6 @@ package com.sharpdroid.registroelettronico.Utils;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
@@ -121,23 +120,6 @@ public class Metodi {
             toReturn = toReturn.substring(0, toReturn.length() - 2);
         }
         return toReturn;
-    }
-
-    public static boolean isMediaSufficiente(Media media, String tipo) {
-        switch (tipo) {
-            case SpiaggiariAPI.ORALE:
-                return media.getMediaOrale() > 6;
-            case SpiaggiariAPI.PRATICO:
-                return media.getMediaPratico() > 6;
-            case SpiaggiariAPI.SCRITTO:
-                return media.getMediaScritto() > 6;
-            default:
-                return media.getMediaGenerale() > 6;
-        }
-    }
-
-    public static boolean isMediaSufficiente(Media media) {
-        return isMediaSufficiente(media, "Generale");
     }
 
     public static int getMarkColor(float voto, float voto_obiettivo) {
@@ -260,19 +242,6 @@ public class Metodi {
         return media / n;
     }
 
-    public static List<Event> convertEvents(List<com.sharpdroid.registroelettronico.Interfaces.API.Event> events) {
-        List<Event> list = new ArrayList<>();
-        for (com.sharpdroid.registroelettronico.Interfaces.API.Event event : events) {
-            list.add(new Event(isEventTest(event) ? Color.RED : Color.parseColor("#FFC200"), event.getStart().getTime(), event));
-        }
-        return list;
-    }
-
-    public static boolean isEventTest(com.sharpdroid.registroelettronico.Interfaces.API.Event event) {
-        String title = event.getTitle().toLowerCase();
-        return title.contains("compito") || title.contains("interrogazione scritta") || title.contains("prova ")
-                || title.contains("verifica ") || title.contains("test ") || title.endsWith("test");
-    }
 
     public static boolean writeResponseBodyToDisk(ResponseBody body, File file) {
         try {
