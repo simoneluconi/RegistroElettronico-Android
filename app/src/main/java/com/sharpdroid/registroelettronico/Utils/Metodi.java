@@ -49,6 +49,8 @@ import okhttp3.ResponseBody;
 public class Metodi {
     public static SimpleDateFormat month_year = new SimpleDateFormat("MMMM yyyy", Locale.ITALIAN);
 
+    public static char[] Delimeters = {'.', ' ', '\'', '/', '\\'};
+
     public static int[] material_colors = new int[]{
             0xFFE57373, 0xFFF44336, 0xFFD32F2F,
             0xFFF06292, 0xFFE91E63, 0xFFC2185B,
@@ -207,7 +209,7 @@ public class Metodi {
 
     public static String getSubjectName(Subject subject) {
         try {
-            return (!TextUtils.isEmpty(subject.getName())) ? subject.getName() : WordUtils.capitalize(subject.getOriginalName());
+            return (!TextUtils.isEmpty(subject.getName())) ? subject.getName() : WordUtils.capitalizeFully(subject.getOriginalName(), Delimeters);
         } catch (NullPointerException ignored) {
             return subject.getOriginalName();
         }

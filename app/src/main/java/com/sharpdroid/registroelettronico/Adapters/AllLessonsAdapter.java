@@ -53,7 +53,7 @@ public class AllLessonsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof HeaderHolder) {
-            ((HeaderHolder) holder).content.setText(WordUtils.capitalize(((HeaderEntry) types.get(position)).getContent()));
+            ((HeaderHolder) holder).content.setText(((HeaderEntry) types.get(position)).getContent());
         } else {
             LessonHolder lessonHolder = (LessonHolder) holder;
 
@@ -65,7 +65,7 @@ public class AllLessonsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             LessonEntry entry = (LessonEntry) types.get(position);
 
             lessonHolder.content.setText(entry.getLesson().getContent());
-            lessonHolder.date.setText(WordUtils.capitalize(dateFormat.format(entry.getLesson().getDate())));
+            lessonHolder.date.setText(WordUtils.capitalizeFully(dateFormat.format(entry.getLesson().getDate())));
         }
     }
 

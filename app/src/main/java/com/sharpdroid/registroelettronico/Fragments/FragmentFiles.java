@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import static com.sharpdroid.registroelettronico.Utils.Metodi.Delimeters;
+
 public class FragmentFiles extends Fragment {
     final static String TAG = FragmentFiles.class.getSimpleName();
     private final SimpleDateFormat formatter = new SimpleDateFormat("MMM d, yyyy", Locale.ITALIAN);
@@ -71,7 +73,7 @@ public class FragmentFiles extends Fragment {
                 addSubjects(data);
             }
         }
-        folder_prof.setText(WordUtils.capitalizeFully(getArguments().getString("name")));
+        folder_prof.setText(WordUtils.capitalizeFully(getArguments().getString("name"), Delimeters));
 
         //endregion
 

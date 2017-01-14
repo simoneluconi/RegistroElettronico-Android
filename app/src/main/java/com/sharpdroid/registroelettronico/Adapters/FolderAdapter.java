@@ -27,6 +27,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.sharpdroid.registroelettronico.Utils.Metodi.Delimeters;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getListLayouts;
 
 public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -67,7 +68,7 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 String profHeader = fileteachers.get(current_subheader).getName();
 
-                subHolder.teacher.setText(WordUtils.capitalizeFully(profHeader));
+                subHolder.teacher.setText(WordUtils.capitalizeFully(profHeader, Delimeters));
 
                 if (current_folder == 0)
                     subHolder.padding_view.setVisibility(View.GONE);
@@ -105,7 +106,7 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                             .commit();
                 });
 
-                folderHolder.title.setText(WordUtils.capitalizeFully(folder.getName().trim()));
+                folderHolder.title.setText(folder.getName().trim());
                 folderHolder.date.setText(formatter.format(folder.getLast()));
 
                 current_folder++;

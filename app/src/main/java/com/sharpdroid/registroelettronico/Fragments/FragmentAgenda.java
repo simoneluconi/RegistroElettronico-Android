@@ -103,7 +103,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
 
     @Override
     public void onMonthScroll(Date firstDayOfNewMonth) {
-        actionBar.setTitle(WordUtils.capitalize(month.format(firstDayOfNewMonth)));
+        actionBar.setTitle(WordUtils.capitalizeFully(month.format(firstDayOfNewMonth)));
     }
 
     @Override
@@ -117,7 +117,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     @Override
     public void onResume() {
         super.onResume();
-        actionBar.setTitle(WordUtils.capitalize(month.format(new Date())));
+        actionBar.setTitle(WordUtils.capitalizeFully(month.format(new Date())));
         calendarView.setVisibility(View.VISIBLE);
     }
 }
