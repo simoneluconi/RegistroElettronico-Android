@@ -28,8 +28,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
+import static com.sharpdroid.registroelettronico.Interfaces.API.Event.convertEvents;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.beautifyName;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.convertEvents;
 
 public class FragmentAgenda extends Fragment implements CompactCalendarView.CompactCalendarViewListener {
     private static CompactCalendarView calendarView;
@@ -70,7 +70,6 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         calendarView.addEvents(convertEvents(db.getEvents()));
         calendarView.invalidate();
         updateDB();
-
         adapter = new AgendaAdapter(mContext, place_holder);
         recycler.setLayoutManager(new LinearLayoutManager(mContext));
         recycler.setAdapter(adapter);

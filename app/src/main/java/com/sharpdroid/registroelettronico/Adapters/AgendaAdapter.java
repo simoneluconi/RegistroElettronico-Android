@@ -27,7 +27,6 @@ import butterknife.ButterKnife;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.NomeDecente;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.convertCalendarEvents;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.isEventTest;
 
 public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final Context mContext;
@@ -109,7 +108,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private List<Entry> convert(List<Event> events) {
         HashMap<String, List<Event>> organized = new HashMap<>();
         for (Event e : events) {
-            if (isEventTest(e)) {
+            if (e.isEventTest()) {
                 if (organized.containsKey(mContext.getString(R.string.verifiche))) {
                     List<Event> verifiche = new ArrayList<>(organized.get(mContext.getString(R.string.verifiche)));
                     verifiche.add(e);
