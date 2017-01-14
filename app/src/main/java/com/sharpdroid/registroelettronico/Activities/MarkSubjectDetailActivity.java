@@ -37,7 +37,6 @@ import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.MessaggioVoto;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.beautifyName;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.dpToPx;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getSubjectName;
 

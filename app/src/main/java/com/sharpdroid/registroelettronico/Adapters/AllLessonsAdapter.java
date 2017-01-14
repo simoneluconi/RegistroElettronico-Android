@@ -13,6 +13,8 @@ import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Entry;
 import com.sharpdroid.registroelettronico.R;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import static com.sharpdroid.registroelettronico.Utils.Metodi.beautifyName;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.month_year;
 
 public class AllLessonsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -52,7 +53,7 @@ public class AllLessonsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof HeaderHolder) {
-            ((HeaderHolder) holder).content.setText(beautifyName(((HeaderEntry) types.get(position)).getContent()));
+            ((HeaderHolder) holder).content.setText(WordUtils.capitalize(((HeaderEntry) types.get(position)).getContent()));
         } else {
             LessonHolder lessonHolder = (LessonHolder) holder;
 
@@ -64,7 +65,7 @@ public class AllLessonsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             LessonEntry entry = (LessonEntry) types.get(position);
 
             lessonHolder.content.setText(entry.getLesson().getContent());
-            lessonHolder.date.setText(beautifyName(dateFormat.format(entry.getLesson().getDate())));
+            lessonHolder.date.setText(WordUtils.capitalize(dateFormat.format(entry.getLesson().getDate())));
         }
     }
 

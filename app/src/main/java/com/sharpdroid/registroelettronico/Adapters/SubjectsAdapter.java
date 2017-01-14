@@ -23,7 +23,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import static com.sharpdroid.registroelettronico.Utils.Metodi.beautifyName;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getSubjectName;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.material_colors;
 

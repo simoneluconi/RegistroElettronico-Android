@@ -26,8 +26,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.sharpdroid.registroelettronico.Utils.Metodi.beautifyName;
-
 
 public class InfoView extends CardView {
     Context mContext;
@@ -122,7 +120,7 @@ public class InfoView extends CardView {
                 if (!TextUtils.isEmpty(data.getName()))
                     list.add(new Pair<>(R.drawable.ic_title, data.getName()));
                 else
-                    list.add(new Pair<>(R.drawable.ic_title, beautifyName(data.getOriginalName())));
+                    list.add(new Pair<>(R.drawable.ic_title,WordUtils.capitalize(data.getOriginalName())));
                 if (!TextUtils.isEmpty(data.getProfessor()))
                     list.add(new Pair<>(R.drawable.ic_person, WordUtils.capitalizeFully(data.getProfessor())));
                 if (!TextUtils.isEmpty(data.getClassroom()))

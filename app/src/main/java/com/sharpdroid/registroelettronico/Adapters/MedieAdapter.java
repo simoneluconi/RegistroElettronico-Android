@@ -27,7 +27,6 @@ import butterknife.ButterKnife;
 import devlight.io.library.ArcProgressStackView;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.MessaggioVoto;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.beautifyName;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getMediaColor;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getSubjectName;
 

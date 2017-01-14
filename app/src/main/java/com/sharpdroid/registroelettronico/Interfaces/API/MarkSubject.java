@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sharpdroid.registroelettronico.Utils.Metodi.beautifyName;
-
 public class MarkSubject implements Serializable {
     private String name;
     private List<Mark> marks = new ArrayList<>();
@@ -16,7 +14,7 @@ public class MarkSubject implements Serializable {
     }
 
     public String getName() {
-        return beautifyName(name);
+        return name;
     }
 
     public List<Mark> getMarks() {
