@@ -87,7 +87,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
                     Log.d(TAG, "Scaricati " + events.size() + " eventi");
                     db.addEvents(events);
                     calendarView.removeAllEvents();
-                    calendarView.addEvents(convertEvents(db.getEvents()));
+                    calendarView.addEvents(convertEvents(events));
                     calendarView.invalidate();
                 }, error -> {
                     error.printStackTrace();
