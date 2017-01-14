@@ -18,6 +18,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import static com.sharpdroid.registroelettronico.Utils.Metodi.Delimeters;
+
 
 public class LessonsAdapter extends RecyclerView.Adapter<LessonHolder> {
     private final SimpleDateFormat formatter = new SimpleDateFormat("d MMM", Locale.ITALIAN);
@@ -38,7 +40,7 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonHolder> {
     @Override
     public void onBindViewHolder(LessonHolder holder, int position) {
         Lesson lesson = lessons.get(position);
-        holder.content.setText(WordUtils.capitalize(lesson.getContent().trim()));
+        holder.content.setText(WordUtils.capitalizeFully(lesson.getContent().trim(), Delimeters));
         holder.date.setText(formatter.format(lesson.getDate()));
     }
 
