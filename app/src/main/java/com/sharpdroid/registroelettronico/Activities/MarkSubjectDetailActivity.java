@@ -128,7 +128,9 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
                 overallView.setScritto(String.format(Locale.getDefault(), "%.2f", media.getMediaScritto()));
             } catch (Exception ignored) {
             }
-        } else overallView.setVisibility(View.GONE);
+        } else {
+            overallView.setVisibility(View.GONE);
+        }
     }
 
     private void setTarget(Subject subject) {
@@ -142,9 +144,11 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         targetView.setTarget(target);
 
         //set progress
-        if (media.containsValidMarks())
+        if (media.containsValidMarks()) {
             targetView.setProgress(media.getMediaGenerale());
-        else targetView.setVisibility(View.GONE);
+        } else {
+            targetView.setVisibility(View.GONE);
+        }
 
         //set listener for button
         targetView.setListener(view -> {

@@ -61,6 +61,20 @@ public class Event {
         this.materia_id = materia_id;
     }
 
+    private static boolean isEventTest(com.sharpdroid.registroelettronico.Interfaces.API.Event event) {
+        String title = event.getTitle().toLowerCase();
+        return title.contains("compito") || title.contains("interrogazione scritta") || title.contains("prova ")
+                || title.contains("verifica ") || title.contains("test ") || title.endsWith("test");
+    }
+
+    public static List<com.github.sundeepk.compactcalendarview.domain.Event> convertEvents(List<com.sharpdroid.registroelettronico.Interfaces.API.Event> events) {
+        List<com.github.sundeepk.compactcalendarview.domain.Event> list = new ArrayList<>();
+        for (com.sharpdroid.registroelettronico.Interfaces.API.Event event : events) {
+            list.add(new com.github.sundeepk.compactcalendarview.domain.Event(isEventTest(event) ? Color.RED : Color.parseColor("#FFC200"), event.getStart().getTime(), event));
+        }
+        return list;
+    }
+
     public String getId() {
         return id;
     }
@@ -125,21 +139,7 @@ public class Event {
         return materia_id;
     }
 
-    private static boolean isEventTest(com.sharpdroid.registroelettronico.Interfaces.API.Event event) {
-        String title = event.getTitle().toLowerCase();
-        return title.contains("compito") || title.contains("interrogazione scritta") || title.contains("prova ")
-                || title.contains("verifica ") || title.contains("test ") || title.endsWith("test");
-    }
-
     public boolean isEventTest() {
         return isEventTest(this);
-    }
-
-    public static List<com.github.sundeepk.compactcalendarview.domain.Event> convertEvents(List<com.sharpdroid.registroelettronico.Interfaces.API.Event> events) {
-        List<com.github.sundeepk.compactcalendarview.domain.Event> list = new ArrayList<>();
-        for (com.sharpdroid.registroelettronico.Interfaces.API.Event event : events) {
-            list.add(new com.github.sundeepk.compactcalendarview.domain.Event(isEventTest(event) ? Color.RED : Color.parseColor("#FFC200"), event.getStart().getTime(), event));
-        }
-        return list;
     }
 }
