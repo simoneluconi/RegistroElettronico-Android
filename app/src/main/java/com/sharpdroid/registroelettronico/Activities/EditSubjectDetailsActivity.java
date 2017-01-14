@@ -14,11 +14,11 @@ import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.R;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.sharpdroid.registroelettronico.Utils.Metodi.NomeDecente;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.beautifyName;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getSubjectName;
 
 public class EditSubjectDetailsActivity extends AppCompatActivity {
@@ -73,7 +73,7 @@ public class EditSubjectDetailsActivity extends AppCompatActivity {
 
             name.setText(getSubjectName(subject));
             if (subject.getProfessor() != null)
-                prof.setText(NomeDecente(subject.getProfessor()));
+                prof.setText(WordUtils.capitalizeFully(subject.getProfessor()));
             if (subject.getClassroom() != null)
                 classroom.setText(subject.getClassroom());
             if (subject.getNotes() != null)

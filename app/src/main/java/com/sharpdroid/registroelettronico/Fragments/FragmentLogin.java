@@ -19,12 +19,13 @@ import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.Utils.DeviceUuidFactory;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.NomeDecente;
 
 public class FragmentLogin extends SlideFragment {
 
@@ -96,7 +97,7 @@ public class FragmentLogin extends SlideFragment {
 
                     // Writing data to SharedPreferences
                     SharedPreferences.Editor editor = settings.edit();
-                    editor.putString("name", NomeDecente(login.getName()).trim());
+                    editor.putString("name", WordUtils.capitalizeFully(login.getName()).trim());
                     editor.apply();
 
                     mButtonLogin.setText(R.string.login_riuscito);

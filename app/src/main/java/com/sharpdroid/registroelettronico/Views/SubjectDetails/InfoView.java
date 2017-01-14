@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -17,15 +18,16 @@ import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.sharpdroid.registroelettronico.Utils.Metodi.NomeDecente;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.beautifyName;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.isEmptyOrNull;
+
 
 public class InfoView extends CardView {
     Context mContext;
@@ -117,15 +119,15 @@ public class InfoView extends CardView {
             List<Pair<Integer, String>> list = new ArrayList<>();
 
             if (data != null) {
-                if (!isEmptyOrNull(data.getName()))
+                if (!TextUtils.isEmpty(data.getName()))
                     list.add(new Pair<>(R.drawable.ic_title, data.getName()));
                 else
                     list.add(new Pair<>(R.drawable.ic_title, beautifyName(data.getOriginalName())));
-                if (!isEmptyOrNull(data.getProfessor()))
-                    list.add(new Pair<>(R.drawable.ic_person, NomeDecente(data.getProfessor())));
-                if (!isEmptyOrNull(data.getClassroom()))
+                if (!TextUtils.isEmpty(data.getProfessor()))
+                    list.add(new Pair<>(R.drawable.ic_person, WordUtils.capitalizeFully(data.getProfessor())));
+                if (!TextUtils.isEmpty(data.getClassroom()))
                     list.add(new Pair<>(R.drawable.ic_room, data.getClassroom()));
-                if (!isEmptyOrNull(data.getNotes()))
+                if (!TextUtils.isEmpty(data.getNotes()))
                     list.add(new Pair<>(R.drawable.ic_description, data.getNotes()));
             }
 

@@ -18,8 +18,8 @@ android {
         applicationId "com.sharpdroid.registroelettronico"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 414
-        versionName "2.0.14"
+        versionCode 415
+        versionName "2.0.15"
 
         vectorDrawables.useSupportLibrary = true;
     }
@@ -116,7 +116,7 @@ dependencies {
     compile "io.reactivex.rxjava2:rxandroid:2.0.1"
 
     compile 'com.github.franmontiel:PersistentCookieJar:v1.0.0'
-
+    compile 'org.apache.commons:commons-lang3:3.5'
     compile project(':arcprogressstackview')
 
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'

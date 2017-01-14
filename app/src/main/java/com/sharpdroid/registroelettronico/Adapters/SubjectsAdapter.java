@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,16 +15,16 @@ import com.sharpdroid.registroelettronico.Adapters.Holders.AbsencesHolder;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.R;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import static com.sharpdroid.registroelettronico.Utils.Metodi.NomeDecente;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.beautifyName;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getSubjectName;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.isEmptyOrNull;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.material_colors;
 
 public class SubjectsAdapter extends RecyclerView.Adapter<AbsencesHolder> {
@@ -55,11 +56,11 @@ public class SubjectsAdapter extends RecyclerView.Adapter<AbsencesHolder> {
         holder.type_text.setText(getSubjectName(item).substring(0, 1).toUpperCase());
         holder.divider.setVisibility((position == 0) ? View.INVISIBLE : View.VISIBLE);
         holder.date.setText(getSubjectName(item));
-        if (isEmptyOrNull(item.getProfessor())) {   //non visualizzare la textview se non serve
+        if (TextUtils.isEmpty(item.getProfessor())) {   //non visualizzare la textview se non serve
             holder.hour.setVisibility(View.GONE);
         } else {
             holder.hour.setVisibility(View.VISIBLE);
-            holder.hour.setText(NomeDecente(item.getProfessor()));
+            holder.hour.setText(WordUtils.capitalizeFully(item.getProfessor()));
         }
         holder.layout.setOnClickListener(view -> {
             Intent intent = new Intent(mContext, AllLessonsWithDownloadActivity.class);
