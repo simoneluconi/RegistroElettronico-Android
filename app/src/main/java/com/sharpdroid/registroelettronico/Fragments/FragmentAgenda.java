@@ -19,6 +19,8 @@ import com.sharpdroid.registroelettronico.Adapters.AgendaAdapter;
 import com.sharpdroid.registroelettronico.Databases.AgendaDB;
 import com.sharpdroid.registroelettronico.R;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -29,7 +31,6 @@ import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 import static com.sharpdroid.registroelettronico.Interfaces.API.Event.convertEvents;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.beautifyName;
 
 public class FragmentAgenda extends Fragment implements CompactCalendarView.CompactCalendarViewListener {
     private static CompactCalendarView calendarView;
@@ -102,7 +103,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
 
     @Override
     public void onMonthScroll(Date firstDayOfNewMonth) {
-        actionBar.setTitle(beautifyName(month.format(firstDayOfNewMonth)));
+        actionBar.setTitle(WordUtils.capitalize(month.format(firstDayOfNewMonth)));
     }
 
     @Override
@@ -116,7 +117,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     @Override
     public void onResume() {
         super.onResume();
-        actionBar.setTitle(beautifyName(month.format(new Date())));
+        actionBar.setTitle(WordUtils.capitalize(month.format(new Date())));
         calendarView.setVisibility(View.VISIBLE);
     }
 }

@@ -9,6 +9,8 @@ import com.sharpdroid.registroelettronico.Adapters.Holders.LessonHolder;
 import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
 import com.sharpdroid.registroelettronico.R;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,7 +18,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import static com.sharpdroid.registroelettronico.Utils.Metodi.beautifyName;
 
 public class LessonsAdapter extends RecyclerView.Adapter<LessonHolder> {
     private final SimpleDateFormat formatter = new SimpleDateFormat("d MMM", Locale.ITALIAN);
@@ -37,7 +38,7 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonHolder> {
     @Override
     public void onBindViewHolder(LessonHolder holder, int position) {
         Lesson lesson = lessons.get(position);
-        holder.content.setText(beautifyName(lesson.getContent().trim()));
+        holder.content.setText(WordUtils.capitalize(lesson.getContent().trim()));
         holder.date.setText(formatter.format(lesson.getDate()));
     }
 

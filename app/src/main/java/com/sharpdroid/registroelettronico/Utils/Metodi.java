@@ -26,6 +26,8 @@ import com.sharpdroid.registroelettronico.Interfaces.Client.Media;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.R;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -203,16 +205,9 @@ public class Metodi {
         return (s != null) ? s.toLowerCase() : null;
     }
 
-
-    public static String beautifyName(String name) {
-        if (!TextUtils.isEmpty(name))
-            return name.substring(0, 1).toUpperCase(Locale.getDefault()) + name.substring(1).toLowerCase();
-        else return name;
-    }
-
     public static String getSubjectName(Subject subject) {
         try {
-            return (!TextUtils.isEmpty(subject.getName())) ? subject.getName() : beautifyName(subject.getOriginalName());
+            return (!TextUtils.isEmpty(subject.getName())) ? subject.getName() : WordUtils.capitalize(subject.getOriginalName());
         } catch (NullPointerException ignored) {
             return subject.getOriginalName();
         }
