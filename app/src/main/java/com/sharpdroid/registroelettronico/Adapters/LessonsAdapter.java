@@ -9,17 +9,12 @@ import com.sharpdroid.registroelettronico.Adapters.Holders.LessonHolder;
 import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
 import com.sharpdroid.registroelettronico.R;
 
-import org.apache.commons.lang3.text.WordUtils;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-
-import static com.sharpdroid.registroelettronico.Utils.Metodi.Delimeters;
-
 
 public class LessonsAdapter extends RecyclerView.Adapter<LessonHolder> {
     private final SimpleDateFormat formatter = new SimpleDateFormat("d MMM", Locale.ITALIAN);
