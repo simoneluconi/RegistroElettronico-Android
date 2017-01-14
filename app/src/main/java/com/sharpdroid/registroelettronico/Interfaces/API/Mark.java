@@ -31,6 +31,10 @@ public class Mark implements Serializable {
         return ns;
     }
 
+    public void setNs(boolean isNs) {
+        ns = isNs;
+    }
+
     public String getType() {
         return type;
     }
@@ -45,10 +49,5 @@ public class Mark implements Serializable {
 
     public String getDesc() {
         return desc;
-    }
-
-    public void setNs(boolean isNs)
-    {
-        ns = isNs;
     }
 }

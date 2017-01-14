@@ -117,6 +117,7 @@ dependencies {
 
     compile 'com.github.franmontiel:PersistentCookieJar:v1.0.0'
     compile 'org.apache.commons:commons-lang3:3.5'
+
     compile project(':arcprogressstackview')
 
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
