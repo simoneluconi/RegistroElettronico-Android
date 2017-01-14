@@ -14,6 +14,8 @@ import com.sharpdroid.registroelettronico.Interfaces.Client.Entry;
 import com.sharpdroid.registroelettronico.Interfaces.Client.HeaderEntry;
 import com.sharpdroid.registroelettronico.R;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +27,6 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.sharpdroid.registroelettronico.Utils.Metodi.NomeDecente;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.convertCalendarEvents;
 
 public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -64,7 +65,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             }
 
             eventHolder.date.setText(dateFormat.format(event.getStart()));
-            eventHolder.subject.setText(NomeDecente(event.getAutore_desc()));
+            eventHolder.subject.setText(WordUtils.capitalizeFully(event.getAutore_desc()));
             eventHolder.title.setText(event.getTitle());
         }
     }

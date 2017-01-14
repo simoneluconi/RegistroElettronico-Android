@@ -20,11 +20,11 @@ import com.sharpdroid.registroelettronico.Interfaces.API.Folder;
 import com.sharpdroid.registroelettronico.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-
-import static com.sharpdroid.registroelettronico.Utils.Metodi.NomeDecente;
 
 public class FragmentFiles extends Fragment {
     final static String TAG = FragmentFiles.class.getSimpleName();
@@ -71,7 +71,7 @@ public class FragmentFiles extends Fragment {
                 addSubjects(data);
             }
         }
-        folder_prof.setText(NomeDecente(getArguments().getString("name")));
+        folder_prof.setText(WordUtils.capitalizeFully(getArguments().getString("name")));
 
         //endregion
 

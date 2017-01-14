@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.github.sundeepk.compactcalendarview.domain.Event;
@@ -202,28 +203,16 @@ public class Metodi {
         return (s != null) ? s.toLowerCase() : null;
     }
 
-    public static String NomeDecente(String name) {
-        if (!isEmptyOrNull(name)) {
-            String new_name = "";
-            String[] insV = name.trim().split("\\s+");
-            for (String ins : insV) {
-                new_name += ins.substring(0, 1).toUpperCase() + ins.substring(1).toLowerCase() + " ";
-            }
-            return new_name.trim();
-        } else {
-            return name.trim();
-        }
-    }
 
     public static String beautifyName(String name) {
-        if (!isEmptyOrNull(name))
+        if (!TextUtils.isEmpty(name))
             return name.substring(0, 1).toUpperCase(Locale.getDefault()) + name.substring(1).toLowerCase();
         else return name;
     }
 
     public static String getSubjectName(Subject subject) {
         try {
-            return (!isEmptyOrNull(subject.getName())) ? subject.getName() : beautifyName(subject.getOriginalName());
+            return (!TextUtils.isEmpty(subject.getName())) ? subject.getName() : beautifyName(subject.getOriginalName());
         } catch (NullPointerException ignored) {
             return subject.getOriginalName();
         }
@@ -242,6 +231,12 @@ public class Metodi {
         return media / n;
     }
 
+    public static Media getHypotheticalAverage(MarkSubject markSubject, Mark mark) {
+        Media m = new Media();
+        m.addMarks(markSubject.getMarks());
+        m.addMark(mark);
+        return m;
+    }
 
     public static boolean writeResponseBodyToDisk(ResponseBody body, File file) {
         try {
@@ -250,34 +245,23 @@ public class Metodi {
 
             try {
                 byte[] fileReader = new byte[4096];
-
                 inputStream = body.byteStream();
                 outputStream = new FileOutputStream(file);
-
                 while (true) {
                     int read = inputStream.read(fileReader);
-
-                    if (read == -1) {
+                    if (read == -1)
                         break;
-                    }
-
                     outputStream.write(fileReader, 0, read);
-
                 }
-
                 outputStream.flush();
-
                 return true;
             } catch (IOException e) {
                 return false;
             } finally {
-                if (inputStream != null) {
+                if (inputStream != null)
                     inputStream.close();
-                }
-
-                if (outputStream != null) {
+                if (outputStream != null)
                     outputStream.close();
-                }
             }
         } catch (IOException e) {
             return false;
@@ -290,10 +274,6 @@ public class Metodi {
         contentd = contentd.replaceAll("\"", "");
         contentd = contentd.trim();
         return contentd;
-    }
-
-    public static boolean isEmptyOrNull(String string) {
-        return string == null || string.isEmpty();
     }
 
     public static List<Mark> sortMarksByDate(List<Mark> marks) {

@@ -84,32 +84,35 @@ public class Media implements Serializable {
     }
 
     public void addMarks(List<Mark> marks) {
-        for (Mark mark : marks) {
-            if (!mark.isNs()) {
-                if (isNumericMark(mark))
-                    if (Float.parseFloat(mark.getMark()) > 0) {
-                        switch (mark.getType()) {
-                            case SpiaggiariAPI.ORALE:
-                                this.somma_orale += Float.parseFloat(mark.getMark());
-                                this.numero_voti_orale++;
-                                break;
-                            case SpiaggiariAPI.PRATICO:
-                                this.somma_pratico += Float.parseFloat(mark.getMark());
-                                this.numero_voti_pratico++;
-                                break;
-                            case SpiaggiariAPI.SCRITTO:
-                                this.somma_scritto += Float.parseFloat(mark.getMark());
-                                this.numero_voti_scritto++;
-                                break;
-                        }
-                        this.somma_generale += Float.parseFloat(mark.getMark());
-                        this.numero_voti_generale++;
-                    } else {
-                        //Log.e(Media.class.getCanonicalName(), "Voto inferiore a 0");
+        for (Mark mark : marks)
+            addMark(mark);
+    }
+
+    public void addMark(Mark mark) {
+        if (!mark.isNs()) {
+            if (isNumericMark(mark))
+                if (Float.parseFloat(mark.getMark()) > 0) {
+                    switch (mark.getType()) {
+                        case SpiaggiariAPI.ORALE:
+                            this.somma_orale += Float.parseFloat(mark.getMark());
+                            this.numero_voti_orale++;
+                            break;
+                        case SpiaggiariAPI.PRATICO:
+                            this.somma_pratico += Float.parseFloat(mark.getMark());
+                            this.numero_voti_pratico++;
+                            break;
+                        case SpiaggiariAPI.SCRITTO:
+                            this.somma_scritto += Float.parseFloat(mark.getMark());
+                            this.numero_voti_scritto++;
+                            break;
                     }
-            } else {
-                //Log.d(Media.class.getCanonicalName(), String.format("%s %s non è significativo", materia, mark.getMark()));
-            }
+                    this.somma_generale += Float.parseFloat(mark.getMark());
+                    this.numero_voti_generale++;
+                } else {
+                    Log.e(Media.class.getCanonicalName(), String.format("Voto inferiore a 0 -> %1$s", mark.getMark()));
+                }
+        } else {
+            Log.d(Media.class.getCanonicalName(), String.format("%s %s non è significativo", materia, mark.getMark()));
         }
     }
 

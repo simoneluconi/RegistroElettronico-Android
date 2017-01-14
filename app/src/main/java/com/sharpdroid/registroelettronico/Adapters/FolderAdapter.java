@@ -17,6 +17,8 @@ import com.sharpdroid.registroelettronico.Interfaces.API.FileTeacher;
 import com.sharpdroid.registroelettronico.Interfaces.API.Folder;
 import com.sharpdroid.registroelettronico.R;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +27,6 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.sharpdroid.registroelettronico.Utils.Metodi.NomeDecente;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getListLayouts;
 
 public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -66,7 +67,7 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 String profHeader = fileteachers.get(current_subheader).getName();
 
-                subHolder.teacher.setText(NomeDecente(profHeader));
+                subHolder.teacher.setText(WordUtils.capitalizeFully(profHeader));
 
                 if (current_folder == 0)
                     subHolder.padding_view.setVisibility(View.GONE);
@@ -104,7 +105,7 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                             .commit();
                 });
 
-                folderHolder.title.setText(NomeDecente(folder.getName().trim()));
+                folderHolder.title.setText(WordUtils.capitalizeFully(folder.getName().trim()));
                 folderHolder.date.setText(formatter.format(folder.getLast()));
 
                 current_folder++;
