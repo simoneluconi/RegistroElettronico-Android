@@ -40,7 +40,7 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonHolder> {
     @Override
     public void onBindViewHolder(LessonHolder holder, int position) {
         Lesson lesson = lessons.get(position);
-        holder.content.setText(WordUtils.capitalizeFully(lesson.getContent().trim(), Delimeters));
+        holder.content.setText(lesson.getContent().trim());
         holder.date.setText(formatter.format(lesson.getDate()));
     }
 
