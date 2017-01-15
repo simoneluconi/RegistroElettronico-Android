@@ -30,7 +30,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
-import static com.sharpdroid.registroelettronico.Interfaces.API.Event.convertEvents;
+import static com.sharpdroid.registroelettronico.Utils.Metodi.convertEvents;
 
 public class FragmentAgenda extends Fragment implements CompactCalendarView.CompactCalendarViewListener {
     final private String TAG = FragmentAgenda.class.getSimpleName();
@@ -74,7 +74,6 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         adapter = new AgendaAdapter(mContext, place_holder);
         recycler.setLayoutManager(new LinearLayoutManager(mContext));
         recycler.setAdapter(adapter);
-        adapter.addAllCalendarEvents(mCompactCalendarView.getEvents(new Date()));
 
         updateDB();
 
@@ -91,7 +90,6 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
                     mCompactCalendarView.removeAllEvents();
                     mCompactCalendarView.addEvents(convertEvents(events));
                     mCompactCalendarView.invalidate();
-                    adapter.addAllCalendarEvents(mCompactCalendarView.getEvents(new Date()));
                 }, error -> {
                     error.printStackTrace();
                     Snackbar.make(mCoordinatorLayout, error.getLocalizedMessage(), Snackbar.LENGTH_LONG).show();
