@@ -112,9 +112,7 @@ public class MainActivity extends AppCompatActivity
 
         switch (id) {
             case R.id.agenda:
-                FragmentAgenda fragmentAgenda = new FragmentAgenda();
-                fragmentAgenda.getInstance(calendarView, toolbar);
-                fragment = fragmentAgenda;
+                fragment = new FragmentAgenda();
                 break;
             case R.id.medie:
                 fragment = new FragmentMedie();
