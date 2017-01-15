@@ -79,6 +79,7 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).marginResId(R.dimen.padding_left_divider2, R.dimen.activity_vertical_margin).size(1).build());
+        mRecyclerView.setNestedScrollingEnabled(false);
 
         menu = new PopupMenu(mContext, optionButton);
         menu.getMenuInflater().inflate(R.menu.view_marks_menu, menu.getMenu());
