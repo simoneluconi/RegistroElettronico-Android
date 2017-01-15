@@ -1,20 +1,31 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
-    android:orientation="vertical">
+    android:layout_height="match_parent"
+    android:paddingEnd="24dp"
+    android:paddingRight="24dp"
+    android:paddingTop="12dp">
 
-    <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
-        android:id="@+id/seekbar_obiettivo"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+    <TextView
+        android:id="@+id/value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
+        android:gravity="center_horizontal"
+        android:minEms="2" />
+
+    <SeekBar
+        android:id="@+id/seekbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:dsb_indicatorColor="@color/colorAccent"
-        app:dsb_max="10"
-        app:dsb_min="1"
-        app:dsb_progressColor="@color/colorAccent"
-        app:dsb_trackColor="@color/colorPrimary" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_toLeftOf="@id/value"
+        android:layout_toStartOf="@id/value"
+        android:max="10" />
 
-</LinearLayout>
+</RelativeLayout>
