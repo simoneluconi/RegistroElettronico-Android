@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
+import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Adapters.AgendaAdapter;
 import com.sharpdroid.registroelettronico.Databases.AgendaDB;
@@ -23,6 +25,7 @@ import org.apache.commons.lang3.text.WordUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -47,13 +50,9 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     private Context mContext;
     private AgendaDB db;
     private AgendaAdapter adapter;
+    private Date mDate;
 
     public FragmentAgenda() {
-    }
-
-    public void getInstance(CompactCalendarView mCompactCalendarView, Toolbar mToolbar) {
-        this.mCompactCalendarView = mCompactCalendarView;
-        this.mToolbar = mToolbar;
     }
 
     @Override
@@ -62,6 +61,10 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         mContext = getContext();
         View layout = inflater.inflate(R.layout.fragment_calendar, container, false);
         ButterKnife.bind(this, layout);
+
+        mToolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        mCompactCalendarView = (CompactCalendarView) getActivity().findViewById(R.id.calendar);
+
         db = AgendaDB.from(mContext);
 
         mCompactCalendarView.setLocale(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALIAN);
@@ -74,7 +77,8 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         adapter = new AgendaAdapter(mContext, place_holder);
         recycler.setLayoutManager(new LinearLayoutManager(mContext));
         recycler.setAdapter(adapter);
-        adapter.addAllCalendarEvents(mCompactCalendarView.getEvents(new Date()));
+        mDate = new Date();
+        adapter.addAllCalendarEvents(mCompactCalendarView.getEvents(mDate));
 
         updateDB();
 
@@ -91,6 +95,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
                     mCompactCalendarView.removeAllEvents();
                     mCompactCalendarView.addEvents(convertEvents(events));
                     mCompactCalendarView.invalidate();
+                    adapter.addAllCalendarEvents(mCompactCalendarView.getEvents(mDate));
                 }, error -> {
                     error.printStackTrace();
                     Snackbar.make(mCoordinatorLayout, error.getLocalizedMessage(), Snackbar.LENGTH_LONG).show();
@@ -100,11 +105,13 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     @Override
     public void onDayClick(Date dateClicked) {
         adapter.clear();
+        mDate = dateClicked;
         adapter.addAllCalendarEvents(mCompactCalendarView.getEvents(dateClicked));
     }
 
     @Override
     public void onMonthScroll(Date firstDayOfNewMonth) {
+        mDate = firstDayOfNewMonth;
         mToolbar.setTitle(WordUtils.capitalizeFully(month.format(firstDayOfNewMonth)));
     }
 
@@ -119,7 +126,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     @Override
     public void onResume() {
         super.onResume();
-        mToolbar.setTitle(WordUtils.capitalizeFully(month.format(new Date())));
+        mToolbar.setTitle(WordUtils.capitalizeFully(month.format(mDate)));
         mCompactCalendarView.setVisibility(View.VISIBLE);
     }
 }
