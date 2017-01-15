@@ -29,6 +29,7 @@ import butterknife.ButterKnife;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.Delimeters;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.convertCalendarEvents;
+import static com.sharpdroid.registroelettronico.Utils.Metodi.isEventTest;
 
 public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final Context mContext;
@@ -110,7 +111,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private List<Entry> convert(List<Event> events) {
         HashMap<String, List<Event>> organized = new HashMap<>();
         for (Event e : events) {
-            if (e.isEventTest()) {
+            if (isEventTest(e)) {
                 if (organized.containsKey(mContext.getString(R.string.verifiche))) {
                     List<Event> verifiche = new ArrayList<>(organized.get(mContext.getString(R.string.verifiche)));
                     verifiche.add(e);
@@ -141,7 +142,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return convert;
     }
 
-    protected class EventHolder extends RecyclerView.ViewHolder {
+    class EventHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.divider)
         View divider;
         @BindView(R.id.title)
