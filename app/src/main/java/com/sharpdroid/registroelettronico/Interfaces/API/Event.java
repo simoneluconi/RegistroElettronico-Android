@@ -1,30 +1,9 @@
 package com.sharpdroid.registroelettronico.Interfaces.API;
 
-import android.graphics.Color;
-
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
-/*
-    "id": "72193",
-    "title": "Compito di fisica",
-    "start": "2016-10-26T08:00:00.000Z",
-    "end": "2016-10-26T00:00:00.000Z",
-    "allDay": true,
-    "data_inserimento": "1919-04-08T12:31:54.000Z",
-    "nota_2": "Compito di fisica",
-    "master_id": null,
-    "classe_id": "462356",
-    "classe_desc": "3FSA",
-    "gruppo": 1,
-    "autore_desc": "LOREGIAN BRUNO ...",
-    "autore_id": "1305379",
-    "tipo": "nota",
-    "materia_desc": null,
-    "materia_id": null
- */
-public class Event {
+public class Event implements Serializable {
     private String id;
     private String title;
     private Date start;
@@ -59,20 +38,6 @@ public class Event {
         this.tipo = tipo;
         this.materia_desc = materia_desc;
         this.materia_id = materia_id;
-    }
-
-    private static boolean isEventTest(com.sharpdroid.registroelettronico.Interfaces.API.Event event) {
-        String title = event.getTitle().toLowerCase();
-        return title.contains("compito") || title.contains("interrogazione scritta") || title.contains("prova ")
-                || title.contains("verifica ") || title.contains("test ") || title.endsWith("test");
-    }
-
-    public static List<com.github.sundeepk.compactcalendarview.domain.Event> convertEvents(List<com.sharpdroid.registroelettronico.Interfaces.API.Event> events) {
-        List<com.github.sundeepk.compactcalendarview.domain.Event> list = new ArrayList<>();
-        for (com.sharpdroid.registroelettronico.Interfaces.API.Event event : events) {
-            list.add(new com.github.sundeepk.compactcalendarview.domain.Event(isEventTest(event) ? Color.RED : Color.parseColor("#FFC200"), event.getStart().getTime(), event));
-        }
-        return list;
     }
 
     public String getId() {
@@ -137,9 +102,5 @@ public class Event {
 
     public String getMateria_id() {
         return materia_id;
-    }
-
-    public boolean isEventTest() {
-        return isEventTest(this);
     }
 }
