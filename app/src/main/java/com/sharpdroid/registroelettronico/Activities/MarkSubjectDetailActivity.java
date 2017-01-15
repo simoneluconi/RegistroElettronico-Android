@@ -3,18 +3,14 @@ package com.sharpdroid.registroelettronico.Activities;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
@@ -29,6 +25,8 @@ import com.sharpdroid.registroelettronico.Views.SubjectDetails.OverallView;
 import com.sharpdroid.registroelettronico.Views.SubjectDetails.RecentLessonsView;
 import com.sharpdroid.registroelettronico.Views.SubjectDetails.TargetView;
 
+import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -37,7 +35,6 @@ import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.MessaggioVoto;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.dpToPx;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getSubjectName;
 
 // DONE: 03/12/2016 Dettagli (nome, aula, prof, ora, note, colore)
@@ -156,45 +153,11 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
             alert.setTitle(getString(R.string.obiettivo_title));
             alert.setMessage(getString(R.string.obiettivo_summary));
 
-            // Set an EditText view to get user input
-            final TextInputLayout textInputLayout = new TextInputLayout(this);
-            final TextInputEditText input = new TextInputEditText(this);
-            textInputLayout.addView(input);
-            textInputLayout.setPadding(dpToPx(16), 0, dpToPx(16), 0);
-
-            textInputLayout.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
-            textInputLayout.getEditText().setImeOptions(EditorInfo.IME_ACTION_DONE);
-            textInputLayout.getEditText().requestFocus();
-            alert.setView(textInputLayout);
-            textInputLayout.getEditText().setOnEditorActionListener((textView, i, keyEvent) -> i == EditorInfo.IME_ACTION_DONE &&
-                    register(textInputLayout));
-            textInputLayout.getEditText().addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    if (charSequence.length() > 0) {
-                        float new_target = Float.parseFloat(charSequence.toString());
-                        if (new_target <= 10 && new_target >= 0) {
-                            textInputLayout.setErrorEnabled(false);
-                        } else {
-                            textInputLayout.setErrorEnabled(true);
-                            textInputLayout.setError(getString(R.string.numero_non_valido));
-                        }
-                    } else {
-                        textInputLayout.setErrorEnabled(false);
-                    }
-                }
-
-                @Override
-                public void afterTextChanged(Editable editable) {
-
-                }
+            alert.setPositiveButton(android.R.string.ok, (dialog, whichButton) -> {
+                DiscreteSeekBar discreteSeekBar = (DiscreteSeekBar) ((AlertDialog) dialog).findViewById(R.id.seekbar_obiettivo);
+                register(discreteSeekBar.getProgress());
             });
-            alert.setPositiveButton(android.R.string.ok, (dialog, whichButton) -> register(textInputLayout));
+            alert.setView(R.layout.fragment_imposta_obiettivo);
             alert.setNegativeButton(android.R.string.cancel, (dialog, whichButton) -> {
                 // Canceled. Do nothing;
             });
@@ -211,23 +174,14 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         });
     }
 
-    boolean register(TextInputLayout layout) {
-        try {
-            layout.setErrorEnabled(false);
-            float new_target = Float.parseFloat(layout.getEditText().getText().toString());
-            if (new_target <= 10 && new_target > 0) {
-                targetView.setTarget(new_target);
-                marksView.setTarget(new_target);
+    void register(float new_target) {
+        targetView.setTarget(new_target);
+        marksView.setTarget(new_target);
 
-                ContentValues values = new ContentValues();
-                values.put("target", layout.getEditText().getText().toString());
-                db.editSubject(subject.getCode(), values);
-                marksView.setLimitLines(new_target, media.getMediaGenerale());
-                return true;
-            }
-        } catch (NumberFormatException ignored) {
-        }
-        return false;
+        ContentValues values = new ContentValues();
+        values.put("target", String.valueOf(new_target));
+        db.editSubject(subject.getCode(), values);
+        marksView.setLimitLines(new_target, media.getMediaGenerale());
     }
 
     private void setLessons(int id) {

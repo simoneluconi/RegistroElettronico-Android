@@ -61,7 +61,7 @@
     <string name="missing_app">Nessuna app può aprire questo file (%1$s)</string>
     <string name="file_downloaded">%1$s scaricato</string>
     <string name="download_fallito">Download fallito (%1$s)</string>
-    <string name="obiettivo_summary">Seleziona il voto obiettivo</string>
+    <string name="obiettivo_summary">Seleziona il voto da usare come obiettivo</string>
     <string name="obiettivo_title">Obiettivo</string>
     <string name="materia">Materia</string>
     <string name="professore">Professore</string>
