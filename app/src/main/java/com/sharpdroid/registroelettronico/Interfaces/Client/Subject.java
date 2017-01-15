@@ -51,8 +51,7 @@ public class Subject implements Serializable {
         return target;
     }
 
-    public void setTarget(float target)
-    {
+    public void setTarget(float target) {
         this.target = target;
     }
 }

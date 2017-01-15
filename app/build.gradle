@@ -131,9 +131,6 @@ dependencies {
         transitive = true;
     }
 
-    compile 'org.adw.library:discrete-seekbar:1.0.1'
-
-
     compile project(':arcprogressstackview')
 
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'

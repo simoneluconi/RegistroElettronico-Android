@@ -9,6 +9,8 @@ import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
@@ -22,8 +24,6 @@ import com.sharpdroid.registroelettronico.Views.SubjectDetails.MarksView;
 import com.sharpdroid.registroelettronico.Views.SubjectDetails.OverallView;
 import com.sharpdroid.registroelettronico.Views.SubjectDetails.RecentLessonsView;
 import com.sharpdroid.registroelettronico.Views.SubjectDetails.TargetView;
-
-import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
 import java.util.List;
 import java.util.Locale;
@@ -157,16 +157,35 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
             alert.setMessage(getString(R.string.obiettivo_summary));
 
             View v = getLayoutInflater().inflate(R.layout.fragment_imposta_obiettivo, null);
-            DiscreteSeekBar bar = (DiscreteSeekBar) v.findViewById(R.id.seekbar_obiettivo);
-            bar.setProgress((int) getTarget());
+            SeekBar mSeekBar = (SeekBar) v.findViewById(R.id.seekbar);
+            TextView mValueText = (TextView) v.findViewById(R.id.value);
+            mSeekBar.setProgress((int) getTarget());
+            mValueText.setText(String.format(Locale.getDefault(), "%.0f", getTarget()));
+
             alert.setView(v);
 
             alert.setPositiveButton(android.R.string.ok, (dialog, whichButton) -> {
-                DiscreteSeekBar discreteSeekBar = (DiscreteSeekBar) ((AlertDialog) dialog).findViewById(R.id.seekbar_obiettivo);
-                register(discreteSeekBar.getProgress());
+                register(mSeekBar.getProgress());
             });
             alert.setNegativeButton(android.R.string.cancel, (dialog, whichButton) -> {
                 // Canceled. Do nothing;
+            });
+
+            mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    mValueText.setText(String.format(Locale.getDefault(), "%d", progress));
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+
+                }
             });
 
             alert.show();
