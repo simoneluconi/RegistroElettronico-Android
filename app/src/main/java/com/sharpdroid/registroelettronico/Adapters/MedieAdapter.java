@@ -15,6 +15,7 @@ import com.sharpdroid.registroelettronico.Activities.MarkSubjectDetailActivity;
 import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Media;
+import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.R;
 
 import java.util.ArrayList;
@@ -65,7 +66,8 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
     @Override
     public void onBindViewHolder(MedieHolder ViewHolder, int position) {
         final MarkSubject marksubject = CVDataList.get(position);
-        final String subjectname = getSubjectName(db.getSubject(marksubject.getName().toLowerCase()));
+        Subject subject = db.getSubject(marksubject.getName().toLowerCase());
+        final String subjectname = getSubjectName(subject);
 
         Media media = new Media();
         media.setMateria(subjectname);
@@ -78,15 +80,17 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
         if (media.containsValidMarks()) {
             ViewHolder.mTextViewMedia.setText(String.format(Locale.getDefault(), "%.2f", media.getMediaGenerale()));
 
-            final float voto_obiettivo = Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(mContext)
-                    .getString("voto_obiettivo", "8"));
-
+            float target = subject.getTarget();
+            if (target <= 0) {
+                target = Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(mContext)
+                        .getString("voto_obiettivo", "8"));
+            }
             List<ArcProgressStackView.Model> models = new ArrayList<>();
-            models.add(new ArcProgressStackView.Model("media", media.getMediaGenerale() * 10, ContextCompat.getColor(mContext, getMediaColor(media, voto_obiettivo))));
+            models.add(new ArcProgressStackView.Model("media", media.getMediaGenerale() * 10, ContextCompat.getColor(mContext, getMediaColor(media, target))));
 
             ViewHolder.mArcProgressStackView.setModels(models);
 
-            String obbiettivo_string = MessaggioVoto(voto_obiettivo, media.getMediaGenerale(), media.getNumeroVoti());
+            String obbiettivo_string = MessaggioVoto(target, media.getMediaGenerale(), media.getNumeroVoti());
             ViewHolder.mTextViewDesc.setText(obbiettivo_string);
 
         } else {
