@@ -9,8 +9,6 @@ import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
@@ -98,7 +96,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
 
         setInfo(subject);
         setOverall(data.getMarks());
-        setTarget(subject);
+        setTarget();
         setLessons(subject.getCode());
         setMarks(data.getMarks());
     }
@@ -130,15 +128,19 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         }
     }
 
-    private void setTarget(Subject subject) {
-        //set initial target
+    private float getTarget() {
         float target = subject.getTarget();
         if (target <= 0) {
             target = Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(this)
                     .getString("voto_obiettivo", "8"));
         }
+        return target;
+    }
 
-        targetView.setTarget(target);
+    private void setTarget() {
+        //set initial target
+
+        targetView.setTarget(getTarget());
 
         //set progress
         if (media.containsValidMarks()) {
@@ -148,19 +150,25 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         }
 
         //set listener for button
+
         targetView.setListener(view -> {
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
             alert.setTitle(getString(R.string.obiettivo_title));
             alert.setMessage(getString(R.string.obiettivo_summary));
 
+            View v = getLayoutInflater().inflate(R.layout.fragment_imposta_obiettivo, null);
+            DiscreteSeekBar bar = (DiscreteSeekBar) v.findViewById(R.id.seekbar_obiettivo);
+            bar.setProgress((int) getTarget());
+            alert.setView(v);
+
             alert.setPositiveButton(android.R.string.ok, (dialog, whichButton) -> {
                 DiscreteSeekBar discreteSeekBar = (DiscreteSeekBar) ((AlertDialog) dialog).findViewById(R.id.seekbar_obiettivo);
                 register(discreteSeekBar.getProgress());
             });
-            alert.setView(R.layout.fragment_imposta_obiettivo);
             alert.setNegativeButton(android.R.string.cancel, (dialog, whichButton) -> {
                 // Canceled. Do nothing;
             });
+
             alert.show();
         }, view -> {
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -179,8 +187,9 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         marksView.setTarget(new_target);
 
         ContentValues values = new ContentValues();
-        values.put("target", String.valueOf(new_target));
+        values.put("target", String.valueOf((int) new_target));
         db.editSubject(subject.getCode(), values);
+        subject.setTarget(new_target);
         marksView.setLimitLines(new_target, media.getMediaGenerale());
     }
 
