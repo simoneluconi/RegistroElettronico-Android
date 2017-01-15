@@ -30,10 +30,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
-import static com.sharpdroid.registroelettronico.Interfaces.API.Event.convertEvents;
+import static com.sharpdroid.registroelettronico.Utils.Metodi.convertEvents;
 
 public class FragmentAgenda extends Fragment implements CompactCalendarView.CompactCalendarViewListener {
-    private static CompactCalendarView calendarView;
     final private String TAG = FragmentAgenda.class.getSimpleName();
     SimpleDateFormat month = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
     @BindView(R.id.recycler)
@@ -43,7 +42,8 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     @BindView(R.id.coordinator_layout)
     CoordinatorLayout mCoordinatorLayout;
 
-    private Toolbar actionBar;
+    private CompactCalendarView mCompactCalendarView;
+    private Toolbar mToolbar;
     private Context mContext;
     private AgendaDB db;
     private AgendaAdapter adapter;
@@ -51,9 +51,9 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     public FragmentAgenda() {
     }
 
-    public void getInstance(CompactCalendarView c, Toolbar month) {
-        calendarView = c;
-        actionBar = month;
+    public void getInstance(CompactCalendarView mCompactCalendarView, Toolbar mToolbar) {
+        this.mCompactCalendarView = mCompactCalendarView;
+        this.mToolbar = mToolbar;
     }
 
     @Override
@@ -64,17 +64,18 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         ButterKnife.bind(this, layout);
         db = AgendaDB.from(mContext);
 
-        calendarView.setLocale(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALIAN);
-        calendarView.setUseThreeLetterAbbreviation(true);
-        calendarView.setListener(this);
-        calendarView.removeAllEvents();
-        calendarView.addEvents(convertEvents(db.getEvents()));
-        calendarView.invalidate();
-        updateDB();
+        mCompactCalendarView.setLocale(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALIAN);
+        mCompactCalendarView.setUseThreeLetterAbbreviation(true);
+        mCompactCalendarView.setListener(this);
+        mCompactCalendarView.removeAllEvents();
+        mCompactCalendarView.addEvents(convertEvents(db.getEvents()));
+        mCompactCalendarView.invalidate();
+
         adapter = new AgendaAdapter(mContext, place_holder);
         recycler.setLayoutManager(new LinearLayoutManager(mContext));
         recycler.setAdapter(adapter);
-        adapter.addAllCalendarEvents(calendarView.getEvents(new Date()));
+
+        updateDB();
 
         return layout;
     }
@@ -86,9 +87,9 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
                 .subscribe(events -> {
                     Log.d(TAG, "Scaricati " + events.size() + " eventi");
                     db.addEvents(events);
-                    calendarView.removeAllEvents();
-                    calendarView.addEvents(convertEvents(events));
-                    calendarView.invalidate();
+                    mCompactCalendarView.removeAllEvents();
+                    mCompactCalendarView.addEvents(convertEvents(events));
+                    mCompactCalendarView.invalidate();
                 }, error -> {
                     error.printStackTrace();
                     Snackbar.make(mCoordinatorLayout, error.getLocalizedMessage(), Snackbar.LENGTH_LONG).show();
@@ -98,18 +99,18 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     @Override
     public void onDayClick(Date dateClicked) {
         adapter.clear();
-        adapter.addAllCalendarEvents(calendarView.getEvents(dateClicked));
+        adapter.addAllCalendarEvents(mCompactCalendarView.getEvents(dateClicked));
     }
 
     @Override
     public void onMonthScroll(Date firstDayOfNewMonth) {
-        actionBar.setTitle(WordUtils.capitalizeFully(month.format(firstDayOfNewMonth)));
+        mToolbar.setTitle(WordUtils.capitalizeFully(month.format(firstDayOfNewMonth)));
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        calendarView.setVisibility(View.GONE);
+        mCompactCalendarView.setVisibility(View.GONE);
         db.close();
     }
 
@@ -117,7 +118,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     @Override
     public void onResume() {
         super.onResume();
-        actionBar.setTitle(WordUtils.capitalizeFully(month.format(new Date())));
-        calendarView.setVisibility(View.VISIBLE);
+        mToolbar.setTitle(WordUtils.capitalizeFully(month.format(new Date())));
+        mCompactCalendarView.setVisibility(View.VISIBLE);
     }
 }
