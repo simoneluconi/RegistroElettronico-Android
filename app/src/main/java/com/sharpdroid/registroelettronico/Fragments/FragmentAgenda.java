@@ -74,6 +74,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         adapter = new AgendaAdapter(mContext, place_holder);
         recycler.setLayoutManager(new LinearLayoutManager(mContext));
         recycler.setAdapter(adapter);
+        adapter.addAllCalendarEvents(mCompactCalendarView.getEvents(new Date()));
 
         updateDB();
 
