@@ -22,6 +22,7 @@ import com.sharpdroid.registroelettronico.R;
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -75,6 +76,19 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         recycler.setLayoutManager(new LinearLayoutManager(mContext));
         recycler.setAdapter(adapter);
         mDate = new Date();
+
+        Calendar cal = toCalendar(mDate);
+
+        boolean AggiungiGiornoSeSabato = cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY;
+        boolean isDomenica = cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
+        boolean OrarioScolastico = cal.get(Calendar.HOUR_OF_DAY) < 14;
+        if (AggiungiGiornoSeSabato && !OrarioScolastico)
+            cal.add(Calendar.DATE, 2);
+        else if (!OrarioScolastico || isDomenica)
+            cal.add(Calendar.DATE, 1);
+
+        mDate = cal.getTime();
+
         adapter.addAllCalendarEvents(mCompactCalendarView.getEvents(mDate));
 
         updateDB();
@@ -125,5 +139,11 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         super.onResume();
         mToolbar.setTitle(WordUtils.capitalizeFully(month.format(mDate)));
         mCompactCalendarView.setVisibility(View.VISIBLE);
+    }
+
+    private static Calendar toCalendar(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return cal;
     }
 }
