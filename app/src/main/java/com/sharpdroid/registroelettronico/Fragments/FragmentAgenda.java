@@ -53,6 +53,12 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     public FragmentAgenda() {
     }
 
+    private Calendar toCalendar(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return cal;
+    }
+
     @Override
     public View onCreateView(final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -79,16 +85,16 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
 
         Calendar cal = toCalendar(mDate);
 
-        boolean AggiungiGiornoSeSabato = cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY;
-        boolean isDomenica = cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
         boolean OrarioScolastico = cal.get(Calendar.HOUR_OF_DAY) < 14;
-        if (AggiungiGiornoSeSabato && !OrarioScolastico)
+        if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && !OrarioScolastico) {
             cal.add(Calendar.DATE, 2);
-        else if (!OrarioScolastico || isDomenica)
+        } else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY || !OrarioScolastico) {
             cal.add(Calendar.DATE, 1);
+        }
 
         mDate = cal.getTime();
 
+        mCompactCalendarView.setCurrentDate(mDate);
         adapter.addAllCalendarEvents(mCompactCalendarView.getEvents(mDate));
 
         updateDB();
@@ -133,17 +139,10 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         db.close();
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
         mToolbar.setTitle(WordUtils.capitalizeFully(month.format(mDate)));
         mCompactCalendarView.setVisibility(View.VISIBLE);
-    }
-
-    private static Calendar toCalendar(Date date) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        return cal;
     }
 }
