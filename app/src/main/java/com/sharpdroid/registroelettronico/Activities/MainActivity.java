@@ -146,11 +146,10 @@ public class MainActivity extends AppCompatActivity
                 startActivity(Intent.createChooser(intent, getString(R.string.select_app)));
             case R.id.nav_send:
                 Intent intent_mail = new Intent(Intent.ACTION_SENDTO);
-                intent_mail.setType("text/plain");
                 intent_mail.setData(Uri.parse("mailto:bugreport@registroelettronico.ml"));
                 intent_mail.putExtra(Intent.EXTRA_SUBJECT, "Registro Elettronico");
                 intent_mail.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(Intent.createChooser(intent_mail, getString(R.string.select_email_client)));
+                startActivity(intent_mail);
             default:
                 return false;
         }

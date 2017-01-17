@@ -44,7 +44,6 @@
     <string name="login_msg_failer">Login fallito</string>
     <string name="absences">Assenze</string>
 
-    <string name="select_email_client">Seleziona un client email</string>
     <string name="select_app">Seleziona un\'applicazione</string>
 
     <string name="login_riuscito">Login completato</string>
