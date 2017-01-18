@@ -6,15 +6,22 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
+import android.widget.LinearLayout;
 
 import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.R;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,6 +35,8 @@ public class EditSubjectDetailsActivity extends AppCompatActivity {
     TextInputEditText name;
     @BindView(R.id.professor)
     TextInputEditText prof;
+    @BindView(R.id.professor2)
+    TextInputEditText prof2;
     @BindView(R.id.classroom)
     TextInputEditText classroom;
     @BindView(R.id.notes)
@@ -53,9 +62,10 @@ public class EditSubjectDetailsActivity extends AppCompatActivity {
         db = SubjectsDB.from(this);
 
         name.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_title), null, null, null);
-        prof.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_person_black), null, null, null);
         classroom.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_room), null, null, null);
         notes.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_description), null, null, null);
+        prof.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_person_black), null, null, null);
+        prof2.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_person_black), null, null, null);
 
         notes.setOnEditorActionListener((textView, i, keyEvent) -> {
             if (i == EditorInfo.IME_ACTION_DONE) {
@@ -73,8 +83,13 @@ public class EditSubjectDetailsActivity extends AppCompatActivity {
             subject = db.getSubject(code);
 
             name.setText(getSubjectName(subject));
-            if (subject.getProfessor() != null)
-                prof.setText(WordUtils.capitalizeFully(subject.getProfessor(), Delimeters));
+            if (subject.getProfessor() != null) {
+                String[] p = subject.getProfessors();
+                if (p.length > 0)
+                    prof.setText(WordUtils.capitalizeFully(p[0].trim(), Delimeters));
+                if (p.length > 1)
+                    prof2.setText(WordUtils.capitalizeFully(p[1].trim(), Delimeters));
+            }
             if (subject.getClassroom() != null)
                 classroom.setText(subject.getClassroom());
             if (subject.getNotes() != null)
@@ -88,7 +103,7 @@ public class EditSubjectDetailsActivity extends AppCompatActivity {
         String name, prof, classroom, notes;
 
         name = this.name.getText().toString().trim();
-        prof = this.prof.getText().toString().trim();
+        prof = getProfsNames();
         classroom = this.classroom.getText().toString().trim();
         notes = this.notes.getText().toString().trim();
 
@@ -100,6 +115,19 @@ public class EditSubjectDetailsActivity extends AppCompatActivity {
         db.editSubject(subject.getCode(), values);
 
         finish();
+    }
+
+    private String getProfsNames() {
+        List<String> pr = new ArrayList<>();
+        if (!TextUtils.isEmpty(prof.getText().toString()))
+            pr.add(prof.getText().toString());
+
+        if (!TextUtils.isEmpty(prof2.getText().toString()))
+            pr.add(prof2.getText().toString());
+
+        if (!pr.isEmpty())
+            return StringUtils.join(pr, " ~ ");
+        else return "";
     }
 
     @Override

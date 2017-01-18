@@ -269,7 +269,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
                 return WordUtils.capitalizeFully(entry.getKey());
             } else {
                 if (entry.getValue() > 2) //Altrimenti aggiungo qualsiasi altro professore abbia fatto più di 2 lezioni
-                    names += entry.getKey() + " | ";
+                    names += entry.getKey() + " ~ ";
             }
         }
 

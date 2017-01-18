@@ -39,6 +39,16 @@
             android:maxLines="1" />
 
         <android.support.design.widget.TextInputEditText
+            android:id="@+id/professor2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="16dp"
+            android:hint="@string/professore"
+            android:imeOptions="actionNext"
+            android:inputType="textPersonName"
+            android:maxLines="1" />
+
+        <android.support.design.widget.TextInputEditText
             android:id="@+id/classroom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
