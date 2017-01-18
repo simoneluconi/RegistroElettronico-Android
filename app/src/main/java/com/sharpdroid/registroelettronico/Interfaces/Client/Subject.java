@@ -47,6 +47,10 @@ public class Subject implements Serializable {
         return professor;
     }
 
+    public String[] getProfessors() {
+        return professor.split("~");
+    }
+
     public float getTarget() {
         return target;
     }
