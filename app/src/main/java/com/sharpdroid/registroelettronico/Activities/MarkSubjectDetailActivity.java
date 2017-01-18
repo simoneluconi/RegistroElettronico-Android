@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SeekBar;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
+import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
 import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
 import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Media;
@@ -25,8 +27,12 @@ import com.sharpdroid.registroelettronico.Views.SubjectDetails.OverallView;
 import com.sharpdroid.registroelettronico.Views.SubjectDetails.RecentLessonsView;
 import com.sharpdroid.registroelettronico.Views.SubjectDetails.TargetView;
 
+import org.apache.commons.lang3.text.WordUtils;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -216,7 +222,16 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         new SpiaggiariApiClient(this)
                 .getLessons(id)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(lessons -> lessonsView.addAll(lessons), error -> {
+                .subscribe(lessons -> {
+                    lessonsView.addAll(lessons);
+                    //Se non c'è provo ad impostare il nome del professore
+                    if (TextUtils.isEmpty(subject.getProfessor())) {
+                        String pName = getProfessorOfThisSubject(lessons);
+                        subject.setProfessor(pName);
+                        setInfo(subject);
+                        db.updateProfessorName(subject.getCode(), pName);
+                    }
+                }, error -> {
                 });
     }
 
@@ -234,6 +249,29 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private String getProfessorOfThisSubject(List<Lesson> lessons) {
+        HashMap<String, Integer> hmap = new HashMap<>();
+
+        for (Lesson l : lessons) {
+            if (hmap.containsKey(l.getTeacher()))
+                hmap.put(l.getTeacher(), hmap.get(l.getTeacher()) + 1);
+            else hmap.put(l.getTeacher(), 1);
+        }
+
+        int maxLessons = 0;
+        String pName = null;
+
+        for (Map.Entry<String, Integer> entry : hmap.entrySet()) {
+
+            if (entry.getValue() > maxLessons) {
+                maxLessons = entry.getValue();
+                pName = entry.getKey();
+            }
+        }
+
+        return WordUtils.capitalizeFully(pName);
     }
 
     @Override

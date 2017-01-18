@@ -85,6 +85,17 @@ public class SubjectsDB extends SQLiteOpenHelper {
         return this;
     }
 
+    public SubjectsDB updateProfessorName(int code, String name) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("professor", name);
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        db.update(DB_NAME, contentValues, columns[1] + " = ?", new String[]{String.valueOf(code)});
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        return this;
+    }
+
     public SubjectsDB addCODEandNAME(List<LessonSubject> subjects) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues;
