@@ -4,17 +4,22 @@ import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.sharpdroid.registroelettronico.Databases.AgendaDB;
+import com.sharpdroid.registroelettronico.Interfaces.API.Event;
 import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -23,6 +28,7 @@ import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getMarkColor;
+import static com.sharpdroid.registroelettronico.Utils.Metodi.isEventTest;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.sortMarksByDate;
 
 public class MarkAdapter extends RecyclerView.Adapter<MarkAdapter.MarkHolder> {
@@ -31,11 +37,15 @@ public class MarkAdapter extends RecyclerView.Adapter<MarkAdapter.MarkHolder> {
     private SimpleDateFormat format = new SimpleDateFormat("d MMMM yyyy", Locale.ITALIAN);
     private List<Mark> CVDataList;
     private Subject subject;
+    private List<Event> events;
 
     public MarkAdapter(Context mContext, Subject subject) {
         this.mContext = mContext;
         CVDataList = new ArrayList<>();
         this.subject = subject;
+        AgendaDB agendaDB = AgendaDB.from(mContext);
+        events = agendaDB.getEvents();
+        agendaDB.close();
     }
 
     public void addAll(List<Mark> list) {
@@ -60,10 +70,17 @@ public class MarkAdapter extends RecyclerView.Adapter<MarkAdapter.MarkHolder> {
 
     @Override
     public void onBindViewHolder(MarkHolder holder, int position) {
+
         Mark mark = CVDataList.get(position);
         holder.color.setImageDrawable(new ColorDrawable(ContextCompat.getColor(mContext, getMarkColor(mark, target))));
         holder.mark.setText(mark.getMark());
-        holder.content.setText(mark.getDesc());
+
+        Event event = getPossibleMarkDescription(events, mark.getDate());
+        if (TextUtils.isEmpty(mark.getDesc())) {
+            if (event != null)
+                holder.content.setText(event.getTitle());
+            else holder.content.setText(mark.getDesc());
+        }
         holder.type.setText(mark.getType());
         holder.date.setText(format.format(mark.getDate()));
     }
@@ -90,4 +107,23 @@ public class MarkAdapter extends RecyclerView.Adapter<MarkAdapter.MarkHolder> {
             ButterKnife.bind(this, itemView);
         }
     }
+
+    private Event getPossibleMarkDescription(List<Event> events, Date date) {
+        for (Event e : events) {
+
+            Calendar cal1 = Calendar.getInstance();
+            Calendar cal2 = Calendar.getInstance();
+            cal1.setTime(date);
+            cal2.setTime(e.getStart());
+            boolean sameDay = cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                    cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
+
+            if (isEventTest(e) && sameDay)
+                return e;
+        }
+
+        return null;
+    }
+
+
 }

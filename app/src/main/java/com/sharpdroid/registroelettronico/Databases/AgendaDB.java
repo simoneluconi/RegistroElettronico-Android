@@ -119,6 +119,20 @@ public class AgendaDB extends SQLiteOpenHelper {
         return list;
     }
 
+
+    public List<Event> getEvents(long day) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM " + DB_NAME + " WHERE " + columns[3] + " = ?", new String[]{String.valueOf(day)});
+        List<Event> list = new ArrayList<>();
+
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            list.add(new Event(c.getString(1), c.getString(2), new Date(c.getLong(3)), new Date(c.getLong(4)), c.getInt(5) == 1, new Date(c.getLong(6)), c.getString(7), c.getString(8), c.getString(9), c.getString(10), c.getInt(11), c.getString(12), c.getString(13), c.getString(14), c.getString(15), c.getString(16)));
+        }
+
+        c.close();
+        return list;
+    }
+
     public List<Event> getEventsFromTo(long start, long end) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery("SELECT * FROM " + DB_NAME + " WHERE " + columns[3] + " BETWEEN ? AND ?", new String[]{String.valueOf(start), String.valueOf(end)});
