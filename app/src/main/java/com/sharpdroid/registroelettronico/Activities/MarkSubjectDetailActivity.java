@@ -40,6 +40,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.MessaggioVoto;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getSubjectName;
+import static com.sharpdroid.registroelettronico.Utils.Metodi.sortByComparator;
 
 // DONE: 03/12/2016 Dettagli (nome, aula, prof, ora, note, colore)
 // DONE: 03/12/2016 Media (scritto, orale, totale)
@@ -252,7 +253,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     }
 
     private String getProfessorOfThisSubject(List<Lesson> lessons) {
-        HashMap<String, Integer> hmap = new HashMap<>();
+        Map<String, Integer> hmap = new HashMap<>();
 
         for (Lesson l : lessons) {
             if (hmap.containsKey(l.getTeacher()))
@@ -260,18 +261,19 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
             else hmap.put(l.getTeacher(), 1);
         }
 
-        int maxLessons = 0;
-        String pName = null;
+        hmap = sortByComparator(hmap, false);
+        String names = "";
 
         for (Map.Entry<String, Integer> entry : hmap.entrySet()) {
-
-            if (entry.getValue() > maxLessons) {
-                maxLessons = entry.getValue();
-                pName = entry.getKey();
+            if (hmap.size() == 1) { //Se c'è solo un professore lo restituisco
+                return WordUtils.capitalizeFully(entry.getKey());
+            } else {
+                if (entry.getValue() > 2) //Altrimenti aggiungo qualsiasi altro professore abbia fatto più di 2 lezioni
+                    names += entry.getKey() + " | ";
             }
         }
 
-        return WordUtils.capitalizeFully(pName);
+        return WordUtils.capitalizeFully(names.substring(0, names.length() - 3));
     }
 
     @Override
