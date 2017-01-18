@@ -64,6 +64,7 @@ public class MarkAdapter extends RecyclerView.Adapter<MarkAdapter.MarkHolder> {
         holder.color.setImageDrawable(new ColorDrawable(ContextCompat.getColor(mContext, getMarkColor(mark, target))));
         holder.mark.setText(mark.getMark());
         holder.content.setText(mark.getDesc());
+        holder.type.setText(mark.getType());
         holder.date.setText(format.format(mark.getDate()));
     }
 
@@ -81,6 +82,8 @@ public class MarkAdapter extends RecyclerView.Adapter<MarkAdapter.MarkHolder> {
         TextView content;
         @BindView(R.id.date)
         TextView date;
+        @BindView(R.id.type)
+        TextView type;
 
         MarkHolder(View itemView) {
             super(itemView);
