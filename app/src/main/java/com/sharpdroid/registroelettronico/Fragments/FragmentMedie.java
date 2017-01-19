@@ -2,12 +2,15 @@ package com.sharpdroid.registroelettronico.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.provider.Telephony;
+import android.support.annotation.IntegerRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +18,9 @@ import android.view.ViewGroup;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Adapters.MedieAdapter;
+import com.sharpdroid.registroelettronico.Databases.AgendaDB;
 import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
+import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
 import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.Tasks.CacheListObservable;
@@ -32,6 +37,7 @@ import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.sharpdroid.registroelettronico.Utils.Metodi.CalculateScholasticCredits;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getOverallAverage;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.isNetworkAvailable;
 
@@ -122,7 +128,8 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
                 .subscribe(marks -> {
                     addSubjects(marks, true);
                     mSwipeRefreshLayout.setRefreshing(false);
-                    snackbar = Snackbar.make(mCoordinatorLayout, "Media totale: " + String.format(Locale.getDefault(), "%.2f", getOverallAverage(marks)), Snackbar.LENGTH_LONG);
+                    String msg = getSnackBarMessage(marks);
+                    snackbar = Snackbar.make(mCoordinatorLayout, msg, Snackbar.LENGTH_LONG);
                     snackbar.show();
                 }, error -> {
                     if (!isNetworkAvailable(mContext)) {
@@ -130,6 +137,22 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
                     }
                     mSwipeRefreshLayout.setRefreshing(false);
                 });
+    }
+
+    private String getSnackBarMessage(List<MarkSubject> marks) {
+        double average = getOverallAverage(marks);
+
+        String className = AgendaDB.from(mContext).getClassDescription();
+        if (className != null) className = className.split("\\s+")[0];
+
+        int classyear;
+        try {
+            classyear = Integer.parseInt(String.valueOf(className.toCharArray()[0]));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return "Media totale: " + String.format(Locale.getDefault(), "%.2f", average);
+        }
+        return String.format(Locale.getDefault(), "Media Totale: %.2f | Crediti: %2$d + %3$d", average, CalculateScholasticCredits(classyear, average), 1);
     }
 
     @Override

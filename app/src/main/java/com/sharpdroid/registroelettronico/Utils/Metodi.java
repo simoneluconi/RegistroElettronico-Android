@@ -185,6 +185,32 @@ public class Metodi {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
+    public static int CalculateScholasticCredits(int year, double average) {
+        switch (year) {
+            case 3:
+            case 4:
+                if (average == 6) return 3;
+                else if (average > 6 && average <= 7) return 4;
+                else if (average > 7 && average <= 8) return 5;
+                else if (average > 8 && average <= 9) return 6;
+                else if (average > 9 && average <= 10) return 7;
+                break;
+
+            case 5:
+                if (average == 6) return 4;
+                else if (average > 6 && average <= 7) return 5;
+                else if (average > 7 && average <= 8) return 6;
+                else if (average > 8 && average <= 9) return 7;
+                else if (average > 9 && average <= 10) return 8;
+                break;
+
+            default:
+                return 0;
+        }
+
+        return 0;
+    }
+
     public static int getMediaColor(Media media, String tipo, float voto_obiettivo) {
         switch (tipo) {
             case SpiaggiariAPI.ORALE:
@@ -250,7 +276,9 @@ public class Metodi {
             Media _media = new Media();
             _media.addMarks(subject.getMarks());
 
-            media += _media.getMediaGenerale();
+            if (_media.containsValidMarks())
+                media += _media.getMediaGenerale();
+            else n--;
         }
         return media / n;
     }
