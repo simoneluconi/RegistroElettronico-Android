@@ -3,6 +3,8 @@ package com.sharpdroid.registroelettronico.Adapters;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.design.widget.CoordinatorLayout;
@@ -137,7 +139,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
     private void openfile(java.io.File file) {
         String mime = URLConnection.guessContentTypeFromName(file.toString());
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(FileProvider.getUriForFile(mContext, "com.sharpdroid.registro.fileprovider", file), mime);
+        intent.setDataAndType(FileProvider.getUriForFile(mContext, mContext.getPackageName() + ".fileprovider", file), mime);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         try {
             mContext.startActivity(intent);
