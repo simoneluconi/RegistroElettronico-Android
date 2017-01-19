@@ -40,7 +40,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
     final static String TAG = FileAdapter.class.getSimpleName();
 
     private final SimpleDateFormat formatter = new SimpleDateFormat("MMM d, yyyy", Locale.ITALIAN);
-    FilesDB db;
+    private FilesDB db;
     private Context mContext;
     private CoordinatorLayout mCoordinatorLayout;
     private List<File> CVDataList;
@@ -104,8 +104,6 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
                         openfile(f);
                     else DownloadFile(file, dir, db, DownloadProgressSnak, false);
                 }
-
-                db.close();
             } else openlink(file.getLink(), mContext);
         });
     }
