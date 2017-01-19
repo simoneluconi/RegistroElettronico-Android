@@ -30,6 +30,8 @@ import butterknife.ButterKnife;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.Delimeters;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getListLayouts;
 
+// TODO: 19/01/2017 Risolvere crash quando si chiude una cartella e poi si scorre verso il basso
+
 public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     final static String TAG = FolderAdapter.class.getSimpleName();
 

@@ -32,8 +32,6 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.isNetworkAvailable;
 
-// TODO: 19/01/2017 Risolvere crash quando si chiude una cartella e poi si scorre verso il basso 
-
 public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     final private String TAG = FragmentFolders.class.getSimpleName();
     @BindView(R.id.coordinator_layout)
