@@ -130,7 +130,7 @@ public class Metodi {
         return toReturn;
     }
 
-    public static Map<String, Integer> sortByComparator(Map<String, Integer> unsortMap, final boolean order) {
+    public static MyLinkedMap<String, Integer> sortByComparator(MyLinkedMap<String, Integer> unsortMap, final boolean order) {
         List<Map.Entry<String, Integer>> list = new LinkedList<>(unsortMap.entrySet());
 
         // Sorting the list based on values
@@ -146,7 +146,7 @@ public class Metodi {
         });
 
         // Maintaining insertion order with the help of LinkedList
-        Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
+        MyLinkedMap<String, Integer> sortedMap = new MyLinkedMap<>();
         for (Map.Entry<String, Integer> entry : list) {
             sortedMap.put(entry.getKey(), entry.getValue());
         }
