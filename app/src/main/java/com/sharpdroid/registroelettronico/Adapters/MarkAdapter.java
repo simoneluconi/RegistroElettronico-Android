@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.sharpdroid.registroelettronico.Databases.AgendaDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Event;
 import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
@@ -19,6 +18,7 @@ import com.sharpdroid.registroelettronico.R;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -39,13 +39,11 @@ public class MarkAdapter extends RecyclerView.Adapter<MarkAdapter.MarkHolder> {
     private Subject subject;
     private List<Event> events;
 
-    public MarkAdapter(Context mContext, Subject subject) {
+    public MarkAdapter(Context mContext, Subject subject, List<Event> events) {
         this.mContext = mContext;
         CVDataList = new ArrayList<>();
         this.subject = subject;
-        AgendaDB agendaDB = AgendaDB.from(mContext);
-        events = agendaDB.getEvents();
-        agendaDB.close();
+        this.events = events;
     }
 
     public void addAll(List<Mark> list) {
@@ -75,12 +73,12 @@ public class MarkAdapter extends RecyclerView.Adapter<MarkAdapter.MarkHolder> {
         holder.color.setImageDrawable(new ColorDrawable(ContextCompat.getColor(mContext, getMarkColor(mark, target))));
         holder.mark.setText(mark.getMark());
 
-        Event event = getPossibleMarkDescription(events, mark.getDate());
+        Event event = getPossibleMarkDescription(events, mark.getDate(), subject);
         if (TextUtils.isEmpty(mark.getDesc())) {
             if (event != null)
                 holder.content.setText(event.getTitle());
-            else holder.content.setText(mark.getDesc());
-        }
+        } else holder.content.setText(mark.getDesc());
+
         holder.type.setText(mark.getType());
         holder.date.setText(format.format(mark.getDate()));
     }
@@ -108,7 +106,8 @@ public class MarkAdapter extends RecyclerView.Adapter<MarkAdapter.MarkHolder> {
         }
     }
 
-    private Event getPossibleMarkDescription(List<Event> events, Date date) {
+    private Event getPossibleMarkDescription(List<Event> events, Date date, Subject subject) {
+
         for (Event e : events) {
 
             Calendar cal1 = Calendar.getInstance();
@@ -118,11 +117,31 @@ public class MarkAdapter extends RecyclerView.Adapter<MarkAdapter.MarkHolder> {
             boolean sameDay = cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
                     cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
 
-            if (isEventTest(e) && sameDay)
+            if (isEventTest(e) && sameDay && isThisEventOfThisSubject(e, subject))
                 return e;
         }
 
         return null;
+    }
+
+    private boolean isThisEventOfThisSubject(Event event, Subject subject) {
+        List<String> valuesToSearch = new ArrayList<>();
+        valuesToSearch.add(subject.getOriginalName()); //L'evento deve contenere o il nome della materia
+        Collections.addAll(valuesToSearch, subject.getProfessors()); //o deve contenere il nome del professore della materia
+
+        boolean b = false;
+
+        for (String s : valuesToSearch)
+            if (event.getTitle().contains(s))
+                b = true;
+
+        for (String s : valuesToSearch) {
+            for (String s1 : s.toLowerCase().split("\\s+"))
+                for (String s2 : event.getAutore_desc().toLowerCase().split("\\s+"))
+                    if (s1.equals(s2) && s1.length() > 2 && s2.length() > 2)
+                        b = true;
+        }
+        return b;
     }
 
 

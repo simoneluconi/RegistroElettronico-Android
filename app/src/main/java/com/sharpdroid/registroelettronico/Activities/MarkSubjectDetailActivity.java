@@ -253,7 +253,6 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
 
     private String getProfessorOfThisSubject(List<Lesson> lessons) {
 
-
         MyLinkedMap<String, Integer> hmap = new MyLinkedMap<>();
 
         for (Lesson l : lessons) {
