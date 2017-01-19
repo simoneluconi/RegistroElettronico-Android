@@ -88,11 +88,13 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
 
         Calendar cal = toCalendar(mDate);
 
-        if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && cal.get(Calendar.HOUR_OF_DAY) > 14) {
+        boolean isOrarioScolastico = cal.get(Calendar.HOUR_OF_DAY) < 14;
+        if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && !isOrarioScolastico) {
             cal.add(Calendar.DATE, 2);
         } else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
             cal.add(Calendar.DATE, 1);
-        }
+        } else if (!isOrarioScolastico)
+            cal.add(Calendar.DATE, 1);
 
         mDate = cal.getTime();
 
