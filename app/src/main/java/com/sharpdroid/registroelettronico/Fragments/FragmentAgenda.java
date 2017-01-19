@@ -33,6 +33,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.convertEvents;
 
+// TODO: 19/01/2017 Aggiungere eventi all'agenda 
+// TODO: 19/01/2017 Aggiungere eventi dell'agenda nel calendario del telefono 
+
 public class FragmentAgenda extends Fragment implements CompactCalendarView.CompactCalendarViewListener {
     final private String TAG = FragmentAgenda.class.getSimpleName();
     SimpleDateFormat month = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());

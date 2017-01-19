@@ -46,6 +46,7 @@ import static com.sharpdroid.registroelettronico.Utils.Metodi.sortByComparator;
 // DONE: 03/12/2016 Obiettivo
 // TODO: 03/12/2016 Orario settimanale (in quali giorni)
 // TODO: 03/12/2016 Verifiche prossime
+// TODO: 19/01/2016 Media Ipotetica
 // DONE: 03/12/2016 Voti recenti
 // DONE: 14/12/2016 Lezioni recenti
 

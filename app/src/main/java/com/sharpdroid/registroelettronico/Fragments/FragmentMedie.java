@@ -41,6 +41,9 @@ import static com.sharpdroid.registroelettronico.Utils.Metodi.CalculateScholasti
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getOverallAverage;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.isNetworkAvailable;
 
+// TODO: 19/01/2017 Divisione P1 e P2
+// TODO: 19/01/2017 Visualizzare media generale e crediti scolastici in modo decente
+
 public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     final private String TAG = FragmentMedie.class.getSimpleName();
 
