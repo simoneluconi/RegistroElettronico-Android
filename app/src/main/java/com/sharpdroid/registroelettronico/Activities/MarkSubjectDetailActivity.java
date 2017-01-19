@@ -256,6 +256,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
 
         MyLinkedMap<String, Integer> hmap = new MyLinkedMap<>();
 
+        //Assegno ad ogni professore il numero di lezioni che ha tenuto
         for (Lesson l : lessons) {
             if (hmap.containsKey(l.getTeacher()))
                 hmap.put(l.getTeacher(), hmap.get(l.getTeacher()) + 1);
