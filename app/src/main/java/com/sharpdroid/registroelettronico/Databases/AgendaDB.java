@@ -119,6 +119,12 @@ public class AgendaDB extends SQLiteOpenHelper {
         return list;
     }
 
+    public String getClassDescription() {
+        List<Event> events = getEvents();
+        if (!events.isEmpty())
+            return events.get(0).getClasse_desc();
+        else return null;
+    }
 
     public List<Event> getEvents(long day) {
         SQLiteDatabase db = this.getReadableDatabase();
