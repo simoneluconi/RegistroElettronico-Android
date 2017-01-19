@@ -48,7 +48,9 @@ public class Subject implements Serializable {
     }
 
     public String[] getProfessors() {
-        return professor.split("~");
+        if (professor != null)
+            return professor.split("~");
+        else return null;
     }
 
     public float getTarget() {
@@ -59,8 +61,7 @@ public class Subject implements Serializable {
         this.target = target;
     }
 
-    public void setProfessor(String professor)
-    {
+    public void setProfessor(String professor) {
         this.professor = professor;
     }
 }
