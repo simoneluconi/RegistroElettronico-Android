@@ -127,7 +127,8 @@ public class MarkAdapter extends RecyclerView.Adapter<MarkAdapter.MarkHolder> {
     private boolean isThisEventOfThisSubject(Event event, Subject subject) {
         List<String> valuesToSearch = new ArrayList<>();
         valuesToSearch.add(subject.getOriginalName()); //L'evento deve contenere o il nome della materia
-        Collections.addAll(valuesToSearch, subject.getProfessors()); //o deve contenere il nome del professore della materia
+        if (subject.getProfessors() != null)
+            Collections.addAll(valuesToSearch, subject.getProfessors()); //o deve contenere il nome del professore della materia
 
         boolean b = false;
 
