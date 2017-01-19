@@ -21,6 +21,7 @@ import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Media;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.R;
+import com.sharpdroid.registroelettronico.Utils.MyLinkedMap;
 import com.sharpdroid.registroelettronico.Views.SubjectDetails.InfoView;
 import com.sharpdroid.registroelettronico.Views.SubjectDetails.MarksView;
 import com.sharpdroid.registroelettronico.Views.SubjectDetails.OverallView;
@@ -29,10 +30,8 @@ import com.sharpdroid.registroelettronico.Views.SubjectDetails.TargetView;
 
 import org.apache.commons.lang3.text.WordUtils;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -253,7 +252,9 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     }
 
     private String getProfessorOfThisSubject(List<Lesson> lessons) {
-        Map<String, Integer> hmap = new HashMap<>();
+
+
+        MyLinkedMap<String, Integer> hmap = new MyLinkedMap<>();
 
         for (Lesson l : lessons) {
             if (hmap.containsKey(l.getTeacher()))
@@ -262,18 +263,19 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         }
 
         hmap = sortByComparator(hmap, false);
-        String names = "";
 
-        for (Map.Entry<String, Integer> entry : hmap.entrySet()) {
-            if (hmap.size() == 1) { //Se c'è solo un professore lo restituisco
-                return WordUtils.capitalizeFully(entry.getKey());
-            } else {
-                if (entry.getValue() > 2) //Altrimenti aggiungo qualsiasi altro professore abbia fatto più di 2 lezioni
-                    names += entry.getKey() + " ~ ";
-            }
+
+        if (hmap.size() == 1) //Se c'è solo un professore lo restituisco
+            return WordUtils.capitalizeFully(hmap.getKey(0));
+
+        else if (hmap.size() > 1) { //Se ce ne sono di più
+            if (hmap.getValue(1) > 2) //Se il secondo ha fatto più di 2 lezioni lo restituisco
+                return WordUtils.capitalizeFully(hmap.getKey(0) + " ~ " + hmap.getKey(1));
+            else
+                return WordUtils.capitalizeFully(hmap.getKey(0)); //altrimenti restituisco il primo
         }
 
-        return WordUtils.capitalizeFully(names.substring(0, names.length() - 3));
+        return null;
     }
 
     @Override
