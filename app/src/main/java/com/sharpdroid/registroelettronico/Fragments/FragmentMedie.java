@@ -152,7 +152,9 @@ public class FragmentMedie extends Fragment implements SwipeRefreshLayout.OnRefr
             ex.printStackTrace();
             return "Media totale: " + String.format(Locale.getDefault(), "%.2f", average);
         }
-        return String.format(Locale.getDefault(), "Media Totale: %.2f | Crediti: %2$d + %3$d", average, CalculateScholasticCredits(classyear, average), 1);
+        if (classyear > 2)
+            return String.format(Locale.getDefault(), "Media Totale: %.2f | Crediti: %2$d + %3$d", average, CalculateScholasticCredits(classyear, average), 1);
+        else return "Media totale: " + String.format(Locale.getDefault(), "%.2f", average);
     }
 
     @Override
