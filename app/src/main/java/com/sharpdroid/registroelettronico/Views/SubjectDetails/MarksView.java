@@ -24,6 +24,8 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.Utils;
 import com.sharpdroid.registroelettronico.Adapters.MarkAdapter;
+import com.sharpdroid.registroelettronico.Databases.AgendaDB;
+import com.sharpdroid.registroelettronico.Interfaces.API.Event;
 import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.R;
@@ -54,21 +56,26 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
     PopupMenu menu;
     MarkAdapter adapter;
 
+    List<Event> events;
+
     public MarksView(Context context) {
         super(context);
         mContext = context;
+        events = AgendaDB.from(context).getEvents();
         init();
     }
 
     public MarksView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
+        events = AgendaDB.from(context).getEvents();
         init();
     }
 
     public MarksView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
+        events = AgendaDB.from(context).getEvents();
         init();
     }
 
@@ -115,7 +122,7 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
     public void setSubject(Subject subject, float media) {
         setLimitLines(subject.getTarget(), media);
 
-        adapter = new MarkAdapter(mContext, subject);
+        adapter = new MarkAdapter(mContext, subject, events);
         setTarget(subject);
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.invalidate();
