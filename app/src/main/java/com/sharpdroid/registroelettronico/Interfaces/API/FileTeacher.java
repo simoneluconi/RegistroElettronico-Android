@@ -1,10 +1,12 @@
 package com.sharpdroid.registroelettronico.Interfaces.API;
 
+import com.sharpdroid.registroelettronico.Interfaces.Client.FileElement;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileTeacher implements Serializable {
+public class FileTeacher extends FileElement implements Serializable {
     private String name;
     private List<Folder> folders = new ArrayList<>();
 
