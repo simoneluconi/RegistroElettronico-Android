@@ -395,7 +395,7 @@ public class Metodi {
             //ordina valori di ogni mese
             Collections.sort(entries, (entry, t1) -> {
                         if (entry instanceof AbsencesEntry && t1 instanceof AbsencesEntry) {
-                            return ((AbsencesEntry) entry).getTime().compareTo(((AbsencesEntry) t1).getTime());
+                            return ((AbsencesEntry) t1).getTime().compareTo(((AbsencesEntry) entry).getTime());
                         } else
                             return 0;
                     }
