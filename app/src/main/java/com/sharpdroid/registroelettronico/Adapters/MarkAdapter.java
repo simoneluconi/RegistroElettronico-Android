@@ -79,6 +79,8 @@ public class MarkAdapter extends RecyclerView.Adapter<MarkAdapter.MarkHolder> {
                 holder.content.setText(event.getTitle());
         } else holder.content.setText(mark.getDesc());
 
+        holder.content.setVisibility((TextUtils.isEmpty(holder.content.getText()) ? View.GONE : View.VISIBLE));
+
         holder.type.setText(mark.getType());
         holder.date.setText(format.format(mark.getDate()));
     }
@@ -86,24 +88,6 @@ public class MarkAdapter extends RecyclerView.Adapter<MarkAdapter.MarkHolder> {
     @Override
     public int getItemCount() {
         return CVDataList.size();
-    }
-
-    class MarkHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.color)
-        CircleImageView color;
-        @BindView(R.id.mark)
-        TextView mark;
-        @BindView(R.id.content)
-        TextView content;
-        @BindView(R.id.date)
-        TextView date;
-        @BindView(R.id.type)
-        TextView type;
-
-        MarkHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
     }
 
     private Event getPossibleMarkDescription(List<Event> events, Date date, Subject subject) {
@@ -143,6 +127,24 @@ public class MarkAdapter extends RecyclerView.Adapter<MarkAdapter.MarkHolder> {
                         b = true;
         }
         return b;
+    }
+
+    class MarkHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.color)
+        CircleImageView color;
+        @BindView(R.id.mark)
+        TextView mark;
+        @BindView(R.id.content)
+        TextView content;
+        @BindView(R.id.date)
+        TextView date;
+        @BindView(R.id.type)
+        TextView type;
+
+        MarkHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
     }
 
 
