@@ -17,8 +17,6 @@
 
     <TextView
         android:id="@+id/title"
-        android:autoLink="email|web"
-        android:textColorLink="@color/bluematerial"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -26,7 +24,9 @@
         android:layout_below="@+id/divider"
         android:layout_toLeftOf="@+id/date"
         android:layout_toStartOf="@+id/date"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        android:autoLink="email|web"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColorLink="@color/bluematerial" />
 
     <TextView
         android:id="@+id/date"

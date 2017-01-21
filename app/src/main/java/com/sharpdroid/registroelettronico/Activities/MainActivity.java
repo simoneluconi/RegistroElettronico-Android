@@ -144,14 +144,13 @@ public class MainActivity extends AppCompatActivity
                 String url = "https://play.google.com/store/apps/details?id=com.sharpdroid.registroelettronico";
                 intent.putExtra(Intent.EXTRA_TEXT, url);
                 startActivity(intent);
-               return false;
+                return false;
             case R.id.nav_send:
                 Intent intent_mail = new Intent(Intent.ACTION_SENDTO);
                 intent_mail.setData(Uri.parse("mailto:bugreport@registroelettronico.ml"));
                 intent_mail.putExtra(Intent.EXTRA_SUBJECT, "Registro Elettronico");
                 intent_mail.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent_mail);
-                return false;
             default:
                 return false;
         }
