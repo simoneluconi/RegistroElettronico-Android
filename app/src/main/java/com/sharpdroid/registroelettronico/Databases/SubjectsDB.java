@@ -87,7 +87,7 @@ public class SubjectsDB extends SQLiteOpenHelper {
 
     public SubjectsDB updateProfessorName(int code, String name) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put("professor", name);
+        contentValues.put(columns[5], name);
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
         db.update(DB_NAME, contentValues, columns[1] + " = ?", new String[]{String.valueOf(code)});
@@ -96,22 +96,14 @@ public class SubjectsDB extends SQLiteOpenHelper {
         return this;
     }
 
-    public SubjectsDB addCODEandNAME(List<LessonSubject> subjects) {
+    public void addSubject(LessonSubject subject) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues;
-
-        db.beginTransaction();
-        for (LessonSubject subject : subjects) {
-            contentValues = new ContentValues();
-            contentValues.put(columns[1], subject.getCode());
-            contentValues.put(columns[2], subject.getName().toLowerCase());
-
-            db.insert(DB_NAME, null, contentValues);
-        }
-        db.setTransactionSuccessful();
-        db.endTransaction();
-
-        return this;
+        contentValues = new ContentValues();
+        contentValues.put(columns[1], subject.getCode());
+        contentValues.put(columns[2], subject.getName().toLowerCase());
+        contentValues.put(columns[5], subject.getProfessor());
+        db.insert(DB_NAME, null, contentValues);
     }
 
     public List<Subject> getSubjects() {

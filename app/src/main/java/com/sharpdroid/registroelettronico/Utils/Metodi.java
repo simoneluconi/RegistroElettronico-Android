@@ -14,6 +14,7 @@ import com.sharpdroid.registroelettronico.Interfaces.API.Absence;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absences;
 import com.sharpdroid.registroelettronico.Interfaces.API.Delay;
 import com.sharpdroid.registroelettronico.Interfaces.API.Exit;
+import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
 import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
 import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
 import com.sharpdroid.registroelettronico.Interfaces.Client.AbsenceEntry;
@@ -388,6 +389,32 @@ public class Metodi {
             Log.d(key, entries.toString());
         }
         return sort;
+    }
+
+    public static String getProfessorOfThisSubject(List<Lesson> lessons) {
+
+        MyLinkedMap<String, Integer> hmap = new MyLinkedMap<>();
+
+        //Assegno ad ogni professore il numero di lezioni che ha tenuto
+        for (Lesson l : lessons) {
+            if (hmap.containsKey(l.getTeacher()))
+                hmap.put(l.getTeacher(), hmap.get(l.getTeacher()) + 1);
+            else hmap.put(l.getTeacher(), 1);
+        }
+
+        hmap = sortByComparator(hmap, false);
+
+        if (hmap.size() == 1) //Se c'è solo un professore lo restituisco
+            return WordUtils.capitalizeFully(hmap.getKey(0));
+
+        else if (hmap.size() > 1) { //Se ce ne sono di più
+            if (hmap.getValue(1) > 2) //Se il secondo ha fatto più di 2 lezioni lo restituisco
+                return WordUtils.capitalizeFully(hmap.getKey(0) + " ~ " + hmap.getKey(1));
+            else
+                return WordUtils.capitalizeFully(hmap.getKey(0)); //altrimenti restituisco il primo
+        }
+
+        return null;
     }
 
     public static boolean isEventTest(com.sharpdroid.registroelettronico.Interfaces.API.Event event) {

@@ -7,7 +7,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SeekBar;
@@ -15,20 +14,16 @@ import android.widget.TextView;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
-import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
 import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
 import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Media;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.R;
-import com.sharpdroid.registroelettronico.Utils.MyLinkedMap;
 import com.sharpdroid.registroelettronico.Views.SubjectDetails.InfoView;
 import com.sharpdroid.registroelettronico.Views.SubjectDetails.MarksView;
 import com.sharpdroid.registroelettronico.Views.SubjectDetails.OverallView;
 import com.sharpdroid.registroelettronico.Views.SubjectDetails.RecentLessonsView;
 import com.sharpdroid.registroelettronico.Views.SubjectDetails.TargetView;
-
-import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.List;
 import java.util.Locale;
@@ -39,7 +34,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.MessaggioVoto;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getSubjectName;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.sortByComparator;
 
 // DONE: 03/12/2016 Dettagli (nome, aula, prof, ora, note, colore)
 // DONE: 03/12/2016 Media (scritto, orale, totale)
@@ -223,17 +217,9 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         new SpiaggiariApiClient(this)
                 .getLessons(id)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(lessons -> {
-                    lessonsView.addAll(lessons);
-                    //Se non c'è provo ad impostare il nome del professore
-                    if (TextUtils.isEmpty(subject.getProfessor())) {
-                        String pName = getProfessorOfThisSubject(lessons);
-                        subject.setProfessor(pName);
-                        setInfo(subject);
-                        db.updateProfessorName(subject.getCode(), pName);
-                    }
-                }, error -> {
-                });
+                .subscribe(lessons -> lessonsView.addAll(lessons),
+                        error -> {
+                        });
     }
 
     private void setMarks(List<Mark> marks) {
@@ -250,33 +236,6 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private String getProfessorOfThisSubject(List<Lesson> lessons) {
-
-        MyLinkedMap<String, Integer> hmap = new MyLinkedMap<>();
-
-        //Assegno ad ogni professore il numero di lezioni che ha tenuto
-        for (Lesson l : lessons) {
-            if (hmap.containsKey(l.getTeacher()))
-                hmap.put(l.getTeacher(), hmap.get(l.getTeacher()) + 1);
-            else hmap.put(l.getTeacher(), 1);
-        }
-
-        hmap = sortByComparator(hmap, false);
-
-
-        if (hmap.size() == 1) //Se c'è solo un professore lo restituisco
-            return WordUtils.capitalizeFully(hmap.getKey(0));
-
-        else if (hmap.size() > 1) { //Se ce ne sono di più
-            if (hmap.getValue(1) > 2) //Se il secondo ha fatto più di 2 lezioni lo restituisco
-                return WordUtils.capitalizeFully(hmap.getKey(0) + " ~ " + hmap.getKey(1));
-            else
-                return WordUtils.capitalizeFully(hmap.getKey(0)); //altrimenti restituisco il primo
-        }
-
-        return null;
     }
 
     @Override
