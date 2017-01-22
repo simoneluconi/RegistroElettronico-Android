@@ -136,7 +136,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
 
     @Override
     public void onResume() {
-        bindMarksCache();
+        bindMarkSubjectsCache();
         super.onResume();
     }
 
@@ -153,13 +153,13 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         }
     }
 
-    private void bindMarksCache() {
+    private void bindMarkSubjectsCache() {
         new CacheListObservable(new File(mContext.getCacheDir(), TAG))
                 .getCachedList(MarkSubject.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(marks -> {
-                    addSubjects(marks, false);
+                .subscribe(marksSubjects -> {
+                    addSubjects(marksSubjects, false);
                     Log.d(TAG, "Restored cache");
                 });
     }

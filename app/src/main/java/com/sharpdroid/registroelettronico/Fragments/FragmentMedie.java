@@ -17,7 +17,6 @@ import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.Tasks.CacheListObservable;
 import com.sharpdroid.registroelettronico.Utils.ItemOffsetDecoration;
-import com.sharpdroid.registroelettronico.Utils.Metodi;
 
 import java.io.File;
 import java.util.List;
@@ -64,7 +63,7 @@ public class FragmentMedie extends Fragment {
         mRVAdapter = new MedieAdapter(mContext, new CopyOnWriteArrayList<>(), subjectsDB);
         mRecyclerView.setAdapter(mRVAdapter);
 
-        bindMarksCache();
+        bindMarkSubjectsCache();
 
         return layout;
     }
@@ -85,17 +84,17 @@ public class FragmentMedie extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        bindMarksCache();
+        bindMarkSubjectsCache();
     }
 
 
-    private void bindMarksCache() {
+    private void bindMarkSubjectsCache() {
         new CacheListObservable(new File(mContext.getCacheDir(), TAG))
                 .getCachedList(MarkSubject.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(marks -> {
-                    addSubjects(marks);
+                .subscribe(marksSubjects -> {
+                    addSubjects(marksSubjects);
                     Log.d(TAG, "Restored cache");
                 });
     }
