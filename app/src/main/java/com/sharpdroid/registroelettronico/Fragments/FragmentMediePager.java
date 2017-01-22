@@ -80,7 +80,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) getActivity().findViewById(R.id.toolbar).getLayoutParams();
         params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
 
-        pagerAdapter = new MediePager(getFragmentManager());
+        pagerAdapter = new MediePager(getChildFragmentManager());
 
         mViewPager.setAdapter(pagerAdapter);
         mViewPager.setOffscreenPageLimit(2);
