@@ -119,18 +119,19 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         double average = getOverallAverage(marks);
 
         String className = AgendaDB.from(mContext).getClassDescription();
-        if (className != null) className = className.split("\\s+")[0];
-
-        int classyear;
-        try {
-            classyear = Integer.parseInt(String.valueOf(className.toCharArray()[0]));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return "Media totale: " + String.format(Locale.getDefault(), "%.2f", average);
-        }
-        if (classyear > 2)
-            return String.format(Locale.getDefault(), "Media Totale: %.2f | Crediti: %2$d + %3$d", average, CalculateScholasticCredits(classyear, average), 1);
-        else return "Media totale: " + String.format(Locale.getDefault(), "%.2f", average);
+        if (className != null) {
+            className = className.split("\\s+")[0];
+            int classyear;
+            try {
+                classyear = Integer.parseInt(String.valueOf(className.charAt(0)));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return "Media totale: " + String.format(Locale.getDefault(), "%.2f", average);
+            }
+            if (classyear > 2)
+                return String.format(Locale.getDefault(), "Media Totale: %.2f | Crediti: %2$d + %3$d", average, CalculateScholasticCredits(classyear, average), 1);
+            else return "Media totale: " + String.format(Locale.getDefault(), "%.2f", average);
+        } else return null;
     }
 
     @Override
