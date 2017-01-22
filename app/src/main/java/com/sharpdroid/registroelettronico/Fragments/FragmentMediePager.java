@@ -55,7 +55,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
     @BindView(R.id.swiperefresh)
     SwipeRefreshLayout mSwipeRefreshLayout;
     @BindView(R.id.view_pager)
-    ViewPager viewPager;
+    ViewPager mViewPager;
 
     PagerAdapter pagerAdapter;
     Snackbar snackbar;
@@ -81,24 +81,9 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
 
         pagerAdapter = new MediePager(getFragmentManager());
 
-        viewPager.setAdapter(pagerAdapter);
-        tabLayout.setupWithViewPager(viewPager);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                bindMarksSubjectsCache();
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
+        mViewPager.setAdapter(pagerAdapter);
+        mViewPager.setOffscreenPageLimit(2);
+        tabLayout.setupWithViewPager(mViewPager);
 
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(
@@ -159,8 +144,8 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
     private void addSubjects(List<MarkSubject> markSubjects, boolean docache) {
         if (!markSubjects.isEmpty()) {
 
-            FragmentMedie fragment = (FragmentMedie) pagerAdapter.instantiateItem(viewPager, viewPager.getCurrentItem());
-            Log.d(TAG, "REFRESH POSITION " + viewPager.getCurrentItem());
+            FragmentMedie fragment = (FragmentMedie) pagerAdapter.instantiateItem(mViewPager, mViewPager.getCurrentItem());
+            Log.d(TAG, "REFRESH POSITION " + mViewPager.getCurrentItem());
             fragment.addSubjects(markSubjects);
 
             if (docache) {
