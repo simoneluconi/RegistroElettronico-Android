@@ -65,7 +65,7 @@ public class FragmentMedie extends Fragment {
         mRVAdapter = new MedieAdapter(mContext, new CopyOnWriteArrayList<>(), subjectsDB);
         mRecyclerView.setAdapter(mRVAdapter);
 
-        bindMarksCache();
+        bindMarkSubjectsCache();
 
         return layout;
     }
@@ -86,19 +86,19 @@ public class FragmentMedie extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        bindMarksCache();
+        bindMarkSubjectsCache();
         Log.d(TAG, "RESUME " + periodo);
     }
 
 
-    private void bindMarksCache() {
+    private void bindMarkSubjectsCache() {
         if (!cached) {
             new CacheListObservable(new File(mContext.getCacheDir(), TAG))
                     .getCachedList(MarkSubject.class)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(marks -> {
-                        addSubjects(marks);
+                    .subscribe(marksSubjects -> {
+                        addSubjects(marksSubjects);
                         Log.d(TAG, "Restored cache");
                     });
             cached = true;
