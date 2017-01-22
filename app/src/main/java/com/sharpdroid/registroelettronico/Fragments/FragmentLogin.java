@@ -121,9 +121,8 @@ public class FragmentLogin extends SlideFragment {
                                             .observeOn(AndroidSchedulers.mainThread())
                                             .subscribe(lessons -> {
                                                 String profName = getProfessorOfThisSubject(lessons);
-                                                subject.setProfessor(profName);
-                                                Log.d("Trova professore", String.format(Locale.getDefault(), "Professore di %1$s è %2$s", subject.getName(), subject.getProfessor()));
-                                                SubjectsDB.from(mContext).addSubject(subject);
+                                                Log.d("Trova professore", String.format(Locale.getDefault(), "Professore di %1$s è %2$s", subject.getName(), profName));
+                                                SubjectsDB.from(mContext).addSubject(subject, profName);
                                             }, error -> {
                                             });
                                 }

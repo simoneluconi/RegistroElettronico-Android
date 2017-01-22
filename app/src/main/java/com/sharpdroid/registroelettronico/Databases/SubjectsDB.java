@@ -102,7 +102,17 @@ public class SubjectsDB extends SQLiteOpenHelper {
         contentValues = new ContentValues();
         contentValues.put(columns[1], subject.getCode());
         contentValues.put(columns[2], subject.getName().toLowerCase());
-        contentValues.put(columns[5], subject.getProfessor());
+        db.insert(DB_NAME, null, contentValues);
+        db.close();
+    }
+
+    public void addSubject(LessonSubject subject, String prof) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues;
+        contentValues = new ContentValues();
+        contentValues.put(columns[1], subject.getCode());
+        contentValues.put(columns[2], subject.getName().toLowerCase());
+        contentValues.put(columns[5], prof);
         db.insert(DB_NAME, null, contentValues);
         db.close();
     }
