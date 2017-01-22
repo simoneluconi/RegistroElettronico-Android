@@ -60,6 +60,8 @@ public class FragmentMedie extends Fragment {
         mRVAdapter = new MedieAdapter(mContext, new CopyOnWriteArrayList<>(), subjectsDB);
         mRecyclerView.setAdapter(mRVAdapter);
 
+        bindMarksCache();
+
         return layout;
     }
 
