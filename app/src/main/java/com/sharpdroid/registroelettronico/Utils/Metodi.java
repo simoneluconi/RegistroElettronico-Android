@@ -394,8 +394,7 @@ public class Metodi {
     public static List<MarkSubject> getMarksOfThisPeriod(List<MarkSubject> markssubject, String p) {
         if (p == null) return markssubject;
         List<MarkSubject> marksSub = new ArrayList<>();
-        for (MarkSubject s : markssubject)
-        {
+        for (MarkSubject s : markssubject) {
             List<Mark> marks = new ArrayList<>();
             for (Mark m : s.getMarks())
                 if (m.getQ().equals(p))
