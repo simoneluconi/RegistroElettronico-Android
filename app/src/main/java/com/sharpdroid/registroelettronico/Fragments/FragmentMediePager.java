@@ -83,6 +83,22 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
 
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                bindMarksCache();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(
@@ -144,6 +160,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         if (!markSubjects.isEmpty()) {
 
             FragmentMedie fragment = (FragmentMedie) pagerAdapter.instantiateItem(viewPager, viewPager.getCurrentItem());
+            Log.d(TAG, "REFRESH POSITION " + viewPager.getCurrentItem());
             fragment.addSubjects(markSubjects);
 
             if (docache) {
