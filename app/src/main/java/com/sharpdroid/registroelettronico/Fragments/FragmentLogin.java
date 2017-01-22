@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.content.res.AppCompatResources;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,16 +17,20 @@ import android.widget.Toast;
 import com.heinrichreimersoftware.materialintro.app.SlideFragment;
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
+import com.sharpdroid.registroelettronico.Interfaces.API.LessonSubject;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.Utils.DeviceUuidFactory;
 
 import org.apache.commons.lang3.text.WordUtils;
+
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.sharpdroid.registroelettronico.Utils.Metodi.getProfessorOfThisSubject;
 
 public class FragmentLogin extends SlideFragment {
 
@@ -107,7 +112,23 @@ public class FragmentLogin extends SlideFragment {
                     new SpiaggiariApiClient(mContext)
                             .getSubjects()
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(subjects -> SubjectsDB.from(mContext).addCODEandNAME(subjects).close(), error -> {
+                            .subscribe(subjects -> {
+
+                                //Per ogni materia aggiungo il suo professore cercandolo dalle lezioni
+                                for (LessonSubject subject : subjects) {
+                                    new SpiaggiariApiClient(mContext)
+                                            .getLessons(subject.getCode())
+                                            .observeOn(AndroidSchedulers.mainThread())
+                                            .subscribe(lessons -> {
+                                                String profName = getProfessorOfThisSubject(lessons);
+                                                subject.setProfessor(profName);
+                                                Log.d("Trova professore", String.format(Locale.getDefault(), "Professore di %1$s è %2$s", subject.getName(), subject.getProfessor()));
+                                                SubjectsDB.from(mContext).addSubject(subject);
+                                            }, error -> {
+                                            });
+                                }
+
+                            }, error -> {
                             });
 
                     loggedIn = true;
