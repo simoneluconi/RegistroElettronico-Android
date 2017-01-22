@@ -104,6 +104,7 @@ public class SubjectsDB extends SQLiteOpenHelper {
         contentValues.put(columns[2], subject.getName().toLowerCase());
         contentValues.put(columns[5], subject.getProfessor());
         db.insert(DB_NAME, null, contentValues);
+        db.close();
     }
 
     public List<Subject> getSubjects() {
