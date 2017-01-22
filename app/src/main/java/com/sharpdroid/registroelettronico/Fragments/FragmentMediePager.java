@@ -24,6 +24,7 @@ import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.Tasks.CacheListObservable;
 import com.sharpdroid.registroelettronico.Tasks.CacheListTask;
+import com.sharpdroid.registroelettronico.Views.CSwipeRefreshLayout;
 
 import java.io.File;
 import java.util.List;
@@ -53,7 +54,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
     CoordinatorLayout mCoordinatorLayout;
 
     @BindView(R.id.swiperefresh)
-    SwipeRefreshLayout mSwipeRefreshLayout;
+    CSwipeRefreshLayout mCSwipeRefreshLayout;
     @BindView(R.id.view_pager)
     ViewPager mViewPager;
 
@@ -85,8 +86,8 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         mViewPager.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(mViewPager);
 
-        mSwipeRefreshLayout.setOnRefreshListener(this);
-        mSwipeRefreshLayout.setColorSchemeResources(
+        mCSwipeRefreshLayout.setOnRefreshListener(this);
+        mCSwipeRefreshLayout.setColorSchemeResources(
                 R.color.bluematerial,
                 R.color.redmaterial,
                 R.color.greenmaterial,
@@ -98,13 +99,13 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
     }
 
     private void UpdateMedie() {
-        mSwipeRefreshLayout.setRefreshing(true);
+        mCSwipeRefreshLayout.setRefreshing(true);
         new SpiaggiariApiClient(mContext)
                 .getMarks()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(marks -> {
                     addSubjects(marks, true);
-                    mSwipeRefreshLayout.setRefreshing(false);
+                    mCSwipeRefreshLayout.setRefreshing(false);
                     String msg = getSnackBarMessage(marks);
                     snackbar = Snackbar.make(mCoordinatorLayout, msg, Snackbar.LENGTH_LONG);
                     snackbar.show();
@@ -112,7 +113,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
                     if (!isNetworkAvailable(mContext)) {
                         Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
                     }
-                    mSwipeRefreshLayout.setRefreshing(false);
+                    mCSwipeRefreshLayout.setRefreshing(false);
                 });
     }
 
