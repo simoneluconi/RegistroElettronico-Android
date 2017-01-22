@@ -391,6 +391,23 @@ public class Metodi {
         return sort;
     }
 
+    public static List<MarkSubject> getMarksOfThisPeriod(List<MarkSubject> markssubject, String p) {
+        if (p == null) return markssubject;
+        List<MarkSubject> marksSub = new ArrayList<>();
+        for (MarkSubject s : markssubject)
+        {
+            List<Mark> marks = new ArrayList<>();
+            for (Mark m : s.getMarks())
+                if (m.getQ().equals(p))
+                    marks.add(m);
+
+            if (!marks.isEmpty())
+                marksSub.add(new MarkSubject(s.getName(), marks));
+        }
+
+        return marksSub;
+    }
+
     public static String getProfessorOfThisSubject(List<Lesson> lessons) {
 
         MyLinkedMap<String, Integer> hmap = new MyLinkedMap<>();
