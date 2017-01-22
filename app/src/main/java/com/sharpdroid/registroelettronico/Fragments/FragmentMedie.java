@@ -36,7 +36,6 @@ public class FragmentMedie extends Fragment {
 
     SubjectsDB subjectsDB;
     int periodo;
-    boolean cached;
     private MedieAdapter mRVAdapter;
     private Context mContext;
 
@@ -52,7 +51,6 @@ public class FragmentMedie extends Fragment {
 
         ButterKnife.bind(this, layout);
 
-        cached = false;
         periodo = getArguments().getInt("q");
         subjectsDB = SubjectsDB.from(mContext);
 
@@ -92,17 +90,14 @@ public class FragmentMedie extends Fragment {
 
 
     private void bindMarksSubjectsCache() {
-        if (!cached) {
-            new CacheListObservable(new File(mContext.getCacheDir(), TAG))
-                    .getCachedList(MarkSubject.class)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(marksSubjects -> {
-                        addSubjects(marksSubjects);
-                        Log.d(TAG, "Restored cache");
-                    });
-            cached = true;
-        }
+        new CacheListObservable(new File(mContext.getCacheDir(), TAG))
+                .getCachedList(MarkSubject.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(marksSubjects -> {
+                    addSubjects(marksSubjects);
+                    Log.d(TAG, "Restored cache");
+                });
     }
 
     @Override
