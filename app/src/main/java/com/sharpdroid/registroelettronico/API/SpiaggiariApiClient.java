@@ -73,7 +73,7 @@ public class SpiaggiariApiClient implements RESTfulAPIService {
         Retrofit retrofit = new Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("https://staging.api.daniele.ml/")
+                .baseUrl("https://api.daniele.ml/")
                 .client(okHttpClient)
                 .build();
 
