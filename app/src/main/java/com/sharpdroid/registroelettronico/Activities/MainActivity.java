@@ -6,7 +6,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -23,7 +25,7 @@ import com.sharpdroid.registroelettronico.Fragments.FragmentAgenda;
 import com.sharpdroid.registroelettronico.Fragments.FragmentAllAbsences;
 import com.sharpdroid.registroelettronico.Fragments.FragmentCommunications;
 import com.sharpdroid.registroelettronico.Fragments.FragmentFolders;
-import com.sharpdroid.registroelettronico.Fragments.FragmentMedie;
+import com.sharpdroid.registroelettronico.Fragments.FragmentMediePager;
 import com.sharpdroid.registroelettronico.Fragments.FragmentNote;
 import com.sharpdroid.registroelettronico.Fragments.FragmentSettings;
 import com.sharpdroid.registroelettronico.Fragments.FragmentSubjects;
@@ -42,6 +44,10 @@ public class MainActivity extends AppCompatActivity
     Toolbar toolbar;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
+    @BindView(R.id.tab_layout)
+    TabLayout tabLayout;
+
+    AppBarLayout.LayoutParams params;
 
     SharedPreferences settings;
     ActionBarDrawerToggle toggle;
@@ -54,6 +60,7 @@ public class MainActivity extends AppCompatActivity
 
         //  actionBar
         setSupportActionBar(toolbar);
+        params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
 
         //  Back/Menu Icon
         bindDrawerToggle();
@@ -110,13 +117,14 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment;
         int id = item.getItemId();
         calendarView.setVisibility(View.GONE);
-
+        tabLayout.setVisibility(View.GONE);
+        params.setScrollFlags(0);
         switch (id) {
             case R.id.agenda:
                 fragment = new FragmentAgenda();
                 break;
             case R.id.medie:
-                fragment = new FragmentMedie();
+                fragment = new FragmentMediePager();
                 break;
             case R.id.communications:
                 fragment = new FragmentCommunications();
