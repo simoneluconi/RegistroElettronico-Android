@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +14,16 @@ import com.sharpdroid.registroelettronico.Adapters.MedieAdapter;
 import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
 import com.sharpdroid.registroelettronico.R;
+import com.sharpdroid.registroelettronico.Tasks.CacheListObservable;
 import com.sharpdroid.registroelettronico.Utils.ItemOffsetDecoration;
 
+import java.io.File;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import butterknife.ButterKnife;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 // TODO: 19/01/2017 Divisione P1 e P2
 // TODO: 19/01/2017 Visualizzare media generale e crediti scolastici in modo decente
@@ -63,6 +68,24 @@ public class FragmentMedie extends Fragment {
             mRVAdapter.clear();
             mRVAdapter.addAll(markSubjects);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        bindMarksCache();
+    }
+
+
+    private void bindMarksCache() {
+        new CacheListObservable(new File(mContext.getCacheDir(), TAG))
+                .getCachedList(MarkSubject.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(marks -> {
+                    addSubjects(marks);
+                    Log.d(TAG, "Restored cache");
+                });
     }
 
     @Override
