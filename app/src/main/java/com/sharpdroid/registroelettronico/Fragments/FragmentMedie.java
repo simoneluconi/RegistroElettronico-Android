@@ -17,7 +17,6 @@ import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.Tasks.CacheListObservable;
 import com.sharpdroid.registroelettronico.Utils.ItemOffsetDecoration;
-import com.sharpdroid.registroelettronico.Utils.Metodi;
 
 import java.io.File;
 import java.util.List;
@@ -37,6 +36,7 @@ public class FragmentMedie extends Fragment {
 
     SubjectsDB subjectsDB;
     int periodo;
+    boolean cached;
     private MedieAdapter mRVAdapter;
     private Context mContext;
 
@@ -52,6 +52,7 @@ public class FragmentMedie extends Fragment {
 
         ButterKnife.bind(this, layout);
 
+        cached = false;
         periodo = getArguments().getInt("q");
         subjectsDB = SubjectsDB.from(mContext);
 
@@ -86,18 +87,22 @@ public class FragmentMedie extends Fragment {
     public void onResume() {
         super.onResume();
         bindMarksCache();
+        Log.d(TAG, "RESUME " + periodo);
     }
 
 
     private void bindMarksCache() {
-        new CacheListObservable(new File(mContext.getCacheDir(), TAG))
-                .getCachedList(MarkSubject.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(marks -> {
-                    addSubjects(marks);
-                    Log.d(TAG, "Restored cache");
-                });
+        if (!cached) {
+            new CacheListObservable(new File(mContext.getCacheDir(), TAG))
+                    .getCachedList(MarkSubject.class)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(marks -> {
+                        addSubjects(marks);
+                        Log.d(TAG, "Restored cache");
+                    });
+            cached = true;
+        }
     }
 
     @Override
