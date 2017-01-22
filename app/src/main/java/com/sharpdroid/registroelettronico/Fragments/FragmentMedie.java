@@ -57,7 +57,11 @@ public class FragmentMedie extends Fragment {
         RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
 
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 2));
+        if (getResources().getBoolean(R.bool.isTablet)) {
+            mRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 3));
+        } else {
+            mRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 2));
+        }
         mRecyclerView.addItemDecoration(new ItemOffsetDecoration(mContext, R.dimen.cards_margin));
 
         mRVAdapter = new MedieAdapter(mContext, new CopyOnWriteArrayList<>(), subjectsDB);
