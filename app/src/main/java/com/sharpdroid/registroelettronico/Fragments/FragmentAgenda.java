@@ -56,12 +56,6 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     public FragmentAgenda() {
     }
 
-    private Calendar toCalendar(Date date) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        return cal;
-    }
-
     @Override
     public View onCreateView(final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -71,7 +65,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
 
         mToolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
         mCompactCalendarView = (CompactCalendarView) getActivity().findViewById(R.id.calendar);
-
+        mCompactCalendarView.setVisibility(View.VISIBLE);
         db = AgendaDB.from(mContext);
 
         mCompactCalendarView.setLocale(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALIAN);
@@ -104,6 +98,12 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         updateDB();
 
         return layout;
+    }
+
+    private Calendar toCalendar(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return cal;
     }
 
     private void updateDB() {
@@ -139,7 +139,6 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     @Override
     public void onDetach() {
         super.onDetach();
-        mCompactCalendarView.setVisibility(View.GONE);
         db.close();
     }
 
@@ -147,6 +146,5 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     public void onResume() {
         super.onResume();
         mToolbar.setTitle(WordUtils.capitalizeFully(month.format(mDate)));
-        mCompactCalendarView.setVisibility(View.VISIBLE);
     }
 }
