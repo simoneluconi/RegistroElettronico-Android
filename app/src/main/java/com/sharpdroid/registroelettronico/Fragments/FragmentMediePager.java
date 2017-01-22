@@ -3,7 +3,6 @@ package com.sharpdroid.registroelettronico.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -65,10 +64,13 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         // Required empty public constructor
     }
 
-
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View layout = inflater.inflate(R.layout.fragment_medie_pager, container, false);
+        ButterKnife.bind(this, layout);
+
         mContext = getContext();
 
         mCoordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.coordinator_layout);
@@ -78,14 +80,6 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
 
         pagerAdapter = new MediePager(getFragmentManager());
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View layout = inflater.inflate(R.layout.fragment_medie_pager, container, false);
-        ButterKnife.bind(this, layout);
 
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
