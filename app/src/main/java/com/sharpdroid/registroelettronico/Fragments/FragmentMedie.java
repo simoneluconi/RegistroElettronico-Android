@@ -65,7 +65,7 @@ public class FragmentMedie extends Fragment {
         mRVAdapter = new MedieAdapter(mContext, new CopyOnWriteArrayList<>(), subjectsDB);
         mRecyclerView.setAdapter(mRVAdapter);
 
-        bindMarkSubjectsCache();
+        bindMarksSubjectsCache();
 
         return layout;
     }
@@ -86,12 +86,12 @@ public class FragmentMedie extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        bindMarkSubjectsCache();
+        bindMarksSubjectsCache();
         Log.d(TAG, "RESUME " + periodo);
     }
 
 
-    private void bindMarkSubjectsCache() {
+    private void bindMarksSubjectsCache() {
         if (!cached) {
             new CacheListObservable(new File(mContext.getCacheDir(), TAG))
                     .getCachedList(MarkSubject.class)

@@ -91,7 +91,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
 
             @Override
             public void onPageSelected(int position) {
-                bindMarkSubjectsCache();
+                bindMarksSubjectsCache();
             }
 
             @Override
@@ -152,7 +152,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
 
     @Override
     public void onResume() {
-        bindMarkSubjectsCache();
+        bindMarksSubjectsCache();
         super.onResume();
     }
 
@@ -170,7 +170,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         }
     }
 
-    private void bindMarkSubjectsCache() {
+    private void bindMarksSubjectsCache() {
         new CacheListObservable(new File(mContext.getCacheDir(), TAG))
                 .getCachedList(MarkSubject.class)
                 .subscribeOn(Schedulers.io())
