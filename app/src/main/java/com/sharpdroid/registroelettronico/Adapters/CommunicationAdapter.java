@@ -134,7 +134,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
     private void openfile(File file) {
         String mime = URLConnection.guessContentTypeFromName(file.toString());
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(FileProvider.getUriForFile(mContext, "com.sharpdroid.registro.fileprovider", file), mime);
+        intent.setDataAndType(FileProvider.getUriForFile(mContext, mContext.getPackageName() + ".fileprovider", file), mime);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         try {
             mContext.startActivity(intent);
