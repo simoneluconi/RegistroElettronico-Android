@@ -165,9 +165,9 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
 
             alert.setView(v);
 
-            alert.setPositiveButton(android.R.string.ok, (dialog, whichButton) -> {
-                register(mSeekBar.getProgress());
-            });
+            alert.setPositiveButton(android.R.string.ok, (dialog, whichButton) ->
+                    register(mSeekBar.getProgress())
+            );
             alert.setNegativeButton(android.R.string.cancel, (dialog, whichButton) -> {
                 // Canceled. Do nothing;
             });
