@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         Fragment fragment;
         int id = item.getItemId();
+        calendarView.setVisibility(View.GONE);
 
         switch (id) {
             case R.id.agenda:
