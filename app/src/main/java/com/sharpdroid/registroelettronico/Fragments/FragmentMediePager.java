@@ -91,7 +91,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
 
             @Override
             public void onPageSelected(int position) {
-                bindMarksCache();
+                bindMarkSubjectsCache();
             }
 
             @Override
