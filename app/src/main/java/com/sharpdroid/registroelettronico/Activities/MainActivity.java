@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Registro Elettronico");
                 String url = "https://play.google.com/store/apps/details?id=com.sharpdroid.registroelettronico";
                 intent.putExtra(Intent.EXTRA_TEXT, url);
-                startActivity(intent);
+                startActivity(Intent.createChooser(intent, getString(R.string.share_with)));
                 return false;
             case R.id.nav_send:
                 Intent intent_mail = new Intent(Intent.ACTION_SENDTO);
