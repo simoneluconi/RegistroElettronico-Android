@@ -21,6 +21,8 @@
     <!--ERRORI-->
     <string name="nointernet">Non sei connesso ad internet!</string>
     <string name="error">Errore</string>
+    
+    <string name="share_with">Condividi con</string>
 
     <string name="dettaglio_voti_titolo">Dettaglio voti</string>
     <string name="dettaglio_voti_desc">Nel tab voti clicca su una scheda per visualizzare i commenti dei voti</string>
