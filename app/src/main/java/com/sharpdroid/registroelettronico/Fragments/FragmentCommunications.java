@@ -99,7 +99,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
                 .subscribe(communications -> {
                     addCommunications(communications, false);
                     Log.d(TAG, "Restored cache");
-                });
+                }, Throwable::printStackTrace);
     }
 
     public void onRefresh() {
@@ -115,6 +115,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
                     addCommunications(communications, true);
                     mSwipeRefreshLayout.setRefreshing(false);
                 }, error -> {
+                    error.printStackTrace();
                     if (!isNetworkAvailable(mContext)) {
                         Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
                     }
