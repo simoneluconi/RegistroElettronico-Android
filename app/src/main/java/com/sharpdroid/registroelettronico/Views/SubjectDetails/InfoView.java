@@ -121,7 +121,7 @@ public class InfoView extends CardView {
             if (data != null) {
                 if (!TextUtils.isEmpty(data.getName()))
                     list.add(new Pair<>(R.drawable.ic_title, data.getName()));
-                else
+                else if (data.getOriginalName() != null)
                     list.add(new Pair<>(R.drawable.ic_title, WordUtils.capitalizeFully(data.getOriginalName(), Delimeters)));
                 if (!TextUtils.isEmpty(data.getProfessor()))
                     list.add(new Pair<>(R.drawable.ic_person, WordUtils.capitalizeFully(data.getProfessor(), Delimeters)));
