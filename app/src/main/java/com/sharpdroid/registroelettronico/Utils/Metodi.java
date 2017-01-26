@@ -247,7 +247,7 @@ public class Metodi {
     public static String getSubjectName(Subject subject) {
         try {
             return (!TextUtils.isEmpty(subject.getName())) ? subject.getName() : WordUtils.capitalizeFully(subject.getOriginalName(), Delimeters);
-        } catch (Exception ignored) {
+        } catch (NullPointerException ignored) {
             return subject.getOriginalName();
         }
     }

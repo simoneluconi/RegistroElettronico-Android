@@ -101,7 +101,7 @@ public class FragmentMedie extends Fragment {
                 .subscribe(marksSubjects -> {
                     addSubjects(marksSubjects);
                     Log.d(TAG, "Restored cache");
-                });
+                }, Throwable::printStackTrace);
     }
 
     @Override

@@ -88,8 +88,7 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
                 .subscribe(absences -> {
                     addAbsences(absences, false);
                     Log.d(TAG, "Restored cache");
-                }, error -> {
-                });
+                }, Throwable::printStackTrace);
     }
 
     public void onRefresh() {

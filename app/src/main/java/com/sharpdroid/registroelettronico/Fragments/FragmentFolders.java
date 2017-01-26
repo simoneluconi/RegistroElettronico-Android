@@ -97,7 +97,7 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
                 .subscribe(files -> {
                     addFiles(files, false);
                     Log.d(TAG, "Restored cache");
-                });
+                }, Throwable::printStackTrace);
     }
 
     public void onRefresh() {
@@ -113,6 +113,7 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
                     addFiles(files, true);
                     mSwipeRefreshLayout.setRefreshing(false);
                 }, error -> {
+                    error.printStackTrace();
                     if (!isNetworkAvailable(mContext)) {
                         Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
                     }

@@ -114,6 +114,7 @@ public class FragmentLogin extends SlideFragment {
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(subjects -> {
 
+                                SubjectsDB db = SubjectsDB.from(mContext);
                                 //Per ogni materia aggiungo il suo professore cercandolo dalle lezioni
                                 for (LessonSubject subject : subjects) {
                                     new SpiaggiariApiClient(mContext)
@@ -122,13 +123,13 @@ public class FragmentLogin extends SlideFragment {
                                             .subscribe(lessons -> {
                                                 String profName = getProfessorOfThisSubject(lessons);
                                                 Log.d("Trova professore", String.format(Locale.getDefault(), "Professore di %1$s è %2$s", subject.getName(), profName));
-                                                SubjectsDB.from(mContext).addSubject(subject, profName);
-                                            }, error -> {
-                                            });
+                                                db.addSubject(subject, profName);
+                                            }, Throwable::printStackTrace);
                                 }
 
-                            }, error -> {
-                            });
+                                db.close();
+
+                            }, Throwable::printStackTrace);
 
                     loggedIn = true;
                     updateNavigation();

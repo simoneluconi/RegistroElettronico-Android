@@ -97,7 +97,7 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
                 .subscribe(notes -> {
                     addNotes(notes, false);
                     Log.d(TAG, "Restored cache");
-                });
+                }, Throwable::printStackTrace);
     }
 
     public void onRefresh() {
@@ -114,6 +114,7 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
                     addNotes(notes, true);
                     mSwipeRefreshLayout.setRefreshing(false);
                 }, error -> {
+                    error.printStackTrace();
                     if (!isNetworkAvailable(mContext)) {
                         Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
                     }
