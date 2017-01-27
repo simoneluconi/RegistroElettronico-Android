@@ -44,7 +44,6 @@ public class FragmentLogin extends SlideFragment {
 
     private boolean loggedIn = false;
     private Context mContext;
-    private LessonsDB lessonsDB;
 
     public FragmentLogin() {
         // Required empty public constructor
@@ -117,10 +116,10 @@ public class FragmentLogin extends SlideFragment {
                             .subscribe(subjects -> {
 
                                 SubjectsDB db = SubjectsDB.from(mContext);
-                                lessonsDB = new LessonsDB(mContext);
-
+                                LessonsDB lessonsDB = new LessonsDB(mContext);
                                 //Per ogni materia aggiungo il suo professore cercandolo dalle lezioni
                                 for (LessonSubject subject : subjects) {
+
                                     lessonsDB.addSubject(subject.getCode());
 
                                     new SpiaggiariApiClient(mContext)
@@ -137,11 +136,13 @@ public class FragmentLogin extends SlideFragment {
                                 }
 
                                 db.close();
+                                lessonsDB.close();
 
+
+                                loggedIn = true;
+                                updateNavigation();
                             }, Throwable::printStackTrace);
 
-                    loggedIn = true;
-                    updateNavigation();
                 }, error -> {
                     mButtonLogin.setText(R.string.login);
                     Toast.makeText(mContext, R.string.login_msg_failer, Toast.LENGTH_SHORT).show();
@@ -152,9 +153,4 @@ public class FragmentLogin extends SlideFragment {
                 });
     }
 
-    @Override
-    public void onDestroy() {
-        lessonsDB.close();
-        super.onDestroy();
-    }
 }
