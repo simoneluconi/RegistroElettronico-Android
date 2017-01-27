@@ -65,7 +65,7 @@ public class LessonsDB extends SQLiteOpenHelper {
     }
 
     public List<Lesson> getLessons(int code) {
-        SQLiteDatabase db = getWritableDatabase();
+        SQLiteDatabase db = getReadableDatabase();
         Cursor c = db.rawQuery("SELECT * FROM \"" + code + "\" ORDER BY " + columns[1] + " DESC", null);
         List<Lesson> lessons = new LinkedList<>();
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
@@ -76,7 +76,7 @@ public class LessonsDB extends SQLiteOpenHelper {
     }
 
     public List<Lesson> getLessons(int code, int limit) {
-        SQLiteDatabase db = getWritableDatabase();
+        SQLiteDatabase db = getReadableDatabase();
         Cursor c = db.rawQuery("SELECT * FROM \"" + code + "\" ORDER BY " + columns[1] + " DESC LIMIT " + limit, null);
         List<Lesson> lessons = new LinkedList<>();
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
