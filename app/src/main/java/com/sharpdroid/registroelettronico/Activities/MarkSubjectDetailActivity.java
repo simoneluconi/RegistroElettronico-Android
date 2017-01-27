@@ -13,6 +13,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
+import com.sharpdroid.registroelettronico.Databases.LessonsDB;
 import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
 import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
@@ -59,7 +60,8 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     MarksView marksView;
 
     MarkSubject data;
-    SubjectsDB db;
+    SubjectsDB subjectsDB;
+    LessonsDB lessonsDB;
     Subject subject;
     Media media;
 
@@ -74,7 +76,8 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         data = (MarkSubject) getIntent().getSerializableExtra("data");
 
         //DATABASE
-        db = SubjectsDB.from(this);
+        subjectsDB = SubjectsDB.from(this);
+        lessonsDB = new LessonsDB(this);
 
         // toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -92,7 +95,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        subject = db.getSubject(data.getName().toLowerCase());
+        subject = subjectsDB.getSubject(data.getName().toLowerCase());
         setTitle(getSubjectName(subject));
 
         setInfo(subject);
@@ -208,18 +211,21 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
 
         ContentValues values = new ContentValues();
         values.put("target", String.valueOf((int) new_target));
-        db.editSubject(subject.getCode(), values);
+        subjectsDB.editSubject(subject.getCode(), values);
         subject.setTarget(new_target);
         marksView.setLimitLines(new_target, media.getMediaGenerale());
     }
 
-    private void setLessons(int id) {
+    private void setLessons(int code) {
         new SpiaggiariApiClient(this)
-                .getLessons(id)
+                .getLessons(code)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(lessons -> lessonsView.addAll(lessons),
-                        error -> {
-                        });
+                .subscribe(lessons -> {
+                            lessonsDB.removeLessons(code);
+                            lessonsDB.addLessons(code, lessons);
+                            lessonsView.update(lessonsDB);
+                        },
+                        Throwable::printStackTrace);
     }
 
     private void setMarks(List<Mark> marks) {
@@ -239,9 +245,10 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
+    protected void onDestroy() {
         //CLOSE DATABASE
-        db.close();
-        super.onStop();
+        subjectsDB.close();
+        lessonsDB.close();
+        super.onDestroy();
     }
 }
