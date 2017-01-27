@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Adapters.AllLessonsAdapter;
 import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
-import com.sharpdroid.registroelettronico.Listeners.OnScrollLessonsListener;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.Tasks.CacheListObservable;
 import com.sharpdroid.registroelettronico.Tasks.CacheListTask;
@@ -57,7 +56,6 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
         }
         setTitle(getIntent().getStringExtra("name"));
         mRVAdapter = new AllLessonsAdapter(this);
-        mRecyclerView.addOnScrollListener(new OnScrollLessonsListener());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mRVAdapter);
 

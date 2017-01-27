@@ -12,7 +12,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sharpdroid.registroelettronico.Adapters.AllLessonsAdapter;
 import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
-import com.sharpdroid.registroelettronico.Listeners.OnScrollLessonsListener;
 import com.sharpdroid.registroelettronico.R;
 
 import java.io.IOException;
@@ -53,7 +52,6 @@ public class AllLessonsActivity extends AppCompatActivity {
 
         adapter = new AllLessonsAdapter(this);
         adapter.addAll(lessons);
-        mRecyclerView.addOnScrollListener(new OnScrollLessonsListener());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(adapter);
     }
