@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.heinrichreimersoftware.materialintro.app.SlideFragment;
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
+import com.sharpdroid.registroelettronico.Databases.LessonsDB;
 import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.LessonSubject;
 import com.sharpdroid.registroelettronico.R;
@@ -43,6 +44,7 @@ public class FragmentLogin extends SlideFragment {
 
     private boolean loggedIn = false;
     private Context mContext;
+    private LessonsDB lessonsDB;
 
     public FragmentLogin() {
         // Required empty public constructor
@@ -115,12 +117,19 @@ public class FragmentLogin extends SlideFragment {
                             .subscribe(subjects -> {
 
                                 SubjectsDB db = SubjectsDB.from(mContext);
+                                lessonsDB = new LessonsDB(mContext);
+
                                 //Per ogni materia aggiungo il suo professore cercandolo dalle lezioni
                                 for (LessonSubject subject : subjects) {
+                                    lessonsDB.addSubject(subject.getCode());
+
                                     new SpiaggiariApiClient(mContext)
                                             .getLessons(subject.getCode())
                                             .observeOn(AndroidSchedulers.mainThread())
                                             .subscribe(lessons -> {
+                                                lessonsDB.removeLessons(subject.getCode());
+                                                lessonsDB.addLessons(subject.getCode(), lessons);
+
                                                 String profName = getProfessorOfThisSubject(lessons);
                                                 Log.d("Trova professore", String.format(Locale.getDefault(), "Professore di %1$s è %2$s", subject.getName(), profName));
                                                 db.addSubject(subject, profName);
@@ -141,5 +150,11 @@ public class FragmentLogin extends SlideFragment {
                     mEditTextPassword.setEnabled(true);
                     mButtonLogin.setEnabled(true);
                 });
+    }
+
+    @Override
+    public void onDestroy() {
+        lessonsDB.close();
+        super.onDestroy();
     }
 }

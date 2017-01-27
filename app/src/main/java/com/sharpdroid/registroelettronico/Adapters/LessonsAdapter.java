@@ -52,7 +52,6 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonHolder> {
 
     @Override
     public int getItemCount() {
-        return (lessons.size() > 5) ? 5 : lessons.size();
+        return lessons.size();
     }
-
 }

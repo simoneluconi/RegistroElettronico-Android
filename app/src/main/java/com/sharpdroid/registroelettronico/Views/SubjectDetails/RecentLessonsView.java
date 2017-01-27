@@ -8,14 +8,11 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.Button;
 
-import com.google.gson.Gson;
 import com.sharpdroid.registroelettronico.Activities.AllLessonsActivity;
 import com.sharpdroid.registroelettronico.Adapters.LessonsAdapter;
-import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
+import com.sharpdroid.registroelettronico.Databases.LessonsDB;
 import com.sharpdroid.registroelettronico.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
-
-import java.util.Collection;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,6 +26,7 @@ public class RecentLessonsView extends CardView {
     Button showAllButton;
 
     LessonsAdapter adapter;
+    int code;
 
     public RecentLessonsView(Context context) {
         super(context);
@@ -58,9 +56,9 @@ public class RecentLessonsView extends CardView {
         mRecyclerView.setAdapter(adapter);
     }
 
-    public void addAll(Collection<Lesson> list) {
-        adapter.addAll(list);
-        showAllButton.setOnClickListener(view -> mContext.startActivity(new Intent(mContext, AllLessonsActivity.class).putExtra("data", new Gson().toJson(list))));
+    public void update(LessonsDB db) {
+        adapter.addAll(db.getLessons(code, 5));
+        showAllButton.setOnClickListener(view -> mContext.startActivity(new Intent(mContext, AllLessonsActivity.class).putExtra("code", code)));
     }
 
     public void clear() {

@@ -8,23 +8,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Adapters.AllLessonsAdapter;
+import com.sharpdroid.registroelettronico.Databases.LessonsDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
 import com.sharpdroid.registroelettronico.R;
-import com.sharpdroid.registroelettronico.Tasks.CacheListObservable;
-import com.sharpdroid.registroelettronico.Tasks.CacheListTask;
 
-import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.isNetworkAvailable;
 
@@ -40,6 +36,8 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
     SwipeRefreshLayout mSwipeRefreshLayout;
     AllLessonsAdapter mRVAdapter;
 
+    LessonsDB db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +45,7 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
         code = getIntent().getIntExtra("code", -1);
-
+        db = new LessonsDB(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -59,6 +57,7 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mRVAdapter);
 
+        mSwipeRefreshLayout.setRefreshing(true);
         bindLessonsCache();
 
         UpdateLessons();
@@ -74,23 +73,11 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
         if (!lessons.isEmpty()) {
             mRVAdapter.clear();
             mRVAdapter.addAll(lessons);
-
-            if (docache) {
-                // Update cache
-                new CacheListTask(getCacheDir(), TAG + File.pathSeparator + code).execute((List) lessons);
-            }
         }
     }
 
     private void bindLessonsCache() {
-        new CacheListObservable(new File(this.getCacheDir(), TAG))
-                .getCachedList(Lesson.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(lessons -> {
-                    addLessons(lessons, false);
-                    Log.d(TAG, "Restored cache");
-                });
+        addLessons(db.getLessons(code), false);
     }
 
     public void onRefresh() {
@@ -98,18 +85,24 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
     }
 
     private void UpdateLessons() {
-        mSwipeRefreshLayout.setRefreshing(true);
-        new SpiaggiariApiClient(this)
-                .getLessons(code)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(lessons -> {
-                    addLessons(lessons, true);
-                    mSwipeRefreshLayout.setRefreshing(false);
-                }, error -> {
-                    if (!isNetworkAvailable(this)) {
-                        Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
-                    }
-                    mSwipeRefreshLayout.setRefreshing(false);
-                });
+        if (!isNetworkAvailable(this)) {
+            Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
+            mSwipeRefreshLayout.setRefreshing(false);
+        } else {
+            new SpiaggiariApiClient(this)
+                    .getLessons(code)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(lessons -> {
+                        //update subjectsDB
+                        db.removeLessons(code);
+                        db.addLessons(code, lessons);
+
+                        addLessons(lessons, true);
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }, error -> {
+                        error.printStackTrace();
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    });
+        }
     }
 }
