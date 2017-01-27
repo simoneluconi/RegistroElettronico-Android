@@ -60,7 +60,7 @@ public class SubjectsAdapter extends RecyclerView.Adapter<AbsencesHolder> {
             holder.hour.setVisibility(View.GONE);
         } else {
             holder.hour.setVisibility(View.VISIBLE);
-            holder.hour.setText(WordUtils.capitalizeFully(item.getProfessor(), Delimeters));
+            holder.hour.setText(WordUtils.capitalizeFully(TextUtils.join(" - ", item.getProfessors()), Delimeters));
         }
         holder.layout.setOnClickListener(view -> {
             Intent intent = new Intent(mContext, AllLessonsWithDownloadActivity.class);
