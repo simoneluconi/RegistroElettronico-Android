@@ -70,7 +70,6 @@ public class AllLessonsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     public void addAll(List<Lesson> lessons) {
-        Collections.reverse(lessons);
         elaborateList(lessons);
         notifyDataSetChanged();
     }

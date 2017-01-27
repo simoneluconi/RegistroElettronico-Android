@@ -217,6 +217,8 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     }
 
     private void setLessons(int code) {
+        lessonsView.update(lessonsDB, code);
+
         new SpiaggiariApiClient(this)
                 .getLessons(code)
                 .observeOn(AndroidSchedulers.mainThread())
