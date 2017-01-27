@@ -52,7 +52,7 @@ public class LessonsDB extends SQLiteOpenHelper {
             values = new ContentValues();
             values.put(columns[0], lesson.getTeacher().toLowerCase().trim());
             values.put(columns[1], lesson.getDate().getTime());
-            values.put(columns[2], lesson.getContent().toLowerCase().trim());
+            values.put(columns[2], lesson.getContent().trim());
             db.insert("\"" + code + "\"", null, values);
         }
         db.setTransactionSuccessful();

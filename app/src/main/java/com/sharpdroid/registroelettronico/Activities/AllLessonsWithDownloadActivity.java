@@ -16,6 +16,7 @@ import com.sharpdroid.registroelettronico.Databases.LessonsDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
 import com.sharpdroid.registroelettronico.R;
 
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -75,15 +76,17 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private void addLessons(List<Lesson> lessons) {
+    private void addLessons(List<Lesson> lessons, boolean reverse) {
         if (!lessons.isEmpty()) {
             mRVAdapter.clear();
+            if (reverse)
+                Collections.reverse(lessons);
             mRVAdapter.addAll(lessons);
         }
     }
 
     private void bindLessonsCache() {
-        addLessons(db.getLessons(code));
+        addLessons(db.getLessons(code), false);
     }
 
     public void onRefresh() {
@@ -103,7 +106,7 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
                         db.removeLessons(code);
                         db.addLessons(code, lessons);
 
-                        addLessons(lessons);
+                        addLessons(lessons, true);
                         mSwipeRefreshLayout.setRefreshing(false);
                     }, error -> {
                         error.printStackTrace();
