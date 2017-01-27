@@ -28,7 +28,6 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getMarksOfThisPeriod;
 
-// TODO: 19/01/2017 Divisione P1 e P2
 // TODO: 19/01/2017 Visualizzare media generale e crediti scolastici in modo decente
 
 public class FragmentMedie extends Fragment {
