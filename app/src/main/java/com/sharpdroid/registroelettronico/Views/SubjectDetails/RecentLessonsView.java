@@ -56,6 +56,7 @@ public class RecentLessonsView extends CardView {
     }
 
     public void update(LessonsDB db, int code) {
+        adapter.clear();
         adapter.addAll(db.getLessons(code, 5));
         showAllButton.setOnClickListener(view -> mContext.startActivity(new Intent(mContext, AllLessonsActivity.class).putExtra("code", code)));
     }
