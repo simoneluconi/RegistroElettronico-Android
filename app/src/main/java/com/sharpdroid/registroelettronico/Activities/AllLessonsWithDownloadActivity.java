@@ -75,7 +75,7 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private void addLessons(List<Lesson> lessons, boolean docache) {
+    private void addLessons(List<Lesson> lessons) {
         if (!lessons.isEmpty()) {
             mRVAdapter.clear();
             mRVAdapter.addAll(lessons);
@@ -83,7 +83,7 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
     }
 
     private void bindLessonsCache() {
-        addLessons(db.getLessons(code), false);
+        addLessons(db.getLessons(code));
     }
 
     public void onRefresh() {
@@ -103,7 +103,7 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
                         db.removeLessons(code);
                         db.addLessons(code, lessons);
 
-                        addLessons(lessons, true);
+                        addLessons(lessons);
                         mSwipeRefreshLayout.setRefreshing(false);
                     }, error -> {
                         error.printStackTrace();
