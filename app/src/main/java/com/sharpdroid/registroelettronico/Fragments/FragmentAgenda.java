@@ -2,6 +2,7 @@ package com.sharpdroid.registroelettronico.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -45,7 +46,6 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     View place_holder;
     @BindView(R.id.coordinator_layout)
     CoordinatorLayout mCoordinatorLayout;
-
     private CompactCalendarView mCompactCalendarView;
     private Toolbar mToolbar;
     private Context mContext;

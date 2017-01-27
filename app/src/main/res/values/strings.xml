@@ -46,6 +46,9 @@
     <string name="login_msg_failer">Login fallito</string>
     <string name="absences">Assenze</string>
 
+    <string name="add_cal">Aggiungi al calendario</string>
+
+
     <string name="mail_user">Email o Username</string>
     <string name="login_riuscito">Login completato</string>
     <string name="ritardi">Ritardi</string>

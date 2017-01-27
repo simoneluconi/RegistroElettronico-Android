@@ -1,6 +1,8 @@
 package com.sharpdroid.registroelettronico.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.provider.CalendarContract;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,6 +55,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+
         Entry entry = CVDataList.get(position);
         if (entry instanceof HeaderEntry) {
             ((HeaderHolder) holder).content.setText(((HeaderEntry) entry).getTitle());
@@ -65,7 +68,6 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             } else {
                 eventHolder.divider.setVisibility(View.VISIBLE);
             }
-
             eventHolder.date.setText(dateFormat.format(event.getStart()));
             eventHolder.subject.setText(WordUtils.capitalizeFully(event.getAutore_desc().toLowerCase(), Delimeters));
             eventHolder.title.setText(event.getTitle());
@@ -155,6 +157,25 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         EventHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
+            itemView.setOnLongClickListener((View v) -> {
+                Entry e = CVDataList.get(getAdapterPosition());
+                Event event = ((AgendaEntry) e).getEvent();
+                addEventToCalendar(event);
+                return false;
+            });
         }
+    }
+
+    private void addEventToCalendar(Event event) {
+        Intent calIntent = new Intent(Intent.ACTION_INSERT);
+        calIntent.setType("vnd.android.cursor.item/event");
+        calIntent.putExtra(CalendarContract.Events.TITLE, event.getAutore_desc());
+        calIntent.putExtra(CalendarContract.Events.DESCRIPTION, event.getTitle());
+        calIntent.putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, event.isAllDay());
+        calIntent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, event.getStart().getTime());
+        if (!event.isAllDay())
+            calIntent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, event.getEnd().getTime());
+        mContext.startActivity(calIntent);
     }
 }
