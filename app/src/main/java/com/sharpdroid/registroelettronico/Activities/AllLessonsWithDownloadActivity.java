@@ -105,4 +105,10 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
                     });
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        db.close();
+        super.onDestroy();
+    }
 }
