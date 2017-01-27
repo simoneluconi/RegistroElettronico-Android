@@ -26,7 +26,6 @@ public class RecentLessonsView extends CardView {
     Button showAllButton;
 
     LessonsAdapter adapter;
-    int code;
 
     public RecentLessonsView(Context context) {
         super(context);
@@ -56,7 +55,7 @@ public class RecentLessonsView extends CardView {
         mRecyclerView.setAdapter(adapter);
     }
 
-    public void update(LessonsDB db) {
+    public void update(LessonsDB db, int code) {
         adapter.addAll(db.getLessons(code, 5));
         showAllButton.setOnClickListener(view -> mContext.startActivity(new Intent(mContext, AllLessonsActivity.class).putExtra("code", code)));
     }
