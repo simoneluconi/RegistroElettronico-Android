@@ -58,6 +58,12 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
         mRecyclerView.setAdapter(mRVAdapter);
 
         mSwipeRefreshLayout.setRefreshing(true);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeResources(
+                R.color.bluematerial,
+                R.color.redmaterial,
+                R.color.greenmaterial,
+                R.color.orangematerial);
         bindLessonsCache();
 
         UpdateLessons();
