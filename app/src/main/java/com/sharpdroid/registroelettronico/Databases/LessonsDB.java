@@ -36,12 +36,12 @@ public class LessonsDB extends SQLiteOpenHelper {
 
     public void addSubject(int code) {
         SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("CREATE TABLE " + code + DB_EXECUTE_NEW_TABLE);
+        db.execSQL("CREATE TABLE \"" + code + "\"" + DB_EXECUTE_NEW_TABLE);
     }
 
     public void removeSubject(int code) {
         SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("DROP TABLE IF EXISTS " + code);
+        db.execSQL("DROP TABLE IF EXISTS \"" + code + "\"");
     }
 
     public void addLessons(int code, List<Lesson> lessons) {
@@ -53,7 +53,7 @@ public class LessonsDB extends SQLiteOpenHelper {
             values.put(columns[0], lesson.getTeacher().toLowerCase().trim());
             values.put(columns[1], lesson.getDate().getTime());
             values.put(columns[2], lesson.getContent().toLowerCase().trim());
-            db.insert(String.valueOf(code), null, values);
+            db.insert("\"" + code + "\"", null, values);
         }
         db.setTransactionSuccessful();
         db.endTransaction();
@@ -61,12 +61,12 @@ public class LessonsDB extends SQLiteOpenHelper {
 
     public void removeLessons(int code) {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(String.valueOf(code), null, null);
+        db.delete("\"" + code + "\"", null, null);
     }
 
     public List<Lesson> getLessons(int code) {
         SQLiteDatabase db = getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM " + code + " ORDER BY " + columns[1] + " DESC", null);
+        Cursor c = db.rawQuery("SELECT * FROM \"" + code + "\" ORDER BY " + columns[1] + " DESC", null);
         List<Lesson> lessons = new LinkedList<>();
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             lessons.add(new Lesson(c.getString(0), new Date(c.getLong(1)), c.getString(2)));
@@ -77,7 +77,7 @@ public class LessonsDB extends SQLiteOpenHelper {
 
     public List<Lesson> getLessons(int code, int limit) {
         SQLiteDatabase db = getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM " + code + " ORDER BY " + columns[1] + " DESC LIMIT " + limit, null);
+        Cursor c = db.rawQuery("SELECT * FROM \"" + code + "\" ORDER BY " + columns[1] + " DESC LIMIT " + limit, null);
         List<Lesson> lessons = new LinkedList<>();
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             lessons.add(new Lesson(c.getString(0), new Date(c.getLong(1)), c.getString(2)));
