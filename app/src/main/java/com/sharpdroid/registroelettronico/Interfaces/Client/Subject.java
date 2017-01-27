@@ -1,5 +1,7 @@
 package com.sharpdroid.registroelettronico.Interfaces.Client;
 
+import android.text.TextUtils;
+
 import java.io.Serializable;
 
 public class Subject implements Serializable {
@@ -44,7 +46,10 @@ public class Subject implements Serializable {
     }
 
     public String getProfessor() {
-        return professor;
+        if (getProfessors().length > 0)
+            return getProfessors()[0];
+        else
+            return "";
     }
 
     public void setProfessor(String professor) {
