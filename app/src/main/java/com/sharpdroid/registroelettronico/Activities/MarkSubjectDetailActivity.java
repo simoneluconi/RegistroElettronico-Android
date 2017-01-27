@@ -223,7 +223,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
                 .subscribe(lessons -> {
                             lessonsDB.removeLessons(code);
                             lessonsDB.addLessons(code, lessons);
-                            lessonsView.update(lessonsDB);
+                            lessonsView.update(lessonsDB, code);
                         },
                         Throwable::printStackTrace);
     }
