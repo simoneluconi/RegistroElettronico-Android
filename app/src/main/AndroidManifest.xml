@@ -37,7 +37,13 @@
             tools:ignore="InnerclassSeparator" />
         <activity
             android:name=".Activities.MarkSubjectDetailActivity"
-            tools:ignore="InnerclassSeparator" />
+            android:exported="true"
+            tools:ignore="InnerclassSeparator">
+            <intent-filter>
+                <action android:name="com.sharpdroid.registroelettronico.DETAILS" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".Activities.EditSubjectDetailsActivity"
             android:windowSoftInputMode="adjustPan"
