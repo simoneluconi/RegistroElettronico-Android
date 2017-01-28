@@ -94,7 +94,6 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-
     }
 
     @Override
