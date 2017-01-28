@@ -144,6 +144,18 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return convert;
     }
 
+    private void addEventToCalendar(Event event) {
+        Intent calIntent = new Intent(Intent.ACTION_INSERT);
+        calIntent.setType("vnd.android.cursor.item/event");
+        calIntent.putExtra(CalendarContract.Events.TITLE, event.getAutore_desc());
+        calIntent.putExtra(CalendarContract.Events.DESCRIPTION, event.getTitle());
+        calIntent.putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, event.isAllDay());
+        calIntent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, event.getStart().getTime());
+        if (!event.isAllDay())
+            calIntent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, event.getEnd().getTime());
+        mContext.startActivity(calIntent);
+    }
+
     class EventHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.divider)
         View divider;
@@ -165,17 +177,5 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 return false;
             });
         }
-    }
-
-    private void addEventToCalendar(Event event) {
-        Intent calIntent = new Intent(Intent.ACTION_INSERT);
-        calIntent.setType("vnd.android.cursor.item/event");
-        calIntent.putExtra(CalendarContract.Events.TITLE, event.getAutore_desc());
-        calIntent.putExtra(CalendarContract.Events.DESCRIPTION, event.getTitle());
-        calIntent.putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, event.isAllDay());
-        calIntent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, event.getStart().getTime());
-        if (!event.isAllDay())
-            calIntent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, event.getEnd().getTime());
-        mContext.startActivity(calIntent);
     }
 }
