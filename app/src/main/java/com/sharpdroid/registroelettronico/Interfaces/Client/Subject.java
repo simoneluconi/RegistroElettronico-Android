@@ -1,7 +1,5 @@
 package com.sharpdroid.registroelettronico.Interfaces.Client;
 
-import android.text.TextUtils;
-
 import java.io.Serializable;
 
 public class Subject implements Serializable {

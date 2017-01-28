@@ -2,7 +2,6 @@ package com.sharpdroid.registroelettronico.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
