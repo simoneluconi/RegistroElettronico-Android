@@ -144,6 +144,7 @@ public class FragmentLogin extends SlideFragment {
                             }, Throwable::printStackTrace);
 
                 }, error -> {
+                    error.printStackTrace();
                     mButtonLogin.setText(R.string.login);
                     Toast.makeText(mContext, R.string.login_msg_failer, Toast.LENGTH_SHORT).show();
 

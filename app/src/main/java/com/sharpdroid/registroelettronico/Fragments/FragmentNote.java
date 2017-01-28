@@ -117,7 +117,8 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
                     error.printStackTrace();
                     if (!isNetworkAvailable(mContext)) {
                         Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
-                    }
+                    } else
+                        Snackbar.make(mCoordinatorLayout, error.getLocalizedMessage(), Snackbar.LENGTH_LONG).show();
                     mSwipeRefreshLayout.setRefreshing(false);
                 });
     }
