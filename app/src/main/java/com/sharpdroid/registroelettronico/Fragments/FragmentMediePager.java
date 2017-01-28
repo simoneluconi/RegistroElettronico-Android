@@ -9,11 +9,10 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,6 +92,8 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
                 R.color.greenmaterial,
                 R.color.orangematerial);
 
+        bindMarksSubjectsCache();
+
         UpdateMedie();
 
         return layout;
@@ -136,18 +137,14 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         } else return null;
     }
 
-    @Override
-    public void onResume() {
-        bindMarksSubjectsCache();
-        super.onResume();
-    }
-
     private void addSubjects(List<MarkSubject> markSubjects, boolean docache) {
         if (!markSubjects.isEmpty()) {
 
-            FragmentMedie fragment = (FragmentMedie) pagerAdapter.instantiateItem(mViewPager, mViewPager.getCurrentItem());
-            Log.d(TAG, "REFRESH POSITION " + mViewPager.getCurrentItem());
-            fragment.addSubjects(markSubjects);
+            FragmentMedie fragment;
+            for (int i = 0; i < pagerAdapter.getCount(); i++) {
+                fragment = (FragmentMedie) pagerAdapter.instantiateItem(mViewPager, i);
+                fragment.addSubjects(markSubjects);
+            }
 
             if (docache) {
                 // Update cache
@@ -156,6 +153,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         }
     }
 
+
     private void bindMarksSubjectsCache() {
         new CacheListObservable(new File(mContext.getCacheDir(), TAG))
                 .getCachedList(MarkSubject.class)
@@ -163,8 +161,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(marksSubjects -> {
                     addSubjects(marksSubjects, false);
-                    Log.d(TAG, "Restored cache");
-                });
+                }, Throwable::printStackTrace);
     }
 
     @Override
@@ -172,8 +169,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         UpdateMedie();
     }
 
-    protected class MediePager extends FragmentStatePagerAdapter {
-
+    protected class MediePager extends FragmentPagerAdapter {
         MediePager(FragmentManager fm) {
             super(fm);
         }
