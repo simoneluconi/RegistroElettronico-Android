@@ -123,7 +123,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
 
                 }, error -> {
                     error.printStackTrace();
-                    DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, error.getCause()));
+                    DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, error.getLocalizedMessage()));
                     DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT).show();
                 });
     }
