@@ -65,7 +65,7 @@ public class SpiaggiariApiClient implements RESTfulAPIService {
         };
 
         try {
-            //Installa il supporto al TSL se non è presente
+            //Installa il supporto al TLS se non è presente
             ProviderInstaller.installIfNeeded(context);
         } catch (Exception e) {
             e.printStackTrace();
