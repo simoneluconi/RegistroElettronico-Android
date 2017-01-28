@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
+import com.google.android.gms.security.ProviderInstaller;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absences;
 import com.sharpdroid.registroelettronico.Interfaces.API.Communication;
@@ -62,6 +63,13 @@ public class SpiaggiariApiClient implements RESTfulAPIService {
                         .build();
             }
         };
+
+        try {
+            //Installa il supporto al TSL se non è presente
+            ProviderInstaller.installIfNeeded(context);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .cookieJar(cookieJar)
