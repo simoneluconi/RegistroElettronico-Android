@@ -125,7 +125,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
                     askfileopen(file, DownloadProgressSnak);
                 }, error -> {
                     error.printStackTrace();
-                    DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, error.getCause()));
+                    DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, error.getLocalizedMessage()));
                     DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT).show();
                 });
 
