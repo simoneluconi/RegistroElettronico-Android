@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Databases.LessonsDB;
 import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
@@ -26,6 +27,7 @@ import com.sharpdroid.registroelettronico.Views.SubjectDetails.OverallView;
 import com.sharpdroid.registroelettronico.Views.SubjectDetails.RecentLessonsView;
 import com.sharpdroid.registroelettronico.Views.SubjectDetails.TargetView;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
@@ -73,7 +75,11 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         //get DATA
-        data = (MarkSubject) getIntent().getSerializableExtra("data");
+        try {
+            data = new Gson().getAdapter(MarkSubject.class).fromJson(getIntent().getStringExtra("data"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         //DATABASE
         subjectsDB = SubjectsDB.from(this);
