@@ -58,6 +58,7 @@
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
         android:src="@drawable/folder"
-        android:transitionName="folder_image" />
+        android:transitionName="folder_image"
+        tools:targetApi="lollipop" />
 
 </RelativeLayout>
