@@ -91,7 +91,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
                                 java.io.File.separator +
                                 "Registro Elettronico" + java.io.File.separator + "Didattica");
 
-                if (!dir.exists()) dir.mkdir();
+                if (!dir.exists()) dir.mkdirs();
 
                 if (!db.isPresent(file.getId(), file.getCksum())) {
                     DownloadFile(file, dir, db, DownloadProgressSnak, true);

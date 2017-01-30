@@ -82,7 +82,8 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
                             File.separator +
                             "Registro Elettronico" + File.separator + "Circolari");
 
-            if (!dir.exists()) dir.mkdir();
+            if (!dir.exists())
+                dir.mkdirs();
 
             if (!db.isPresent(communication.getId())) {
                 DownloadFile(communication, dir, db, DownloadProgressSnak, true);
