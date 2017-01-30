@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Environment;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
@@ -85,7 +86,10 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
             if (!file.isLink()) {
                 Snackbar DownloadProgressSnak = Snackbar.make(mCoordinatorLayout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE);
 
-                java.io.File dir = mContext.getExternalFilesDir("Didattica");
+                java.io.File dir = new java.io.File(
+                        Environment.getExternalStorageDirectory() +
+                                java.io.File.separator +
+                                "Registro Elettronico" + java.io.File.separator + "Didattica");
 
                 if (!dir.exists()) dir.mkdir();
 
