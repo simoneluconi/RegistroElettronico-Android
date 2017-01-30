@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="voti_list">
+        <item>Auto</item>
         <item>10</item>
         <item>9</item>
         <item>8</item>
