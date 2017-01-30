@@ -274,6 +274,15 @@ public class Metodi {
         return m;
     }
 
+    public static int getPossibileSubjectTarget(double media) {
+        if (media < 6)
+            return 6;
+        else {
+            Long m = Math.round(media);
+            return m.intValue();
+        }
+    }
+
     public static boolean writeResponseBodyToDisk(ResponseBody body, File file) {
         try {
             InputStream inputStream = null;

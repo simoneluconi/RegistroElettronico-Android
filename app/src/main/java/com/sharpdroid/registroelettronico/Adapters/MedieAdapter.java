@@ -1,5 +1,6 @@
 package com.sharpdroid.registroelettronico.Adapters;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.preference.PreferenceManager;
@@ -30,6 +31,7 @@ import devlight.io.library.ArcProgressStackView;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.MessaggioVoto;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getMediaColor;
+import static com.sharpdroid.registroelettronico.Utils.Metodi.getPossibileSubjectTarget;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getSubjectName;
 
 public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder> {
@@ -83,8 +85,20 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
 
             float target = subject.getTarget();
             if (target <= 0) {
-                target = Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(mContext)
-                        .getString("voto_obiettivo", "8"));
+
+                String t = PreferenceManager.getDefaultSharedPreferences(mContext)
+                        .getString("voto_obiettivo", "8");
+
+                if (t.equals("Auto")) {
+                    if (media.containsValidMarks()) {
+                        int tar = getPossibileSubjectTarget(media.getMediaGenerale());
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put("target", tar);
+                        db.editSubject(subject.getCode(), contentValues);
+                        target = tar;
+                    }
+                } else target = Float.parseFloat(t);
+
             }
             List<ArcProgressStackView.Model> models = new ArrayList<>();
             models.add(new ArcProgressStackView.Model("media", media.getMediaGenerale() * 10, ContextCompat.getColor(mContext, getMediaColor(media, target))));
