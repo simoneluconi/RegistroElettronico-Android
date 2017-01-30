@@ -1,5 +1,8 @@
 <paths>
-    <external-path
-        name="Download"
-        path="/Download/Registro Elettronico" />
+    <external-files-path
+        name="Circolari"
+        path="Circolari/" />
+    <external-files-path
+        name="Didattica"
+        path="Didattica/" />
 </paths>

@@ -3,7 +3,6 @@ package com.sharpdroid.registroelettronico.Adapters;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Environment;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
@@ -77,11 +76,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
         ViewHolder.mRelativeLayout.setOnClickListener(v -> {
             Snackbar DownloadProgressSnak = Snackbar.make(mCoordinatorLayout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE);
 
-            File dir = new File(
-                    Environment.getExternalStoragePublicDirectory(
-                            Environment.DIRECTORY_DOWNLOADS).toString() +
-                            File.separator +
-                            "Registro Elettronico" + File.separator + "Circolari");
+            File dir = mContext.getExternalFilesDir("Circolari");
 
             if (!dir.exists()) dir.mkdir();
 
