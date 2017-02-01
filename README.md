@@ -29,7 +29,7 @@ App non ufficiale sviluppata per accedere al Registro Elettronico Spaggiari.
 - **Se hai altre idee non esitare a comunicarcele!**
 
 ## ATTENZIONE
-Dato che molte persone si limitano solamente a dare recensioni negative con commenti che non aiutano per niente lo sviluppo dell'app, l'app invierà automaticamente segnalazioni in caso di crash, aiutandoci nello sviluppo. Nessun dato personale verrà condiviso. Se ci contatterete via mail ci darete comunque un aiuto ulteriore per risolvere il problema più velcemente. 
+Poichè molte persone si limitano solamente a dare recensioni negative con commenti che non aiutano per niente lo sviluppo dell'app, l'app invierà automaticamente segnalazioni in caso di crash, aiutandoci nello sviluppo. Nessun dato personale verrà condiviso. Se ci contatterete via mail ci darete comunque un aiuto ulteriore per risolvere il problema più velocemente. 
 
 
 ## FAQ
