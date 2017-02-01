@@ -16,8 +16,8 @@ App non ufficiale sviluppata per accedere al Registro Elettronico Spaggiari.
 - Aggiungere eventi dall'agenda scolastica al calendario del telefono
 - Aggiungere e rimuovere eventi personali all'agenda scolastica 
 - Aprire i **link** contenuti nell'agenda scolastica
-- Calcolo automatico dei **crediti scolastici**
-- Possibilità di avere **più account** associati
+- Visualizzare i tuoi **crediti scolastici** (calcolati automaticamente)
+- Avere **più account** associati
 - Avere un **overview** della tua situazione scolastica
 - Aggiungere o modificare informazioni relative alla materia (_Es. nome, professore, aula etc..._)
 
