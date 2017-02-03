@@ -455,4 +455,9 @@ public class Metodi {
         }
         return list;
     }
+
+    public static com.github.sundeepk.compactcalendarview.domain.Event convertEvent(com.sharpdroid.registroelettronico.Interfaces.API.Event event) {
+        return new com.github.sundeepk.compactcalendarview.domain.Event(isEventTest(event) ? Color.RED : Color.parseColor("#FFC200"), event.getStart().getTime(), event);
+    }
 }
+

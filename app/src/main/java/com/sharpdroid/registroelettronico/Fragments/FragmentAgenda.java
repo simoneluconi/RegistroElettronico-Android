@@ -3,6 +3,7 @@ package com.sharpdroid.registroelettronico.Fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,6 +18,7 @@ import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Adapters.AgendaAdapter;
 import com.sharpdroid.registroelettronico.Databases.AgendaDB;
+import com.sharpdroid.registroelettronico.Databases.AgendaUserDB;
 import com.sharpdroid.registroelettronico.R;
 
 import org.apache.commons.lang3.text.WordUtils;
@@ -31,6 +33,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
+import static com.sharpdroid.registroelettronico.R.id.fab;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.convertEvents;
 
 // TODO: 19/01/2017 Aggiungere eventi all'agenda 
@@ -45,10 +48,14 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     View place_holder;
     @BindView(R.id.coordinator_layout)
     CoordinatorLayout mCoordinatorLayout;
+    @BindView(fab)
+    FloatingActionButton mFloatingActionButton;
+
     private CompactCalendarView mCompactCalendarView;
     private Toolbar mToolbar;
     private Context mContext;
-    private AgendaDB db;
+    private AgendaDB mAgendaDB;
+    private AgendaUserDB mAgendaUserDB;
     private AgendaAdapter adapter;
     private Date mDate;
 
@@ -63,16 +70,23 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         ButterKnife.bind(this, layout);
 
         mToolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+
+        mAgendaDB = AgendaDB.from(mContext);
+        mAgendaUserDB = AgendaUserDB.from(mContext);
+
         mCompactCalendarView = (CompactCalendarView) getActivity().findViewById(R.id.calendar);
         mCompactCalendarView.setVisibility(View.VISIBLE);
-        db = AgendaDB.from(mContext);
-
         mCompactCalendarView.setLocale(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALIAN);
         mCompactCalendarView.setUseThreeLetterAbbreviation(true);
         mCompactCalendarView.setListener(this);
         mCompactCalendarView.removeAllEvents();
-        mCompactCalendarView.addEvents(convertEvents(db.getEvents()));
+        mCompactCalendarView.addEvents(convertEvents(mAgendaDB.getEvents()));
+        mCompactCalendarView.addEvents(convertEvents(mAgendaUserDB.getEvents()));
         mCompactCalendarView.invalidate();
+
+        mFloatingActionButton.setOnClickListener(v -> {
+            //TODO: Do stuff
+        });
 
         adapter = new AgendaAdapter(mContext, place_holder);
         recycler.setLayoutManager(new LinearLayoutManager(mContext));
@@ -111,7 +125,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(events -> {
                     Log.d(TAG, "Scaricati " + events.size() + " eventi");
-                    db.addEvents(events);
+                    mAgendaDB.addEvents(events);
                     mCompactCalendarView.removeAllEvents();
                     mCompactCalendarView.addEvents(convertEvents(events));
                     mCompactCalendarView.invalidate();
@@ -138,7 +152,8 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     @Override
     public void onDetach() {
         super.onDetach();
-        db.close();
+        mAgendaDB.close();
+        mAgendaUserDB.close();
     }
 
     @Override

@@ -162,7 +162,6 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         }
     }
 
-
     private void bindMarksSubjectsCache() {
         new CacheListObservable(new File(mContext.getCacheDir(), TAG))
                 .getCachedList(MarkSubject.class)
