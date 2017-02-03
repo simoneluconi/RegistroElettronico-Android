@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Databases.AgendaDB;
+import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
 import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.Tasks.CacheListObservable;
@@ -35,6 +36,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.CalculateScholasticCredits;
+import static com.sharpdroid.registroelettronico.Utils.Metodi.getMarksOfThisPeriod;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getOverallAverage;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.isNetworkAvailable;
 
@@ -144,6 +146,9 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
             for (int i = 0; i < pagerAdapter.getCount(); i++) {
                 fragment = (FragmentMedie) pagerAdapter.instantiateItem(mViewPager, i);
                 fragment.addSubjects(markSubjects);
+                if (i == 1 && !getMarksOfThisPeriod(markSubjects, Mark.SECONDO_PERIODO).isEmpty()) {
+                    mViewPager.setCurrentItem(i, false);
+                }
             }
 
             if (docache) {
