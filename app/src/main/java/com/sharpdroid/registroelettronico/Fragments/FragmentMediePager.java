@@ -62,6 +62,8 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
     PagerAdapter pagerAdapter;
     Snackbar snackbar;
 
+    private boolean pager_selected;
+
     public FragmentMediePager() {
         // Required empty public constructor
     }
@@ -146,10 +148,12 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
             for (int i = 0; i < pagerAdapter.getCount(); i++) {
                 fragment = (FragmentMedie) pagerAdapter.instantiateItem(mViewPager, i);
                 fragment.addSubjects(markSubjects);
-                if (i == 1 && !getMarksOfThisPeriod(markSubjects, Mark.SECONDO_PERIODO).isEmpty()) {
-                    mViewPager.setCurrentItem(i, false);
-                }
             }
+
+            if (!pager_selected && !getMarksOfThisPeriod(markSubjects, Mark.SECONDO_PERIODO).isEmpty()) {
+                mViewPager.setCurrentItem(1, false);
+            }
+            pager_selected = true;
 
             if (docache) {
                 // Update cache
@@ -164,9 +168,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
                 .getCachedList(MarkSubject.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(marksSubjects -> {
-                    addSubjects(marksSubjects, false);
-                }, Throwable::printStackTrace);
+                .subscribe(marksSubjects -> addSubjects(marksSubjects, false), Throwable::printStackTrace);
     }
 
     @Override
