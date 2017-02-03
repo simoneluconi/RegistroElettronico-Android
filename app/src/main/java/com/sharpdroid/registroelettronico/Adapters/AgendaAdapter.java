@@ -55,7 +55,6 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
         Entry entry = CVDataList.get(position);
         if (entry instanceof HeaderEntry) {
             ((HeaderHolder) holder).content.setText(((HeaderEntry) entry).getTitle());
@@ -87,7 +86,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public void addAll(List<Event> events) {
         CVDataList = convert(events);
-        if (CVDataList.size() == 0) {
+        if (CVDataList.isEmpty()) {
             place_holder.setVisibility(View.VISIBLE);
         } else {
             place_holder.setVisibility(View.GONE);
@@ -97,7 +96,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public void addAllCalendarEvents(List<com.github.sundeepk.compactcalendarview.domain.Event> events) {
         CVDataList = convert(convertCalendarEvents(events));
-        if (CVDataList.size() == 0) {
+        if (CVDataList.isEmpty()) {
             place_holder.setVisibility(View.VISIBLE);
         } else {
             place_holder.setVisibility(View.GONE);
