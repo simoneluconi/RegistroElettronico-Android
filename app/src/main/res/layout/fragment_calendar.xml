@@ -23,6 +23,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:clickable="true"
+        android:visibility="gone"
         app:layout_anchorGravity="bottom|right|end"
         app:srcCompat="@drawable/ic_plus" />
 </android.support.design.widget.CoordinatorLayout>
