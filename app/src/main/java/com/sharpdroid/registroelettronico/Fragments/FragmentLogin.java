@@ -101,7 +101,6 @@ public class FragmentLogin extends SlideFragment {
                 .subscribe(login -> {
                     SharedPreferences settings = mContext.getSharedPreferences("REGISTRO", MODE_PRIVATE);
 
-                    loggedIn = true;
                     // Writing data to SharedPreferences
                     SharedPreferences.Editor editor = settings.edit();
                     editor.putString("name", WordUtils.capitalizeFully(login.getName()).trim());
@@ -139,6 +138,7 @@ public class FragmentLogin extends SlideFragment {
                                 db.close();
                                 lessonsDB.close();
 
+                                loggedIn = true;
                                 updateNavigation();
                             }, Throwable::printStackTrace);
 
