@@ -138,8 +138,8 @@ public class FragmentLogin extends SlideFragment {
                                 db.close();
                                 lessonsDB.close();
 
-                                loggedIn = true;
                                 updateNavigation();
+                                loggedIn = true;
                             }, Throwable::printStackTrace);
 
                 }, error -> {
