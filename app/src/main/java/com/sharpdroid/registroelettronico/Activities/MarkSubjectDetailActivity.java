@@ -117,6 +117,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
 
     void setOverall(List<Mark> marks) {
         media = new Media();
+        media.setMateria(getSubjectName(subject));
         media.addMarks(marks);
         if (media.containsValidMarks()) {
             overallView.setVisibility(View.VISIBLE);
@@ -225,7 +226,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         lessonsView.update(lessonsDB, code);
 
         new SpiaggiariApiClient(this)
-                .getLessons(code)
+                .getLessons(code, subject.getTeacherCodeString())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(lessons -> {
                             lessonsDB.removeLessons(code);

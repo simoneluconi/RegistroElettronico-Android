@@ -13,10 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.sharpdroid.registroelettronico.Databases.DatabaseInfo.DB_VERSION;
+import static com.sharpdroid.registroelettronico.Utils.Metodi.contactTeachersCodes;
+import static com.sharpdroid.registroelettronico.Utils.Metodi.splitTeachersCodes;
 
 public class SubjectsDB extends SQLiteOpenHelper {
     private final static String DB_NAME = "SubjectsDB";
-    private final static String columns[] = {"id", "code", "original_name", "name", "target", "professor", "classroom", "notes"};
+    private final static String columns[] = {"id", "code", "original_name", "name", "target", "professor", "classroom", "notes", "teacherCode"};
 
     private SubjectsDB(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -36,7 +38,8 @@ public class SubjectsDB extends SQLiteOpenHelper {
                 columns[4] + " REAL, " +
                 columns[5] + " TEXT, " +
                 columns[6] + " TEXT, " +
-                columns[7] + " TEXT" +
+                columns[7] + " TEXT, " +
+                columns[8] + " TEXT" +
                 ");");
     }
 
@@ -52,7 +55,7 @@ public class SubjectsDB extends SQLiteOpenHelper {
 
         Cursor c = db.rawQuery("SELECT * FROM " + DB_NAME + " WHERE " + columns[1] + " = ?", new String[]{String.valueOf(code)});
         if (c.moveToFirst())
-            subject = new Subject(c.getInt(0), c.getInt(1), c.getString(2), c.getString(3), c.getFloat(4), c.getString(5), c.getString(6), c.getString(7));
+            subject = new Subject(c.getInt(0), c.getInt(1), c.getString(2), c.getString(3), c.getFloat(4), c.getString(5), c.getString(6), c.getString(7), splitTeachersCodes(c.getString(8)));
 
         c.close();
         return subject;
@@ -70,7 +73,7 @@ public class SubjectsDB extends SQLiteOpenHelper {
         }
 
         if (c.moveToFirst())
-            subject = new Subject(c.getInt(0), c.getInt(1), c.getString(2), c.getString(3), c.getFloat(4), c.getString(5), c.getString(6), c.getString(7));
+            subject = new Subject(c.getInt(0), c.getInt(1), c.getString(2), c.getString(3), c.getFloat(4), c.getString(5), c.getString(6), c.getString(7), splitTeachersCodes(c.getString(8)));
 
         c.close();
         return subject;
@@ -102,6 +105,7 @@ public class SubjectsDB extends SQLiteOpenHelper {
         contentValues = new ContentValues();
         contentValues.put(columns[1], subject.getCode());
         contentValues.put(columns[2], subject.getName().toLowerCase());
+        contentValues.put(columns[8], contactTeachersCodes(subject.getTeacherCodes()));
         db.insert(DB_NAME, null, contentValues);
         db.close();
     }
@@ -113,6 +117,7 @@ public class SubjectsDB extends SQLiteOpenHelper {
         contentValues.put(columns[1], subject.getCode());
         contentValues.put(columns[2], subject.getName().toLowerCase());
         contentValues.put(columns[5], prof);
+        contentValues.put(columns[8], contactTeachersCodes(subject.getTeacherCodes()));
         db.insert(DB_NAME, null, contentValues);
         db.close();
     }
@@ -123,7 +128,7 @@ public class SubjectsDB extends SQLiteOpenHelper {
         Cursor c = db.rawQuery("SELECT * FROM " + DB_NAME, null);
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext())
-            subjects.add(new Subject(c.getInt(0), c.getInt(1), c.getString(2), c.getString(3), c.getFloat(4), c.getString(5), c.getString(6), c.getString(7)));
+            subjects.add(new Subject(c.getInt(0), c.getInt(1), c.getString(2), c.getString(3), c.getFloat(4), c.getString(5), c.getString(6), c.getString(7), splitTeachersCodes(c.getString(8))));
 
         c.close();
         return subjects;

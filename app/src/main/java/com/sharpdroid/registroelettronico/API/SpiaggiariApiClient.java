@@ -125,8 +125,8 @@ public class SpiaggiariApiClient implements RESTfulAPIService {
     }
 
     @Override
-    public Observable<List<Lesson>> getLessons(@Path("id") int id) {
-        return mService.getLessons(id);
+    public Observable<List<Lesson>> getLessons(@Path("id") int id, @Path("teacherCode") String teacherCode) {
+        return mService.getLessons(id, teacherCode);
     }
 
     @Override

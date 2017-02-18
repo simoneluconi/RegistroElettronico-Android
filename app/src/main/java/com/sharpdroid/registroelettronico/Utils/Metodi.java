@@ -416,6 +416,25 @@ public class Metodi {
         return marksSub;
     }
 
+    public static String contactTeachersCodes(int[] teacherCodes) {
+        String[] s = new String[teacherCodes.length];
+
+        for (int i = 0; i < teacherCodes.length; i++)
+            s[i] = String.valueOf(teacherCodes[i]);
+
+        return TextUtils.join(",", s);
+    }
+
+    public static int[] splitTeachersCodes(String teacherCodes) {
+        String[] s = teacherCodes.split(",");
+        int[] c = new int[s.length];
+
+        for (int i = 0; i < c.length; i++)
+            c[i] = Integer.parseInt(s[i]);
+
+        return c;
+    }
+
     public static String getProfessorOfThisSubject(List<Lesson> lessons) {
 
         MyLinkedMap<String, Integer> hmap = new MyLinkedMap<>();

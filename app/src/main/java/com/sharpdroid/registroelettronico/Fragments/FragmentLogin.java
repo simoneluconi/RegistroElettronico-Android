@@ -123,7 +123,7 @@ public class FragmentLogin extends SlideFragment {
                                     lessonsDB.addSubject(subject.getCode());
 
                                     new SpiaggiariApiClient(mContext)
-                                            .getLessons(subject.getCode())
+                                            .getLessons(subject.getCode(), subject.getTeacherCodeString())
                                             .observeOn(AndroidSchedulers.mainThread())
                                             .subscribe(lessons -> {
                                                 lessonsDB.removeLessons(subject.getCode());
