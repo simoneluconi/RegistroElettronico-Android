@@ -13,7 +13,9 @@ import android.view.MenuItem;
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Adapters.AllLessonsAdapter;
 import com.sharpdroid.registroelettronico.Databases.LessonsDB;
+import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
+import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.R;
 
 import java.util.Collections;
@@ -38,6 +40,7 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
     AllLessonsAdapter mRVAdapter;
 
     LessonsDB db;
+    Subject subject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,7 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
 
         code = getIntent().getIntExtra("code", -1);
         db = new LessonsDB(this);
+        subject = SubjectsDB.from(this).getSubject(code);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -99,10 +103,11 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
             mSwipeRefreshLayout.setRefreshing(false);
         } else {
             new SpiaggiariApiClient(this)
-                    .getLessons(code)
+                    .getLessons(code, subject.getTeacherCodeString())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(lessons -> {
                         //update subjectsDB
+                        Collections.reverse(lessons);
                         db.removeLessons(code);
                         db.addLessons(code, lessons);
 

@@ -54,7 +54,8 @@ interface RESTfulAPIService {
 
     @GET("subject/{id}/lessons")
     Observable<List<Lesson>> getLessons(
-            @Path("id") int id);
+            @Path("id") int id,
+            @Query("teacherCode") String teacherCode);
 
     @GET("notes")
     Observable<List<Note>> getNotes();

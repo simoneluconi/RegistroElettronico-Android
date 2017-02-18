@@ -2,13 +2,16 @@ package com.sharpdroid.registroelettronico.Interfaces.Client;
 
 import java.io.Serializable;
 
+import static com.sharpdroid.registroelettronico.Utils.Metodi.contactTeachersCodes;
+
 public class Subject implements Serializable {
     private int id, code;
     private String original_name, name;
     private float target;
     private String professor, classroom, notes;
+    private int[] teacherCode;
 
-    public Subject(int id, int code, String original_name, String name, float target, String professor, String classroom, String notes) {
+    public Subject(int id, int code, String original_name, String name, float target, String professor, String classroom, String notes, int[] teacherCode) {
         this.id = id;
         this.code = code;
         this.original_name = original_name;
@@ -17,6 +20,7 @@ public class Subject implements Serializable {
         this.professor = professor;
         this.classroom = classroom;
         this.notes = notes;
+        this.teacherCode = teacherCode;
     }
 
     public String getClassroom() {
@@ -66,5 +70,14 @@ public class Subject implements Serializable {
 
     public void setTarget(float target) {
         this.target = target;
+    }
+
+    public int[] getTeacherCode() {
+        return teacherCode;
+    }
+
+    public String getTeacherCodeString()
+    {
+        return contactTeachersCodes(teacherCode);
     }
 }
