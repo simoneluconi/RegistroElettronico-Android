@@ -8,6 +8,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,8 @@ import static com.sharpdroid.registroelettronico.Utils.Metodi.getFileNamefromHea
 import static com.sharpdroid.registroelettronico.Utils.Metodi.writeResponseBodyToDisk;
 
 public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdapter.CommunicationHolder> {
+    private static final String TAG = CommunicationAdapter.class.getSimpleName();
+
     private final List<Communication> CVDataList;
     private final Context mContext;
     private final CoordinatorLayout mCoordinatorLayout;
@@ -71,7 +74,6 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
     public void onBindViewHolder(CommunicationHolder ViewHolder, int i) {
         final Communication communication = CVDataList.get(ViewHolder.getAdapterPosition());
 
-
         ViewHolder.Title.setText(communication.getTitle().trim());
         ViewHolder.Date.setText(formatter.format(communication.getDate()));
         ViewHolder.Type.setText(communication.getType());
@@ -97,8 +99,10 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
                                                 File.separator +
                                                 "Registro Elettronico" + File.separator + "Circolari");
 
-                                if (!dir.exists())
-                                    dir.mkdirs();
+                                if (!dir.exists() && !dir.mkdirs()) {
+                                    Log.d(TAG, "Failed to create download directory");
+                                    return;
+                                }
 
                                 if (!db.isPresent(communication.getId())) {
                                     DownloadFile(communication, dir, db, DownloadProgressSnak, true);
