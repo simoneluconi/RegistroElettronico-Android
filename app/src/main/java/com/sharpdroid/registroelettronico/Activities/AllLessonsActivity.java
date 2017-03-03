@@ -8,7 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.sharpdroid.registroelettronico.Adapters.AllLessonsAdapter;
-import com.sharpdroid.registroelettronico.Databases.LessonsDB;
+import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
 import com.sharpdroid.registroelettronico.R;
 
 import butterknife.BindView;
@@ -19,7 +19,7 @@ public class AllLessonsActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;
 
     AllLessonsAdapter adapter;
-    LessonsDB db;
+    SubjectsDB db;
     int code;
 
     @Override
@@ -36,7 +36,7 @@ public class AllLessonsActivity extends AppCompatActivity {
         }
 
         code = getIntent().getIntExtra("code", 0);
-        db = new LessonsDB(this);
+        db = SubjectsDB.from(this);
 
         setTitle("Lezioni");
         adapter = new AllLessonsAdapter(this);

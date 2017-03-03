@@ -12,19 +12,17 @@ import android.view.MenuItem;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Adapters.AllLessonsAdapter;
-import com.sharpdroid.registroelettronico.Databases.LessonsDB;
 import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
-import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.R;
 
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
+import static com.sharpdroid.registroelettronico.Utils.Metodi.concat;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.isNetworkAvailable;
 
 public class AllLessonsWithDownloadActivity extends AppCompatActivity
@@ -39,8 +37,7 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
     SwipeRefreshLayout mSwipeRefreshLayout;
     AllLessonsAdapter mRVAdapter;
 
-    LessonsDB db;
-    Subject subject;
+    SubjectsDB db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +46,7 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
         code = getIntent().getIntExtra("code", -1);
-        db = new LessonsDB(this);
-        subject = SubjectsDB.from(this).getSubject(code);
+        db = SubjectsDB.from(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -80,17 +76,15 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private void addLessons(List<Lesson> lessons, boolean reverse) {
+    private void addLessons(List<Lesson> lessons) {
         if (!lessons.isEmpty()) {
             mRVAdapter.clear();
-            if (reverse)
-                Collections.reverse(lessons);
             mRVAdapter.addAll(lessons);
         }
     }
 
     private void bindLessonsCache() {
-        addLessons(db.getLessons(code), false);
+        addLessons(db.getLessons(code));
     }
 
     public void onRefresh() {
@@ -103,15 +97,14 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
             mSwipeRefreshLayout.setRefreshing(false);
         } else {
             new SpiaggiariApiClient(this)
-                    .getLessons(code, subject.getTeacherCodeString())
+                    .getLessons(code, concat(db.getProfessorCodes(code), ","))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(lessons -> {
                         //update subjectsDB
-                        Collections.reverse(lessons);
                         db.removeLessons(code);
                         db.addLessons(code, lessons);
+                        bindLessonsCache();
 
-                        addLessons(lessons, true);
                         mSwipeRefreshLayout.setRefreshing(false);
                     }, error -> {
                         error.printStackTrace();

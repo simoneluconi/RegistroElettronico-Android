@@ -10,7 +10,7 @@ import android.widget.Button;
 
 import com.sharpdroid.registroelettronico.Activities.AllLessonsActivity;
 import com.sharpdroid.registroelettronico.Adapters.LessonsAdapter;
-import com.sharpdroid.registroelettronico.Databases.LessonsDB;
+import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
 import com.sharpdroid.registroelettronico.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
@@ -55,7 +55,7 @@ public class RecentLessonsView extends CardView {
         mRecyclerView.setAdapter(adapter);
     }
 
-    public void update(LessonsDB db, int code) {
+    public void update(SubjectsDB db, int code) {
         adapter.clear();
         adapter.addAll(db.getLessons(code, 5));
         showAllButton.setOnClickListener(view -> mContext.startActivity(new Intent(mContext, AllLessonsActivity.class).putExtra("code", code)));
