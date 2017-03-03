@@ -113,6 +113,7 @@ dependencies {
     compile 'com.android.support:preference-v14:25.2.0'
     compile 'com.android.support:preference-v7:25.2.0'
     compile 'com.android.support:recyclerview-v7:25.2.0'
+    compile 'com.android.support:support-v13:25.2.0'
     compile 'com.android.support:support-v4:25.2.0'
 
     compile 'com.afollestad.material-dialogs:core:0.9.3.0'
