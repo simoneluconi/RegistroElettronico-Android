@@ -10,7 +10,7 @@ import static com.sharpdroid.registroelettronico.Databases.DatabaseInfo.DB_VERSI
 
 public class CommunicationsDB extends SQLiteOpenHelper {
     private final static String DB_NAME = "CommunicationsDB";
-    private final static String columns[] = {"id", "code", "filename"};
+    private final static String columns[] = {"id", "code", "filename", "title", "content"};
 
     private CommunicationsDB(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
