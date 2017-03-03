@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Databases.CommunicationsDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Communication;
@@ -39,7 +40,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
     private final List<Communication> CVDataList;
     private final Context mContext;
     private final CoordinatorLayout mCoordinatorLayout;
-    private final SimpleDateFormat formatter = new SimpleDateFormat("d MMMM", Locale.ITALIAN);
+    private final SimpleDateFormat formatter = new SimpleDateFormat("d MMM", Locale.ITALIAN);
     private CommunicationsDB db;
 
     public CommunicationAdapter(Context mContext, CoordinatorLayout mCoordinatorLayout, CommunicationsDB db) {
@@ -69,33 +70,54 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
     @Override
     public void onBindViewHolder(CommunicationHolder ViewHolder, int i) {
         final Communication communication = CVDataList.get(ViewHolder.getAdapterPosition());
+
+
         ViewHolder.Title.setText(communication.getTitle().trim());
         ViewHolder.Date.setText(formatter.format(communication.getDate()));
         ViewHolder.Type.setText(communication.getType());
 
-        // TODO: 18/11/2016 aggiungere listener solo con allegati presenti
         ViewHolder.mRelativeLayout.setOnClickListener(v -> {
-            Snackbar DownloadProgressSnak = Snackbar.make(mCoordinatorLayout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE);
+            // QUANDO L'UTENTE CLICCA SCARICARE MAGGIORI INFORMAZIONI
+            new SpiaggiariApiClient(mContext)
+                    .getCommunicationDesc(communication.getId())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(communicationDescription -> {
+                        MaterialDialog.Builder dialog = new MaterialDialog.Builder(mContext)
+                                .title(communicationDescription.getLongTitle().trim())
+                                .content(communicationDescription.getDesc().trim())
+                                .positiveText(R.string.ok);
 
-            File dir = new File(
-                    Environment.getExternalStorageDirectory() +
-                            File.separator +
-                            "Registro Elettronico" + File.separator + "Circolari");
+                        if (communicationDescription.isAttachment()) {
+                            dialog.neutralText("Scarica");
+                            dialog.onNeutral((dialog1, which) -> {
+                                Snackbar DownloadProgressSnak = Snackbar.make(mCoordinatorLayout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE);
 
-            if (!dir.exists())
-                dir.mkdirs();
+                                File dir = new File(
+                                        Environment.getExternalStorageDirectory() +
+                                                File.separator +
+                                                "Registro Elettronico" + File.separator + "Circolari");
 
-            if (!db.isPresent(communication.getId())) {
-                DownloadFile(communication, dir, db, DownloadProgressSnak, true);
-            } else {
-                String filename = db.getFileName(communication.getId());
-                File file = new File(dir + File.separator + filename);
-                if (file.exists())
-                    openfile(file);
-                else DownloadFile(communication, dir, db, DownloadProgressSnak, false);
-            }
+                                if (!dir.exists())
+                                    dir.mkdirs();
 
-            db.close();
+                                if (!db.isPresent(communication.getId())) {
+                                    DownloadFile(communication, dir, db, DownloadProgressSnak, true);
+                                } else {
+                                    String filename = db.getFileName(communication.getId());
+                                    File file = new File(dir + File.separator + filename);
+                                    if (file.exists())
+                                        openfile(file);
+                                    else
+                                        DownloadFile(communication, dir, db, DownloadProgressSnak, false);
+                                }
+
+                                db.close();
+                            });
+                        }
+
+                        dialog.build().show();
+
+                    }, Throwable::printStackTrace);
         });
     }
 
