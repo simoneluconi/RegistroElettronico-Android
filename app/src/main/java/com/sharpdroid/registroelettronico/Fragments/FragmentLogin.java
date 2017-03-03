@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import com.heinrichreimersoftware.materialintro.app.SlideFragment;
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
-import com.sharpdroid.registroelettronico.Databases.LessonsDB;
 import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.LessonSubject;
 import com.sharpdroid.registroelettronico.R;
@@ -24,6 +23,7 @@ import com.sharpdroid.registroelettronico.Utils.DeviceUuidFactory;
 
 import org.apache.commons.lang3.text.WordUtils;
 
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -109,37 +109,42 @@ public class FragmentLogin extends SlideFragment {
                     mButtonLogin.setText(R.string.login_riuscito);
                     Toast.makeText(mContext, R.string.login_msg, Toast.LENGTH_SHORT).show();
 
-                    //scarica le materie (nome, id) per poter in seguito modificare a piacere tutte le caratteristiche nel db
+                    //scarica le materie (nome, id, prof) per poter in seguito modificare a piacere tutte le caratteristiche nel db
                     new SpiaggiariApiClient(mContext)
                             .getSubjects()
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(subjects -> {
 
                                 SubjectsDB db = SubjectsDB.from(mContext);
-                                LessonsDB lessonsDB = new LessonsDB(mContext);
+                                List<Integer> teachers;
                                 //Per ogni materia aggiungo il suo professore cercandolo dalle lezioni
                                 for (LessonSubject subject : subjects) {
+                                    teachers = subject.getTeacherCodes();
 
-                                    lessonsDB.addSubject(subject.getCode());
+                                    String body = String.valueOf(teachers.get(0));
+                                    for (int i = 1; i < teachers.size(); i++) {
+                                        body += "," + teachers.get(i);  // prof1,prof2,prof3
+                                    }
 
                                     new SpiaggiariApiClient(mContext)
-                                            .getLessons(subject.getCode(), subject.getTeacherCodeString())
+                                            .getLessons(subject.getCode(), body)
                                             .observeOn(AndroidSchedulers.mainThread())
                                             .subscribe(lessons -> {
-                                                lessonsDB.removeLessons(subject.getCode());
-                                                lessonsDB.addLessons(subject.getCode(), lessons);
-
                                                 String profName = getProfessorOfThisSubject(lessons);
-                                                Log.d("Trova professore", String.format(Locale.getDefault(), "Professore di %1$s è %2$s", subject.getName(), profName));
+
+                                                db.removeLessons(subject.getCode());
+                                                db.addLessons(subject.getCode(), lessons);
                                                 db.addSubject(subject, profName);
+                                                db.addProfessors(subject);
+
+                                                Log.d("Trova professore", String.format(Locale.getDefault(), "Professore di %1$s è %2$s", subject.getName(), profName));
                                             }, Throwable::printStackTrace);
                                 }
 
                                 db.close();
-                                lessonsDB.close();
 
-                                updateNavigation();
                                 loggedIn = true;
+                                updateNavigation();
                             }, Throwable::printStackTrace);
 
                 }, error -> {

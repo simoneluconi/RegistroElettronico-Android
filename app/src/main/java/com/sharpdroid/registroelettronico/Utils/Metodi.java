@@ -400,6 +400,17 @@ public class Metodi {
         return sort;
     }
 
+    public static String concat(List<?> list, String divider) {
+        String r = "";
+        if (!list.isEmpty()) {
+            r = String.valueOf(list.get(0));
+            for (int i = 1; i < list.size(); i++) {
+                r += divider + String.valueOf(list.get(i));
+            }
+        }
+        return r;
+    }
+
     public static List<MarkSubject> getMarksOfThisPeriod(List<MarkSubject> markssubject, String p) {
         if (p == null) return markssubject;
         List<MarkSubject> marksSub = new ArrayList<>();
@@ -414,15 +425,6 @@ public class Metodi {
         }
 
         return marksSub;
-    }
-
-    public static String contactTeachersCodes(int[] teacherCodes) {
-        String[] s = new String[teacherCodes.length];
-
-        for (int i = 0; i < teacherCodes.length; i++)
-            s[i] = String.valueOf(teacherCodes[i]);
-
-        return TextUtils.join(",", s);
     }
 
     public static int[] splitTeachersCodes(String teacherCodes) {
