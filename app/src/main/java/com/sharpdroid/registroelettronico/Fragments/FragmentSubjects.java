@@ -13,9 +13,12 @@ import android.view.ViewGroup;
 import com.sharpdroid.registroelettronico.Adapters.SubjectsAdapter;
 import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
 import com.sharpdroid.registroelettronico.R;
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.sharpdroid.registroelettronico.Utils.Metodi.dpToPx;
 
 public class FragmentSubjects extends Fragment {
     Context mContext;
@@ -42,6 +45,7 @@ public class FragmentSubjects extends Fragment {
 
         adapter = new SubjectsAdapter(mContext);
         recycler.setLayoutManager(new LinearLayoutManager(mContext));
+        recycler.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).size(1).margin(dpToPx(16), dpToPx(16)).build());
         recycler.setAdapter(adapter);
         adapter.addAll(db.getSubjects());
 

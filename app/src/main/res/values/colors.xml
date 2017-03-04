@@ -9,6 +9,7 @@
     <color name="lightgreenmaterial">#8BC34A</color>
     <color name="redmaterial">#F44336</color>
     <color name="orangematerial">#FDD835</color>
+    <color name="deep_orange">#EF6C00</color>
     <color name="material_blue_grey">#37474f</color>
 
     <color name="textcolorgrey">#636363</color>
@@ -28,4 +29,6 @@
     <color name="brown">#795548</color>
 
     <color name="shortcut_circle">#F5F5F5</color>
+
+    <color name="grey_middle">#9E9E9E</color>
 </resources>
