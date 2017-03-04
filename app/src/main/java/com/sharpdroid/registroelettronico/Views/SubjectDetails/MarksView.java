@@ -60,26 +60,23 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
 
     public MarksView(Context context) {
         super(context);
-        mContext = context;
-        events = AgendaDB.from(context).getEvents();
-        init();
+        init(context);
     }
 
     public MarksView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mContext = context;
-        events = AgendaDB.from(context).getEvents();
-        init();
+        init(context);
     }
 
     public MarksView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mContext = context;
-        events = AgendaDB.from(context).getEvents();
-        init();
+        init(context);
     }
 
-    void init() {
+    void init(Context context) {
+        mContext = context;
+        events = new AgendaDB(mContext).getEvents();
+
         inflate(mContext, R.layout.view_marks, this);
         ButterKnife.bind(this);
 

@@ -26,12 +26,8 @@ public class SubjectsDB extends SQLiteOpenHelper {
     private final static String lessons[] = {subjects[1], "teacher", "date", "content"};
     private final static String professors[] = {"subject_code", "code", "name"};
 
-    private SubjectsDB(Context context) {
+    public SubjectsDB(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
-    }
-
-    public static SubjectsDB from(Context c) {
-        return new SubjectsDB(c);
     }
 
     @Override

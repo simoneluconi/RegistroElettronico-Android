@@ -16,10 +16,6 @@ public class FilesDB extends SQLiteOpenHelper {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
-    public static FilesDB from(Context c) {
-        return new FilesDB(c);
-    }
-
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + DB_NAME + " (" +

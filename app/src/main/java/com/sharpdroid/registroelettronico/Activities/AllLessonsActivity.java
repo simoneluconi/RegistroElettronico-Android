@@ -36,7 +36,7 @@ public class AllLessonsActivity extends AppCompatActivity {
         }
 
         code = getIntent().getIntExtra("code", 0);
-        db = SubjectsDB.from(this);
+        db = new SubjectsDB(this);
 
         setTitle("Lezioni");
         adapter = new AllLessonsAdapter(this);

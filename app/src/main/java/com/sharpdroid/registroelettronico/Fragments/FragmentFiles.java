@@ -47,7 +47,7 @@ public class FragmentFiles extends Fragment {
         View layout = inflater.inflate(R.layout.fragmentfiles, container, false);
 
         mContext = getContext();
-        db = FilesDB.from(mContext);
+        db = new FilesDB(mContext);
         RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
         CoordinatorLayout mCoordinatorLayout = (CoordinatorLayout) layout.findViewById(R.id.coordinator_layout);
 

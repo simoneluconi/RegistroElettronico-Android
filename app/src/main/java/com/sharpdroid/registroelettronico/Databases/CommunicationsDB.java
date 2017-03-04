@@ -12,12 +12,8 @@ public class CommunicationsDB extends SQLiteOpenHelper {
     private final static String DB_NAME = "CommunicationsDB";
     private final static String columns[] = {"id", "code", "filename", "title", "content"};
 
-    private CommunicationsDB(Context context) {
+    public CommunicationsDB(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
-    }
-
-    public static CommunicationsDB from(Context c) {
-        return new CommunicationsDB(c);
     }
 
     @Override

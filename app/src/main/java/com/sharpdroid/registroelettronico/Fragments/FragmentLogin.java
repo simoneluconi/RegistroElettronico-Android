@@ -115,7 +115,7 @@ public class FragmentLogin extends SlideFragment {
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(subjects -> {
 
-                                SubjectsDB db = SubjectsDB.from(mContext);
+                                SubjectsDB db = new SubjectsDB(mContext);
                                 List<Integer> teachers;
                                 //Per ogni materia aggiungo il suo professore cercandolo dalle lezioni
                                 for (LessonSubject subject : subjects) {

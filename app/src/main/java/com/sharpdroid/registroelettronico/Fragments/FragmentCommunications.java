@@ -54,7 +54,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
                              ViewGroup container, Bundle savedInstanceState) {
         mContext = getContext();
         View layout = inflater.inflate(R.layout.coordinator_swipe_recycler, container, false);
-        db = CommunicationsDB.from(mContext);
+        db = new CommunicationsDB(mContext);
         ButterKnife.bind(this, layout);
 
         mSwipeRefreshLayout.setOnRefreshListener(this);

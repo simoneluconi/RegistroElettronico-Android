@@ -125,7 +125,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
     private String getSnackBarMessage(List<MarkSubject> marks) {
         double average = getOverallAverage(marks);
 
-        String className = AgendaDB.from(mContext).getClassDescription();
+        String className = new AgendaDB(mContext).getClassDescription();
         if (className != null) {
             className = className.split("\\s+")[0];
             int classyear;
