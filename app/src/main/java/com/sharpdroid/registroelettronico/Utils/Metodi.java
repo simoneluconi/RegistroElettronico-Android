@@ -472,13 +472,13 @@ public class Metodi {
     public static List<com.github.sundeepk.compactcalendarview.domain.Event> convertEvents(List<com.sharpdroid.registroelettronico.Interfaces.API.Event> events) {
         List<com.github.sundeepk.compactcalendarview.domain.Event> list = new ArrayList<>();
         for (com.sharpdroid.registroelettronico.Interfaces.API.Event event : events) {
-            list.add(new com.github.sundeepk.compactcalendarview.domain.Event(isEventTest(event) ? Color.RED : Color.parseColor("#FFC200"), event.getStart().getTime(), event));
+            list.add(new com.github.sundeepk.compactcalendarview.domain.Event(isEventTest(event) ? Color.parseColor("#E91E63") : Color.WHITE, event.getStart().getTime(), event));
         }
         return list;
     }
 
     public static com.github.sundeepk.compactcalendarview.domain.Event convertEvent(com.sharpdroid.registroelettronico.Interfaces.API.Event event) {
-        return new com.github.sundeepk.compactcalendarview.domain.Event(isEventTest(event) ? Color.RED : Color.parseColor("#FFC200"), event.getStart().getTime(), event);
+        return new com.github.sundeepk.compactcalendarview.domain.Event(isEventTest(event) ? Color.parseColor("#F50057") : Color.parseColor("#FF9100"), event.getStart().getTime(), event);
     }
 }
 
