@@ -70,8 +70,8 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
 
         mToolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
 
-        mAgendaDB = AgendaDB.from(mContext);
-        mAgendaUserDB = AgendaUserDB.from(mContext);
+        mAgendaDB = new AgendaDB(mContext);
+        mAgendaUserDB = new AgendaUserDB(mContext);
 
         mCompactCalendarView = (CompactCalendarView) getActivity().findViewById(R.id.calendar);
         mCompactCalendarView.setVisibility(View.VISIBLE);

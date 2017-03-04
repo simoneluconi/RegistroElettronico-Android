@@ -81,7 +81,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         }
 
         //DATABASE
-        subjectsDB = SubjectsDB.from(this);
+        subjectsDB = new SubjectsDB(this);
 
         // toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

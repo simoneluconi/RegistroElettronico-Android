@@ -45,7 +45,7 @@ public class FragmentMedie extends Fragment {
         ButterKnife.bind(this, layout);
 
         periodo = getArguments().getInt("q");
-        subjectsDB = SubjectsDB.from(mContext);
+        subjectsDB = new SubjectsDB(mContext);
 
         RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
 

@@ -27,12 +27,8 @@ public class AgendaDB extends SQLiteOpenHelper {
             "materia_desc", "materia_id"
     };  //COUNT = 17
 
-    private AgendaDB(Context c) {
+    public AgendaDB(Context c) {
         super(c, DB_NAME, null, DB_VERSION);
-    }
-
-    public static AgendaDB from(Context c) {
-        return new AgendaDB(c);
     }
 
     @Override

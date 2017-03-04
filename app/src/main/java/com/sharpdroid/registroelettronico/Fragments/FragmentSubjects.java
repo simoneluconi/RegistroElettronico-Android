@@ -38,7 +38,7 @@ public class FragmentSubjects extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_lessons, container, false);
         ButterKnife.bind(this, layout);
         mContext = getContext();
-        db = SubjectsDB.from(mContext);
+        db = new SubjectsDB(mContext);
 
         adapter = new SubjectsAdapter(mContext);
         recycler.setLayoutManager(new LinearLayoutManager(mContext));
