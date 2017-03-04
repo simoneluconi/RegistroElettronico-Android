@@ -90,7 +90,8 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
                                 .positiveText(R.string.ok);
 
                         if (communicationDescription.isAttachment()) {
-                            dialog.neutralText("Scarica");
+                            dialog.neutralText(db.isPresent(communication.getId()) ? "APRI" : "SCARICA");
+
                             dialog.onNeutral((dialog1, which) -> {
                                 Snackbar DownloadProgressSnak = Snackbar.make(mCoordinatorLayout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE);
 
