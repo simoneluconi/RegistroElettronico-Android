@@ -29,9 +29,9 @@
             app:compactCalendarBackgroundColor="?attr/colorPrimary"
             app:compactCalendarCurrentDayBackgroundColor="@color/bluematerial"
             app:compactCalendarCurrentSelectedDayBackgroundColor="?attr/colorPrimaryDark"
-            app:compactCalendarMultiEventIndicatorColor="#9FA8DA"
+            app:compactCalendarMultiEventIndicatorColor="@color/md_white_1000"
             app:compactCalendarTargetHeight="200dp"
-            app:compactCalendarTextColor="#ffffffff"
+            app:compactCalendarTextColor="@color/md_white_1000"
             app:compactCalendarTextSize="12.0sp" />
 
         <android.support.design.widget.TabLayout

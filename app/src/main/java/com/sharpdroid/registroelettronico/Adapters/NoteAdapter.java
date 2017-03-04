@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sharpdroid.registroelettronico.Interfaces.API.Note;
@@ -23,7 +24,7 @@ import butterknife.ButterKnife;
  * Adapter per RecyclerView con Note disciplinari & Annotazioni
  */
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
-    private final SimpleDateFormat formatter = new SimpleDateFormat("d MMMM", Locale.ITALIAN);
+    private final SimpleDateFormat formatter = new SimpleDateFormat("d MMM", Locale.ITALIAN);
 
     private final List<Note> CVDataList;
     private final Context mContext;
@@ -57,18 +58,13 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
         h.teacher.setText(nota.getTeacher());
         h.date.setText(formatter.format(nota.getDate()));
         h.content.setText(nota.getContent());
-        h.type.setText(nota.getType());
 
-        /**
-         * Rosso: nota disciplinare
-         * Dark: annotazione
-         */
         if (nota.getType().toLowerCase(Locale.getDefault()).contains("disciplinare")) {
-            h.type.setTextColor(ContextCompat.getColor(mContext, R.color.red_strong));
-            h.teacher.setTextColor(ContextCompat.getColor(mContext, R.color.red_strong));
+            h.teacher.setTextColor(ContextCompat.getColor(mContext, R.color.deep_orange));
+            h.icon.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_warning_orange));
         } else {
-            h.type.setTextColor(ContextCompat.getColor(mContext, android.R.color.primary_text_light));
-            h.teacher.setTextColor(ContextCompat.getColor(mContext, android.R.color.primary_text_light));
+            h.teacher.setTextColor(ContextCompat.getColor(mContext, R.color.grey_middle));
+            h.icon.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_error_grey));
         }
     }
 
@@ -84,8 +80,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
         TextView date;
         @BindView(R.id.content)
         TextView content;
-        @BindView(R.id.type)
-        TextView type;
+        @BindView(R.id.icon)
+        ImageView icon;
 
         NoteHolder(View itemView) {
             super(itemView);
