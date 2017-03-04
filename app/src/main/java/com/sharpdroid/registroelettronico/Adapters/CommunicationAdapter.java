@@ -93,7 +93,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
                             dialog.neutralText(db.isPresent(communication.getId()) ? "APRI" : "SCARICA");
 
                             dialog.onNeutral((dialog1, which) -> {
-                                Snackbar DownloadProgressSnak = Snackbar.make(mCoordinatorLayout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE);
+                                Snackbar DownloadProgressSnack = Snackbar.make(mCoordinatorLayout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE);
 
                                 File dir = new File(
                                         Environment.getExternalStorageDirectory() +
@@ -106,14 +106,14 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
                                 }
 
                                 if (!db.isPresent(communication.getId())) {
-                                    DownloadFile(communication, dir, db, DownloadProgressSnak, true);
+                                    DownloadFile(communication, dir, db, DownloadProgressSnack, true);
                                 } else {
                                     String filename = db.getFileName(communication.getId());
                                     File file = new File(dir + File.separator + filename);
                                     if (file.exists())
                                         openfile(file);
                                     else
-                                        DownloadFile(communication, dir, db, DownloadProgressSnak, false);
+                                        DownloadFile(communication, dir, db, DownloadProgressSnack, false);
                                 }
 
                                 db.close();
