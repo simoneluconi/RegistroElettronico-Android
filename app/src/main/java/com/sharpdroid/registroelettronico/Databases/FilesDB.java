@@ -6,11 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import static com.sharpdroid.registroelettronico.Databases.DatabaseInfo.DB_VERSION;
 
 public class FilesDB extends SQLiteOpenHelper {
     private final static String DB_NAME = "FilesDB";
     private final static String columns[] = {"id", "code", "cksum", "filename"};
+    private static int DB_VERSION = 6;
 
     public FilesDB(Context context) {
         super(context, DB_NAME, null, DB_VERSION);

@@ -15,8 +15,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.sharpdroid.registroelettronico.Databases.DatabaseInfo.DB_VERSION;
-
 public class SubjectsDB extends SQLiteOpenHelper {
     private final static String DB_NAME = "Subjects";
     private final static String TABLE_SUBJECTS = "subjects";
@@ -25,6 +23,7 @@ public class SubjectsDB extends SQLiteOpenHelper {
     private final static String subjects[] = {"id", "code", "original_name", "name", "target", "professor", "classroom", "notes"};
     private final static String lessons[] = {subjects[1], "teacher", "date", "content"};
     private final static String professors[] = {"subject_code", "code", "name"};
+    private static int DB_VERSION = 6;
 
     public SubjectsDB(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -58,6 +57,7 @@ public class SubjectsDB extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_LESSONS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SUBJECTS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROFESSORS);
         onCreate(db);
     }
 
