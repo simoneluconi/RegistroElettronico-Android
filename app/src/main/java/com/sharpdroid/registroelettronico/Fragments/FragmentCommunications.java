@@ -1,7 +1,6 @@
 package com.sharpdroid.registroelettronico.Fragments;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -67,7 +66,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
         RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).marginResId(R.dimen.activity_horizontal_margin, R.dimen.activity_horizontal_margin).color(Color.parseColor("#11000000")).size(1).build());
+        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).marginResId(R.dimen.activity_horizontal_margin, R.dimen.activity_horizontal_margin).size(1).build());
         mRecyclerView.setItemAnimator(null);
 
         mRVAdapter = new CommunicationAdapter(mContext, mCoordinatorLayout, db);
