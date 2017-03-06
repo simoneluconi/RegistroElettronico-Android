@@ -8,7 +8,6 @@ import android.net.NetworkInfo;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.sharpdroid.registroelettronico.API.SpiaggiariAPI;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absence;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absences;
@@ -230,14 +229,6 @@ public class Metodi {
             days += a.getDays();
         }
         return days;
-    }
-
-    public static List<com.sharpdroid.registroelettronico.Interfaces.API.Event> convertCalendarEvents(List<Event> events) {
-        List<com.sharpdroid.registroelettronico.Interfaces.API.Event> convert = new ArrayList<>();
-        for (Event e : events) {
-            convert.add((com.sharpdroid.registroelettronico.Interfaces.API.Event) e.getData());
-        }
-        return convert;
     }
 
     public static String toLowerCase(String s) {
@@ -472,7 +463,7 @@ public class Metodi {
     public static List<com.github.sundeepk.compactcalendarview.domain.Event> convertEvents(List<com.sharpdroid.registroelettronico.Interfaces.API.Event> events) {
         List<com.github.sundeepk.compactcalendarview.domain.Event> list = new ArrayList<>();
         for (com.sharpdroid.registroelettronico.Interfaces.API.Event event : events) {
-            list.add(new com.github.sundeepk.compactcalendarview.domain.Event(isEventTest(event) ? Color.parseColor("#FF9800") : Color.WHITE, event.getStart().getTime(), event));
+            list.add(new com.github.sundeepk.compactcalendarview.domain.Event(isEventTest(event) ? Color.parseColor("#FF9800") : Color.WHITE, event.getStart().getTime(), null));
         }
         return list;
     }

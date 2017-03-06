@@ -6,11 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import static com.sharpdroid.registroelettronico.Databases.DatabaseInfo.DB_VERSION;
-
 public class CommunicationsDB extends SQLiteOpenHelper {
     private final static String DB_NAME = "CommunicationsDB";
     private final static String columns[] = {"id", "code", "filename", "title", "content"};
+    private static int DB_VERSION = 6;
 
     public CommunicationsDB(Context context) {
         super(context, DB_NAME, null, DB_VERSION);

@@ -7,17 +7,19 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.sharpdroid.registroelettronico.Interfaces.API.Event;
+import com.sharpdroid.registroelettronico.Interfaces.Client.LocalEvent;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
-import static com.sharpdroid.registroelettronico.Databases.DatabaseInfo.DB_VERSION;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.toLowerCase;
 
 public class AgendaDB extends SQLiteOpenHelper {
-
     private final static String DB_NAME = "AgendaDB";
+    private final static String TABLE_API = "api";
+    private final static String TABLE_LOCAL = "local";
     private final static String columns[] = {
             "id", "code", "title",
             "start", "end", "allDay",
@@ -26,6 +28,10 @@ public class AgendaDB extends SQLiteOpenHelper {
             "autore_desc", "autore_id", "tipo",
             "materia_desc", "materia_id"
     };  //COUNT = 17
+    private final static String l_columns[] = {
+            "uuid", "title", "content", "type", "day", "subject_id", "prof_id"
+    };  //COUNT = 7
+    private static int DB_VERSION = 8;
 
     public AgendaDB(Context c) {
         super(c, DB_NAME, null, DB_VERSION);
@@ -33,7 +39,7 @@ public class AgendaDB extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + DB_NAME + " (" +
+        db.execSQL("CREATE TABLE " + TABLE_API + " (" +
                 columns[0] + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 columns[1] + " INTEGER, " +
                 columns[2] + " TEXT," +
@@ -52,18 +58,31 @@ public class AgendaDB extends SQLiteOpenHelper {
                 columns[15] + " TEXT," +
                 columns[16] + " TEXT" +
                 ");");
+
+        db.execSQL("CREATE TABLE " + TABLE_LOCAL + " (" +
+                l_columns[0] + " TEXT UNIQUE PRIMARY KEY, " +
+                l_columns[1] + " TEXT, " +
+                l_columns[2] + " TEXT, " +
+                l_columns[3] + " TEXT, " +
+                l_columns[4] + " INTEGER, " +
+                l_columns[5] + " INTEGER, " +
+                l_columns[6] + " INTEGER" +
+                ");");
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
         db.execSQL("DROP TABLE IF EXISTS " + DB_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_API);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_LOCAL);
         onCreate(db);
     }
 
     public void addEvents(List<Event> events) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
-        db.delete(DB_NAME, null, null);
+        db.delete(TABLE_API, null, null);
         ContentValues values;
         for (Event e : events) {
             values = new ContentValues();
@@ -83,15 +102,34 @@ public class AgendaDB extends SQLiteOpenHelper {
             values.put("tipo", toLowerCase(e.getTipo()));
             values.put("materia_desc", toLowerCase(e.getMateria_desc()));
             values.put("materia_id", e.getMateria_id());
-            db.insert(DB_NAME, null, values);
+            db.insert(TABLE_API, null, values);
         }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+    public void addLocalEvent(LocalEvent e) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        db.delete(TABLE_LOCAL, null, null);
+        ContentValues values;
+        values = new ContentValues();
+        values.put(l_columns[0], UUID.randomUUID().toString());
+        values.put(l_columns[1], e.getTitle());
+        values.put(l_columns[2], e.getContent());
+        values.put(l_columns[3], e.getType());
+        values.put(l_columns[4], e.getDay().getTime());
+        values.put(l_columns[5], e.getSubjectId());
+        values.put(l_columns[6], e.getProfId());
+        db.insert(TABLE_LOCAL, null, values);
+
         db.setTransactionSuccessful();
         db.endTransaction();
     }
 
     public List<Event> getEvents() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM " + DB_NAME, new String[]{});
+        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_API, new String[]{});
         List<Event> list = new ArrayList<>();
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
@@ -102,13 +140,13 @@ public class AgendaDB extends SQLiteOpenHelper {
         return list;
     }
 
-    public List<Event> getEventsFrom(long start) {
+    public List<Event> getLocalEvents() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM " + DB_NAME + " WHERE " + columns[3] + " >= ?", new String[]{String.valueOf(start)});
+        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_LOCAL, new String[]{});
         List<Event> list = new ArrayList<>();
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            list.add(new Event(c.getString(1), c.getString(2), new Date(c.getLong(3)), new Date(c.getLong(4)), c.getInt(5) == 1, new Date(c.getLong(6)), c.getString(7), c.getString(8), c.getString(9), c.getString(10), c.getInt(11), c.getString(12), c.getString(13), c.getString(14), c.getString(15), c.getString(16)));
+            list.add(new Event(null, c.getString(2), new Date(c.getLong(4)), null, true, null, c.getString(2), null, null, null, 0, null, c.getString(6), c.getString(3), null, c.getString(5)));
         }
 
         c.close();
@@ -124,7 +162,7 @@ public class AgendaDB extends SQLiteOpenHelper {
 
     public List<Event> getEvents(long day) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM " + DB_NAME + " WHERE " + columns[3] + " = ?", new String[]{String.valueOf(day)});
+        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_API + " WHERE " + columns[3] + " BETWEEN ? AND ?", new String[]{String.valueOf(day), String.valueOf(day + 86400000)});
         List<Event> list = new ArrayList<>();
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
@@ -135,16 +173,23 @@ public class AgendaDB extends SQLiteOpenHelper {
         return list;
     }
 
-    public List<Event> getEventsFromTo(long start, long end) {
+    public List<Event> getLocalEvents(long day) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM " + DB_NAME + " WHERE " + columns[3] + " BETWEEN ? AND ?", new String[]{String.valueOf(start), String.valueOf(end)});
+        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_LOCAL + " WHERE " + l_columns[4] + " BETWEEN ? AND ?", new String[]{String.valueOf(day), String.valueOf(day + 86400000)});
         List<Event> list = new ArrayList<>();
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            list.add(new Event(c.getString(1), c.getString(2), new Date(c.getLong(3)), new Date(c.getLong(4)), c.getInt(5) == 1, new Date(c.getLong(6)), c.getString(7), c.getString(8), c.getString(9), c.getString(10), c.getInt(11), c.getString(12), c.getString(13), c.getString(14), c.getString(15), c.getString(16)));
+            list.add(new Event(null, c.getString(2), new Date(c.getLong(4)), null, true, null, c.getString(2), null, null, null, 0, null, c.getString(6), c.getString(3), null, c.getString(5)));
         }
 
         c.close();
+        return list;
+    }
+
+    public List<Event> getAllEvents(long day) {
+        List<Event> list = new ArrayList<>();
+        list.addAll(getLocalEvents(day));
+        list.addAll(getEvents(day));
         return list;
     }
 }

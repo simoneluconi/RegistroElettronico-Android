@@ -18,14 +18,16 @@ import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Adapters.AgendaAdapter;
 import com.sharpdroid.registroelettronico.Databases.AgendaDB;
-import com.sharpdroid.registroelettronico.Databases.AgendaUserDB;
+import com.sharpdroid.registroelettronico.Interfaces.API.Event;
 import com.sharpdroid.registroelettronico.R;
 
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -54,9 +56,9 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     private Toolbar mToolbar;
     private Context mContext;
     private AgendaDB mAgendaDB;
-    private AgendaUserDB mAgendaUserDB;
     private AgendaAdapter adapter;
     private Date mDate;
+    private List<Event> events = new ArrayList<>();
 
     public FragmentAgenda() {
     }
@@ -71,17 +73,12 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         mToolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
 
         mAgendaDB = new AgendaDB(mContext);
-        mAgendaUserDB = new AgendaUserDB(mContext);
 
         mCompactCalendarView = (CompactCalendarView) getActivity().findViewById(R.id.calendar);
         mCompactCalendarView.setVisibility(View.VISIBLE);
         mCompactCalendarView.setLocale(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALIAN);
         mCompactCalendarView.setUseThreeLetterAbbreviation(true);
         mCompactCalendarView.setListener(this);
-        mCompactCalendarView.removeAllEvents();
-        mCompactCalendarView.addEvents(convertEvents(mAgendaDB.getEvents()));
-        mCompactCalendarView.addEvents(convertEvents(mAgendaUserDB.getEvents()));
-        mCompactCalendarView.invalidate();
 
         mFloatingActionButton.setOnClickListener(v -> {
             //TODO: Do stuff
@@ -105,11 +102,30 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         mDate = cal.getTime();
 
         mCompactCalendarView.setCurrentDate(mDate);
-        adapter.addAllCalendarEvents(mCompactCalendarView.getEvents(mDate));
 
+        updateCalendar();
+        updateAdapter();
         updateDB();
 
         return layout;
+    }
+
+    private void fetchEvents() {
+        events.clear();
+        events.addAll(mAgendaDB.getEvents());
+        events.addAll(mAgendaDB.getLocalEvents());
+    }
+
+    private void updateAdapter() {
+        adapter.clear();
+        adapter.addAllCalendarEvents(mAgendaDB.getAllEvents(mDate.getTime()));
+    }
+
+    private void updateCalendar() {
+        mCompactCalendarView.removeAllEvents();
+        fetchEvents();
+        mCompactCalendarView.addEvents(convertEvents(events));
+        mCompactCalendarView.invalidate();
     }
 
     private Calendar toCalendar(Date date) {
@@ -125,10 +141,10 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
                 .subscribe(events -> {
                     Log.d(TAG, "Scaricati " + events.size() + " eventi");
                     mAgendaDB.addEvents(events);
-                    mCompactCalendarView.removeAllEvents();
-                    mCompactCalendarView.addEvents(convertEvents(events));
-                    mCompactCalendarView.invalidate();
-                    adapter.addAllCalendarEvents(mCompactCalendarView.getEvents(mDate));
+
+                    updateCalendar();
+                    updateAdapter();
+
                 }, error -> {
                     error.printStackTrace();
                     Snackbar.make(mCoordinatorLayout, error.getLocalizedMessage(), Snackbar.LENGTH_LONG).show();
@@ -137,9 +153,8 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
 
     @Override
     public void onDayClick(Date dateClicked) {
-        adapter.clear();
         mDate = dateClicked;
-        adapter.addAllCalendarEvents(mCompactCalendarView.getEvents(dateClicked));
+        updateAdapter();
     }
 
     @Override
@@ -152,7 +167,6 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     public void onDetach() {
         super.onDetach();
         mAgendaDB.close();
-        mAgendaUserDB.close();
     }
 
     @Override
