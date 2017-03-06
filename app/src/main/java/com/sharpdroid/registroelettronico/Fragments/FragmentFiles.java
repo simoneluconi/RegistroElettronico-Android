@@ -1,7 +1,6 @@
 package com.sharpdroid.registroelettronico.Fragments;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
@@ -27,6 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.Delimeters;
+import static com.sharpdroid.registroelettronico.Utils.Metodi.dpToPx;
 
 public class FragmentFiles extends Fragment {
     final static String TAG = FragmentFiles.class.getSimpleName();
@@ -79,17 +79,7 @@ public class FragmentFiles extends Fragment {
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).marginProvider(new HorizontalDividerItemDecoration.MarginProvider() {
-            @Override
-            public int dividerLeftMargin(int position, RecyclerView parent) {
-                return (int) getContext().getResources().getDimension(R.dimen.padding_left_divider);
-            }
-
-            @Override
-            public int dividerRightMargin(int position, RecyclerView parent) {
-                return (int) getContext().getResources().getDimension(R.dimen.activity_horizontal_margin);
-            }
-        }).color(Color.parseColor("#11000000")).size(1).build());
+        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).margin(dpToPx(72), dpToPx(64)).size(1).build());
         mRecyclerView.setItemAnimator(null);
 
         mRecyclerView.setAdapter(mRVAdapter);
