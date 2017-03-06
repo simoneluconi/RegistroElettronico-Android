@@ -145,6 +145,7 @@ public class FragmentLogin extends SlideFragment {
 
                                 loggedIn = true;
                                 updateNavigation();
+                                nextSlide();
                             }, Throwable::printStackTrace);
 
                 }, error -> {
