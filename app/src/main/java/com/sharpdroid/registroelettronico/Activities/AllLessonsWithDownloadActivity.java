@@ -42,7 +42,7 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recycler_refresh);
+        setContentView(R.layout.activity_recycler_refresh_scrollbar);
         ButterKnife.bind(this);
 
         code = getIntent().getIntExtra("code", -1);

@@ -1,18 +1,20 @@
 package com.sharpdroid.registroelettronico.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
-import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
-import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.sharpdroid.registroelettronico.Fragments.FragmentFiles;
+import com.sharpdroid.registroelettronico.Activities.ActivityFiles;
 import com.sharpdroid.registroelettronico.Interfaces.API.FileTeacher;
 import com.sharpdroid.registroelettronico.Interfaces.API.Folder;
 import com.sharpdroid.registroelettronico.Interfaces.Client.FileElement;
@@ -87,23 +89,16 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     folderHolder.divider.setVisibility(View.VISIBLE);
                 }
                 folderHolder.layout.setOnClickListener(view -> {
-                    FragmentFiles fragment = new FragmentFiles();
-                    Bundle intent_data = new Bundle();
-                    intent_data.putString("folder", new Gson().toJson(f));
-                    intent_data.putString("name", f.getProfName().toLowerCase());
-                    fragment.setArguments(intent_data);
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        fragment.setSharedElementEnterTransition(TransitionInflater.from(mContext).inflateTransition(R.transition.shared_element));
+                    Intent i = new Intent(mContext, ActivityFiles.class);
+                    i.putExtra("folder", new Gson().toJson(f));
+                    i.putExtra("name", f.getProfName().toLowerCase());
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        mContext.startActivity(i, ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) mContext,
+                                new Pair<>(folderHolder.title, "folder_title")
+                        ).toBundle());
+                    } else {
+                        mContext.startActivity(i);
                     }
-
-                    fragmentManager.beginTransaction()
-                            .addSharedElement(folderHolder.date, "folder_date")
-                            .addSharedElement(folderHolder.title, "folder_title")
-                            .addSharedElement(folderHolder.layout, "folder_layout")
-                            .replace(R.id.fragment_container, fragment)
-                            .addToBackStack(null)
-                            .commit();
                 });
 
                 folderHolder.title.setText(f.getName().trim());
