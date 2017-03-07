@@ -1,12 +1,8 @@
 package com.sharpdroid.registroelettronico.Adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,13 +88,7 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     Intent i = new Intent(mContext, ActivityFiles.class);
                     i.putExtra("folder", new Gson().toJson(f));
                     i.putExtra("name", f.getProfName().toLowerCase());
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        mContext.startActivity(i, ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) mContext,
-                                new Pair<>(folderHolder.title, "folder_title")
-                        ).toBundle());
-                    } else {
-                        mContext.startActivity(i);
-                    }
+                    mContext.startActivity(i);
                 });
 
                 folderHolder.title.setText(f.getName().trim());
