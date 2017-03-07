@@ -76,8 +76,6 @@ public class ActivityFiles extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).margin(dpToPx(72), dpToPx(16)).size(1).build());
         mRecyclerView.setItemAnimator(null);
-        mRecyclerView.setNestedScrollingEnabled(false);
-
 
         mRecyclerView.setAdapter(mRVAdapter);
     }
