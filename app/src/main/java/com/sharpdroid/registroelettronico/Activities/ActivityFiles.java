@@ -2,7 +2,6 @@ package com.sharpdroid.registroelettronico.Activities;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.sharpdroid.registroelettronico.Adapters.FileAdapter;
@@ -23,18 +21,12 @@ import org.apache.commons.lang3.text.WordUtils;
 
 import java.io.IOException;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.dpToPx;
 
 public class ActivityFiles extends AppCompatActivity {
     final static String TAG = ActivityFiles.class.getSimpleName();
-
-    @BindView(R.id.collapsing_toolbar)
-    CollapsingToolbarLayout collapsingToolbarLayout;
-    @BindView(R.id.content)
-    TextView content;
 
     FileAdapter mRVAdapter;
     FilesDB db;
@@ -66,7 +58,7 @@ public class ActivityFiles extends AppCompatActivity {
         } finally {
             if (data != null) {
                 setTitle(WordUtils.capitalizeFully(data.getProfName()));
-                content.setText(WordUtils.capitalize(data.getName()));
+                getSupportActionBar().setSubtitle(WordUtils.capitalize(data.getName()));
                 mRVAdapter = new FileAdapter(this, mCoordinatorLayout, db);
                 addSubjects(data);
             }
@@ -88,7 +80,6 @@ public class ActivityFiles extends AppCompatActivity {
     @Override
     public void setTitle(CharSequence title) {
         super.setTitle(title);
-        collapsingToolbarLayout.setTitle(title);
     }
 
     @Override
