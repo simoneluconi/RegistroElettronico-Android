@@ -52,15 +52,15 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
      * PARENT VIEWS
      **/
     TabLayout tabLayout;
-    CoordinatorLayout mCoordinatorLayout;
 
+    @BindView(R.id.coordinator_layout)
+    CoordinatorLayout mCoordinatorLayout;
     @BindView(R.id.swiperefresh)
     CSwipeRefreshLayout mCSwipeRefreshLayout;
     @BindView(R.id.view_pager)
     ViewPager mViewPager;
 
     PagerAdapter pagerAdapter;
-    Snackbar snackbar;
 
     private boolean pager_selected;
 
@@ -71,13 +71,10 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        mContext = getContext();
         View layout = inflater.inflate(R.layout.fragment_medie_pager, container, false);
         ButterKnife.bind(this, layout);
 
-        mContext = getContext();
-
-        mCoordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.coordinator_layout);
         tabLayout = (TabLayout) getActivity().findViewById(R.id.tab_layout);
         tabLayout.setVisibility(View.VISIBLE);
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) getActivity().findViewById(R.id.toolbar).getLayoutParams();
@@ -111,9 +108,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
                 .subscribe(marks -> {
                     addSubjects(marks, true);
                     mCSwipeRefreshLayout.setRefreshing(false);
-                    String msg = getSnackBarMessage(marks);
-                    snackbar = Snackbar.make(mCoordinatorLayout, msg, Snackbar.LENGTH_LONG);
-                    snackbar.show();
+                    Snackbar.make(mCoordinatorLayout, getSnackBarMessage(marks), Snackbar.LENGTH_LONG).show();
                 }, error -> {
                     if (!isNetworkAvailable(mContext)) {
                         Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
@@ -175,7 +170,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         UpdateMedie();
     }
 
-    protected class MediePager extends FragmentPagerAdapter {
+    private class MediePager extends FragmentPagerAdapter {
         MediePager(FragmentManager fm) {
             super(fm);
         }
