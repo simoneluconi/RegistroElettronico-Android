@@ -107,10 +107,16 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         } else if (!isOrarioScolastico)
             cal.add(Calendar.DATE, 1);
 
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
         mDate = cal.getTime();
 
         mCompactCalendarView.setCurrentDate(mDate);
 
+        Log.d("TIME", mDate.toString());
         updateCalendar();
         updateAdapter();
         updateDB();
@@ -120,8 +126,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
 
     private void fetchEvents() {
         events.clear();
-        events.addAll(mAgendaDB.getEvents());
-        events.addAll(mAgendaDB.getLocalEvents());
+        events.addAll(mAgendaDB.getAllEvents());
     }
 
     private void updateAdapter() {
@@ -163,6 +168,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     public void onDayClick(Date dateClicked) {
         mDate = dateClicked;
         updateAdapter();
+        Log.d("TIME", dateClicked.toString());
     }
 
     @Override

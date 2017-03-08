@@ -192,4 +192,11 @@ public class AgendaDB extends SQLiteOpenHelper {
         list.addAll(getEvents(day));
         return list;
     }
+
+    public List<Event> getAllEvents() {
+        List<Event> list = new ArrayList<>();
+        list.addAll(getLocalEvents());
+        list.addAll(getEvents());
+        return list;
+    }
 }
