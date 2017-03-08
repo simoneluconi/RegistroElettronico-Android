@@ -49,7 +49,7 @@ public class SubjectsDB extends SQLiteOpenHelper {
 
         db.execSQL("CREATE TABLE " + TABLE_PROFESSORS + " (" +
                 professors[0] + " INTEGER, " +
-                professors[1] + " INTEGER UNIQUE, " +
+                professors[1] + " INTEGER, " +
                 professors[2] + " TEXT);");
     }
 
