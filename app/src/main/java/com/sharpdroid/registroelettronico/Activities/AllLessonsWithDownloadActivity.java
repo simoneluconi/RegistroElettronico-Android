@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
@@ -22,7 +23,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
-import static com.sharpdroid.registroelettronico.Utils.Metodi.concat;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.isNetworkAvailable;
 
 public class AllLessonsWithDownloadActivity extends AppCompatActivity
@@ -97,7 +97,7 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
             mSwipeRefreshLayout.setRefreshing(false);
         } else {
             new SpiaggiariApiClient(this)
-                    .getLessons(code, concat(db.getProfessorCodes(code), ","))
+                    .getLessons(code, TextUtils.join(",", db.getProfessorCodes(code)))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(lessons -> {
                         //update subjectsDB

@@ -391,17 +391,6 @@ public class Metodi {
         return sort;
     }
 
-    public static String concat(List<?> list, String divider) {
-        String r = "";
-        if (!list.isEmpty()) {
-            r = String.valueOf(list.get(0));
-            for (int i = 1; i < list.size(); i++) {
-                r += divider + String.valueOf(list.get(i));
-            }
-        }
-        return r;
-    }
-
     public static List<MarkSubject> getMarksOfThisPeriod(List<MarkSubject> markssubject, String p) {
         if (p == null) return markssubject;
         List<MarkSubject> marksSub = new ArrayList<>();
