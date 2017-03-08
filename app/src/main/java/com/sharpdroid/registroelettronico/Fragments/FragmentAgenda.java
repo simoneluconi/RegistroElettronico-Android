@@ -2,6 +2,7 @@ package com.sharpdroid.registroelettronico.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -76,9 +80,16 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     @Override
     public View onCreateView(final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         mContext = getContext();
-        View layout = inflater.inflate(R.layout.fragment_calendar, container, false);
-        ButterKnife.bind(this, layout);
+        return inflater.inflate(R.layout.fragment_calendar, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        ButterKnife.bind(this, view);
 
         mToolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
 
@@ -95,33 +106,35 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         adapter = new AgendaAdapter(mContext, place_holder);
         recycler.setLayoutManager(new LinearLayoutManager(mContext));
         recycler.setAdapter(adapter);
+
+        prepareDate(true);
+        mCompactCalendarView.setCurrentDate(mDate);
+
+        updateCalendar();
+        updateAdapter();
+        updateDB();
+    }
+
+    private void prepareDate(boolean predictNextDay) {
         mDate = new Date();
 
         Calendar cal = toCalendar(mDate);
 
-        boolean isOrarioScolastico = cal.get(Calendar.HOUR_OF_DAY) < 14;
-        if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && !isOrarioScolastico) {
-            cal.add(Calendar.DATE, 2);
-        } else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
-            cal.add(Calendar.DATE, 1);
-        } else if (!isOrarioScolastico)
-            cal.add(Calendar.DATE, 1);
-
+        if (predictNextDay) {
+            boolean isOrarioScolastico = cal.get(Calendar.HOUR_OF_DAY) < 14;
+            if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && !isOrarioScolastico) {
+                cal.add(Calendar.DATE, 2);
+            } else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+                cal.add(Calendar.DATE, 1);
+            } else if (!isOrarioScolastico)
+                cal.add(Calendar.DATE, 1);
+        }
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
 
         mDate = cal.getTime();
-
-        mCompactCalendarView.setCurrentDate(mDate);
-
-        Log.d("TIME", mDate.toString());
-        updateCalendar();
-        updateAdapter();
-        updateDB();
-
-        return layout;
     }
 
     private void fetchEvents() {
@@ -134,6 +147,9 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         adapter.addAllCalendarEvents(mAgendaDB.getAllEvents(mDate.getTime()));
     }
 
+    /**
+     * Run only once
+     */
     private void updateCalendar() {
         mCompactCalendarView.removeAllEvents();
         fetchEvents();
@@ -168,7 +184,6 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     public void onDayClick(Date dateClicked) {
         mDate = dateClicked;
         updateAdapter();
-        Log.d("TIME", dateClicked.toString());
     }
 
     @Override
@@ -177,6 +192,23 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         TransitionManager.beginDelayedTransition(mToolbar, new ChangeText().setChangeBehavior(ChangeText.CHANGE_BEHAVIOR_IN));
         mToolbar.setTitle(WordUtils.capitalizeFully(month.format(firstDayOfNewMonth)));
         mToolbar.setSubtitle(WordUtils.capitalizeFully(year.format(firstDayOfNewMonth)));
+        updateAdapter();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.agenda, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.today) {
+            prepareDate(false);
+            mCompactCalendarView.setCurrentDate(mDate);
+            adapter.addAllCalendarEvents(mAgendaDB.getAllEvents(mDate.getTime()));
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

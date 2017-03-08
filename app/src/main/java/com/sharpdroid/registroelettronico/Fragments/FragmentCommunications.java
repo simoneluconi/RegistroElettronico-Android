@@ -2,6 +2,7 @@ package com.sharpdroid.registroelettronico.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -52,9 +53,14 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
     public View onCreateView(final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         mContext = getContext();
-        View layout = inflater.inflate(R.layout.coordinator_swipe_recycler, container, false);
         db = new CommunicationsDB(mContext);
-        ButterKnife.bind(this, layout);
+        return inflater.inflate(R.layout.coordinator_swipe_recycler, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.bind(this, view);
 
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(
@@ -63,7 +69,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
                 R.color.greenmaterial,
                 R.color.orangematerial);
 
-        RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
+        RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).marginResId(R.dimen.activity_horizontal_margin, R.dimen.activity_horizontal_margin).size(1).build());
@@ -74,8 +80,6 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
 
         bindCommunicationsCache();
         UpdateCommunications();
-
-        return layout;
     }
 
     private void addCommunications(List<Communication> communications, boolean docache) {

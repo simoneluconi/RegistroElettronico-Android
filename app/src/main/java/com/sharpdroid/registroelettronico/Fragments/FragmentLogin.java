@@ -3,6 +3,7 @@ package com.sharpdroid.registroelettronico.Fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.content.res.AppCompatResources;
 import android.util.Log;
@@ -58,10 +59,13 @@ public class FragmentLogin extends SlideFragment {
                              Bundle savedInstanceState) {
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         mContext = getContext();
-        // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_login, container, false);
+        return inflater.inflate(R.layout.fragment_login, container, false);
+    }
 
-        ButterKnife.bind(this, root);
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.bind(this, view);
 
         mEditTextMail.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(mContext, R.drawable.ic_person), null, null, null);
         mEditTextPassword.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(mContext, R.drawable.ic_password), null, null, null);
@@ -78,8 +82,6 @@ public class FragmentLogin extends SlideFragment {
             }
             return false;
         });
-
-        return root;
     }
 
     @Override

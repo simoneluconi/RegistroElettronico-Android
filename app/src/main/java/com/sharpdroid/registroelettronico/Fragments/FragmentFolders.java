@@ -3,6 +3,7 @@ package com.sharpdroid.registroelettronico.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -52,9 +53,15 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.coordinator_swipe_recycler, container, false);
-        ButterKnife.bind(this, layout);
         mContext = getContext();
+        return inflater.inflate(R.layout.coordinator_swipe_recycler, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        ButterKnife.bind(this, view);
 
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(
@@ -63,7 +70,7 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
                 R.color.greenmaterial,
                 R.color.orangematerial);
 
-        RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
+        RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerView.setItemAnimator(null);
@@ -75,7 +82,6 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
 
         UpdateFiles();
 
-        return layout;
     }
 
     private void addFiles(List<FileTeacher> result, boolean docache) {

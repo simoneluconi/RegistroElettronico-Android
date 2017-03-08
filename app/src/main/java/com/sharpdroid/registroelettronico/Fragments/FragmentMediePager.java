@@ -3,6 +3,7 @@ package com.sharpdroid.registroelettronico.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -72,8 +73,13 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mContext = getContext();
-        View layout = inflater.inflate(R.layout.fragment_medie_pager, container, false);
-        ButterKnife.bind(this, layout);
+        return inflater.inflate(R.layout.fragment_medie_pager, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.bind(this, view);
 
         tabLayout = (TabLayout) getActivity().findViewById(R.id.tab_layout);
         tabLayout.setVisibility(View.VISIBLE);
@@ -96,8 +102,6 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         bindMarksSubjectsCache();
 
         UpdateMedie();
-
-        return layout;
     }
 
     private void UpdateMedie() {

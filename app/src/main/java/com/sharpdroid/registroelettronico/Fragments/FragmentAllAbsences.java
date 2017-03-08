@@ -2,6 +2,7 @@ package com.sharpdroid.registroelettronico.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -48,10 +49,14 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.coordinator_swipe_recycler, container, false);
         mContext = getContext();
+        return inflater.inflate(R.layout.coordinator_swipe_recycler, container, false);
+    }
 
-        ButterKnife.bind(this, root);
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.bind(this, view);
 
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(
@@ -68,7 +73,6 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
 
         UpdateAllAbsences();
 
-        return root;
     }
 
     void addAbsences(Absences absences, boolean docache) {

@@ -3,6 +3,7 @@ package com.sharpdroid.registroelettronico.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,9 +38,13 @@ public class FragmentSubjects extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View layout = inflater.inflate(R.layout.fragment_lessons, container, false);
-        ButterKnife.bind(this, layout);
+        return inflater.inflate(R.layout.fragment_lessons, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.bind(this, view);
         mContext = getContext();
         db = new SubjectsDB(mContext);
 
@@ -48,8 +53,6 @@ public class FragmentSubjects extends Fragment {
         recycler.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).size(1).margin(dpToPx(16), dpToPx(16)).build());
         recycler.setAdapter(adapter);
         adapter.addAll(db.getSubjects());
-
-        return layout;
     }
 
     @Override

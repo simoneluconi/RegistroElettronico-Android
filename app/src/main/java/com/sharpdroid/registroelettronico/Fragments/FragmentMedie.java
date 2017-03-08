@@ -2,6 +2,7 @@ package com.sharpdroid.registroelettronico.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,6 +29,7 @@ import static com.sharpdroid.registroelettronico.Utils.Metodi.getMarksOfThisPeri
 public class FragmentMedie extends Fragment {
     final private String TAG = FragmentMedie.class.getSimpleName();
 
+    Context mContext;
     SubjectsDB subjectsDB;
     int periodo;
     private MedieAdapter mRVAdapter;
@@ -39,15 +41,19 @@ public class FragmentMedie extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        Context mContext = getContext();
-        View layout = inflater.inflate(R.layout.coordinator_swipe_recycler_padding, container, false);
+        mContext = getContext();
+        return inflater.inflate(R.layout.coordinator_swipe_recycler_padding, container, false);
+    }
 
-        ButterKnife.bind(this, layout);
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.bind(this, view);
 
         periodo = getArguments().getInt("q");
         subjectsDB = new SubjectsDB(mContext);
 
-        RecyclerView mRecyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
+        RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);
 
         mRecyclerView.setHasFixedSize(true);
         if (getResources().getBoolean(R.bool.isTablet)) {
@@ -59,8 +65,6 @@ public class FragmentMedie extends Fragment {
 
         mRVAdapter = new MedieAdapter(mContext, new CopyOnWriteArrayList<>(), subjectsDB);
         mRecyclerView.setAdapter(mRVAdapter);
-
-        return layout;
     }
 
     public void addSubjects(List<MarkSubject> markSubjects) {
