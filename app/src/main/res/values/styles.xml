@@ -33,4 +33,12 @@
         <item name="colorPrimaryDark">@color/gray</item>
         <item name="android:windowBackground">@drawable/background_splash</item>
     </style>
+
+    <style name="MenuButtonsStyle">
+        <item name="fab_size">mini</item>
+
+        <item name="fab_colorNormal">#eee</item>
+        <item name="fab_colorPressed">#eee</item>
+        <item name="fab_colorRipple">#999</item>
+    </style>
 </resources>
