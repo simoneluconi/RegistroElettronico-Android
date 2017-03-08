@@ -3,7 +3,6 @@ package com.sharpdroid.registroelettronico.Fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,12 +13,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Adapters.AgendaAdapter;
 import com.sharpdroid.registroelettronico.Databases.AgendaDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Event;
 import com.sharpdroid.registroelettronico.R;
+import com.transitionseverywhere.ChangeText;
+import com.transitionseverywhere.TransitionManager;
 
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -49,8 +52,14 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     View place_holder;
     @BindView(R.id.coordinator_layout)
     CoordinatorLayout mCoordinatorLayout;
-    @BindView(R.id.fab)
-    FloatingActionButton mFloatingActionButton;
+    @BindView(R.id.fab_big_add)
+    FloatingActionMenu addFAB;
+    @BindView(R.id.fab_mini_verifica)
+    FloatingActionButton verificaFAB;
+    @BindView(R.id.fab_mini_esercizi)
+    FloatingActionButton eserciziFAB;
+    @BindView(R.id.fab_mini_altro)
+    FloatingActionButton altroFAB;
 
     private CompactCalendarView mCompactCalendarView;
     private Toolbar mToolbar;
@@ -80,9 +89,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         mCompactCalendarView.setUseThreeLetterAbbreviation(true);
         mCompactCalendarView.setListener(this);
 
-        mFloatingActionButton.setOnClickListener(v -> {
-            //TODO: Do stuff
-        });
+        addFAB.setClosedOnTouchOutside(true);
 
         adapter = new AgendaAdapter(mContext, place_holder);
         recycler.setLayoutManager(new LinearLayoutManager(mContext));
@@ -160,6 +167,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     @Override
     public void onMonthScroll(Date firstDayOfNewMonth) {
         mDate = firstDayOfNewMonth;
+        TransitionManager.beginDelayedTransition(mToolbar, new ChangeText().setChangeBehavior(ChangeText.CHANGE_BEHAVIOR_IN));
         mToolbar.setTitle(WordUtils.capitalizeFully(month.format(firstDayOfNewMonth)));
     }
 
