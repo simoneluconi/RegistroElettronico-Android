@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SeekBar;
@@ -35,7 +36,6 @@ import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.MessaggioVoto;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.concat;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getSubjectName;
 
 // DONE: 03/12/2016 Dettagli (nome, aula, prof, ora, note, colore)
@@ -223,7 +223,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         lessonsView.update(subjectsDB, code);
 
         new SpiaggiariApiClient(this)
-                .getLessons(code, concat(subjectsDB.getProfessorCodes(code), ","))
+                .getLessons(code, TextUtils.join(",", subjectsDB.getProfessorCodes(code)))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(lessons -> {
                             subjectsDB.removeLessons(code);
