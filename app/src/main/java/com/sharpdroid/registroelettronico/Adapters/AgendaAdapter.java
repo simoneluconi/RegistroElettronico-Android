@@ -21,7 +21,7 @@ import org.apache.commons.lang3.text.WordUtils;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -109,7 +109,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     private List<Entry> convert(List<Event> events) {
-        HashMap<String, List<Event>> organized = new HashMap<>();
+        LinkedHashMap<String, List<Event>> organized = new LinkedHashMap<>();
         for (Event e : events) {
             if (isEventTest(e)) {
                 if (organized.containsKey(mContext.getString(R.string.verifiche))) {
@@ -131,6 +131,15 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
 
         List<Entry> convert = new LinkedList<>();
+
+        //Priorità alle verifiche
+        if (organized.containsKey(mContext.getString(R.string.verifiche))) {
+            convert.add(new HeaderEntry(mContext.getString(R.string.verifiche)));
+            for (Event e : organized.get(mContext.getString(R.string.verifiche))) {
+                convert.add(new AgendaEntry(e));
+            }
+            organized.remove(mContext.getString(R.string.verifiche));
+        }
 
         for (String k : organized.keySet()) {
             convert.add(new HeaderEntry(k));

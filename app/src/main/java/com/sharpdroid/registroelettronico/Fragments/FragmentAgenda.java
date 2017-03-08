@@ -100,6 +100,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         mCompactCalendarView.setLocale(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALIAN);
         mCompactCalendarView.setUseThreeLetterAbbreviation(true);
         mCompactCalendarView.setListener(this);
+        mCompactCalendarView.shouldSelectFirstDayOfMonthOnScroll(false);
 
         addFAB.setClosedOnTouchOutside(true);
 
@@ -143,8 +144,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     }
 
     private void updateAdapter() {
-        adapter.clear();
-        adapter.addAllCalendarEvents(mAgendaDB.getAllEvents(mDate.getTime()));
+        setAdapterEvents(mAgendaDB.getAllEvents(mDate.getTime()));
     }
 
     /**
@@ -155,6 +155,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         fetchEvents();
         mCompactCalendarView.addEvents(convertEvents(events));
         mCompactCalendarView.invalidate();
+
     }
 
     private Calendar toCalendar(Date date) {
@@ -189,10 +190,20 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     @Override
     public void onMonthScroll(Date firstDayOfNewMonth) {
         mDate = firstDayOfNewMonth;
+        setTitleSubtitle(firstDayOfNewMonth);
+        //updateAdapter();
+    }
+
+    private void setTitleSubtitle(Date d) {
         TransitionManager.beginDelayedTransition(mToolbar, new ChangeText().setChangeBehavior(ChangeText.CHANGE_BEHAVIOR_IN));
-        mToolbar.setTitle(WordUtils.capitalizeFully(month.format(firstDayOfNewMonth)));
-        mToolbar.setSubtitle(WordUtils.capitalizeFully(year.format(firstDayOfNewMonth)));
-        updateAdapter();
+        mToolbar.setTitle(WordUtils.capitalizeFully(month.format(d)));
+        mToolbar.setSubtitle(WordUtils.capitalizeFully(year.format(d)));
+    }
+
+    private void setAdapterEvents(List<Event> events) {
+        //TransitionManager.beginDelayedTransition(recycler, new Crossfade().setFadeBehavior(Crossfade.FADE_BEHAVIOR_OUT_IN).setDuration(200));
+        TransitionManager.beginDelayedTransition(recycler);
+        adapter.addAllCalendarEvents(events);
     }
 
     @Override
@@ -206,7 +217,9 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         if (item.getItemId() == R.id.today) {
             prepareDate(false);
             mCompactCalendarView.setCurrentDate(mDate);
-            adapter.addAllCalendarEvents(mAgendaDB.getAllEvents(mDate.getTime()));
+            setTitleSubtitle(mDate);
+
+            setAdapterEvents(mAgendaDB.getAllEvents(mDate.getTime()));
         }
         return super.onOptionsItemSelected(item);
     }
