@@ -201,8 +201,6 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     }
 
     private void setAdapterEvents(List<Event> events) {
-        //TransitionManager.beginDelayedTransition(recycler, new Crossfade().setFadeBehavior(Crossfade.FADE_BEHAVIOR_OUT_IN).setDuration(200));
-        TransitionManager.beginDelayedTransition(recycler);
         adapter.addAllCalendarEvents(events);
     }
 
