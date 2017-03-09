@@ -47,7 +47,7 @@ import static com.sharpdroid.registroelettronico.Utils.Metodi.convertEvents;
 // TODO: 19/01/2017 Aggiungere eventi all'agenda 
 // TODO: 19/01/2017 Aggiungere eventi dell'agenda nel calendario del telefono 
 
-public class FragmentAgenda extends Fragment implements CompactCalendarView.CompactCalendarViewListener {
+public class FragmentAgenda extends Fragment implements CompactCalendarView.CompactCalendarViewListener, AgendaAdapter.LongClickListener, LongClickAgenda.Listener {
     final private String TAG = FragmentAgenda.class.getSimpleName();
     SimpleDateFormat month = new SimpleDateFormat("MMMM", Locale.getDefault());
     SimpleDateFormat year = new SimpleDateFormat("yyyy", Locale.getDefault());
@@ -105,6 +105,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         addFAB.setClosedOnTouchOutside(true);
 
         adapter = new AgendaAdapter(mContext, place_holder);
+        adapter.setItemLongClickListener(this);
         recycler.setLayoutManager(new LinearLayoutManager(mContext));
         recycler.setAdapter(adapter);
 
@@ -232,5 +233,15 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     public void onResume() {
         super.onResume();
         setTitleSubtitle(mDate);
+    }
+
+    @Override
+    public void onAgendaItemLongClicked(Event e) {
+        LongClickAgenda.newInstance(4).show(getChildFragmentManager(), "dialog");
+    }
+
+    @Override
+    public void onBottomSheetItemClicked(int position) {
+        Log.d("TASD", "ASDASD");
     }
 }
