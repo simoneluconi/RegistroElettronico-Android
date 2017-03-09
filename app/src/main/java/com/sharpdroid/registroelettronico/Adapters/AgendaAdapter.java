@@ -37,6 +37,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private List<Entry> CVDataList;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM", Locale.getDefault());
     private View place_holder;
+    private LongClickListener mClickListener;
 
     public AgendaAdapter(Context mContext, View ph) {
         this.mContext = mContext;
@@ -69,6 +70,11 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             eventHolder.date.setText(dateFormat.format(event.getStart()));
             eventHolder.subject.setText(WordUtils.capitalizeFully(event.getAutore_desc().toLowerCase(), Delimeters));
             eventHolder.title.setText(event.getTitle());
+            eventHolder.itemView.setOnLongClickListener((View v) -> {
+                if (mClickListener != null)
+                    mClickListener.onAgendaItemLongClicked(event);
+                return false;
+            });
         }
     }
 
@@ -82,6 +88,9 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return CVDataList.size();
     }
 
+    public void setItemLongClickListener(LongClickListener longClickListener) {
+        mClickListener = longClickListener;
+    }
 
     public void addAll(List<Event> events) {
         CVDataList = convert(events);
@@ -163,6 +172,10 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         mContext.startActivity(calIntent);
     }
 
+    public interface LongClickListener {
+        void onAgendaItemLongClicked(Event e);
+    }
+
     class EventHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.divider)
         View divider;
@@ -176,13 +189,6 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         EventHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-
-            itemView.setOnLongClickListener((View v) -> {
-                Entry e = CVDataList.get(getAdapterPosition());
-                Event event = ((AgendaEntry) e).getEvent();
-                addEventToCalendar(event);
-                return false;
-            });
         }
     }
 }
