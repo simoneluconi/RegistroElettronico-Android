@@ -90,6 +90,39 @@ public class FragmentLogin extends SlideFragment {
         return loggedIn;
     }
 
+    private void fillSubjectsDB(List<LessonSubject> subjects) {
+        SubjectsDB db = new SubjectsDB(mContext);
+
+        for (LessonSubject subject : subjects) {
+            String body = TextUtils.join(",", subject.getTeacherCodes());
+
+            new SpiaggiariApiClient(mContext)
+                    .getLessons(subject.getCode(), body)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(lessons -> {
+                        String profName = getProfessorOfThisSubject(lessons);
+
+                        db.removeLessons(subject.getCode());
+                        db.addLessons(subject.getCode(), lessons);
+                        db.addSubject(subject, profName);
+                        db.addProfessors(subject);
+
+                        Log.d("Trova professore", String.format(Locale.getDefault(), "Professore di %1$s è %2$s", subject.getName(), profName));
+                    }, Throwable::printStackTrace);
+        }
+
+        db.close();
+    }
+
+    private void getSubjects() {
+        //scarica le materie (nome, id, prof) per poter in seguito modificare a piacere tutte le caratteristiche nel db
+        //Per ogni materia aggiungo il suo professore cercandolo dalle lezioni
+        new SpiaggiariApiClient(mContext)
+                .getSubjects()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::fillSubjectsDB, Throwable::printStackTrace);
+    }
+
     private void Login() {
         String mEmail = mEditTextMail.getText().toString();
         String mPassword = mEditTextPassword.getText().toString();
@@ -109,45 +142,14 @@ public class FragmentLogin extends SlideFragment {
                     editor.putString("name", WordUtils.capitalizeFully(login.getName()).trim());
                     editor.apply();
 
+                    getSubjects();
+
                     mButtonLogin.setText(R.string.login_riuscito);
                     Toast.makeText(mContext, R.string.login_msg, Toast.LENGTH_SHORT).show();
 
-                    //scarica le materie (nome, id, prof) per poter in seguito modificare a piacere tutte le caratteristiche nel db
-                    new SpiaggiariApiClient(mContext)
-                            .getSubjects()
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(subjects -> {
-
-                                SubjectsDB db = new SubjectsDB(mContext);
-                                List<Integer> teachers;
-                                //Per ogni materia aggiungo il suo professore cercandolo dalle lezioni
-                                for (LessonSubject subject : subjects) {
-                                    teachers = subject.getTeacherCodes();
-
-                                    String body = TextUtils.join(",", teachers);
-
-                                    new SpiaggiariApiClient(mContext)
-                                            .getLessons(subject.getCode(), body)
-                                            .observeOn(AndroidSchedulers.mainThread())
-                                            .subscribe(lessons -> {
-                                                String profName = getProfessorOfThisSubject(lessons);
-
-                                                db.removeLessons(subject.getCode());
-                                                db.addLessons(subject.getCode(), lessons);
-                                                db.addSubject(subject, profName);
-                                                db.addProfessors(subject);
-
-                                                Log.d("Trova professore", String.format(Locale.getDefault(), "Professore di %1$s è %2$s", subject.getName(), profName));
-                                            }, Throwable::printStackTrace);
-                                }
-
-                                db.close();
-
-                                loggedIn = true;
-                                updateNavigation();
-                                nextSlide();
-                            }, Throwable::printStackTrace);
-
+                    loggedIn = true;
+                    updateNavigation();
+                    nextSlide();
                 }, error -> {
                     error.printStackTrace();
                     mButtonLogin.setText(R.string.login);
