@@ -95,7 +95,6 @@ public class FragmentLogin extends SlideFragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(login -> {
                     SharedPreferences settings = mContext.getSharedPreferences("REGISTRO", MODE_PRIVATE);
-
                     // Writing data to SharedPreferences
                     SharedPreferences.Editor editor = settings.edit();
                     editor.putString("name", WordUtils.capitalizeFully(login.getName()).trim());
@@ -106,7 +105,6 @@ public class FragmentLogin extends SlideFragment {
                     loggedIn = true;
                     updateNavigation();
                     nextSlide();
-
                 }, error -> {
                     error.printStackTrace();
                     mButtonLogin.setText(R.string.login);
