@@ -53,9 +53,6 @@
             android:windowSoftInputMode="adjustPan"
             tools:ignore="InnerclassSeparator" />
         <activity
-            android:name=".Activities.AllLessonsActivity"
-            tools:ignore="InnerclassSeparator" />
-        <activity
             android:name=".Activities.AllLessonsWithDownloadActivity"
             tools:ignore="InnerclassSeparator" />
 

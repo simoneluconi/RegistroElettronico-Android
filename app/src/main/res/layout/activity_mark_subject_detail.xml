@@ -15,7 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
-        android:background="#eee">
+        android:background="#eee"
+        android:elevation="0dp">
 
         <LinearLayout
             android:id="@+id/activity_mark_subject_detail"

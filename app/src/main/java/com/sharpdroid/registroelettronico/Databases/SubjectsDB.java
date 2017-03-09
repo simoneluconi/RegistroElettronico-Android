@@ -23,7 +23,7 @@ public class SubjectsDB extends SQLiteOpenHelper {
     private final static String subjects[] = {"id", "code", "original_name", "name", "target", "professor", "classroom", "notes"};
     private final static String lessons[] = {subjects[1], "teacher", "date", "content"};
     private final static String professors[] = {"subject_code", "code", "name"};
-    private static int DB_VERSION = 6;
+    private static int DB_VERSION = 7;
 
     public SubjectsDB(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -171,24 +171,18 @@ public class SubjectsDB extends SQLiteOpenHelper {
         return this;
     }
 
-    public void addSubject(LessonSubject subject) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues;
-        contentValues = new ContentValues();
-        contentValues.put(subjects[1], subject.getCode());
-        contentValues.put(subjects[2], subject.getName().toLowerCase());
-        db.insert(TABLE_SUBJECTS, null, contentValues);
-        db.close();
-    }
 
     public void addSubject(LessonSubject subject, String prof) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues;
-        contentValues = new ContentValues();
-        contentValues.put(subjects[1], subject.getCode());
-        contentValues.put(subjects[2], subject.getName().toLowerCase());
-        contentValues.put(subjects[5], prof);
-        db.insert(TABLE_SUBJECTS, null, contentValues);
+        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_SUBJECTS + " WHERE " + subjects[1] + " = ?", new String[]{String.valueOf(subject.getCode())});
+        if (!c.moveToFirst()) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(subjects[1], subject.getCode());
+            contentValues.put(subjects[2], subject.getName().toLowerCase());
+            contentValues.put(subjects[5], prof);
+            db.insert(TABLE_SUBJECTS, null, contentValues);
+        }
+        c.close();
         db.close();
     }
 
@@ -218,6 +212,7 @@ public class SubjectsDB extends SQLiteOpenHelper {
         ContentValues values;
         db.beginTransaction();
         for (int prof_code : subject.getTeacherCodes()) {
+            db.delete(TABLE_PROFESSORS, professors[0] + "=?", new String[]{String.valueOf(subject.getCode())});
             values = new ContentValues();
             values.put(professors[0], subject.getCode());
             values.put(professors[1], prof_code);
