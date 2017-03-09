@@ -37,7 +37,7 @@
             style="@style/MenuButtonsStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_assignment_black_24dp"
+            android:src="@drawable/agenda_fab_verifiche"
             app:fab_label="Verifica" />
 
         <com.github.clans.fab.FloatingActionButton
@@ -45,15 +45,15 @@
             style="@style/MenuButtonsStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_bookmark_black_24dp"
-            app:fab_label="Esercizi" />
+            android:src="@drawable/agenda_fab_compiti"
+            app:fab_label="Compiti" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_mini_altro"
             style="@style/MenuButtonsStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_more_horiz_black_24dp"
+            android:src="@drawable/agenda_fab_altro"
             app:fab_label="Altro" />
 
     </com.github.clans.fab.FloatingActionMenu>

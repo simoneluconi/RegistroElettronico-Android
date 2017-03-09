@@ -1,10 +1,12 @@
 package com.sharpdroid.registroelettronico.Utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.provider.CalendarContract;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -14,6 +16,7 @@ import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absence;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absences;
 import com.sharpdroid.registroelettronico.Interfaces.API.Delay;
+import com.sharpdroid.registroelettronico.Interfaces.API.Event;
 import com.sharpdroid.registroelettronico.Interfaces.API.Exit;
 import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
 import com.sharpdroid.registroelettronico.Interfaces.API.LessonSubject;
@@ -52,6 +55,7 @@ import okhttp3.ResponseBody;
 
 public class Metodi {
     public static SimpleDateFormat month_year = new SimpleDateFormat("MMMM yyyy", Locale.ITALIAN);
+    public static SimpleDateFormat complex = new SimpleDateFormat("EEEE d MMMM yyyy", Locale.ITALIAN);
 
     public static char[] Delimeters = {'.', ' ', '\'', '/', '\\'};
 
@@ -481,6 +485,25 @@ public class Metodi {
 
                     db.close();
                 }, Throwable::printStackTrace);
+    }
+
+    public static void addEventToCalendar(Context c, Event event) {
+        Intent calIntent = new Intent(Intent.ACTION_INSERT);
+        calIntent.setType("vnd.android.cursor.item/event");
+        calIntent.putExtra(CalendarContract.Events.DESCRIPTION, event.getTitle());
+        calIntent.putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, event.isAllDay());
+        calIntent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, event.getStart().getTime());
+        if (!event.isAllDay())
+            calIntent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, event.getEnd().getTime());
+        c.startActivity(calIntent);
+    }
+
+    public static String capitalizeFirst(String a) {
+        return a.substring(0, 1).toUpperCase() + a.substring(1);
+    }
+
+    public static String eventToString(Event e) {
+        return capitalizeFirst(complex.format(e.getStart())) + "\n---" + WordUtils.capitalize(e.getAutore_desc()) + "---\n" + capitalizeFirst(e.getNota_2());
     }
 }
 

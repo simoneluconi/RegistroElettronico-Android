@@ -29,6 +29,7 @@
     <color name="brown">#795548</color>
 
     <color name="shortcut_circle">#F5F5F5</color>
-
     <color name="grey_middle">#9E9E9E</color>
+
+    <color name="icon_on_white">#737373</color>
 </resources>
