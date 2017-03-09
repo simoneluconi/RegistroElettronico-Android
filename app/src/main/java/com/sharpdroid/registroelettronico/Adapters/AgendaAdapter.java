@@ -1,8 +1,6 @@
 package com.sharpdroid.registroelettronico.Adapters;
 
 import android.content.Context;
-import android.content.Intent;
-import android.provider.CalendarContract;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +35,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private List<Entry> CVDataList;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM", Locale.getDefault());
     private View place_holder;
-    private LongClickListener mClickListener;
+    private AgendaClickListener mClickListener;
 
     public AgendaAdapter(Context mContext, View ph) {
         this.mContext = mContext;
@@ -70,10 +68,9 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             eventHolder.date.setText(dateFormat.format(event.getStart()));
             eventHolder.subject.setText(WordUtils.capitalizeFully(event.getAutore_desc().toLowerCase(), Delimeters));
             eventHolder.title.setText(event.getTitle());
-            eventHolder.itemView.setOnLongClickListener((View v) -> {
+            eventHolder.itemView.setOnClickListener((View v) -> {
                 if (mClickListener != null)
-                    mClickListener.onAgendaItemLongClicked(event);
-                return false;
+                    mClickListener.onAgendaItemClicked(event);
             });
         }
     }
@@ -88,7 +85,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return CVDataList.size();
     }
 
-    public void setItemLongClickListener(LongClickListener longClickListener) {
+    public void setItemClickListener(AgendaClickListener longClickListener) {
         mClickListener = longClickListener;
     }
 
@@ -160,20 +157,8 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return convert;
     }
 
-    private void addEventToCalendar(Event event) {
-        Intent calIntent = new Intent(Intent.ACTION_INSERT);
-        calIntent.setType("vnd.android.cursor.item/event");
-        calIntent.putExtra(CalendarContract.Events.TITLE, event.getAutore_desc());
-        calIntent.putExtra(CalendarContract.Events.DESCRIPTION, event.getTitle());
-        calIntent.putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, event.isAllDay());
-        calIntent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, event.getStart().getTime());
-        if (!event.isAllDay())
-            calIntent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, event.getEnd().getTime());
-        mContext.startActivity(calIntent);
-    }
-
-    public interface LongClickListener {
-        void onAgendaItemLongClicked(Event e);
+    public interface AgendaClickListener {
+        void onAgendaItemClicked(Event e);
     }
 
     class EventHolder extends RecyclerView.ViewHolder {

@@ -1,6 +1,7 @@
 package com.sharpdroid.registroelettronico.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -42,12 +43,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
+import static com.sharpdroid.registroelettronico.Utils.Metodi.addEventToCalendar;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.convertEvents;
+import static com.sharpdroid.registroelettronico.Utils.Metodi.eventToString;
 
 // TODO: 19/01/2017 Aggiungere eventi all'agenda 
 // TODO: 19/01/2017 Aggiungere eventi dell'agenda nel calendario del telefono 
 
-public class FragmentAgenda extends Fragment implements CompactCalendarView.CompactCalendarViewListener, AgendaAdapter.LongClickListener, LongClickAgenda.Listener {
+public class FragmentAgenda extends Fragment implements CompactCalendarView.CompactCalendarViewListener, AgendaAdapter.AgendaClickListener, LongClickAgenda.Listener {
     final private String TAG = FragmentAgenda.class.getSimpleName();
     SimpleDateFormat month = new SimpleDateFormat("MMMM", Locale.getDefault());
     SimpleDateFormat year = new SimpleDateFormat("yyyy", Locale.getDefault());
@@ -82,7 +85,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
                              ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         mContext = getContext();
-        return inflater.inflate(R.layout.fragment_calendar, container, false);
+        return inflater.inflate(R.layout.fragment_agenda, container, false);
     }
 
     @Override
@@ -105,7 +108,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         addFAB.setClosedOnTouchOutside(true);
 
         adapter = new AgendaAdapter(mContext, place_holder);
-        adapter.setItemLongClickListener(this);
+        adapter.setItemClickListener(this);
         recycler.setLayoutManager(new LinearLayoutManager(mContext));
         recycler.setAdapter(adapter);
 
@@ -236,12 +239,31 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     }
 
     @Override
-    public void onAgendaItemLongClicked(Event e) {
-        LongClickAgenda.newInstance(4).show(getChildFragmentManager(), "dialog");
+    public void onAgendaItemClicked(Event e) {
+        LongClickAgenda longClickAgenda = LongClickAgenda.newInstance();
+        longClickAgenda.setEvent(e);
+        longClickAgenda.show(getChildFragmentManager(), "dialog");
     }
 
     @Override
-    public void onBottomSheetItemClicked(int position) {
-        Log.d("TASD", "ASDASD");
+    public void onBottomSheetItemClicked(int position, Event event) {
+        switch (position) {
+            case 0:
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, eventToString(event));
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
+                break;
+            case 1:
+                addEventToCalendar(mContext, event);
+                break;
+            case 2:
+                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+                android.content.ClipData clip = android.content.ClipData.newPlainText("Evento copiato", eventToString(event));
+                clipboard.setPrimaryClip(clip);
+
+                break;
+        }
     }
 }
