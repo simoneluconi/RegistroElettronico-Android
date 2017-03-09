@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.content.res.AppCompatResources;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,22 +16,16 @@ import android.widget.Toast;
 
 import com.heinrichreimersoftware.materialintro.app.SlideFragment;
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
-import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
-import com.sharpdroid.registroelettronico.Interfaces.API.LessonSubject;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.Utils.DeviceUuidFactory;
 
 import org.apache.commons.lang3.text.WordUtils;
-
-import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.getProfessorOfThisSubject;
 
 public class FragmentLogin extends SlideFragment {
 
@@ -90,39 +82,6 @@ public class FragmentLogin extends SlideFragment {
         return loggedIn;
     }
 
-    private void fillSubjectsDB(List<LessonSubject> subjects) {
-        SubjectsDB db = new SubjectsDB(mContext);
-
-        for (LessonSubject subject : subjects) {
-            String body = TextUtils.join(",", subject.getTeacherCodes());
-
-            new SpiaggiariApiClient(mContext)
-                    .getLessons(subject.getCode(), body)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(lessons -> {
-                        String profName = getProfessorOfThisSubject(lessons);
-
-                        db.removeLessons(subject.getCode());
-                        db.addLessons(subject.getCode(), lessons);
-                        db.addSubject(subject, profName);
-                        db.addProfessors(subject);
-
-                        Log.d("Trova professore", String.format(Locale.getDefault(), "Professore di %1$s è %2$s", subject.getName(), profName));
-                    }, Throwable::printStackTrace);
-        }
-
-        db.close();
-    }
-
-    private void getSubjects() {
-        //scarica le materie (nome, id, prof) per poter in seguito modificare a piacere tutte le caratteristiche nel db
-        //Per ogni materia aggiungo il suo professore cercandolo dalle lezioni
-        new SpiaggiariApiClient(mContext)
-                .getSubjects()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::fillSubjectsDB, Throwable::printStackTrace);
-    }
-
     private void Login() {
         String mEmail = mEditTextMail.getText().toString();
         String mPassword = mEditTextPassword.getText().toString();
@@ -142,14 +101,12 @@ public class FragmentLogin extends SlideFragment {
                     editor.putString("name", WordUtils.capitalizeFully(login.getName()).trim());
                     editor.apply();
 
-                    getSubjects();
-
                     mButtonLogin.setText(R.string.login_riuscito);
                     Toast.makeText(mContext, R.string.login_msg, Toast.LENGTH_SHORT).show();
-
                     loggedIn = true;
                     updateNavigation();
                     nextSlide();
+
                 }, error -> {
                     error.printStackTrace();
                     mButtonLogin.setText(R.string.login);
