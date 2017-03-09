@@ -1,5 +1,6 @@
 package com.sharpdroid.registroelettronico.Activities;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -9,7 +10,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.transition.Slide;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.Window;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Adapters.AllLessonsAdapter;
@@ -23,6 +27,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
+import static com.sharpdroid.registroelettronico.Utils.Metodi.getSubjectName;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.isNetworkAvailable;
 
 public class AllLessonsWithDownloadActivity extends AppCompatActivity
@@ -41,6 +46,14 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+            Slide slide = new Slide();
+            slide.setSlideEdge(Gravity.BOTTOM);
+            getWindow().setExitTransition(slide);
+            getWindow().setEnterTransition(slide);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recycler_refresh_scrollbar);
         ButterKnife.bind(this);
@@ -51,9 +64,12 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        setTitle(getIntent().getStringExtra("name"));
+
+        setTitle(getSubjectName(db.getSubject(code)));
+
         mRVAdapter = new AllLessonsAdapter(this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mRVAdapter);

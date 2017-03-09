@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.Button;
 
-import com.sharpdroid.registroelettronico.Activities.AllLessonsActivity;
+import com.sharpdroid.registroelettronico.Activities.AllLessonsWithDownloadActivity;
 import com.sharpdroid.registroelettronico.Adapters.LessonsAdapter;
 import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
 import com.sharpdroid.registroelettronico.R;
@@ -58,7 +58,7 @@ public class RecentLessonsView extends CardView {
     public void update(SubjectsDB db, int code) {
         adapter.clear();
         adapter.addAll(db.getLessons(code, 5));
-        showAllButton.setOnClickListener(view -> mContext.startActivity(new Intent(mContext, AllLessonsActivity.class).putExtra("code", code)));
+        showAllButton.setOnClickListener(view -> mContext.startActivity(new Intent(mContext, AllLessonsWithDownloadActivity.class).putExtra("code", code)));
     }
 
     public void clear() {
