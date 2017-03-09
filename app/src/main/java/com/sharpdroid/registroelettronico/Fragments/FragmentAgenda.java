@@ -191,7 +191,6 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     public void onMonthScroll(Date firstDayOfNewMonth) {
         mDate = firstDayOfNewMonth;
         setTitleSubtitle(firstDayOfNewMonth);
-        //updateAdapter();
     }
 
     private void setTitleSubtitle(Date d) {
@@ -232,7 +231,6 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     @Override
     public void onResume() {
         super.onResume();
-        mToolbar.setTitle(WordUtils.capitalizeFully(month.format(mDate)));
-        mToolbar.setSubtitle(WordUtils.capitalizeFully(year.format(mDate)));
+        setTitleSubtitle(mDate);
     }
 }
