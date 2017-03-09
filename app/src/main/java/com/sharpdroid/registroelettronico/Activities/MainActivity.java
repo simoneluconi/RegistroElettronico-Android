@@ -36,6 +36,8 @@ import com.sharpdroid.registroelettronico.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.sharpdroid.registroelettronico.Utils.Metodi.updateSubjects;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     @BindView(R.id.nav_view)
@@ -53,6 +55,7 @@ public class MainActivity extends AppCompatActivity
 
     SharedPreferences settings;
     ActionBarDrawerToggle toggle;
+    boolean needUpdate = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,6 +187,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void init(Bundle savedInstanceState) {
+
+        if (needUpdate) {
+            updateSubjects(this);
+            needUpdate = false;
+        }
         View header = mNavigationView.getHeaderView(0);
         TextView text = (TextView) header.findViewById(R.id.name);
 

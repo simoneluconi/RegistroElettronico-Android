@@ -9,11 +9,14 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariAPI;
+import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
+import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absence;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absences;
 import com.sharpdroid.registroelettronico.Interfaces.API.Delay;
 import com.sharpdroid.registroelettronico.Interfaces.API.Exit;
 import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
+import com.sharpdroid.registroelettronico.Interfaces.API.LessonSubject;
 import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
 import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
 import com.sharpdroid.registroelettronico.Interfaces.Client.AbsenceEntry;
@@ -43,6 +46,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import okhttp3.Headers;
 import okhttp3.ResponseBody;
 
@@ -50,18 +54,6 @@ public class Metodi {
     public static SimpleDateFormat month_year = new SimpleDateFormat("MMMM yyyy", Locale.ITALIAN);
 
     public static char[] Delimeters = {'.', ' ', '\'', '/', '\\'};
-
-    public static int[] material_colors = new int[]{
-            0xFFE57373, 0xFFF44336, 0xFFD32F2F,
-            0xFFF06292, 0xFFE91E63, 0xFFC2185B,
-            0xFFBA68C8, 0xFF9C27B0, 0xFF7B1FA2,
-            0xFF7986CB, 0xFF3F51B5, 0xFF303F9F,
-            0xFF4DB6AC, 0xFF009688, 0xFF00796B,
-            0xFF81C784, 0xFF4CAF50, 0xFF388E3C,
-            0xFFFFD54F, 0xFFFFC107, 0xFFFFA000,
-            0xFFFF8A65, 0xFFFF5722, 0xFFE64A19,
-            0xFFA1887F, 0xFF795548, 0xFF5D4037
-    };
 
     public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager
@@ -455,6 +447,40 @@ public class Metodi {
             list.add(new com.github.sundeepk.compactcalendarview.domain.Event(isEventTest(event) ? Color.parseColor("#FF9800") : Color.WHITE, event.getStart().getTime(), null));
         }
         return list;
+    }
+
+    public static void updateSubjects(Context c) {
+        //scarica le materie (nome, id, prof) per poter in seguito modificare a piacere tutte le caratteristiche nel db
+        new SpiaggiariApiClient(c)
+                .getSubjects()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subjects -> {
+
+                    SubjectsDB db = new SubjectsDB(c);
+                    List<Integer> teachers;
+                    //Per ogni materia aggiungo il suo professore cercandolo dalle lezioni
+                    for (LessonSubject subject : subjects) {
+                        teachers = subject.getTeacherCodes();
+
+                        String body = TextUtils.join(",", teachers);
+
+                        new SpiaggiariApiClient(c)
+                                .getLessons(subject.getCode(), body)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(lessons -> {
+                                    String profName = getProfessorOfThisSubject(lessons);
+
+                                    db.removeLessons(subject.getCode());
+                                    db.addLessons(subject.getCode(), lessons);
+                                    db.addSubject(subject, profName);
+                                    db.addProfessors(subject);
+
+                                    Log.d("Trova professore", String.format(Locale.getDefault(), "Professore di %1$s è %2$s", subject.getName(), profName));
+                                }, Throwable::printStackTrace);
+                    }
+
+                    db.close();
+                }, Throwable::printStackTrace);
     }
 }
 
