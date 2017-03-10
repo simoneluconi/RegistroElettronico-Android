@@ -212,6 +212,7 @@ public class SubjectsDB extends SQLiteOpenHelper {
         ContentValues values;
         db.beginTransaction();
         for (int prof_code : subject.getTeacherCodes()) {
+            db.delete(TABLE_PROFESSORS, professors[1] + "=?", new String[]{String.valueOf(prof_code)});
             values = new ContentValues();
             values.put(professors[0], subject.getCode());
             values.put(professors[1], prof_code);
