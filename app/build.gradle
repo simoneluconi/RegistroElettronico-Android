@@ -27,8 +27,8 @@ android {
         applicationId "com.sharpdroid.registroelettronico"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 450
-        versionName "2.0.50"
+        versionCode 452
+        versionName "2.0.52"
 
         vectorDrawables.useSupportLibrary = true;
     }
