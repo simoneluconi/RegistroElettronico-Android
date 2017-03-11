@@ -26,6 +26,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
@@ -45,6 +46,7 @@
             tools:ignore="InnerclassSeparator">
             <intent-filter>
                 <action android:name="com.sharpdroid.registroelettronico.DETAILS" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -69,6 +71,8 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="3124a44c739be03092b7db7c9c44a5052bd37fa5" />
+
+        <activity android:name=".AddEventActivity"></activity>
     </application>
 
 </manifest>
