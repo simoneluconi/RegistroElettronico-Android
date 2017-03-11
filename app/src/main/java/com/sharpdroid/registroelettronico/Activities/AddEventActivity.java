@@ -1,10 +1,12 @@
-package com.sharpdroid.registroelettronico;
+package com.sharpdroid.registroelettronico.Activities;
 
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+
+import com.sharpdroid.registroelettronico.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
