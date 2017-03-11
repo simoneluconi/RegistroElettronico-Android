@@ -23,6 +23,7 @@
 
     <color name="md_white_1000">#ffffff</color>
     <color name="red_strong">#D50000</color>
+    <color name="red_light">#FF5252</color>
 
     <color name="cyan">#00BCD4</color>
     <color name="light_green">#8BC34A</color>

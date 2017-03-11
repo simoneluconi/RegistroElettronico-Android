@@ -22,7 +22,7 @@
     </style>
 
     <style name="AppTheme.TabLayout" parent="Widget.Design.TabLayout">
-        <item name="tabIndicatorColor">#FFF</item>
+        <item name="tabIndicatorColor">@color/md_white_1000</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -40,5 +40,22 @@
         <item name="fab_colorNormal">#eee</item>
         <item name="fab_colorPressed">#eee</item>
         <item name="fab_colorRipple">#999</item>
+    </style>
+
+    <style name="AppTheme.Agenda.InputLayout" parent="Widget.Design.TextInputLayout">
+        <item name="colorControlNormal">#77ffffff</item>
+        <item name="colorControlActivated">@color/md_white_1000</item>
+        <item name="colorControlHighlight">@color/md_white_1000</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:layout_marginLeft">72dp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+    </style>
+
+    <style name="AppTheme.Agenda.MyHint" parent="@style/TextAppearance.Design.Hint">
+        <item name="android:textColor">@color/md_white_1000</item>
+    </style>
+
+    <style name="AppTheme.BigHint" parent="AppTheme.Agenda.MyHint">
+        <item name="android:textSize">16sp</item>
     </style>
 </resources>
