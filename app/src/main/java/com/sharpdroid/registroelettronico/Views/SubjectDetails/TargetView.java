@@ -2,6 +2,7 @@ package com.sharpdroid.registroelettronico.Views.SubjectDetails;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.widget.Button;
@@ -9,6 +10,10 @@ import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.sharpdroid.registroelettronico.R;
+import com.transitionseverywhere.AutoTransition;
+import com.transitionseverywhere.Recolor;
+import com.transitionseverywhere.TransitionManager;
+import com.transitionseverywhere.TransitionSet;
 
 import java.util.Locale;
 
@@ -35,7 +40,7 @@ public class TargetView extends CardView {
     @BindView(R.id.dettagli)
     Button details;
 
-    float media, target;
+    float media, target = 1;
 
     public TargetView(Context context) {
         super(context);
@@ -64,6 +69,7 @@ public class TargetView extends CardView {
         setMedia(media);
 
         //bar
+        TransitionManager.beginDelayedTransition(this, new TransitionSet().addTransition(new Recolor()).addTransition(new AutoTransition()));
         progressBar.setProgress(media);
         progressBar.setProgressColor(getColor(getMarkColor(media, target)));
     }
@@ -82,12 +88,13 @@ public class TargetView extends CardView {
     }
 
     public void setTarget(float target) {
-        this.target = target;
         targetView.setText(String.format(Locale.getDefault(), "%.2f", target));
 
-        //bar
+        TransitionManager.beginDelayedTransition(progressBar, new TransitionSet().addTransition(new AutoTransition()).setStartDelay(150).setDuration(500).setInterpolator(new FastOutSlowInInterpolator()));
         progressBar.setMax(target);
-        setProgress(media);
+        progressBar.setProgress(media);
+        progressBar.setProgressColor(getColor(getMarkColor(media, target)));
+        this.target = target;
     }
 
     public void clear() {
