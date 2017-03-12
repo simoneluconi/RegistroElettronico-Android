@@ -477,8 +477,8 @@ public class Metodi {
 
                                     db.removeLessons(subject.getCode());
                                     db.addLessons(subject.getCode(), lessons);
-                                    db.addSubject(subject, profName);
-                                    db.addProfessors(subject);
+                                    db.addSubject(subject);
+                                    //db.addProfessors(subject);
 
                                     Log.d("Trova professore", String.format(Locale.getDefault(), "Professore di %1$s è %2$s", subject.getName(), profName));
                                 }, Throwable::printStackTrace);
@@ -547,6 +547,14 @@ public class Metodi {
         }
 
         return array;
+    }
+
+    public static List<Integer> stringArrayToIntegerList(String[] strings) {
+        List<Integer> integers = new ArrayList<>();
+        for (String s : strings) {
+            integers.add(Integer.parseInt(s));
+        }
+        return integers;
     }
 }
 

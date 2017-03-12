@@ -2,7 +2,6 @@ package com.sharpdroid.registroelettronico.Activities;
 
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -24,9 +23,6 @@ import butterknife.ButterKnife;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getCodesFromSubjects;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getNamesFromSubjects;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.pairToFirst;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.pairToSecond;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.toIntArray;
 
 public class AddEventActivity extends AppCompatActivity {
 
@@ -122,12 +118,13 @@ public class AddEventActivity extends AppCompatActivity {
         MaterialDialog.Builder dialog = new MaterialDialog.Builder(this)
                 .title("Seleziona un professore");
 
-        List<Pair<Integer, String>> professors = subjectsDB.getProfessors();
-        List<String> professorsNames = pairToSecond(professors);
+        //List<Pair<Integer, String>> professors = subjectsDB.getProfessors();
+        List<String> professorsNames = subjectsDB.getProfessorsNames();
+        //pairToSecond(professors);
 
         dialog
                 .items(professorsNames)
-                .itemsIds(toIntArray(pairToFirst(professors)))
+                //      .itemsIds(toIntArray(pairToFirst(professors)))
                 .itemsCallbackSingleChoice(selectedProfessor, (dialog1, view, which, text) -> {
                     selectedProfessor = which;
                     selectedProfessorCode = view.getId();
