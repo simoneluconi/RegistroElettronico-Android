@@ -50,11 +50,16 @@ public class OptionView extends RelativeLayout {
         }
     }
 
+    public Builder builder() {
+        return new Builder(getContext());
+    }
+
     private void init() {
         inflate(getContext(), R.layout.view_event_option, this);
         ButterKnife.bind(this);
 
     }
+
 
     public void setTitle(String t) {
         if (title != null)
@@ -86,5 +91,47 @@ public class OptionView extends RelativeLayout {
         this.onClickListener = onClickListener;
         if (layout != null)
             layout.setOnClickListener(onClickListener);
+    }
+
+    public static class Builder {
+        Context c;
+        private String title, content;
+        @DrawableRes
+        private int drawable;
+        private OnClickListener listener;
+
+        public Builder(Context c) {
+            this.c = c;
+        }
+
+        public Builder title(String t) {
+            title = t;
+            return this;
+        }
+
+        public Builder content(String c) {
+            content = c;
+            return this;
+        }
+
+        public Builder image(@DrawableRes int i) {
+            drawable = i;
+            return this;
+        }
+
+        public Builder onClick(OnClickListener l) {
+            listener = l;
+            return this;
+        }
+
+        public OptionView build() {
+            OptionView v = new OptionView(c);
+            v.setImage(drawable);
+            v.setContent(content);
+            v.setTitle(title);
+            v.setOnClickListener(listener);
+            return v;
+        }
+
     }
 }

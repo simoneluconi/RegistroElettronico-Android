@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.v4.util.Pair;
 
 import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
 import com.sharpdroid.registroelettronico.Interfaces.API.LessonSubject;
@@ -21,9 +22,9 @@ public class SubjectsDB extends SQLiteOpenHelper {
     private final static String TABLE_LESSONS = "lessons";
     private final static String TABLE_PROFESSORS = "professors";
     private final static String subjects[] = {"id", "code", "original_name", "name", "target", "professor", "classroom", "notes"};
-    private final static String lessons[] = {subjects[1], "teacher", "date", "content"};
+    private final static String lessons[] = {subjects[1], "teacher", "date", "content", "professor_code"};
     private final static String professors[] = {"subject_code", "code", "name"};
-    private static int DB_VERSION = 7;
+    private static int DB_VERSION = 8;
 
     public SubjectsDB(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -45,24 +46,22 @@ public class SubjectsDB extends SQLiteOpenHelper {
                 lessons[0] + " INTEGER, " +
                 lessons[1] + " TEXT, " +
                 lessons[2] + " INTEGER, " +
-                lessons[3] + " TEXT);");
-
-        db.execSQL("CREATE TABLE " + TABLE_PROFESSORS + " (" +
-                professors[0] + " INTEGER, " +
-                professors[1] + " INTEGER, " +
-                professors[2] + " TEXT);");
+                lessons[3] + " TEXT" +
+                lessons[4] + " TEXT" +
+                ");");
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
+    public void onUpgrade(SQLiteDatabase db, int old, int n) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_LESSONS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SUBJECTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROFESSORS);
         onCreate(db);
+
     }
 
 
-    //region GETTER
+    //region SUBJECT
     public Subject getSubject(int code) {
         SQLiteDatabase db = this.getReadableDatabase();
         Subject subject = null;
@@ -105,6 +104,31 @@ public class SubjectsDB extends SQLiteOpenHelper {
         return subjects;
     }
 
+    public SubjectsDB editSubject(int code, ContentValues contentValues) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        db.update(TABLE_SUBJECTS, contentValues, subjects[1] + " = ?", new String[]{String.valueOf(code)});
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        return this;
+    }
+
+    public void addSubject(LessonSubject subject, String prof) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_SUBJECTS + " WHERE " + subjects[1] + " = ?", new String[]{String.valueOf(subject.getCode())});
+        if (!c.moveToFirst()) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(subjects[1], subject.getCode());
+            contentValues.put(subjects[2], subject.getName().toLowerCase());
+            contentValues.put(subjects[5], prof);
+            db.insert(TABLE_SUBJECTS, null, contentValues);
+        }
+        c.close();
+        db.close();
+    }
+    //endregion
+
+    //region LESSONS
     public List<Lesson> getLessons(int code) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor c = db.rawQuery("SELECT * FROM " + TABLE_LESSONS + " WHERE " + lessons[0] + "=? ORDER BY " + lessons[2] + " DESC", new String[]{String.valueOf(code)});
@@ -127,6 +151,29 @@ public class SubjectsDB extends SQLiteOpenHelper {
         return lessons;
     }
 
+    public void addLessons(int code, List<Lesson> lessons_list) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values;
+        db.beginTransaction();
+        for (Lesson lesson : lessons_list) {
+            values = new ContentValues();
+            values.put(lessons[0], code);
+            values.put(lessons[1], lesson.getTeacher().toLowerCase().trim());
+            values.put(lessons[2], lesson.getDate().getTime());
+            values.put(lessons[3], lesson.getContent().trim());
+            db.insert(TABLE_LESSONS, null, values);
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+    public void removeLessons(int code) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_LESSONS, lessons[0] + "=?", new String[]{String.valueOf(code)});
+    }
+    //endregion
+
+    //region PROFESSORS
     public List<Integer> getProfessorCodes() {
         List<Integer> p = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
@@ -148,65 +195,28 @@ public class SubjectsDB extends SQLiteOpenHelper {
         c.close();
         return p;
     }
-    //endregion
 
-    //region SETTER
-    public SubjectsDB editSubject(int code, ContentValues contentValues) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.beginTransaction();
-        db.update(TABLE_SUBJECTS, contentValues, subjects[1] + " = ?", new String[]{String.valueOf(code)});
-        db.setTransactionSuccessful();
-        db.endTransaction();
-        return this;
-    }
-
-    public SubjectsDB updateProfessorName(int code, String name) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(subjects[5], name);
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.beginTransaction();
-        db.update(TABLE_SUBJECTS, contentValues, subjects[1] + " = ?", new String[]{String.valueOf(code)});
-        db.setTransactionSuccessful();
-        db.endTransaction();
-        return this;
-    }
-
-
-    public void addSubject(LessonSubject subject, String prof) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_SUBJECTS + " WHERE " + subjects[1] + " = ?", new String[]{String.valueOf(subject.getCode())});
-        if (!c.moveToFirst()) {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(subjects[1], subject.getCode());
-            contentValues.put(subjects[2], subject.getName().toLowerCase());
-            contentValues.put(subjects[5], prof);
-            db.insert(TABLE_SUBJECTS, null, contentValues);
+    public List<Pair<Integer, String>> getProfessors() {
+        List<Pair<Integer, String>> p = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT " + professors[1] + ", " + professors[2] + " FROM " + TABLE_PROFESSORS, null);
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            p.add(Pair.create(c.getInt(0), c.getString(1)));
         }
         c.close();
-        db.close();
+        return p;
     }
 
-    public void addLessons(int code, List<Lesson> lessons_list) {
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues values;
-        db.beginTransaction();
-        for (Lesson lesson : lessons_list) {
-            values = new ContentValues();
-            values.put(lessons[0], code);
-            values.put(lessons[1], lesson.getTeacher().toLowerCase().trim());
-            values.put(lessons[2], lesson.getDate().getTime());
-            values.put(lessons[3], lesson.getContent().trim());
-            db.insert(TABLE_LESSONS, null, values);
+    public List<Pair<Integer, String>> getProfessors(int subject_code) {
+        List<Pair<Integer, String>> p = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT " + professors[1] + ", " + professors[2] + " FROM " + TABLE_PROFESSORS + " WHERE " + professors[0] + "=?", new String[]{String.valueOf(subject_code)});
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            p.add(Pair.create(c.getInt(0), c.getString(1)));
         }
-        db.setTransactionSuccessful();
-        db.endTransaction();
+        c.close();
+        return p;
     }
-
-    public void removeLessons(int code) {
-        SQLiteDatabase db = getWritableDatabase();
-        db.delete(TABLE_LESSONS, lessons[0] + "=?", new String[]{String.valueOf(code)});
-    }
-
     public void addProfessors(LessonSubject subject) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values;
@@ -219,6 +229,12 @@ public class SubjectsDB extends SQLiteOpenHelper {
         }
         db.setTransactionSuccessful();
         db.endTransaction();
+    }
+
+    public List<String> getProfessorsNames() {
+        List<String> names = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+
     }
     //endregion
 }

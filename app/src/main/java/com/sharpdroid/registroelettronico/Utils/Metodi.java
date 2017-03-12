@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.provider.CalendarContract;
+import android.support.v4.util.Pair;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -233,7 +234,7 @@ public class Metodi {
 
     public static String getSubjectName(Subject subject) {
         try {
-            return (!TextUtils.isEmpty(subject.getName())) ? subject.getName() : WordUtils.capitalizeFully(subject.getOriginalName(), Delimeters);
+            return (!TextUtils.isEmpty(subject.getName())) ? subject.getName() : WordUtils.capitalize(subject.getOriginalName(), Delimeters);
         } catch (NullPointerException e) {
             return subject.getOriginalName();
         }
@@ -504,6 +505,48 @@ public class Metodi {
 
     public static String eventToString(Event e) {
         return capitalizeFirst(complex.format(e.getStart())) + "\n---" + WordUtils.capitalize(e.getAutore_desc()) + "---\n" + capitalizeFirst(e.getNota_2());
+    }
+
+    public static List<String> getNamesFromSubjects(List<Subject> subjects) {
+        List<String> names = new ArrayList<>();
+        for (Subject s : subjects) {
+            names.add(getSubjectName(s));
+        }
+        return names;
+    }
+
+    public static int[] getCodesFromSubjects(List<Subject> subjects) {
+        int[] codes = new int[subjects.size()];
+        for (int i = 0; i < subjects.size(); i++) {
+            codes[i] = subjects.get(i).getCode();
+        }
+        return codes;
+    }
+
+    public static <T, K> List<T> pairToFirst(List<Pair<T, K>> pairs) {
+        List<T> seconds = new ArrayList<>();
+        for (Pair<T, K> pair : pairs) {
+            seconds.add(pair.first);
+        }
+        return seconds;
+    }
+
+    public static <T, K> List<K> pairToSecond(List<Pair<T, K>> pairs) {
+        List<K> seconds = new ArrayList<>();
+        for (Pair<T, K> pair : pairs) {
+            seconds.add(pair.second);
+        }
+        return seconds;
+    }
+
+    public static int[] toIntArray(List<Integer> list) {
+        int[] array = new int[list.size()];
+
+        for (int i = 0; i < list.size(); i++) {
+            array[i] = list.get(i);
+        }
+
+        return array;
     }
 }
 

@@ -22,8 +22,8 @@ import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
-import com.sharpdroid.registroelettronico.Adapters.AgendaAdapter;
 import com.sharpdroid.registroelettronico.Activities.AddEventActivity;
+import com.sharpdroid.registroelettronico.Adapters.AgendaAdapter;
 import com.sharpdroid.registroelettronico.Databases.AgendaDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Event;
 import com.sharpdroid.registroelettronico.R;
@@ -105,7 +105,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         mCompactCalendarView.shouldSelectFirstDayOfMonthOnScroll(false);
 
         addFAB.setClosedOnTouchOutside(true);
-        verificaFAB.setOnClickListener(v -> startActivity(new Intent(mContext, AddEventActivity.class)));
+        verificaFAB.setOnClickListener(v -> startActivity(new Intent(mContext, AddEventActivity.class).putExtra("type", "Verifica")));
 
         adapter = new AgendaAdapter(mContext, place_holder);
         adapter.setItemClickListener(this);
