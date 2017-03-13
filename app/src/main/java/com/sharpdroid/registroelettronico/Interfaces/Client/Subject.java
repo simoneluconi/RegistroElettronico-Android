@@ -59,7 +59,7 @@ public class Subject implements Serializable {
 
     public String[] getProfessors() {
         if (professor != null)
-            return professor.split("~");
+            return professor.split(",");
         else return null;
     }
 

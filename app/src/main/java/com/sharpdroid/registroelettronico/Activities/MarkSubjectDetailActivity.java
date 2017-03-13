@@ -7,7 +7,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SeekBar;
@@ -36,6 +35,7 @@ import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.MessaggioVoto;
+import static com.sharpdroid.registroelettronico.Utils.Metodi.getProfessorOfThisSubject;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getSubjectName;
 
 // DONE: 03/12/2016 Dettagli (nome, aula, prof, ora, note, colore)
@@ -222,15 +222,17 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     private void setLessons(int code) {
         lessonsView.update(subjectsDB, code);
 
-        new SpiaggiariApiClient(this)
-                .getLessons(code, TextUtils.join(",", subjectsDB.getProfessorCodes(code)))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(lessons -> {
-                            subjectsDB.removeLessons(code);
-                            subjectsDB.addLessons(code, lessons);
-                            lessonsView.update(subjectsDB, code);
-                        },
-                        Throwable::printStackTrace);
+        for (Integer prof : subjectsDB.getProfessorCodes(code)) {
+            new SpiaggiariApiClient(this)
+                    .getLessons(code, String.valueOf(prof))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(lessons -> {
+                        subjectsDB.removeLessons(code);
+                        subjectsDB.addLessons(code, prof, lessons);
+                        lessonsView.update(subjectsDB, code);
+                        subjectsDB.addProfessor(code, prof, getProfessorOfThisSubject(lessons));
+                    }, Throwable::printStackTrace);
+        }
     }
 
     private void setMarks(List<Mark> marks) {

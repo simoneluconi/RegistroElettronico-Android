@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.v4.util.Pair;
 import android.text.TextUtils;
 
 import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
@@ -16,26 +17,14 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.sharpdroid.registroelettronico.Utils.Metodi.stringArrayToIntegerList;
-
 public class SubjectsDB extends SQLiteOpenHelper {
     private final static String DB_NAME = "Subjects";
     private final static String TABLE_SUBJECTS = "subjects";
     private final static String TABLE_LESSONS = "lessons";
     private final static String TABLE_PROFESSORS = "professors";
-    private final static String subjects[] = {"id", "code", "original_name", "name", "target", "classroom", "notes", "teacher_codes"};
-    private final static String lessons[] = {subjects[1], "teacher", "date", "content", "professor_code"};
-    private final static String professors[] = {"subject_code", "code", "name"};
-
-    private final static String get_subjects_orderedSQL = "SELECT subjects.code, subjects.original_name,subjects.name,subjects.target,teacher,subjects.classroom, subjects.notes " +
-            "FROM subjects " +
-            "LEFT JOIN lessons " +
-            "ON subjects.code=lessons.code " +
-            "GROUP BY subjects.code " +
-            "ORDER BY original_name ASC;";
-    private final static String get_subject_whereSQL = "SELECT subjects.code, subjects.original_name,subjects.name,subjects.target,teacher,subjects.classroom, subjects.notes FROM subjects LEFT JOIN lessons ON subjects.code=lessons.code GROUP BY subjects.code WHERE subject.code=?";
-
-    private static int DB_VERSION = 11;
+    private final static String subjects[] = {"id", "code", "original_name", "name", "target", "classroom", "notes"};
+    private final static String lessons[] = {subjects[1], "teacher_code", "date", "content"};
+    private static int DB_VERSION = 17;
 
     public SubjectsDB(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -50,16 +39,16 @@ public class SubjectsDB extends SQLiteOpenHelper {
                 subjects[3] + " TEXT, " +
                 subjects[4] + " REAL, " +
                 subjects[5] + " TEXT, " +
-                subjects[6] + " TEXT, " +
-                subjects[7] + " TEXT);");
+                subjects[6] + " TEXT);");
 
         db.execSQL("CREATE TABLE " + TABLE_LESSONS + " (" +
                 lessons[0] + " INTEGER, " +
-                lessons[1] + " TEXT, " +
+                lessons[1] + " INTEGER, " +
                 lessons[2] + " INTEGER, " +
                 lessons[3] + " TEXT" +
-                lessons[4] + " TEXT" +
                 ");");
+
+        db.execSQL("CREATE TABLE " + TABLE_PROFESSORS + "( subject_code INTEGER, teacher_code INTEGER, teacher_name TEXT);");
     }
 
     @Override
@@ -76,9 +65,18 @@ public class SubjectsDB extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Subject subject = null;
 
-        Cursor c = db.rawQuery("SELECT subjects.*, teacher FROM subjects LEFT JOIN lessons ON subjects.code=lessons.code WHERE subjects.code=? GROUP BY subjects.code", new String[]{String.valueOf(code)});
+        Cursor c = db.rawQuery("SELECT subjects.*, professors.teacher_code, professors.teacher_name FROM subjects LEFT JOIN professors ON subjects.code=professors.subject_code WHERE subjects.code=? GROUP BY professors.teacher_code", new String[]{String.valueOf(code)});
+        List<Integer> codes = new ArrayList<>();
+        List<String> names = new ArrayList<>();
+
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            codes.add(c.getInt(7));
+            names.add(c.getString(8));
+        }
+
         if (c.moveToFirst())
-            subject = new Subject(c.getInt(0), c.getInt(1), c.getString(2), c.getString(3), c.getFloat(4), c.getString(8), c.getString(5), c.getString(6), stringArrayToIntegerList(c.getString(7).split(",")));
+            subject = new Subject(c.getInt(0), c.getInt(1), c.getString(2), c.getString(3), c.getFloat(4), TextUtils.join(",", names), c.getString(5), c.getString(6), codes);
+
 
         c.close();
         return subject;
@@ -90,13 +88,27 @@ public class SubjectsDB extends SQLiteOpenHelper {
         Cursor c;
         if (name.contains("...")) {
             name = name.replace("...", "%");
-            c = db.rawQuery("SELECT subjects.*, teacher FROM subjects LEFT JOIN lessons ON subjects.code=lessons.code WHERE " + subjects[2] + " LIKE ? OR " + subjects[3] + " LIKE ? GROUP BY subjects.code", new String[]{name, name});
+            c = db.rawQuery("SELECT subjects.*, professors.teacher_code, professors.teacher_name FROM subjects " +
+                    "LEFT JOIN lessons ON subjects.code=lessons.code " +
+                    "LEFT JOIN professors ON subjects.code = professors.subject_code WHERE " + subjects[2] + " LIKE ? OR " + subjects[3] + " LIKE ? GROUP BY professors.teacher_code", new String[]{name, name});
         } else {
-            c = db.rawQuery("SELECT subjects.*, teacher FROM subjects LEFT JOIN lessons ON subjects.code=lessons.code WHERE " + subjects[2] + " = ? OR " + subjects[3] + " = ?", new String[]{name, name});
+            c = db.rawQuery("SELECT subjects.*, professors.teacher_code, professors.teacher_name FROM subjects " +
+                    "LEFT JOIN lessons ON subjects.code=lessons.code " +
+                    "LEFT JOIN professors ON subjects.code = professors.subject_code WHERE " + subjects[2] + " = ? OR " + subjects[3] + " = ?", new String[]{name, name});
+        }
+
+        List<Integer> codes = new ArrayList<>();
+        List<String> names = new ArrayList<>();
+
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            codes.add(c.getInt(7));
+            names.add(c.getString(8));
         }
 
         if (c.moveToFirst())
-            subject = new Subject(c.getInt(0), c.getInt(1), c.getString(2), c.getString(3), c.getFloat(4), c.getString(8), c.getString(5), c.getString(6), stringArrayToIntegerList(c.getString(7).split(",")));
+            subject = new Subject(c.getInt(0), c.getInt(1), c.getString(2), c.getString(3), c.getFloat(4), TextUtils.join(",", names), c.getString(5), c.getString(6), codes);
+
+
         c.close();
         return subject;
     }
@@ -104,10 +116,10 @@ public class SubjectsDB extends SQLiteOpenHelper {
     public List<Subject> getSubjects() {
         List<Subject> subjects = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM subjects", null);
+        Cursor c = db.rawQuery("SELECT code FROM subjects", null);
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            subjects.add(new Subject(c.getInt(0), c.getInt(1), c.getString(2), c.getString(3), c.getFloat(4), null, c.getString(5), c.getString(6), stringArrayToIntegerList(c.getString(7).split(","))));
+            subjects.add(getSubject(c.getInt(0)));
         }
 
         c.close();
@@ -130,24 +142,22 @@ public class SubjectsDB extends SQLiteOpenHelper {
             ContentValues contentValues = new ContentValues();
             contentValues.put(subjects[1], subject.getCode());
             contentValues.put(subjects[2], subject.getName().toLowerCase());
-            contentValues.put(subjects[7], TextUtils.join(",", subject.getTeacherCodes()));
             db.insert(TABLE_SUBJECTS, null, contentValues);
         }
         c.close();
-        db.close();
     }
     //endregion
 
     //region LESSONS
     public List<Lesson> getLessons(int code) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT teacher, date, content " +
-                "FROM lessons " +
-                "WHERE code = ? " +
+        Cursor c = db.rawQuery("SELECT professors.teacher_name, lessons.date, lessons.content FROM lessons " +
+                "LEFT JOIN professors ON lessons.teacher_code=professors.teacher_code " +
+                "WHERE lessons.code = ? " +
                 "ORDER BY date DESC", new String[]{String.valueOf(code)});
         List<Lesson> lessons = new LinkedList<>();
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            lessons.add(new Lesson(c.getString(1), new Date(c.getLong(2)), c.getString(3)));
+            lessons.add(new Lesson(c.getString(0), new Date(c.getLong(1)), c.getString(2)));
         }
         c.close();
         return lessons;
@@ -155,10 +165,11 @@ public class SubjectsDB extends SQLiteOpenHelper {
 
     public List<Lesson> getLessons(int code, int limit) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT teacher, date, content " +
-                "FROM lessons " +
-                "WHERE code = ? " +
-                "ORDER BY date DESC LIMIT " + limit, new String[]{String.valueOf(code)});
+        Cursor c = db.rawQuery("SELECT professors.teacher_name, lessons.date, lessons.content FROM lessons " +
+                "LEFT JOIN professors ON lessons.teacher_code=professors.teacher_code " +
+                "WHERE lessons.code = ? " +
+                "ORDER BY date DESC " +
+                "LIMIT " + limit, new String[]{String.valueOf(code)});
 
         List<Lesson> lessons = new LinkedList<>();
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
@@ -168,14 +179,15 @@ public class SubjectsDB extends SQLiteOpenHelper {
         return lessons;
     }
 
-    public void addLessons(int code, List<Lesson> lessons_list) {
+    public void addLessons(int subject, int professor_code, List<Lesson> lessons_list) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values;
         db.beginTransaction();
+        db.delete(TABLE_LESSONS, lessons[1] + "=?", new String[]{String.valueOf(professor_code)});
         for (Lesson lesson : lessons_list) {
             values = new ContentValues();
-            values.put(lessons[0], code);
-            values.put(lessons[1], lesson.getTeacher().toLowerCase().trim());
+            values.put(lessons[0], subject);
+            values.put(lessons[1], professor_code);
             values.put(lessons[2], lesson.getDate().getTime());
             values.put(lessons[3], lesson.getContent().trim());
             db.insert(TABLE_LESSONS, null, values);
@@ -186,49 +198,52 @@ public class SubjectsDB extends SQLiteOpenHelper {
 
     public void removeLessons(int code) {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(TABLE_LESSONS, lessons[0] + "=?", new String[]{String.valueOf(code)});
+        db.beginTransaction();
+        db.delete(TABLE_LESSONS, lessons[1] + "=?", new String[]{String.valueOf(code)});
+        db.setTransactionSuccessful();
+        db.endTransaction();
     }
     //endregion
 
     //region PROFESSORS
-    public List<Integer> getProfessorCodes() {
-        List<Integer> p = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
+    public void addProfessor(int subject_code, int teacher_code, String teacher_name) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values;
+        Cursor c = db.rawQuery("SELECT * FROM professors WHERE subject_code = ? AND teacher_code = ?", new String[]{String.valueOf(subject_code), String.valueOf(teacher_code)});
+        if (!c.moveToFirst()) {
+            db.beginTransaction();
+            values = new ContentValues();
+            values.put("subject_code", subject_code);
+            values.put("teacher_code", teacher_code);
+            values.put("teacher_name", teacher_name);
+            db.insert(TABLE_PROFESSORS, null, values);
 
-        // TODO: 12/03/2017
-
-        return p;
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        }
+        c.close();
     }
 
     public List<Integer> getProfessorCodes(int subject_code) {
         List<Integer> p = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
-        //Cursor c = db.rawQuery("SELECT " + professors[1] + " FROM " + TABLE_PROFESSORS + " WHERE " + professors[0] + "=?", new String[]{String.valueOf(subject_code)});
-        // TODO: 12/03/2017  
+        Cursor c = db.rawQuery("SELECT teacher_code FROM professors WHERE subject_code = ? GROUP BY teacher_code", new String[]{String.valueOf(subject_code)});
+
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            p.add(c.getInt(0));
+        }
+
+        c.close();
         return p;
     }
 
-    public void addProfessors(LessonSubject subject) {
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues values;
-        db.beginTransaction();
-        for (int prof_code : subject.getTeacherCodes()) {
-            values = new ContentValues();
-            values.put(professors[0], subject.getCode());
-            values.put(professors[1], prof_code);
-            db.insert(TABLE_PROFESSORS, null, values);
-        }
-        db.setTransactionSuccessful();
-        db.endTransaction();
-    }
-
-    public List<String> getProfessorsNames() {
-        List<String> names = new ArrayList<>();
+    public List<Pair<Integer, String>> getProfessors() {
+        List<Pair<Integer, String>> names = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
 
-        Cursor c = db.rawQuery("SELECT teacher FROM lessons GROUP BY teacher", null);
+        Cursor c = db.rawQuery("SELECT lessons.teacher_code, professors.teacher_name FROM lessons LEFT JOIN professors ON lessons.teacher_code = professors.teacher_code GROUP BY lessons.teacher_code", null);
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            names.add(c.getString(0));
+            names.add(Pair.create(c.getInt(0), c.getString(1)));
         }
         c.close();
         return names;

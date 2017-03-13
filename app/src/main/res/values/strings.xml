@@ -106,8 +106,6 @@
     <string name="numero_non_valido">Numero non valido</string>
     <string name="senza_nome">Senza nome</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="ok">OK</string>
     <string name="today">Oggi</string>
     <string name="not_set">Selezionare un\'opzione</string>
