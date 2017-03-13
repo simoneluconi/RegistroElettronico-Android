@@ -183,7 +183,7 @@ public class SubjectsDB extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values;
         db.beginTransaction();
-        db.delete(TABLE_LESSONS, lessons[1] + "=?", new String[]{String.valueOf(professor_code)});
+        db.delete(TABLE_LESSONS, lessons[1] + "=? AND " + lessons[0] + "=?", new String[]{String.valueOf(professor_code), String.valueOf(subject)});
         for (Lesson lesson : lessons_list) {
             values = new ContentValues();
             values.put(lessons[0], subject);
