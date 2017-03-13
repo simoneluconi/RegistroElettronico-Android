@@ -6,7 +6,6 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
@@ -15,11 +14,7 @@ import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.R;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -98,34 +93,19 @@ public class EditSubjectDetailsActivity extends AppCompatActivity {
     void apply() {
         ContentValues values = new ContentValues();
 
-        String name, prof, classroom, notes;
+        String name, classroom, notes;
 
         name = this.name.getText().toString().trim();
-        prof = getProfsNames();
         classroom = this.classroom.getText().toString().trim();
         notes = this.notes.getText().toString().trim();
 
         values.put("name", name);
-        values.put("professor", prof);
         values.put("classroom", classroom);
         values.put("notes", notes);
 
         db.editSubject(subject.getCode(), values);
 
         finish();
-    }
-
-    private String getProfsNames() {
-        List<String> pr = new ArrayList<>();
-        if (!TextUtils.isEmpty(prof.getText().toString()))
-            pr.add(prof.getText().toString());
-
-        if (!TextUtils.isEmpty(prof2.getText().toString()))
-            pr.add(prof2.getText().toString());
-
-        if (!pr.isEmpty())
-            return StringUtils.join(pr, " ~ ");
-        else return "";
     }
 
     @Override

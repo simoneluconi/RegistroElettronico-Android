@@ -415,29 +415,10 @@ public class Metodi {
     }
 
     public static String getProfessorOfThisSubject(List<Lesson> lessons) {
-
-        MyLinkedMap<String, Integer> hmap = new MyLinkedMap<>();
-
-        //Assegno ad ogni professore il numero di lezioni che ha tenuto
-        for (Lesson l : lessons) {
-            if (hmap.containsKey(l.getTeacher()))
-                hmap.put(l.getTeacher(), hmap.get(l.getTeacher()) + 1);
-            else hmap.put(l.getTeacher(), 1);
+        if (!lessons.isEmpty()) {
+            return lessons.get(0).getTeacher();
         }
-
-        hmap = sortByComparator(hmap, false);
-
-        if (hmap.size() == 1) //Se c'è solo un professore lo restituisco
-            return WordUtils.capitalizeFully(hmap.getKey(0));
-
-        else if (hmap.size() > 1) { //Se ce ne sono di più
-            if (hmap.getValue(1) > 2) //Se il secondo ha fatto più di 2 lezioni lo restituisco
-                return WordUtils.capitalizeFully(hmap.getKey(0) + " ~ " + hmap.getKey(1));
-            else
-                return WordUtils.capitalizeFully(hmap.getKey(0)); //altrimenti restituisco il primo
-        }
-
-        return null;
+        return "";
     }
 
     public static boolean isEventTest(com.sharpdroid.registroelettronico.Interfaces.API.Event event) {
@@ -460,28 +441,24 @@ public class Metodi {
                 .getSubjects()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subjects -> {
-
                     SubjectsDB db = new SubjectsDB(c);
-                    List<Integer> teachers;
+
                     //Per ogni materia aggiungo il suo professore cercandolo dalle lezioni
                     for (LessonSubject subject : subjects) {
-                        teachers = subject.getTeacherCodes();
+                        for (Integer teacher_code : subject.getTeacherCodes())
+                            new SpiaggiariApiClient(c)
+                                    .getLessons(subject.getCode(), String.valueOf(teacher_code))
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(lessons -> {
+                                        String profName = getProfessorOfThisSubject(lessons);
 
-                        String body = TextUtils.join(",", teachers);
+                                        db.addSubject(subject);
+                                        db.removeLessons(teacher_code);
+                                        db.addLessons(subject.getCode(), teacher_code, lessons);
+                                        db.addProfessor(subject.getCode(), teacher_code, profName);
 
-                        new SpiaggiariApiClient(c)
-                                .getLessons(subject.getCode(), body)
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(lessons -> {
-                                    String profName = getProfessorOfThisSubject(lessons);
-
-                                    db.removeLessons(subject.getCode());
-                                    db.addLessons(subject.getCode(), lessons);
-                                    db.addSubject(subject);
-                                    //db.addProfessors(subject);
-
-                                    Log.d("Trova professore", String.format(Locale.getDefault(), "Professore di %1$s è %2$s", subject.getName(), profName));
-                                }, Throwable::printStackTrace);
+                                        Log.d("Trova professore", String.format(Locale.getDefault(), "Professore di %1$s è %2$s", subject.getName(), profName));
+                                    }, Throwable::printStackTrace);
                     }
 
                     db.close();

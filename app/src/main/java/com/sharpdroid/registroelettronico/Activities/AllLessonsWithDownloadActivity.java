@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.transition.Slide;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -27,6 +26,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
+import static com.sharpdroid.registroelettronico.Utils.Metodi.getProfessorOfThisSubject;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getSubjectName;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.isNetworkAvailable;
 
@@ -112,20 +112,23 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);
         } else {
-            new SpiaggiariApiClient(this)
-                    .getLessons(code, TextUtils.join(",", db.getProfessorCodes(code)))
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(lessons -> {
-                        //update subjectsDB
-                        db.removeLessons(code);
-                        db.addLessons(code, lessons);
-                        bindLessonsCache();
+            for (Integer prof : db.getProfessorCodes(code)) {
+                new SpiaggiariApiClient(this)
+                        .getLessons(code, String.valueOf(prof))
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(lessons -> {
+                            //update subjectsDB
+                            db.removeLessons(code);
+                            db.addLessons(code, prof, lessons);
+                            db.addProfessor(code, prof, getProfessorOfThisSubject(lessons));
+                            bindLessonsCache();
 
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    }, error -> {
-                        error.printStackTrace();
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    });
+                            mSwipeRefreshLayout.setRefreshing(false);
+                        }, error -> {
+                            error.printStackTrace();
+                            mSwipeRefreshLayout.setRefreshing(false);
+                        });
+            }
         }
     }
 
