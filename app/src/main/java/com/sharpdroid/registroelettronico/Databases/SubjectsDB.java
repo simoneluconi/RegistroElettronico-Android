@@ -94,7 +94,7 @@ public class SubjectsDB extends SQLiteOpenHelper {
         } else {
             c = db.rawQuery("SELECT subjects.*, professors.teacher_code, professors.teacher_name FROM subjects " +
                     "LEFT JOIN lessons ON subjects.code=lessons.code " +
-                    "LEFT JOIN professors ON subjects.code = professors.subject_code WHERE " + subjects[2] + " = ? OR " + subjects[3] + " = ?", new String[]{name, name});
+                    "LEFT JOIN professors ON subjects.code = professors.subject_code WHERE " + subjects[2] + " = ? OR " + subjects[3] + " = ? GROUP BY professors.teacher_code", new String[]{name, name});
         }
 
         List<Integer> codes = new ArrayList<>();
