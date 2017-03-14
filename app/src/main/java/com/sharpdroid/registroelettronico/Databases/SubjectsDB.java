@@ -152,7 +152,7 @@ public class SubjectsDB extends SQLiteOpenHelper {
     public List<Lesson> getLessons(int code) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor c = db.rawQuery("SELECT professors.teacher_name, lessons.date, lessons.content FROM lessons " +
-                "LEFT JOIN professors ON lessons.teacher_code=professors.teacher_code " +
+                "LEFT JOIN professors ON lessons.teacher_code=professors.teacher_code AND lessons.code=professors.subject_code " +
                 "WHERE lessons.code = ? " +
                 "ORDER BY date DESC", new String[]{String.valueOf(code)});
         List<Lesson> lessons = new LinkedList<>();
@@ -166,7 +166,7 @@ public class SubjectsDB extends SQLiteOpenHelper {
     public List<Lesson> getLessons(int code, int limit) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor c = db.rawQuery("SELECT professors.teacher_name, lessons.date, lessons.content FROM lessons " +
-                "LEFT JOIN professors ON lessons.teacher_code=professors.teacher_code " +
+                "LEFT JOIN professors ON lessons.teacher_code=professors.teacher_code AND lessons.code=professors.subject_code " +
                 "WHERE lessons.code = ? " +
                 "ORDER BY date DESC " +
                 "LIMIT " + limit, new String[]{String.valueOf(code)});
