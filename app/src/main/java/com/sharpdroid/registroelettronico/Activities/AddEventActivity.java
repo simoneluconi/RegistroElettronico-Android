@@ -1,11 +1,11 @@
 package com.sharpdroid.registroelettronico.Activities;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -16,12 +16,18 @@ import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.Views.LocalEvent.OptionView;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.sharpdroid.registroelettronico.Utils.Metodi.capitalizeFirst;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.capitalizeList;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getCodesFromSubjects;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getNamesFromSubjects;
@@ -35,15 +41,21 @@ public class AddEventActivity extends AppCompatActivity {
     Toolbar toolbar;
     @BindView(R.id.layout_verifica)
     TextInputLayout title;
+    @BindView(R.id.layout_note)
+    TextInputLayout note;
     @BindView(R.id.options)
     LinearLayout options;
+    @BindView(R.id.confirm)
+    FloatingActionButton confirm;
 
+    SimpleDateFormat format = new SimpleDateFormat("EEEE d MMMM yyyy", Locale.ITALIAN);
     SubjectsDB subjectsDB;
 
     int selectedSubject = -1;
     int selectedProfessor = -1;
     int selectedSubjectCode = -1;
     int selectedProfessorCode = -1;
+    Date selectedDay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,10 +75,10 @@ public class AddEventActivity extends AppCompatActivity {
 
     private void init(String type) {
         setTitle(type);
+        confirm.setOnClickListener(v -> handleConfirm(type));
 
         switch (type.toLowerCase()) {
             case "verifica":
-                Log.v("TYPE", type);
                 initVerifica();
                 break;
             case "compiti":
@@ -78,6 +90,14 @@ public class AddEventActivity extends AppCompatActivity {
         }
     }
 
+    private void handleConfirm(String type) {
+        switch (type.toLowerCase()) {
+            case "verifica":
+                if (handleTitle() && handleSubtitle()) {
+                }
+        }
+    }
+
     private void initDefault() {
     }
 
@@ -86,18 +106,12 @@ public class AddEventActivity extends AppCompatActivity {
     }
 
     private void initVerifica() {
-        options.addView(new OptionView.Builder(this).title("Materia").image(R.drawable.event_subject).onClick(this::subjectDialog).build());
-        options.addView(new OptionView.Builder(this).title("Professore").image(R.drawable.event_professor).onClick(this::professorDialog).build());
-
+        options.addView(new OptionView.Builder(this).title("Materia").content("Non impostata").image(R.drawable.event_subject).onClick(this::subjectDialog).build());
+        options.addView(new OptionView.Builder(this).title("Professore").content("Non impostato").image(R.drawable.event_professor).onClick(this::professorDialog).build());
+        options.addView(new OptionView.Builder(this).title("Data").content("Non impostata").image(R.drawable.event_date).onClick(this::datePicker).build());
     }
 
-
-    /**
-     * click listener for option 'Subject'
-     *
-     * @param v the layout clicked
-     */
-    public void subjectDialog(View v) {
+    private void subjectDialog(View v) {
         List<Subject> subjectList;
 
         if (selectedProfessorCode != -1 && selectedSubjectCode == -1) {      //Se è stato selezionato un professore ma non la materia
@@ -119,7 +133,7 @@ public class AddEventActivity extends AppCompatActivity {
                 .show();
     }
 
-    public void professorDialog(View v) {
+    private void professorDialog(View v) {
         MaterialDialog.Builder dialog = new MaterialDialog.Builder(this)
                 .title("Seleziona un professore");
 
@@ -137,7 +151,26 @@ public class AddEventActivity extends AppCompatActivity {
                     return true;
                 }).show();
     }
-    //}
+
+    private void datePicker(View view) {
+        Calendar now = Calendar.getInstance();
+
+        DatePickerDialog dpd = DatePickerDialog.newInstance(
+                null,
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH)
+        );
+        dpd.setOnDateSetListener((view1, year, monthOfYear, dayOfMonth) -> {
+            if (selectedDay == null) selectedDay = new Date();
+            Calendar cal = Calendar.getInstance();
+            cal.set(year, monthOfYear, dayOfMonth);
+            selectedDay.setTime(cal.getTimeInMillis());
+            ((TextView) view.findViewById(R.id.content)).setText(capitalizeFirst(format.format(selectedDay)));
+        });
+        dpd.show(getFragmentManager(), "Datepickerdialog");
+
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -154,5 +187,25 @@ public class AddEventActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         subjectsDB.close();
+    }
+
+    boolean handleTitle() {
+        return title.getEditText() != null && !title.getEditText().getText().toString().isEmpty();
+    }
+
+    boolean handleSubtitle() {
+        return note.getEditText() != null && !note.getEditText().getText().toString().isEmpty();
+    }
+
+    void handleSubject() {
+
+    }
+
+    void handleProfessor() {
+
+    }
+
+    void handleDate() {
+
     }
 }
