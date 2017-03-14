@@ -526,12 +526,12 @@ public class Metodi {
         return array;
     }
 
-    public static List<Integer> stringArrayToIntegerList(String[] strings) {
-        List<Integer> integers = new ArrayList<>();
-        for (String s : strings) {
-            integers.add(Integer.parseInt(s));
+    public static <S extends CharSequence> List<String> capitalizeList(List<S> list) {
+        List<String> capitalized = new ArrayList<>();
+        for (S s : list) {
+            capitalized.add(WordUtils.capitalizeFully(s.toString(), Delimeters));
         }
-        return integers;
+        return capitalized;
     }
 }
 

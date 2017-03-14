@@ -22,6 +22,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.sharpdroid.registroelettronico.Utils.Metodi.capitalizeList;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getCodesFromSubjects;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getNamesFromSubjects;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.pairToFirst;
@@ -123,7 +124,7 @@ public class AddEventActivity extends AppCompatActivity {
                 .title("Seleziona un professore");
 
         List<Pair<Integer, String>> professors = subjectsDB.getProfessors();
-        List<String> professorsNames = pairToSecond(professors);
+        List<String> professorsNames = capitalizeList(pairToSecond(professors));
         List<Integer> professorsCodes = pairToFirst(professors);
 
         dialog
