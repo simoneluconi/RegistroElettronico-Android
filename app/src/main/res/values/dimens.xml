@@ -7,6 +7,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="cards_margin">4dp</dimen>
     <dimen name="appbar_elevation">4dp</dimen>
+    <dimen name="card_elevation">2dp</dimen>
     <dimen name="padding_left_divider">72dp</dimen>
     <dimen name="padding_left_divider1">56dp</dimen>
     <dimen name="padding_left_divider2">64dp</dimen>
