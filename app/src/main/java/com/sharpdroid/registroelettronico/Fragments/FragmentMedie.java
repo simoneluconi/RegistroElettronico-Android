@@ -1,6 +1,7 @@
 package com.sharpdroid.registroelettronico.Fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -54,7 +55,7 @@ public class FragmentMedie extends Fragment {
         subjectsDB = new SubjectsDB(mContext);
 
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);
-
+        mRecyclerView.setBackgroundColor(Color.parseColor("#F1F1F1"));
         mRecyclerView.setHasFixedSize(true);
         if (getResources().getBoolean(R.bool.isTablet)) {
             mRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 3));
