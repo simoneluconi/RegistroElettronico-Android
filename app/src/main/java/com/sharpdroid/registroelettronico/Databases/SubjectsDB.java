@@ -259,5 +259,22 @@ public class SubjectsDB extends SQLiteOpenHelper {
         c.close();
         return prof;
     }
+
+    public String getSubjectOrProfessorName(String id) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT subjects.original_name, subjects.name, professors.teacher_name FROM subjects LEFT JOIN professors ON subjects.code=professors.subject_code WHERE professors.teacher_code=?", new String[]{String.valueOf(id)});
+        String s = "";
+
+        if (c.moveToFirst()) {
+            if (c.getCount() == 1) {
+                s = TextUtils.isEmpty(c.getString(1)) ? c.getString(0) : c.getString(1);
+            } else {
+                s = c.getString(2);
+            }
+        }
+
+        c.close();
+        return s.toLowerCase();
+    }
     //endregion
 }

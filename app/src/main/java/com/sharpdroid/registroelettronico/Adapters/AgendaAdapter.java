@@ -15,8 +15,6 @@ import com.sharpdroid.registroelettronico.Interfaces.Client.Entry;
 import com.sharpdroid.registroelettronico.Interfaces.Client.HeaderEntry;
 import com.sharpdroid.registroelettronico.R;
 
-import org.apache.commons.lang3.text.WordUtils;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,7 +26,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.sharpdroid.registroelettronico.Utils.Metodi.Delimeters;
+import static com.sharpdroid.registroelettronico.Utils.Metodi.getSubjectNameOrProfessorName;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.isEventTest;
 
 public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -69,8 +67,16 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 eventHolder.divider.setVisibility(View.VISIBLE);
             }
             eventHolder.date.setText(dateFormat.format(event.getStart()));
-            eventHolder.subject.setText(WordUtils.capitalizeFully(db.getProfessorName(event.getAutore_id()).isEmpty() ? event.getAutore_desc() : db.getProfessorName(event.getAutore_id()), Delimeters));
+            eventHolder.subject.setText(getSubjectNameOrProfessorName(event, db));
             eventHolder.title.setText(event.getTitle());
+
+            if (!event.getNota_2().trim().equalsIgnoreCase(event.getTitle().trim())) {
+                eventHolder.notes.setVisibility(View.VISIBLE);
+                eventHolder.notes.setText(event.getNota_2());
+            } else {
+                eventHolder.notes.setVisibility(View.GONE);
+            }
+
             eventHolder.itemView.setOnClickListener((View v) -> {
                 if (mClickListener != null)
                     mClickListener.onAgendaItemClicked(event);
@@ -171,6 +177,8 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         TextView title;
         @BindView(R.id.subject)
         TextView subject;
+        @BindView(R.id.notes)
+        TextView notes;
         @BindView(R.id.date)
         TextView date;
 
