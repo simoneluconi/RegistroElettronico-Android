@@ -25,6 +25,7 @@ import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Activities.AddEventActivity;
 import com.sharpdroid.registroelettronico.Adapters.AgendaAdapter;
 import com.sharpdroid.registroelettronico.Databases.AgendaDB;
+import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Event;
 import com.sharpdroid.registroelettronico.R;
 import com.transitionseverywhere.ChangeText;
@@ -74,6 +75,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     private Toolbar mToolbar;
     private Context mContext;
     private AgendaDB mAgendaDB;
+    private SubjectsDB mSubjectsDB;
     private AgendaAdapter adapter;
     private Date mDate;
     private List<Event> events = new ArrayList<>();
@@ -96,6 +98,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
 
         mToolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
         mAgendaDB = new AgendaDB(mContext);
+        mSubjectsDB = new SubjectsDB(mContext);
 
         mCompactCalendarView = (CompactCalendarView) getActivity().findViewById(R.id.calendar);
         mCompactCalendarView.setVisibility(View.VISIBLE);
@@ -107,7 +110,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         addFAB.setClosedOnTouchOutside(true);
         verificaFAB.setOnClickListener(v -> startActivity(new Intent(mContext, AddEventActivity.class).putExtra("type", "Verifica")));
 
-        adapter = new AgendaAdapter(mContext, place_holder);
+        adapter = new AgendaAdapter(mContext, place_holder, mSubjectsDB);
         adapter.setItemClickListener(this);
         recycler.setLayoutManager(new LinearLayoutManager(mContext));
         recycler.setAdapter(adapter);
@@ -115,7 +118,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         prepareDate(true);
         mCompactCalendarView.setCurrentDate(mDate);
 
-        updateCalendar();
+        //updateCalendar();
         updateAdapter();
         updateDB();
     }
@@ -151,9 +154,6 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         setAdapterEvents(mAgendaDB.getAllEvents(mDate.getTime()));
     }
 
-    /**
-     * Run only once
-     */
     private void updateCalendar() {
         mCompactCalendarView.removeAllEvents();
         fetchEvents();
@@ -229,6 +229,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     public void onDetach() {
         super.onDetach();
         mAgendaDB.close();
+        mSubjectsDB.close();
         mToolbar.setSubtitle("");
     }
 
@@ -236,6 +237,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     public void onResume() {
         super.onResume();
         setTitleSubtitle(mDate);
+        updateCalendar();
     }
 
     @Override

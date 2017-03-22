@@ -248,5 +248,16 @@ public class SubjectsDB extends SQLiteOpenHelper {
         c.close();
         return names;
     }
+
+    public String getProfessorName(String id) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT professors.teacher_name FROM professors WHERE professors.teacher_code =?", new String[]{id});
+
+        String prof = "";
+        if (c.moveToFirst())
+            prof = c.getString(0);
+        c.close();
+        return prof;
+    }
     //endregion
 }

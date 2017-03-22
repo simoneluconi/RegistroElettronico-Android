@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.sharpdroid.registroelettronico.Adapters.Holders.HeaderHolder;
+import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Event;
 import com.sharpdroid.registroelettronico.Interfaces.Client.AgendaEntry;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Entry;
@@ -36,11 +37,13 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM", Locale.getDefault());
     private View place_holder;
     private AgendaClickListener mClickListener;
+    private SubjectsDB db;
 
-    public AgendaAdapter(Context mContext, View ph) {
+    public AgendaAdapter(Context mContext, View ph, SubjectsDB db) {
         this.mContext = mContext;
         CVDataList = new ArrayList<>();
         place_holder = ph;
+        this.db = db;
     }
 
     @Override
@@ -66,7 +69,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 eventHolder.divider.setVisibility(View.VISIBLE);
             }
             eventHolder.date.setText(dateFormat.format(event.getStart()));
-            eventHolder.subject.setText(WordUtils.capitalizeFully(event.getAutore_desc().toLowerCase(), Delimeters));
+            eventHolder.subject.setText(WordUtils.capitalizeFully(db.getProfessorName(event.getAutore_id()).isEmpty() ? event.getAutore_desc() : db.getProfessorName(event.getAutore_id()), Delimeters));
             eventHolder.title.setText(event.getTitle());
             eventHolder.itemView.setOnClickListener((View v) -> {
                 if (mClickListener != null)

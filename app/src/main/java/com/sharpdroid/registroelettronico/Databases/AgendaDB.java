@@ -12,7 +12,6 @@ import com.sharpdroid.registroelettronico.Interfaces.Client.LocalEvent;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.toLowerCase;
 
@@ -114,7 +113,7 @@ public class AgendaDB extends SQLiteOpenHelper {
         db.delete(TABLE_LOCAL, null, null);
         ContentValues values;
         values = new ContentValues();
-        values.put(l_columns[0], UUID.randomUUID().toString());
+        values.put(l_columns[0], e.getUuid());
         values.put(l_columns[1], e.getTitle());
         values.put(l_columns[2], e.getContent());
         values.put(l_columns[3], e.getType());
@@ -146,7 +145,7 @@ public class AgendaDB extends SQLiteOpenHelper {
         List<Event> list = new ArrayList<>();
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            list.add(new Event(null, c.getString(2), new Date(c.getLong(4)), null, true, null, c.getString(2), null, null, null, 0, null, c.getString(6), c.getString(3), null, c.getString(5)));
+            list.add(new Event(null, c.getString(1), new Date(c.getLong(4)), null, true, null, c.getString(2), null, null, null, 0, null, c.getString(6), c.getString(3), null, c.getString(5)));
         }
 
         c.close();
@@ -179,7 +178,7 @@ public class AgendaDB extends SQLiteOpenHelper {
         List<Event> list = new ArrayList<>();
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            list.add(new Event(null, c.getString(2), new Date(c.getLong(4)), null, true, null, c.getString(2), null, null, null, 0, null, c.getString(6), c.getString(3), null, c.getString(5)));
+            list.add(new Event(null, c.getString(1), new Date(c.getLong(4)), null, true, null, c.getString(2), null, null, null, 0, null, c.getString(6), c.getString(3), null, c.getString(5)));
         }
 
         c.close();
