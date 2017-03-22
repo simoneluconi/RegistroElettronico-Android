@@ -78,6 +78,7 @@ public class AddEventActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        selectedDay = new Date(getIntent().getLongExtra("time", 0));
         init(getIntent().getStringExtra("type"));
         animShake = AnimationUtils.loadAnimation(this, R.anim.shake);
 
@@ -86,27 +87,31 @@ public class AddEventActivity extends AppCompatActivity {
     private void init(String type) {
         setTitle(type);
         confirm.setOnClickListener(v -> handleConfirm(type));
-
-        switch (type.toLowerCase()) {
-            case "verifica":
-                initVerifica();
-                break;
-            case "compiti":
-                initCompiti();
-                break;
-            default:
-                initDefault();
-                break;
-        }
+        initDefault();
     }
 
     private void handleConfirm(String type) {
         switch (type.toLowerCase()) {
             case "verifica":
-                if (handleTitle() && handleSubtitle() && handleSubtitle() && handleProfessor() && handleDate()) {
+                if (handleTitle() && handleSubtitle() && handleSubject() && handleProfessor() && handleDate()) {
                     agendaDB.addLocalEvent(new LocalEvent(UUID.randomUUID().toString(), title.getEditText().getText().toString(), note.getEditText().getText().toString(), type, selectedDay, selectedSubjectCode, selectedProfessorCode, null));
                     finish();
-
+                } else {
+                    ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(40);
+                }
+                break;
+            case "compiti":
+                if (handleTitle() && handleSubtitle() && handleSubject() && handleProfessor() && handleDate()) {
+                    agendaDB.addLocalEvent(new LocalEvent(UUID.randomUUID().toString(), title.getEditText().getText().toString(), note.getEditText().getText().toString(), type, selectedDay, selectedSubjectCode, selectedProfessorCode, null));
+                    finish();
+                } else {
+                    ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(40);
+                }
+                break;
+            default:
+                if (handleTitle() && handleSubtitle() && handleDate()) {
+                    agendaDB.addLocalEvent(new LocalEvent(UUID.randomUUID().toString(), title.getEditText().getText().toString(), note.getEditText().getText().toString(), type, selectedDay, selectedSubjectCode, selectedProfessorCode, null));
+                    finish();
                 } else {
                     ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(40);
                 }
@@ -115,16 +120,9 @@ public class AddEventActivity extends AppCompatActivity {
     }
 
     private void initDefault() {
-    }
-
-    private void initCompiti() {
-
-    }
-
-    private void initVerifica() {
         options.addView(new OptionView.Builder(this).title("Materia").content("Non impostata").image(R.drawable.event_subject).onClick(this::subjectDialog).build());
         options.addView(new OptionView.Builder(this).title("Professore").content("Non impostato").image(R.drawable.event_professor).onClick(this::professorDialog).build());
-        options.addView(new OptionView.Builder(this).title("Data").content("Non impostata").image(R.drawable.event_date).onClick(this::datePicker).build());
+        options.addView(new OptionView.Builder(this).title("Data").content(capitalizeFirst(format.format(selectedDay))).image(R.drawable.event_date).onClick(this::datePicker).build());
     }
 
     private void subjectDialog(View v) {

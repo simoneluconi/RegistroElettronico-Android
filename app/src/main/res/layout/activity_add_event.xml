@@ -29,7 +29,6 @@
                 android:id="@+id/layout_verifica"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Verifica"
                 android:theme="@style/AppTheme.Agenda.InputLayout"
                 app:hintAnimationEnabled="true"
                 app:hintTextAppearance="@style/AppTheme.BigHint">

@@ -36,6 +36,18 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/divider"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+    <TextView
+        android:id="@+id/notes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/title"
+        android:layout_marginBottom="4dp"
+        android:layout_toLeftOf="@+id/date"
+        android:layout_toStartOf="@+id/date"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/subject"
@@ -43,7 +55,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/title"
+        android:layout_below="@+id/notes"
         android:layout_toLeftOf="@+id/date"
         android:layout_toStartOf="@+id/date"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />

@@ -480,8 +480,12 @@ public class Metodi {
         return a.substring(0, 1).toUpperCase() + a.substring(1);
     }
 
-    public static String eventToString(Event e) {
-        return capitalizeFirst(complex.format(e.getStart())) + "\n---" + WordUtils.capitalize(e.getAutore_desc()) + "---\n" + capitalizeFirst(e.getNota_2());
+    public static String getSubjectNameOrProfessorName(Event event, SubjectsDB mSubjectsDB) {
+        return WordUtils.capitalizeFully(mSubjectsDB.getSubjectOrProfessorName(event.getAutore_id()).isEmpty() ? event.getAutore_desc() : mSubjectsDB.getSubjectOrProfessorName(event.getAutore_id()), Delimeters);
+    }
+
+    public static String eventToString(Event e, String head) {
+        return capitalizeFirst(complex.format(e.getStart())) + "\n---" + head + "---\n" + capitalizeFirst(e.getTitle()) + (e.getNota_2().trim().equalsIgnoreCase(e.getTitle().trim()) ? "" : "\n" + e.getNota_2());
     }
 
     public static List<String> getNamesFromSubjects(List<Subject> subjects) {
