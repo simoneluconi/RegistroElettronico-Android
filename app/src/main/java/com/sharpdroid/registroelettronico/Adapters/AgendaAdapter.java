@@ -2,6 +2,7 @@ package com.sharpdroid.registroelettronico.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,21 +62,15 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             EventHolder eventHolder = (EventHolder) holder;
             Event event = ((AgendaEntry) entry).getEvent();
 
-            if (CVDataList.get(position - 1) instanceof HeaderEntry) {
-                eventHolder.divider.setVisibility(View.INVISIBLE);
-            } else {
-                eventHolder.divider.setVisibility(View.VISIBLE);
-            }
+            eventHolder.divider.setVisibility((CVDataList.get(position - 1) instanceof HeaderEntry) ? View.INVISIBLE : View.VISIBLE);
+
             eventHolder.date.setText(dateFormat.format(event.getStart()));
             eventHolder.subject.setText(getSubjectNameOrProfessorName(event, db));
             eventHolder.title.setText(event.getTitle());
+            eventHolder.notes.setText(event.getNota_2());
 
-            if (!event.getNota_2().trim().equalsIgnoreCase(event.getTitle().trim())) {
-                eventHolder.notes.setVisibility(View.VISIBLE);
-                eventHolder.notes.setText(event.getNota_2());
-            } else {
-                eventHolder.notes.setVisibility(View.GONE);
-            }
+            eventHolder.subject.setVisibility(TextUtils.isEmpty(eventHolder.subject.getText()) ? View.GONE : View.VISIBLE);
+            eventHolder.notes.setVisibility((!event.getNota_2().trim().equalsIgnoreCase(event.getTitle().trim()) && !TextUtils.isEmpty(event.getNota_2())) ? View.VISIBLE : View.GONE);
 
             eventHolder.itemView.setOnClickListener((View v) -> {
                 if (mClickListener != null)

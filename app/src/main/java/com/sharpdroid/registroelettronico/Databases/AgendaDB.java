@@ -110,7 +110,6 @@ public class AgendaDB extends SQLiteOpenHelper {
     public void addLocalEvent(LocalEvent e) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
-        db.delete(TABLE_LOCAL, null, null);
         ContentValues values;
         values = new ContentValues();
         values.put(l_columns[0], e.getUuid());
@@ -174,7 +173,7 @@ public class AgendaDB extends SQLiteOpenHelper {
 
     public List<Event> getLocalEvents(long day) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_LOCAL + " WHERE " + l_columns[4] + " BETWEEN ? AND ?", new String[]{String.valueOf(day), String.valueOf(day + 86400000)});
+        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_LOCAL + " WHERE " + l_columns[4] + " BETWEEN ? AND ?", new String[]{String.valueOf(day), String.valueOf(day + 86399999)});
         List<Event> list = new ArrayList<>();
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
