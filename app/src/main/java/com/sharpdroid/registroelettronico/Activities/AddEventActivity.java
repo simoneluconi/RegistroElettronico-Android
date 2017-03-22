@@ -94,6 +94,7 @@ public class AddEventActivity extends AppCompatActivity {
         switch (type.toLowerCase()) {
             case "verifica":
                 if (handleTitle() && handleSubtitle() && handleSubject() && handleProfessor() && handleDate()) {
+                    selectedDay = betterDate(selectedDay);
                     agendaDB.addLocalEvent(new LocalEvent(UUID.randomUUID().toString(), title.getEditText().getText().toString(), note.getEditText().getText().toString(), type, selectedDay, selectedSubjectCode, selectedProfessorCode, null));
                     finish();
                 } else {
@@ -102,6 +103,7 @@ public class AddEventActivity extends AppCompatActivity {
                 break;
             case "compiti":
                 if (handleTitle() && handleSubtitle() && handleSubject() && handleProfessor() && handleDate()) {
+                    selectedDay = betterDate(selectedDay);
                     agendaDB.addLocalEvent(new LocalEvent(UUID.randomUUID().toString(), title.getEditText().getText().toString(), note.getEditText().getText().toString(), type, selectedDay, selectedSubjectCode, selectedProfessorCode, null));
                     finish();
                 } else {
@@ -110,6 +112,7 @@ public class AddEventActivity extends AppCompatActivity {
                 break;
             default:
                 if (handleTitle() && handleSubtitle() && handleDate()) {
+                    selectedDay = betterDate(selectedDay);
                     agendaDB.addLocalEvent(new LocalEvent(UUID.randomUUID().toString(), title.getEditText().getText().toString(), note.getEditText().getText().toString(), type, selectedDay, selectedSubjectCode, selectedProfessorCode, null));
                     finish();
                 } else {
@@ -117,6 +120,19 @@ public class AddEventActivity extends AppCompatActivity {
                 }
                 break;
         }
+    }
+
+    private Date betterDate(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+
+        return cal.getTime();
     }
 
     private void initDefault() {
