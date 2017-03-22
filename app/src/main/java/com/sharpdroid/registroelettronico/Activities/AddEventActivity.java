@@ -1,6 +1,7 @@
 package com.sharpdroid.registroelettronico.Activities;
 
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.util.Pair;
@@ -8,11 +9,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.sharpdroid.registroelettronico.Databases.AgendaDB;
 import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
+import com.sharpdroid.registroelettronico.Interfaces.Client.LocalEvent;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.Views.LocalEvent.OptionView;
@@ -23,6 +28,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,6 +56,8 @@ public class AddEventActivity extends AppCompatActivity {
 
     SimpleDateFormat format = new SimpleDateFormat("EEEE d MMMM yyyy", Locale.ITALIAN);
     SubjectsDB subjectsDB;
+    AgendaDB agendaDB;
+    Animation animShake;
 
     int selectedSubject = -1;
     int selectedProfessor = -1;
@@ -63,6 +71,7 @@ public class AddEventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_event);
         ButterKnife.bind(this);
         subjectsDB = new SubjectsDB(this);
+        agendaDB = new AgendaDB(this);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("");
@@ -70,6 +79,7 @@ public class AddEventActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         init(getIntent().getStringExtra("type"));
+        animShake = AnimationUtils.loadAnimation(this, R.anim.shake);
 
     }
 
@@ -93,8 +103,14 @@ public class AddEventActivity extends AppCompatActivity {
     private void handleConfirm(String type) {
         switch (type.toLowerCase()) {
             case "verifica":
-                if (handleTitle() && handleSubtitle()) {
+                if (handleTitle() && handleSubtitle() && handleSubtitle() && handleProfessor() && handleDate()) {
+                    agendaDB.addLocalEvent(new LocalEvent(UUID.randomUUID().toString(), title.getEditText().getText().toString(), note.getEditText().getText().toString(), type, selectedDay, selectedSubjectCode, selectedProfessorCode, null));
+                    finish();
+
+                } else {
+                    ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(40);
                 }
+                break;
         }
     }
 
@@ -187,25 +203,36 @@ public class AddEventActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         subjectsDB.close();
+        agendaDB.close();
     }
 
     boolean handleTitle() {
-        return title.getEditText() != null && !title.getEditText().getText().toString().isEmpty();
+        boolean ok = title.getEditText() != null && !title.getEditText().getText().toString().isEmpty();
+        if (!ok) {
+            title.startAnimation(animShake);
+            title.requestFocus();
+        }
+        return ok;
     }
 
     boolean handleSubtitle() {
-        return note.getEditText() != null && !note.getEditText().getText().toString().isEmpty();
+        boolean ok = note.getEditText() != null && !note.getEditText().getText().toString().isEmpty();
+        if (!ok) {
+            note.startAnimation(animShake);
+            note.requestFocus();
+        }
+        return ok;
     }
 
-    void handleSubject() {
-
+    boolean handleSubject() {
+        return selectedSubject != -1 && selectedSubjectCode != -1;
     }
 
-    void handleProfessor() {
-
+    boolean handleProfessor() {
+        return selectedProfessor != -1 && selectedProfessorCode != -1;
     }
 
-    void handleDate() {
-
+    boolean handleDate() {
+        return selectedDay != null;
     }
 }
