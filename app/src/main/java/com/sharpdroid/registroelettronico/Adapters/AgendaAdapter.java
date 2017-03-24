@@ -2,7 +2,9 @@ package com.sharpdroid.registroelettronico.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +12,7 @@ import android.widget.TextView;
 
 import com.sharpdroid.registroelettronico.Adapters.Holders.HeaderHolder;
 import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
-import com.sharpdroid.registroelettronico.Interfaces.API.Event;
+import com.sharpdroid.registroelettronico.Interfaces.Client.AdvancedEvent;
 import com.sharpdroid.registroelettronico.Interfaces.Client.AgendaEntry;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Entry;
 import com.sharpdroid.registroelettronico.Interfaces.Client.HeaderEntry;
@@ -60,13 +62,14 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             ((HeaderHolder) holder).content.setText(((HeaderEntry) entry).getTitle());
         } else {
             EventHolder eventHolder = (EventHolder) holder;
-            Event event = ((AgendaEntry) entry).getEvent();
+            AdvancedEvent event = ((AgendaEntry) entry).getEvent();
+            Log.d("ADAPTER", event.getTitle() + " - " + event.isCompleted());
 
             eventHolder.divider.setVisibility((CVDataList.get(position - 1) instanceof HeaderEntry) ? View.INVISIBLE : View.VISIBLE);
 
             eventHolder.date.setText(dateFormat.format(event.getStart()));
             eventHolder.subject.setText(getSubjectNameOrProfessorName(event, db));
-            eventHolder.title.setText(event.getTitle());
+            eventHolder.title.setText((event.isCompleted() != 0L) ? Html.fromHtml("<strike>" + event.getTitle() + "</strike>") : event.getTitle());
             eventHolder.notes.setText(event.getNota_2());
 
             eventHolder.subject.setVisibility(TextUtils.isEmpty(eventHolder.subject.getText()) ? View.GONE : View.VISIBLE);
@@ -74,7 +77,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             eventHolder.itemView.setOnClickListener((View v) -> {
                 if (mClickListener != null)
-                    mClickListener.onAgendaItemClicked(event);
+                    mClickListener.onAgendaItemClicked(event, position);
             });
         }
     }
@@ -93,17 +96,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         mClickListener = longClickListener;
     }
 
-    public void addAll(List<Event> events) {
-        CVDataList = convert(events);
-        if (CVDataList.isEmpty()) {
-            place_holder.setVisibility(View.VISIBLE);
-        } else {
-            place_holder.setVisibility(View.GONE);
-        }
-        notifyDataSetChanged();
-    }
-
-    public void addAllCalendarEvents(List<Event> events) {
+    public void addAll(List<AdvancedEvent> events) {
         CVDataList = convert(events);
         if (CVDataList.isEmpty()) {
             place_holder.setVisibility(View.VISIBLE);
@@ -118,12 +111,12 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         notifyDataSetChanged();
     }
 
-    private List<Entry> convert(List<Event> events) {
-        LinkedHashMap<String, List<Event>> organized = new LinkedHashMap<>();
-        for (Event e : events) {
+    private List<Entry> convert(List<AdvancedEvent> events) {
+        LinkedHashMap<String, List<AdvancedEvent>> organized = new LinkedHashMap<>();
+        for (AdvancedEvent e : events) {
             if (isEventTest(e)) {
                 if (organized.containsKey(mContext.getString(R.string.verifiche))) {
-                    List<Event> verifiche = new ArrayList<>(organized.get(mContext.getString(R.string.verifiche)));
+                    List<AdvancedEvent> verifiche = new ArrayList<>(organized.get(mContext.getString(R.string.verifiche)));
                     verifiche.add(e);
                     organized.put(mContext.getString(R.string.verifiche), verifiche);
                 } else {
@@ -131,7 +124,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 }
             } else {
                 if (organized.containsKey(mContext.getString(R.string.altri_eventi))) {
-                    List<Event> otherEvents = new ArrayList<>(organized.get(mContext.getString(R.string.altri_eventi)));
+                    List<AdvancedEvent> otherEvents = new ArrayList<>(organized.get(mContext.getString(R.string.altri_eventi)));
                     otherEvents.add(e);
                     organized.put(mContext.getString(R.string.altri_eventi), otherEvents);
                 } else {
@@ -145,7 +138,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         //Priorità alle verifiche
         if (organized.containsKey(mContext.getString(R.string.verifiche))) {
             convert.add(new HeaderEntry(mContext.getString(R.string.verifiche)));
-            for (Event e : organized.get(mContext.getString(R.string.verifiche))) {
+            for (AdvancedEvent e : organized.get(mContext.getString(R.string.verifiche))) {
                 convert.add(new AgendaEntry(e));
             }
             organized.remove(mContext.getString(R.string.verifiche));
@@ -153,7 +146,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         for (String k : organized.keySet()) {
             convert.add(new HeaderEntry(k));
-            for (Event e : organized.get(k)) {
+            for (AdvancedEvent e : organized.get(k)) {
                 convert.add(new AgendaEntry(e));
             }
         }
@@ -162,7 +155,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     public interface AgendaClickListener {
-        void onAgendaItemClicked(Event e);
+        void onAgendaItemClicked(AdvancedEvent e, int position);
     }
 
     class EventHolder extends RecyclerView.ViewHolder {
