@@ -25,8 +25,8 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.Utils;
 import com.sharpdroid.registroelettronico.Adapters.MarkAdapter;
 import com.sharpdroid.registroelettronico.Databases.AgendaDB;
-import com.sharpdroid.registroelettronico.Interfaces.API.Event;
 import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
+import com.sharpdroid.registroelettronico.Interfaces.Client.AdvancedEvent;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -56,7 +56,7 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
     PopupMenu menu;
     MarkAdapter adapter;
 
-    List<Event> events;
+    List<AdvancedEvent> events;
 
     public MarksView(Context context) {
         super(context);

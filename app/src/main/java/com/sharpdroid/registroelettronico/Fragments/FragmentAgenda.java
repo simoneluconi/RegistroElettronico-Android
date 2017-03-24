@@ -26,7 +26,7 @@ import com.sharpdroid.registroelettronico.Activities.AddEventActivity;
 import com.sharpdroid.registroelettronico.Adapters.AgendaAdapter;
 import com.sharpdroid.registroelettronico.Databases.AgendaDB;
 import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
-import com.sharpdroid.registroelettronico.Interfaces.API.Event;
+import com.sharpdroid.registroelettronico.Interfaces.Client.AdvancedEvent;
 import com.sharpdroid.registroelettronico.R;
 import com.transitionseverywhere.ChangeText;
 import com.transitionseverywhere.TransitionManager;
@@ -79,7 +79,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     private SubjectsDB mSubjectsDB;
     private AgendaAdapter adapter;
     private Date mDate;
-    private List<Event> events = new ArrayList<>();
+    private List<AdvancedEvent> events = new ArrayList<>();
 
     public FragmentAgenda() {
     }
@@ -206,8 +206,9 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         mToolbar.setSubtitle(WordUtils.capitalizeFully(year.format(d)));
     }
 
-    private void setAdapterEvents(List<Event> events) {
-        adapter.addAllCalendarEvents(events);
+    private void setAdapterEvents(List<AdvancedEvent> events) {
+        adapter.clear();
+        adapter.addAll(events);
     }
 
     @Override
@@ -244,29 +245,35 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     }
 
     @Override
-    public void onAgendaItemClicked(Event e) {
+    public void onAgendaItemClicked(AdvancedEvent e, int p) {
         LongClickAgenda longClickAgenda = LongClickAgenda.newInstance();
         longClickAgenda.setEvent(e);
         longClickAgenda.show(getChildFragmentManager(), "dialog");
+        Log.i("CLICK", String.valueOf(e.isCompleted()));
     }
 
     @Override
-    public void onBottomSheetItemClicked(int position, Event event) {
+    public void onBottomSheetItemClicked(int position, AdvancedEvent event) {
         String head = getSubjectNameOrProfessorName(event, mSubjectsDB);
-
-
         switch (position) {
             case 0:
+                if (mAgendaDB.isCompleted(event.getId()))
+                    mAgendaDB.setUncompleted(event.getId());
+                else mAgendaDB.setCompleted(event.getId());
+                fetchEvents();
+                updateAdapter();
+                break;
+            case 1:
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT, eventToString(event, head));
                 sendIntent.setType("text/plain");
                 startActivity(sendIntent);
                 break;
-            case 1:
+            case 2:
                 addEventToCalendar(mContext, event);
                 break;
-            case 2:
+            case 3:
                 android.content.ClipboardManager clipboard = (android.content.ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
                 android.content.ClipData clip = android.content.ClipData.newPlainText("Evento copiato", eventToString(event, head));
                 clipboard.setPrimaryClip(clip);

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.sharpdroid.registroelettronico.Interfaces.API.Event;
 import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
+import com.sharpdroid.registroelettronico.Interfaces.Client.AdvancedEvent;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.R;
 
@@ -37,9 +38,9 @@ public class MarkAdapter extends RecyclerView.Adapter<MarkAdapter.MarkHolder> {
     private SimpleDateFormat format = new SimpleDateFormat("d MMMM yyyy", Locale.ITALIAN);
     private List<Mark> CVDataList;
     private Subject subject;
-    private List<Event> events;
+    private List<AdvancedEvent> events;
 
-    public MarkAdapter(Context mContext, Subject subject, List<Event> events) {
+    public MarkAdapter(Context mContext, Subject subject, List<AdvancedEvent> events) {
         this.mContext = mContext;
         CVDataList = new ArrayList<>();
         this.subject = subject;
@@ -90,7 +91,7 @@ public class MarkAdapter extends RecyclerView.Adapter<MarkAdapter.MarkHolder> {
         return CVDataList.size();
     }
 
-    private Event getPossibleMarkDescription(List<Event> events, Date date, Subject subject) {
+    private Event getPossibleMarkDescription(List<AdvancedEvent> events, Date date, Subject subject) {
 
         for (Event e : events) {
 

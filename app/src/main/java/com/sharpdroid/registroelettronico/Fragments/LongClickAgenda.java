@@ -1,6 +1,7 @@
 package com.sharpdroid.registroelettronico.Fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialogFragment;
@@ -13,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.sharpdroid.registroelettronico.Interfaces.API.Event;
+import com.sharpdroid.registroelettronico.Interfaces.Client.AdvancedEvent;
 import com.sharpdroid.registroelettronico.R;
 
 import butterknife.BindView;
@@ -29,14 +30,14 @@ import butterknife.ButterKnife;
  */
 public class LongClickAgenda extends BottomSheetDialogFragment {
 
-    private static final int mItemCount = 3;
+    private static final int mItemCount = 4;
     private static final int icons[] = {R.drawable.agenda_bsheet_share, R.drawable.agenda_bsheet_calendar, R.drawable.agenda_bsheet_copy};
     private static final String texts[] = {"Condividi", "Calendario", "Copia"};
 
 
     private static final String ARG_ITEM_COUNT = "item_count";
     private Listener mListener;
-    private Event event;
+    private AdvancedEvent event;
 
     public static LongClickAgenda newInstance(/*int itemCount*/) {
         final LongClickAgenda fragment = new LongClickAgenda();
@@ -46,7 +47,7 @@ public class LongClickAgenda extends BottomSheetDialogFragment {
         return fragment;
     }
 
-    public void setEvent(Event e) {
+    public void setEvent(AdvancedEvent e) {
         event = e;
     }
 
@@ -82,7 +83,7 @@ public class LongClickAgenda extends BottomSheetDialogFragment {
     }
 
     public interface Listener {
-        void onBottomSheetItemClicked(int position, Event e);
+        void onBottomSheetItemClicked(int position, AdvancedEvent e);
     }
 
     protected class ViewHolder extends RecyclerView.ViewHolder {
@@ -118,8 +119,15 @@ public class LongClickAgenda extends BottomSheetDialogFragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.text.setText(texts[position]);
-            holder.image.setImageResource(icons[position]);
+            if (position != 0) {
+                holder.text.setText(texts[position - 1]);
+                holder.text.setTextColor(Color.BLACK);
+                holder.image.setImageResource(icons[position - 1]);
+            } else {
+                holder.text.setText(event.isCompleted() != 0L ? "Non completato" : "Completato");
+                holder.text.setTextColor(getResources().getColor(R.color.intro_blue_dark));
+                holder.image.setImageResource(R.drawable.agenda_completed);
+            }
         }
 
         @Override

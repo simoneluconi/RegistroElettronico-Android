@@ -25,6 +25,7 @@ import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
 import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
 import com.sharpdroid.registroelettronico.Interfaces.Client.AbsenceEntry;
 import com.sharpdroid.registroelettronico.Interfaces.Client.AbsencesEntry;
+import com.sharpdroid.registroelettronico.Interfaces.Client.AdvancedEvent;
 import com.sharpdroid.registroelettronico.Interfaces.Client.DelayEntry;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Entry;
 import com.sharpdroid.registroelettronico.Interfaces.Client.ExitEntry;
@@ -427,7 +428,7 @@ public class Metodi {
                 || title.contains("verifica ") || title.contains("test ") || title.endsWith("test");
     }
 
-    public static List<com.github.sundeepk.compactcalendarview.domain.Event> convertEvents(List<com.sharpdroid.registroelettronico.Interfaces.API.Event> events) {
+    public static List<com.github.sundeepk.compactcalendarview.domain.Event> convertEvents(List<AdvancedEvent> events) {
         List<com.github.sundeepk.compactcalendarview.domain.Event> list = new ArrayList<>();
         for (com.sharpdroid.registroelettronico.Interfaces.API.Event event : events) {
             list.add(new com.github.sundeepk.compactcalendarview.domain.Event(isEventTest(event) ? Color.parseColor("#FF9800") : Color.WHITE, event.getStart().getTime(), null));
