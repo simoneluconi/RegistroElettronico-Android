@@ -2,9 +2,10 @@ package com.sharpdroid.registroelettronico.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
-import android.util.Log;
+import android.text.style.StrikethroughSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,13 +64,16 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         } else {
             EventHolder eventHolder = (EventHolder) holder;
             AdvancedEvent event = ((AgendaEntry) entry).getEvent();
-            Log.d("ADAPTER", event.getTitle() + " - " + event.isCompleted());
 
             eventHolder.divider.setVisibility((CVDataList.get(position - 1) instanceof HeaderEntry) ? View.INVISIBLE : View.VISIBLE);
 
             eventHolder.date.setText(dateFormat.format(event.getStart()));
             eventHolder.subject.setText(getSubjectNameOrProfessorName(event, db));
-            eventHolder.title.setText((event.isCompleted() != 0L) ? Html.fromHtml("<strike>" + event.getTitle() + "</strike>") : event.getTitle());
+            Spannable title = new SpannableString(event.getTitle());
+            if (event.isCompleted()) {
+                title.setSpan(new StrikethroughSpan(), 0, event.getTitle().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            eventHolder.title.setText(title);
             eventHolder.notes.setText(event.getNota_2());
 
             eventHolder.subject.setVisibility(TextUtils.isEmpty(eventHolder.subject.getText()) ? View.GONE : View.VISIBLE);

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.sharpdroid.registroelettronico.Interfaces.API.Event;
 import com.sharpdroid.registroelettronico.Interfaces.Client.AdvancedEvent;
@@ -179,8 +178,6 @@ public class AgendaDB extends SQLiteOpenHelper {
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             list.add(new AdvancedEvent(c.getString(1), c.getString(2), new Date(c.getLong(3)), new Date(c.getLong(4)), c.getInt(5) == 1, new Date(c.getLong(6)), c.getString(7), c.getString(8), c.getString(9), c.getString(10), c.getInt(11), c.getString(12), c.getString(13), c.getString(14), c.getString(15), c.getString(16), c.getLong(17)));
-
-            Log.w(c.getString(1), String.valueOf(c.getLong(17)));
         }
 
         c.close();
@@ -195,7 +192,6 @@ public class AgendaDB extends SQLiteOpenHelper {
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             list.add(new AdvancedEvent(c.getString(0), c.getString(1), new Date(c.getLong(4)), null, true, null, c.getString(2), null, null, null, 0, null, c.getString(6), c.getString(3), null, c.getString(5), c.getLong(7)));
         }
-
         c.close();
         return list;
     }

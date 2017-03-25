@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static com.sharpdroid.registroelettronico.Utils.Metodi.capitalizeFirst;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.convertAbsencesToHashmap;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.sortByDate;
 
@@ -61,15 +62,15 @@ public class AllAbsencesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             if (entry instanceof DelayEntry) {
                 Delay delay = ((DelayEntry) entry).getDelay();
 
-                absencesHolder.date.setText(long_date_format.format(delay.getDay()));
-                absencesHolder.hour.setText(mContext.getResources().getQuantityString(R.plurals.hours, delay.getHour(), "entrato", delay.getHour()));
+                absencesHolder.date.setText(capitalizeFirst(long_date_format.format(delay.getDay())));
+                absencesHolder.hour.setText(delay.getHour() == 0 ? mContext.getResources().getString(R.string.short_delay) : mContext.getResources().getString(R.string.hours, "entrato", delay.getHour()));
                 absencesHolder.done.setVisibility(delay.isDone() ? View.VISIBLE : View.INVISIBLE);
                 absencesHolder.type_color.setImageDrawable(new ColorDrawable(ContextCompat.getColor(mContext, R.color.orangematerial)));
-                absencesHolder.type_text.setText("R");
+                absencesHolder.type_text.setText(delay.getHour() == 0 ? "RB" : "R");
             } else if (entry instanceof AbsenceEntry) {
                 Absence absence = ((AbsenceEntry) entry).getAbsence();
 
-                absencesHolder.date.setText(long_date_format.format(absence.getFrom()));
+                absencesHolder.date.setText(capitalizeFirst(long_date_format.format(absence.getFrom())));
                 absencesHolder.hour.setText(mContext.getResources().getQuantityString(R.plurals.days, absence.getDays(), absence.getDays()));
                 absencesHolder.done.setVisibility(absence.isDone() ? View.VISIBLE : View.INVISIBLE);
                 absencesHolder.type_color.setImageDrawable(new ColorDrawable(ContextCompat.getColor(mContext, R.color.redmaterial)));
@@ -77,8 +78,8 @@ public class AllAbsencesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             } else {
                 Exit exit = ((ExitEntry) entry).getExit();
 
-                absencesHolder.date.setText(long_date_format.format(exit.getDay()));
-                absencesHolder.hour.setText(mContext.getResources().getQuantityString(R.plurals.hours, exit.getHour(), "uscito", exit.getHour()));
+                absencesHolder.date.setText(capitalizeFirst(long_date_format.format(exit.getDay())));
+                absencesHolder.hour.setText(mContext.getResources().getString(R.string.hours, "uscito", exit.getHour()));
                 absencesHolder.done.setVisibility(exit.isDone() ? View.VISIBLE : View.INVISIBLE);
                 absencesHolder.type_color.setImageDrawable(new ColorDrawable(ContextCompat.getColor(mContext, R.color.bluematerial)));
                 absencesHolder.type_text.setText("U");

@@ -70,9 +70,6 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 subHolder.teacher.setText(WordUtils.capitalizeFully(profHeader, Delimeters));
 
-                if (position == 0)
-                    subHolder.padding_view.setVisibility(View.GONE);
-
                 break;
             case R.layout.adapter_folder:
 
@@ -122,8 +119,6 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     class SubheaderHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.title)
         TextView teacher;
-        @BindView(R.id.paddingTop)
-        View padding_view;
 
         SubheaderHolder(View layout) {
             super(layout);
