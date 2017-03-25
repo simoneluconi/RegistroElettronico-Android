@@ -31,6 +31,7 @@ import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.sharpdroid.registroelettronico.Utils.Metodi.dpToPx;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.isNetworkAvailable;
 
 public class FragmentCommunications extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -72,7 +73,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).marginResId(R.dimen.activity_horizontal_margin, R.dimen.activity_horizontal_margin).size(1).build());
+        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).marginResId(R.dimen.activity_horizontal_margin, R.dimen.activity_horizontal_margin).colorResId(R.color.divider).size(dpToPx(1)).build());
         mRecyclerView.setItemAnimator(null);
 
         mRVAdapter = new CommunicationAdapter(mContext, mCoordinatorLayout, db);

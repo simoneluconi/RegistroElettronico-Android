@@ -66,7 +66,7 @@ public class ActivityFiles extends AppCompatActivity {
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).margin(dpToPx(72), dpToPx(16)).size(1).build());
+        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).margin(dpToPx(72), dpToPx(16)).colorResId(R.color.divider).size(dpToPx(1)).build());
         mRecyclerView.setItemAnimator(null);
 
         mRecyclerView.setAdapter(mRVAdapter);

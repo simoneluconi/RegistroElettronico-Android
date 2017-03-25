@@ -57,7 +57,7 @@ public class FragmentMedie extends Fragment {
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);
         mRecyclerView.setBackgroundColor(Color.parseColor("#F1F1F1"));
         mRecyclerView.setHasFixedSize(true);
-        if (getResources().getBoolean(R.bool.isTablet)) {
+        if (getResources().getBoolean(R.bool.md_is_tablet)) {
             mRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 3));
         } else {
             mRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 2));

@@ -1,7 +1,7 @@
 package com.sharpdroid.registroelettronico.Adapters;
 
 import android.content.Context;
-import android.support.annotation.IdRes;
+import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,7 +46,9 @@ public class AllLessonsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     @Override
-    public int getItemViewType(int position) {
+    public
+    @LayoutRes
+    int getItemViewType(int position) {
         return types.get(position).getID();
     }
 
@@ -54,13 +56,11 @@ public class AllLessonsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof HeaderHolder) {
             ((HeaderHolder) holder).content.setText(((HeaderEntry) types.get(position)).getContent());
+            if (((HeaderHolder) holder).divider != null) {
+                ((HeaderHolder) holder).divider.setVisibility(position == 0 ? View.GONE : View.VISIBLE);
+            }
         } else {
             LessonHolder lessonHolder = (LessonHolder) holder;
-
-            if (getItemViewType(position - 1) == HeaderEntry.ID)
-                lessonHolder.divider.setVisibility(View.INVISIBLE);
-            else
-                lessonHolder.divider.setVisibility(View.VISIBLE);
 
             LessonEntry entry = (LessonEntry) types.get(position);
 
@@ -117,8 +117,8 @@ public class AllLessonsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     private class HeaderEntry extends Entry {
-        @IdRes
-        final static int ID = R.layout.adapter_header;
+        @LayoutRes
+        final static int ID = R.layout.adapter_header_divider;
         private String content;
 
         HeaderEntry(String content) {
@@ -136,7 +136,7 @@ public class AllLessonsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     private class LessonEntry extends Entry {
-        @IdRes
+        @LayoutRes
         final static int ID = R.layout.adapter_lessons_1;
         private Lesson lesson;
 

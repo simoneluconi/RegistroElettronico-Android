@@ -50,7 +50,7 @@ public class FragmentSubjects extends Fragment {
 
         adapter = new SubjectsAdapter(mContext);
         recycler.setLayoutManager(new LinearLayoutManager(mContext));
-        recycler.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).size(1).margin(dpToPx(16), dpToPx(16)).build());
+        recycler.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).colorResId(R.color.divider).size(dpToPx(1)).build());
         recycler.setAdapter(adapter);
         adapter.addAll(db.getSubjects());
     }

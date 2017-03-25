@@ -67,7 +67,7 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 FileTeacher ft = (FileTeacher) fe;
                 String profHeader = ft.getName();
-
+                subHolder.divider.setVisibility(position == 0 ? View.GONE : View.VISIBLE);
                 subHolder.teacher.setText(WordUtils.capitalizeFully(profHeader, Delimeters));
 
                 break;
@@ -76,11 +76,7 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 Folder f = (Folder) fe;
 
                 FileTeacherHolder folderHolder = (FileTeacherHolder) holder;
-                if (getItemViewType(position - 1) == R.layout.adapter_file_teacher) {
-                    folderHolder.divider.setVisibility(View.INVISIBLE);
-                } else {
-                    folderHolder.divider.setVisibility(View.VISIBLE);
-                }
+
                 folderHolder.layout.setOnClickListener(view -> {
                     Intent i = new Intent(mContext, ActivityFiles.class);
                     i.putExtra("folder", new Gson().toJson(f));
@@ -119,6 +115,8 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     class SubheaderHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.title)
         TextView teacher;
+        @BindView(R.id.divider)
+        View divider;
 
         SubheaderHolder(View layout) {
             super(layout);
@@ -127,8 +125,6 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     class FileTeacherHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.divider)
-        View divider;
         @BindView(R.id.title)
         TextView title;
         @BindView(R.id.date)
