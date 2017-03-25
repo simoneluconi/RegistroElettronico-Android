@@ -27,6 +27,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.Delimeters;
+import static com.sharpdroid.registroelettronico.Utils.Metodi.dpToPx;
 
 
 public class InfoView extends CardView {
@@ -65,7 +66,7 @@ public class InfoView extends CardView {
 
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).size(1).marginResId(R.dimen.padding_left_divider1, R.dimen.nav_header_vertical_spacing).build());
+        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).colorResId(R.color.divider).size(dpToPx(1)).marginResId(R.dimen.padding_left_divider1, R.dimen.nav_header_vertical_spacing).build());
     }
 
     public void setSubjectDetails(Subject data) {

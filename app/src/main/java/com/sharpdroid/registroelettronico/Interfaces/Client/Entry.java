@@ -1,9 +1,9 @@
 package com.sharpdroid.registroelettronico.Interfaces.Client;
 
 
-import android.support.annotation.IdRes;
+import android.support.annotation.LayoutRes;
 
 public abstract class Entry {
-    @IdRes
+    @LayoutRes
     public abstract int getID();
 }

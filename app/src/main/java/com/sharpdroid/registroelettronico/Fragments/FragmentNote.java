@@ -31,6 +31,7 @@ import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.sharpdroid.registroelettronico.Utils.Metodi.dpToPx;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.isNetworkAvailable;
 
 public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -69,7 +70,7 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).size(1).build());
+        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).colorResId(R.color.divider).size(dpToPx(1)).build());
         mRecyclerView.setItemAnimator(null);
 
         mRVAdapter = new NoteAdapter(mContext, new CopyOnWriteArrayList<>());
