@@ -9,7 +9,6 @@ import android.net.NetworkInfo;
 import android.provider.CalendarContract;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariAPI;
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
@@ -369,7 +368,6 @@ public class Metodi {
         });
 
         List<Entry> entries;
-        Log.d("METHODS", keys.toString());
 
         for (String key : keys) {
             entries = new ArrayList<>(unsort.get(key));
@@ -384,7 +382,6 @@ public class Metodi {
             );
 
             sort.put(key, entries);
-            Log.d(key, entries.toString());
         }
         return sort;
     }
@@ -458,7 +455,7 @@ public class Metodi {
                                         db.addLessons(subject.getCode(), teacher_code, lessons);
                                         db.addProfessor(subject.getCode(), teacher_code, profName);
 
-                                        Log.d("Trova professore", String.format(Locale.getDefault(), "Professore di %1$s è %2$s", subject.getName(), profName));
+                                        //Log.d("Trova professore", String.format(Locale.getDefault(), "Professore di %1$s è %2$s", subject.getName(), profName));
                                     }, Throwable::printStackTrace);
                     }
 

@@ -1,12 +1,14 @@
 package com.sharpdroid.registroelettronico.API;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.google.android.gms.security.ProviderInstaller;
+import com.sharpdroid.registroelettronico.Activities.LoginActivity;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absences;
 import com.sharpdroid.registroelettronico.Interfaces.API.Communication;
 import com.sharpdroid.registroelettronico.Interfaces.API.CommunicationDescription;
@@ -29,6 +31,7 @@ import okhttp3.Cache;
 import okhttp3.CookieJar;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -64,6 +67,15 @@ public class SpiaggiariApiClient implements RESTfulAPIService {
             }
         };
 
+        Interceptor CHECK_LOGIN = chain -> {
+            Request request = chain.request();
+            okhttp3.Response response = chain.proceed(request);
+            if (response.code() == 403) {
+                context.startActivity(new Intent(context, LoginActivity.class));
+            }
+            return response;
+        };
+
         try {
             //Installa il supporto al TLS se non è presente
             ProviderInstaller.installIfNeeded(context);
@@ -75,7 +87,9 @@ public class SpiaggiariApiClient implements RESTfulAPIService {
                 .cookieJar(cookieJar)
                 .cache(cache)
                 .addNetworkInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+                .addInterceptor(CHECK_LOGIN)
                 .build();
+
 
         // Retrofit
         Retrofit retrofit = new Retrofit.Builder()

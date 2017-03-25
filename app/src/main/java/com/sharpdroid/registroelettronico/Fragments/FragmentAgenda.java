@@ -249,7 +249,6 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         LongClickAgenda longClickAgenda = LongClickAgenda.newInstance();
         longClickAgenda.setEvent(e);
         longClickAgenda.show(getChildFragmentManager(), "dialog");
-        Log.i("CLICK", String.valueOf(e.isCompleted()));
     }
 
     @Override
@@ -260,8 +259,8 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
                 if (mAgendaDB.isCompleted(event.getId()))
                     mAgendaDB.setUncompleted(event.getId());
                 else mAgendaDB.setCompleted(event.getId());
-                fetchEvents();
                 updateAdapter();
+                recycler.getAdapter().notifyDataSetChanged();
                 break;
             case 1:
                 Intent sendIntent = new Intent();

@@ -124,9 +124,9 @@ public class LongClickAgenda extends BottomSheetDialogFragment {
                 holder.text.setTextColor(Color.BLACK);
                 holder.image.setImageResource(icons[position - 1]);
             } else {
-                holder.text.setText(event.isCompleted() != 0L ? "Non completato" : "Completato");
+                holder.text.setText(event.isCompleted() ? "Non completato" : "Completato");
                 holder.text.setTextColor(getResources().getColor(R.color.intro_blue_dark));
-                holder.image.setImageResource(R.drawable.agenda_completed);
+                holder.image.setImageResource(event.isCompleted() ? R.drawable.agenda_uncomplete : R.drawable.agenda_complete);
             }
         }
 
