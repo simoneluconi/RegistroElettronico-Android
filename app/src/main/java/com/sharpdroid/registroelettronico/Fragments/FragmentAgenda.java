@@ -108,7 +108,6 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         mCompactCalendarView.setListener(this);
         mCompactCalendarView.shouldSelectFirstDayOfMonthOnScroll(false);
 
-        addFAB.setClosedOnTouchOutside(true);
         verificaFAB.setOnClickListener(v -> startActivity(new Intent(mContext, AddEventActivity.class).putExtra("type", "Verifica").putExtra("time", mDate.getTime())));
         eserciziFAB.setOnClickListener(v -> startActivity(new Intent(mContext, AddEventActivity.class).putExtra("type", "Compiti").putExtra("time", mDate.getTime())));
         altroFAB.setOnClickListener(v -> startActivity(new Intent(mContext, AddEventActivity.class).putExtra("type", "Altro").putExtra("time", mDate.getTime())));
@@ -121,7 +120,11 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         prepareDate(true);
         mCompactCalendarView.setCurrentDate(mDate);
 
-        //updateCalendar(); update onResume()
+        addFAB.setClosedOnTouchOutside(true);
+        addFAB.setEnabled(true);
+        addFAB.hideMenuButton(false);
+        addFAB.showMenuButton(true);
+
         updateAdapter();
         updateDB();
     }
