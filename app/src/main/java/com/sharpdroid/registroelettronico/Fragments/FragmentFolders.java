@@ -133,7 +133,7 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
     @Override
     public void onFolderClick(Folder f, View container) {
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, FragmentFiles.newInstance(f, mCoordinatorLayout)).addToBackStack(null).setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        transaction.replace(R.id.fragment_container, FragmentFiles.newInstance(f)).addToBackStack(null).setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         transaction.commit();
     }
 }
