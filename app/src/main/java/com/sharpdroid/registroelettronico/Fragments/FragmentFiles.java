@@ -23,15 +23,13 @@ public class FragmentFiles extends Fragment {
     private Folder data;
     private FileAdapter mRVAdapter;
     private FilesDB db;
-    private CoordinatorLayout coordinatorLayout;
 
     public FragmentFiles() {
     }
 
-    public static FragmentFiles newInstance(Folder data, CoordinatorLayout coordinatorLayout) {
+    public static FragmentFiles newInstance(Folder data) {
         FragmentFiles fragment = new FragmentFiles();
         fragment.setData(data);
-        fragment.setCoordinatorLayout(coordinatorLayout);
         return fragment;
     }
 
@@ -39,24 +37,26 @@ public class FragmentFiles extends Fragment {
         this.data = data;
     }
 
-    public void setCoordinatorLayout(CoordinatorLayout coordinatorLayout) {
-        this.coordinatorLayout = coordinatorLayout;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        CoordinatorLayout layout = new CoordinatorLayout(getContext());
+        layout.setLayoutParams(new CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
         RecyclerView recyclerView = new RecyclerView(getContext());
+        recyclerView.setId(R.id.recycler);
         recyclerView.setVerticalScrollbarPosition(View.SCROLLBAR_POSITION_RIGHT);
         recyclerView.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        return recyclerView;
+
+        layout.addView(recyclerView);
+        return layout;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        RecyclerView mRecyclerView = (RecyclerView) view;
-
+        RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);
+        CoordinatorLayout coordinatorLayout = (CoordinatorLayout) view;
         db = new FilesDB(getContext());
         mRVAdapter = new FileAdapter(getContext(), coordinatorLayout, db);
         addSubjects(data);
