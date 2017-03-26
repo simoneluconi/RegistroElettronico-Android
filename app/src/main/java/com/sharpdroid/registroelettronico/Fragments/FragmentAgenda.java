@@ -242,6 +242,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         super.onResume();
         setTitleSubtitle(mDate);
         updateCalendar();
+        updateAdapter();
     }
 
     @Override
@@ -260,7 +261,6 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
                     mAgendaDB.setUncompleted(event.getId());
                 else mAgendaDB.setCompleted(event.getId());
                 updateAdapter();
-                recycler.getAdapter().notifyDataSetChanged();
                 break;
             case 1:
                 Intent sendIntent = new Intent();
@@ -277,6 +277,11 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
                 android.content.ClipData clip = android.content.ClipData.newPlainText("Evento copiato", eventToString(event, head));
                 clipboard.setPrimaryClip(clip);
 
+                break;
+            case 4:
+                mAgendaDB.archive(event.getId());
+                updateAdapter();
+                updateCalendar();
                 break;
         }
     }

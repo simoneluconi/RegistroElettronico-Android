@@ -7,6 +7,7 @@ import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
+import com.sharpdroid.registroelettronico.Databases.AgendaDB;
 import com.sharpdroid.registroelettronico.R;
 
 /**
@@ -16,16 +17,24 @@ public class FragmentSettings extends PreferenceFragmentCompat implements Shared
     private static final String TAG = FragmentSettings.class.getSimpleName();
 
     SharedPreferences sharedPreferences;
+    AgendaDB db;
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
         //add xml
         addPreferencesFromResource(R.xml.preferences);
-
+        db = new AgendaDB(getContext());
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         onSharedPreferenceChanged(sharedPreferences, "voto_obiettivo");
         onSharedPreferenceChanged(sharedPreferences, "drawer_to_open");
+
+        Preference button = findPreference("clear_archive");
+        button.setOnPreferenceClickListener(preference -> {
+            db.clearArchive();
+            return true;
+        });
+
     }
 
     @Override
@@ -56,5 +65,11 @@ public class FragmentSettings extends PreferenceFragmentCompat implements Shared
         //unregister the preference change listener
         getPreferenceScreen().getSharedPreferences()
                 .unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        db.close();
     }
 }
