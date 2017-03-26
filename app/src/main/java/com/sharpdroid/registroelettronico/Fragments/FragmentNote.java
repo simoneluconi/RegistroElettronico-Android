@@ -1,6 +1,5 @@
 package com.sharpdroid.registroelettronico.Fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -43,7 +42,6 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
     SwipeRefreshLayout mSwipeRefreshLayout;
 
     private NoteAdapter mRVAdapter;
-    private Context mContext;
 
     public FragmentNote() {
     }
@@ -51,7 +49,6 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mContext = getContext();
         return inflater.inflate(R.layout.coordinator_swipe_recycler, container, false);
     }
 
@@ -67,13 +64,15 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
                 R.color.greenmaterial,
                 R.color.orangematerial);
 
+        getActivity().setTitle(getString(R.string.note));
+
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).colorResId(R.color.divider).size(dpToPx(1)).build());
+        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getContext()).colorResId(R.color.divider).size(dpToPx(1)).build());
         mRecyclerView.setItemAnimator(null);
 
-        mRVAdapter = new NoteAdapter(mContext, new CopyOnWriteArrayList<>());
+        mRVAdapter = new NoteAdapter(getContext(), new CopyOnWriteArrayList<>());
         mRecyclerView.setAdapter(mRVAdapter);
 
         bindNoteCache();
@@ -88,13 +87,13 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
 
             if (docache) {
                 // Update cache
-                new CacheListTask(mContext.getCacheDir(), TAG).execute((List) notes);
+                new CacheListTask(getContext().getCacheDir(), TAG).execute((List) notes);
             }
         }
     }
 
     private void bindNoteCache() {
-        new CacheListObservable(new File(mContext.getCacheDir(), TAG))
+        new CacheListObservable(new File(getContext().getCacheDir(), TAG))
                 .getCachedList(Note.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -111,7 +110,7 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private void UpdateNotes() {
         mSwipeRefreshLayout.setRefreshing(true);
-        new SpiaggiariApiClient(mContext)
+        new SpiaggiariApiClient(getContext())
                 .getNotes()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(notes -> {
@@ -119,7 +118,7 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
                     mSwipeRefreshLayout.setRefreshing(false);
                 }, error -> {
                     error.printStackTrace();
-                    if (!isNetworkAvailable(mContext)) {
+                    if (!isNetworkAvailable(getContext())) {
                         Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
                     } else
                         Snackbar.make(mCoordinatorLayout, error.getLocalizedMessage(), Snackbar.LENGTH_LONG).show();
