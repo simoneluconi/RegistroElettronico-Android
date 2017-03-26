@@ -1,5 +1,6 @@
 package com.sharpdroid.registroelettronico.Activities;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -18,6 +19,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +35,8 @@ import com.sharpdroid.registroelettronico.Fragments.FragmentNote;
 import com.sharpdroid.registroelettronico.Fragments.FragmentSettings;
 import com.sharpdroid.registroelettronico.Fragments.FragmentSubjects;
 import com.sharpdroid.registroelettronico.R;
+import com.transitionseverywhere.ChangeText;
+import com.transitionseverywhere.TransitionManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,6 +63,7 @@ public class MainActivity extends AppCompatActivity
     ActionBarDrawerToggle toggle;
     boolean needUpdate = true;
     boolean canOpenDrawer = true;
+    ObjectAnimator anim;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,12 +92,29 @@ public class MainActivity extends AppCompatActivity
         fragmentManager = getSupportFragmentManager();
         fragmentManager.addOnBackStackChangedListener(() -> {
             canOpenDrawer = fragmentManager.getBackStackEntryCount() == 0;
+            Log.d("DRAWER", "CAN OPEN? " + String.valueOf(canOpenDrawer));
             if (toggle != null) {
                 if (!canOpenDrawer) {
-                    toggle.getDrawerArrowDrawable().setProgress(1);
+                    anim = ObjectAnimator.ofFloat(toggle.getDrawerArrowDrawable(), "progress", 1f);
+                    anim.setDuration(250);
+                    anim.start();
+                    drawer.removeDrawerListener(toggle);
                 } else {
+                    anim = ObjectAnimator.ofFloat(toggle.getDrawerArrowDrawable(), "progress", 0f);
+                    anim.setDuration(250);
+                    anim.start();
+                    toggle.getDrawerArrowDrawable().setProgress(0f);
+                    drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+                    drawer.addDrawerListener(toggle);
                     toggle.syncState();
                 }
+            }
+        });
+        toolbar.setNavigationOnClickListener(v -> {
+            if (canOpenDrawer) {
+                drawer.openDrawer(GravityCompat.START);
+            } else {
+                fragmentManager.popBackStack();
             }
         });
     }
@@ -112,15 +134,18 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void setTitle(CharSequence title) {
+        TransitionManager.beginDelayedTransition(toolbar, new ChangeText().setChangeBehavior(ChangeText.CHANGE_BEHAVIOR_IN));
+        super.setTitle(title);
+    }
+
     private void bindDrawerToggle() {
         if (drawer != null && toolbar != null) {
             toggle = new ActionBarDrawerToggle(
                     this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-            toggle.setToolbarNavigationClickListener(v -> {
-                if (canOpenDrawer) {
-                    drawer.openDrawer(GravityCompat.START);
-                }
-            });
+            toggle.setDrawerIndicatorEnabled(true);
+
             drawer.addDrawerListener(toggle);
             toggle.syncState();
         }
@@ -135,9 +160,17 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public void clearBackstack() {
+        if (fragmentManager != null)
+            for (int i = 0; i < fragmentManager.getBackStackEntryCount(); i++) {
+                fragmentManager.popBackStack();
+            }
+    }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
+        clearBackstack();
         Fragment fragment;
         int id = item.getItemId();
         calendarView.setVisibility(View.GONE);

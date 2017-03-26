@@ -1,7 +1,6 @@
 package com.sharpdroid.registroelettronico.Fragments;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -45,8 +44,6 @@ public class FragmentLessons extends Fragment implements SwipeRefreshLayout.OnRe
     AllLessonsAdapter mRVAdapter;
     SubjectsDB db;
 
-    private OnFragmentInteractionListener mListener;
-
     public FragmentLessons() {
     }
 
@@ -69,7 +66,7 @@ public class FragmentLessons extends Fragment implements SwipeRefreshLayout.OnRe
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.activity_recycler_refresh_scrollbar, container, false);
+        return inflater.inflate(R.layout.fragment_recycler_refresh_scrollbar, container, false);
     }
 
     @Override
@@ -101,19 +98,12 @@ public class FragmentLessons extends Fragment implements SwipeRefreshLayout.OnRe
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         db.close();
-        mListener = null;
     }
 
     @Override
@@ -155,19 +145,5 @@ public class FragmentLessons extends Fragment implements SwipeRefreshLayout.OnRe
                         });
             }
         }
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
     }
 }
