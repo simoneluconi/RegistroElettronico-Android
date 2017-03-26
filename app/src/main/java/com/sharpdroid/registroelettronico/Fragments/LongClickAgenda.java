@@ -30,9 +30,9 @@ import butterknife.ButterKnife;
  */
 public class LongClickAgenda extends BottomSheetDialogFragment {
 
-    private static final int mItemCount = 4;
-    private static final int icons[] = {R.drawable.agenda_bsheet_share, R.drawable.agenda_bsheet_calendar, R.drawable.agenda_bsheet_copy};
-    private static final String texts[] = {"Condividi", "Calendario", "Copia"};
+    private static final int mItemCount = 5;
+    private static final int icons[] = {R.drawable.agenda_bsheet_share, R.drawable.agenda_bsheet_calendar, R.drawable.agenda_bsheet_copy, R.drawable.agenda_bsheet_archive};
+    private static final String texts[] = {"Condividi", "Inserisci nel calendario", "Copia", "Archivia"};
 
 
     private static final String ARG_ITEM_COUNT = "item_count";

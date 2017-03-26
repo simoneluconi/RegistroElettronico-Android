@@ -140,7 +140,7 @@ public class AgendaDB extends SQLiteOpenHelper {
 
     public List<AdvancedEvent> getEvents() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT api.*, completed.date AS completed FROM " + TABLE_API + " LEFT JOIN completed ON api.code=completed.id", new String[]{});
+        Cursor c = db.rawQuery("SELECT api.*, completed.date AS completed FROM api LEFT JOIN completed ON api.code=completed.id WHERE NOT EXISTS (SELECT * FROM archive WHERE archive.id = api.code)", new String[]{});
         List<AdvancedEvent> list = new ArrayList<>();
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
@@ -153,7 +153,7 @@ public class AgendaDB extends SQLiteOpenHelper {
 
     public List<AdvancedEvent> getLocalEvents() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT local.*, completed.date AS completed FROM local LEFT JOIN completed ON local.uuid=completed.id", new String[]{});
+        Cursor c = db.rawQuery("SELECT local.*, completed.date AS completed FROM local LEFT JOIN completed ON local.uuid=completed.id WHERE NOT EXISTS(SELECT * FROM archive WHERE archive.id = local.uuid)", new String[]{});
         List<AdvancedEvent> list = new ArrayList<>();
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
@@ -173,7 +173,7 @@ public class AgendaDB extends SQLiteOpenHelper {
 
     public List<AdvancedEvent> getEvents(long day) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT api.*, completed.date AS completed FROM " + TABLE_API + " LEFT JOIN completed ON api.code=completed.id WHERE api.start BETWEEN ? AND ?", new String[]{String.valueOf(day), String.valueOf(day + 86399999)});
+        Cursor c = db.rawQuery("SELECT api.*, completed.date AS completed FROM api LEFT JOIN completed ON api.code=completed.id WHERE (api.start BETWEEN ? AND ?) AND NOT EXISTS (SELECT * FROM archive WHERE archive.id=api.code)", new String[]{String.valueOf(day), String.valueOf(day + 86399999)});
         List<AdvancedEvent> list = new ArrayList<>();
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
@@ -186,7 +186,7 @@ public class AgendaDB extends SQLiteOpenHelper {
 
     public List<AdvancedEvent> getLocalEvents(long day) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT local.*, completed.date AS completed FROM local LEFT JOIN completed ON local.uuid=completed.id WHERE local.day BETWEEN ? AND ?", new String[]{String.valueOf(day), String.valueOf(day + 86399999)});
+        Cursor c = db.rawQuery("SELECT local.*, completed.date AS completed FROM local LEFT JOIN completed ON local.uuid=completed.id WHERE (local.day BETWEEN ? AND ?) AND NOT EXISTS (SELECT * FROM archive WHERE archive.id = local.uuid)", new String[]{String.valueOf(day), String.valueOf(day + 86399999)});
         List<AdvancedEvent> list = new ArrayList<>();
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
@@ -230,5 +230,17 @@ public class AgendaDB extends SQLiteOpenHelper {
         boolean completed = c.moveToFirst();
         c.close();
         return completed;
+    }
+
+    public void archive(String id) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("id", id);
+        db.insert(TABLE_ARCHIVE, null, cv);
+    }
+
+    public void clearArchive() {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_ARCHIVE, null, null);
     }
 }

@@ -15,4 +15,8 @@
         android:key="drawer_to_open"
         android:summary="Seleziona il tab di partenza"
         android:title="Tab di partenza" />
+    <android.support.v7.preference.Preference
+        android:key="clear_archive"
+        android:summary="Ripristina tutti i dati contenuti nell'archivio"
+        android:title="Ripristina da archivio" />
 </android.support.v7.preference.PreferenceScreen>
