@@ -1,6 +1,5 @@
 package com.sharpdroid.registroelettronico.Fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -43,7 +42,6 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
     SwipeRefreshLayout mSwipeRefreshLayout;
 
     private CommunicationAdapter mRVAdapter;
-    private Context mContext;
     private CommunicationsDB db;
 
     public FragmentCommunications() {
@@ -53,8 +51,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
     @Override
     public View onCreateView(final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        mContext = getContext();
-        db = new CommunicationsDB(mContext);
+        db = new CommunicationsDB(getContext());
         return inflater.inflate(R.layout.coordinator_swipe_recycler, container, false);
     }
 
@@ -69,14 +66,15 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
                 R.color.redmaterial,
                 R.color.greenmaterial,
                 R.color.orangematerial);
+        getActivity().setTitle(getString(R.string.communications));
 
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).colorResId(R.color.divider).size(dpToPx(1)).build());
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getContext()).colorResId(R.color.divider).size(dpToPx(1)).build());
         mRecyclerView.setItemAnimator(null);
 
-        mRVAdapter = new CommunicationAdapter(mContext, mCoordinatorLayout, db);
+        mRVAdapter = new CommunicationAdapter(getContext(), mCoordinatorLayout, db);
         mRecyclerView.setAdapter(mRVAdapter);
 
         bindCommunicationsCache();
@@ -90,13 +88,13 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
 
             if (docache) {
                 // Update cache
-                new CacheListTask(mContext.getCacheDir(), TAG).execute((List) communications);
+                new CacheListTask(getContext().getCacheDir(), TAG).execute((List) communications);
             }
         }
     }
 
     private void bindCommunicationsCache() {
-        new CacheListObservable(new File(mContext.getCacheDir(), TAG))
+        new CacheListObservable(new File(getContext().getCacheDir(), TAG))
                 .getCachedList(Communication.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -112,7 +110,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
 
     private void UpdateCommunications() {
         mSwipeRefreshLayout.setRefreshing(true);
-        new SpiaggiariApiClient(mContext)
+        new SpiaggiariApiClient(getContext())
                 .getCommunications()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(communications -> {
@@ -120,7 +118,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
                     mSwipeRefreshLayout.setRefreshing(false);
                 }, error -> {
                     error.printStackTrace();
-                    if (!isNetworkAvailable(mContext)) {
+                    if (!isNetworkAvailable(getContext())) {
                         Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
                     } else
                         Snackbar.make(mCoordinatorLayout, error.getLocalizedMessage(), Snackbar.LENGTH_LONG).show();

@@ -35,9 +35,6 @@
             android:name=".Activities.MainActivity"
             tools:ignore="InnerclassSeparator" />
         <activity
-            android:name=".Activities.ActivityFiles"
-            tools:ignore="InnerclassSeparator" />
-        <activity
             android:name=".Activities.Intro"
             tools:ignore="InnerclassSeparator" />
         <activity

@@ -81,6 +81,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
+        getActivity().setTitle(getString(R.string.medie));
         tabLayout = (TabLayout) getActivity().findViewById(R.id.tab_layout);
         tabLayout.setVisibility(View.VISIBLE);
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) getActivity().findViewById(R.id.toolbar).getLayoutParams();

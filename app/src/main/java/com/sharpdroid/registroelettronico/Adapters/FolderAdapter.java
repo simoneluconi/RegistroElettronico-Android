@@ -1,7 +1,5 @@
 package com.sharpdroid.registroelettronico.Adapters;
 
-import android.content.Context;
-import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,8 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.sharpdroid.registroelettronico.Activities.ActivityFiles;
 import com.sharpdroid.registroelettronico.Interfaces.API.FileTeacher;
 import com.sharpdroid.registroelettronico.Interfaces.API.Folder;
 import com.sharpdroid.registroelettronico.Interfaces.Client.FileElement;
@@ -32,25 +28,23 @@ import static com.sharpdroid.registroelettronico.Utils.Metodi.Delimeters;
 public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     final static String TAG = FolderAdapter.class.getSimpleName();
 
-    private final Context mContext;
-    private final LayoutInflater mInflater;
     private final SimpleDateFormat formatter = new SimpleDateFormat("MMM d, yyyy", Locale.ITALIAN);
     private FileElement fileElements = new FileElement();
     private FragmentManager fragmentManager;
+    private Listener listener;
 
-    public FolderAdapter(Context context, FragmentManager fragmentManager) {
-        mContext = context;
-        mInflater = LayoutInflater.from(mContext);
+    public FolderAdapter(FragmentManager fragmentManager, Listener listener) {
         this.fragmentManager = fragmentManager;
+        this.listener = listener;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case R.layout.adapter_folder:
-                return new FileTeacherHolder(mInflater.inflate(viewType, parent, false));
+                return new FileTeacherHolder(LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false));
             default:
-                return new SubheaderHolder(mInflater.inflate(viewType, parent, false));
+                return new SubheaderHolder(LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false));
         }
     }
 
@@ -68,10 +62,8 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 FileTeacherHolder folderHolder = (FileTeacherHolder) holder;
 
                 folderHolder.layout.setOnClickListener(view -> {
-                    Intent i = new Intent(mContext, ActivityFiles.class);
-                    i.putExtra("folder", new Gson().toJson(f));
-                    i.putExtra("name", f.getProfName().toLowerCase());
-                    mContext.startActivity(i);
+                    if (listener != null)
+                        listener.onFolderClick(f, view);
                 });
 
                 folderHolder.title.setText(f.getName().trim());
@@ -106,6 +98,10 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         fileElements.clear();
         fileElements.ConvertFileTeachertoFileElement(fileteachers);
         notifyDataSetChanged();
+    }
+
+    public interface Listener {
+        void onFolderClick(Folder f, View container);
     }
 
     class SubheaderHolder extends RecyclerView.ViewHolder {

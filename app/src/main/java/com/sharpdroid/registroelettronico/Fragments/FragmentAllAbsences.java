@@ -65,6 +65,8 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
                 R.color.greenmaterial,
                 R.color.orangematerial);
 
+        getActivity().setTitle(getString(R.string.absences));
+
         adapter = new AllAbsencesAdapter(mContext);
         recycler.setLayoutManager(new LinearLayoutManager(mContext));
         recycler.setAdapter(adapter);
