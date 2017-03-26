@@ -1,16 +1,21 @@
-package com.sharpdroid.registroelettronico.Activities;
+package com.sharpdroid.registroelettronico.Fragments;
 
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
+import com.sharpdroid.registroelettronico.Activities.MainActivity;
 import com.sharpdroid.registroelettronico.Adapters.AllLessonsAdapter;
 import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
@@ -26,8 +31,9 @@ import static com.sharpdroid.registroelettronico.Utils.Metodi.getProfessorOfThis
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getSubjectName;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.isNetworkAvailable;
 
-public class AllLessonsWithDownloadActivity extends AppCompatActivity
-        implements SwipeRefreshLayout.OnRefreshListener {
+
+public class FragmentLessons extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+
     private final static String TAG = "Lessons";
     static int code;
     @BindView(R.id.recycler)
@@ -37,29 +43,47 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
     @BindView(R.id.swiperefresh)
     SwipeRefreshLayout mSwipeRefreshLayout;
     AllLessonsAdapter mRVAdapter;
-
     SubjectsDB db;
 
+    private OnFragmentInteractionListener mListener;
+
+    public FragmentLessons() {
+    }
+
+    public static FragmentLessons newInstance(int code) {
+        FragmentLessons fragment = new FragmentLessons();
+        Bundle b = new Bundle();
+        b.putInt("code", code);
+        fragment.setArguments(b);
+        return fragment;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recycler_refresh_scrollbar);
-        ButterKnife.bind(this);
-
-        code = getIntent().getIntExtra("code", -1);
-        db = new SubjectsDB(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        if (getArguments() != null) {
+            code = getArguments().getInt("code");
         }
+    }
 
-        setTitle(getSubjectName(db.getSubject(code)));
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.activity_recycler_refresh_scrollbar, container, false);
+    }
 
-        mRVAdapter = new AllLessonsAdapter(this);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.bind(this, view);
+
+        db = new SubjectsDB(getContext());
+        MainActivity activity = (MainActivity) getActivity();
+
+        activity.setTitle(getSubjectName(db.getSubject(code)));
+
+        mRVAdapter = new AllLessonsAdapter(getContext());
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(mRVAdapter);
 
         mSwipeRefreshLayout.setRefreshing(true);
@@ -75,9 +99,26 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) finish();
-        return super.onOptionsItemSelected(item);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        db.close();
+        mListener = null;
+    }
+
+    @Override
+    public void onRefresh() {
+        UpdateLessons();
     }
 
     private void addLessons(List<Lesson> lessons) {
@@ -91,17 +132,13 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
         addLessons(db.getLessons(code));
     }
 
-    public void onRefresh() {
-        UpdateLessons();
-    }
-
     private void UpdateLessons() {
-        if (!isNetworkAvailable(this)) {
+        if (!isNetworkAvailable(getContext())) {
             Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);
         } else {
             for (Integer prof : db.getProfessorCodes(code)) {
-                new SpiaggiariApiClient(this)
+                new SpiaggiariApiClient(getContext())
                         .getLessons(code, String.valueOf(prof))
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(lessons -> {
@@ -120,9 +157,17 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        db.close();
-        super.onDestroy();
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        void onFragmentInteraction(Uri uri);
     }
 }

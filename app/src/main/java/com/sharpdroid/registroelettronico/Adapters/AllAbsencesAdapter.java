@@ -45,7 +45,7 @@ public class AllAbsencesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == 0)
-            return new HeaderHolder(LayoutInflater.from(mContext).inflate(R.layout.adapter_header, parent, false));
+            return new HeaderHolder(LayoutInflater.from(mContext).inflate(R.layout.adapter_header_divider_64_padding, parent, false));
         else
             return new AbsencesHolder(LayoutInflater.from(mContext).inflate(R.layout.adapter_absence, parent, false));
     }
@@ -55,9 +55,12 @@ public class AllAbsencesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         Entry entry = CVDataList.get(position);
         if (holder instanceof HeaderHolder) {
             ((HeaderHolder) holder).content.setText(((HeaderEntry) entry).getTitle());
+            if (((HeaderHolder) holder).divider != null) {
+                ((HeaderHolder) holder).divider.setVisibility(position == 0 ? View.GONE : View.VISIBLE);
+            }
         } else {
             AbsencesHolder absencesHolder = (AbsencesHolder) holder;
-            absencesHolder.divider.setVisibility((getItemViewType(position - 1) == 0) ? View.INVISIBLE : View.VISIBLE);
+            //absencesHolder.divider.setVisibility((getItemViewType(position - 1) == 0) ? View.INVISIBLE : View.VISIBLE);
 
             if (entry instanceof DelayEntry) {
                 Delay delay = ((DelayEntry) entry).getDelay();

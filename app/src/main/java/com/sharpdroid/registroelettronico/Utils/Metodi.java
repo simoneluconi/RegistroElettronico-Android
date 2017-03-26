@@ -72,7 +72,7 @@ public class Metodi {
         if (Obb > 10 || media > 10)
             return "Errore"; // Quando l'obiettivo o la media sono > 10
         if (Obb >= 10 && media < Obb)
-            return "Impossibile raggiungere la media del " + media; // Quando l'obiettivo è 10 (o più) e la media è < 10 (non si potrà mai raggiungere)
+            return "Impossibile raggiungere la media del " + Obb; // Quando l'obiettivo è 10 (o più) e la media è < 10 (non si potrà mai raggiungere)
         double[] array = {0.75, 0.5, 0.25, 0};
         int index = 0;
         float sommaVotiDaPrendere;

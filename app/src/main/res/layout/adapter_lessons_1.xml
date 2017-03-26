@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
+    android:layout_height="wrap_content"
     android:gravity="center_vertical"
+    android:paddingBottom="8dp"
     android:paddingEnd="16dp"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:paddingStart="16dp">
+    android:paddingStart="16dp"
+    android:paddingTop="8dp">
 
     <TextView
         android:id="@+id/content"
@@ -25,6 +27,5 @@
         android:layout_below="@id/content"
         android:text="-"
         android:textSize="12sp" />
-
 
 </RelativeLayout>

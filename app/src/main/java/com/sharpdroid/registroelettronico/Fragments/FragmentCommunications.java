@@ -73,7 +73,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).marginResId(R.dimen.activity_horizontal_margin, R.dimen.activity_horizontal_margin).colorResId(R.color.divider).size(dpToPx(1)).build());
+        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).colorResId(R.color.divider).size(dpToPx(1)).build());
         mRecyclerView.setItemAnimator(null);
 
         mRVAdapter = new CommunicationAdapter(mContext, mCoordinatorLayout, db);

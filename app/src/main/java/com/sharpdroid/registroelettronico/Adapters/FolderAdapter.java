@@ -47,12 +47,11 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
-            case R.layout.adapter_file_teacher:
-                return new SubheaderHolder(mInflater.inflate(viewType, parent, false));
             case R.layout.adapter_folder:
                 return new FileTeacherHolder(mInflater.inflate(viewType, parent, false));
+            default:
+                return new SubheaderHolder(mInflater.inflate(viewType, parent, false));
         }
-        return null;
     }
 
     @Override
@@ -62,15 +61,6 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         FileElement fe = fileElements.get(position);
 
         switch (layout) {
-            case R.layout.adapter_file_teacher:
-                SubheaderHolder subHolder = (SubheaderHolder) holder;
-
-                FileTeacher ft = (FileTeacher) fe;
-                String profHeader = ft.getName();
-                subHolder.divider.setVisibility(position == 0 ? View.GONE : View.VISIBLE);
-                subHolder.teacher.setText(WordUtils.capitalizeFully(profHeader, Delimeters));
-
-                break;
             case R.layout.adapter_folder:
 
                 Folder f = (Folder) fe;
@@ -87,6 +77,15 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 folderHolder.title.setText(f.getName().trim());
                 folderHolder.date.setText(formatter.format(f.getLast()));
                 break;
+            default:
+                SubheaderHolder subHolder = (SubheaderHolder) holder;
+
+                FileTeacher ft = (FileTeacher) fe;
+                String profHeader = ft.getName();
+                subHolder.divider.setVisibility(position == 0 ? View.GONE : View.VISIBLE);
+                subHolder.teacher.setText(WordUtils.capitalizeFully(profHeader, Delimeters));
+
+                break;
         }
 
     }
@@ -94,11 +93,8 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public int getItemViewType(int position) {
         if (fileElements.get(position) instanceof FileTeacher)
-            return R.layout.adapter_file_teacher;
-        else if (fileElements.get(position) instanceof Folder)
-            return R.layout.adapter_folder;
-
-        return 0;
+            return R.layout.adapter_header_divider_72_padding;
+        else return R.layout.adapter_folder;
     }
 
     @Override
@@ -113,7 +109,7 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     class SubheaderHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.title)
+        @BindView(R.id.content)
         TextView teacher;
         @BindView(R.id.divider)
         View divider;

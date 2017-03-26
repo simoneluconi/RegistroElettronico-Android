@@ -1,7 +1,6 @@
 package com.sharpdroid.registroelettronico.Fragments;
 
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.sharpdroid.registroelettronico.Adapters.SubjectsAdapter;
 import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
+import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
@@ -21,9 +21,7 @@ import butterknife.ButterKnife;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.dpToPx;
 
-public class FragmentSubjects extends Fragment {
-    Context mContext;
-
+public class FragmentSubjects extends Fragment implements SubjectsAdapter.SubjectListener {
     @BindView(R.id.recycler)
     RecyclerView recycler;
 
@@ -45,12 +43,11 @@ public class FragmentSubjects extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        mContext = getContext();
-        db = new SubjectsDB(mContext);
+        db = new SubjectsDB(getContext());
 
-        adapter = new SubjectsAdapter(mContext);
-        recycler.setLayoutManager(new LinearLayoutManager(mContext));
-        recycler.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).colorResId(R.color.divider).size(dpToPx(1)).build());
+        adapter = new SubjectsAdapter(this);
+        recycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        recycler.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getContext()).colorResId(R.color.divider).size(dpToPx(1)).build());
         recycler.setAdapter(adapter);
         adapter.addAll(db.getSubjects());
     }
@@ -59,5 +56,15 @@ public class FragmentSubjects extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         db.close();
+    }
+
+    @Override
+    public void onSubjectClick(Subject subject, View container) {
+        /*Intent intent = new Intent(getContext(), AllLessonsWithDownloadActivity.class);
+        intent.putExtra("code", subject.getCode());
+        intent.putExtra("name", getSubjectName(subject));
+        getContext().startActivity(intent);*/
+
+
     }
 }
