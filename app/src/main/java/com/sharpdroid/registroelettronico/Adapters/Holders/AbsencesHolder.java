@@ -23,8 +23,6 @@ public class AbsencesHolder extends RecyclerView.ViewHolder {
     public ImageView done;
     @BindView(R.id.type_color)
     public CircleImageView type_color;
-    @BindView(R.id.divider)
-    public View divider;
     @BindView(R.id.layout)
     public View layout;
 

@@ -73,7 +73,7 @@
             android:value="3124a44c739be03092b7db7c9c44a5052bd37fa5" />
 
         <activity android:name=".Activities.AddEventActivity" />
-        <activity android:name=".Activities.LoginActivity"></activity>
+        <activity android:name=".Activities.LoginActivity" />
     </application>
 
 </manifest>

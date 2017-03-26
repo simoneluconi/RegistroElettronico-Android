@@ -11,6 +11,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -53,9 +54,11 @@ public class MainActivity extends AppCompatActivity
 
     AppBarLayout.LayoutParams params;
 
+    FragmentManager fragmentManager;
     SharedPreferences settings;
     ActionBarDrawerToggle toggle;
     boolean needUpdate = true;
+    boolean canOpenDrawer = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +83,18 @@ public class MainActivity extends AppCompatActivity
         } else {
             init(savedInstanceState);
         }
+
+        fragmentManager = getSupportFragmentManager();
+        fragmentManager.addOnBackStackChangedListener(() -> {
+            canOpenDrawer = fragmentManager.getBackStackEntryCount() == 0;
+            if (toggle != null) {
+                if (!canOpenDrawer) {
+                    toggle.getDrawerArrowDrawable().setProgress(1);
+                } else {
+                    toggle.syncState();
+                }
+            }
+        });
     }
 
     @Override
@@ -101,6 +116,11 @@ public class MainActivity extends AppCompatActivity
         if (drawer != null && toolbar != null) {
             toggle = new ActionBarDrawerToggle(
                     this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            toggle.setToolbarNavigationClickListener(v -> {
+                if (canOpenDrawer) {
+                    drawer.openDrawer(GravityCompat.START);
+                }
+            });
             drawer.addDrawerListener(toggle);
             toggle.syncState();
         }
@@ -108,7 +128,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {

@@ -6,7 +6,7 @@
 
     <!-- DRAWER -->
     <string name="agenda">Agenda</string>
-    <string name="medie">Medie</string>
+    <string name="medie">Voti</string>
     <string name="timetable">Orario</string>
     <string name="share">Condividi</string>
     <string name="send">Contattaci</string>
@@ -108,5 +108,8 @@
     <string name="ok">OK</string>
     <string name="today">Oggi</string>
     <string name="not_set">Selezionare un\'opzione</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -1,7 +1,5 @@
 package com.sharpdroid.registroelettronico.Adapters;
 
-import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -9,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.sharpdroid.registroelettronico.Activities.AllLessonsWithDownloadActivity;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.R;
 
@@ -26,18 +23,17 @@ import static com.sharpdroid.registroelettronico.Utils.Metodi.Delimeters;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getSubjectName;
 
 public class SubjectsAdapter extends RecyclerView.Adapter<SubjectsAdapter.SubjectHolder> {
-    private Context mContext;
-
     private List<Subject> CVDataList;
+    private SubjectListener subjectListener = null;
 
-    public SubjectsAdapter(Context mContext) {
-        this.mContext = mContext;
+    public SubjectsAdapter(SubjectListener subjectListener) {
         CVDataList = new LinkedList<>();
+        this.subjectListener = subjectListener;
     }
 
     @Override
     public SubjectHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new SubjectHolder(LayoutInflater.from(mContext).inflate(R.layout.adapter_subject, parent, false));
+        return new SubjectHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_subject, parent, false));
     }
 
     @Override
@@ -52,10 +48,7 @@ public class SubjectsAdapter extends RecyclerView.Adapter<SubjectsAdapter.Subjec
             holder.prof.setText(WordUtils.capitalizeFully(TextUtils.join(" - ", item.getProfessors()), Delimeters));
         }
         holder.layout.setOnClickListener(view -> {
-            Intent intent = new Intent(mContext, AllLessonsWithDownloadActivity.class);
-            intent.putExtra("code", item.getCode());
-            intent.putExtra("name", holder.subject.getText());
-            mContext.startActivity(intent);
+            if (subjectListener != null) subjectListener.onSubjectClick(item, view);
         });
     }
 
@@ -73,6 +66,10 @@ public class SubjectsAdapter extends RecyclerView.Adapter<SubjectsAdapter.Subjec
     public void clear() {
         CVDataList.clear();
         notifyDataSetChanged();
+    }
+
+    public interface SubjectListener {
+        void onSubjectClick(Subject subject, View container);
     }
 
     protected class SubjectHolder extends RecyclerView.ViewHolder {
