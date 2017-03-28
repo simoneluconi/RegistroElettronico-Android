@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Adapters.AllLessonsAdapter;
-import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
+import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
 import com.sharpdroid.registroelettronico.R;
 
@@ -40,7 +40,7 @@ public class FragmentLessons extends Fragment implements SwipeRefreshLayout.OnRe
     @BindView(R.id.swiperefresh)
     SwipeRefreshLayout mSwipeRefreshLayout;
     AllLessonsAdapter mRVAdapter;
-    SubjectsDB db;
+    RegistroDB db;
 
     public FragmentLessons() {
     }
@@ -72,7 +72,7 @@ public class FragmentLessons extends Fragment implements SwipeRefreshLayout.OnRe
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        db = new SubjectsDB(getContext());
+        db = new RegistroDB(getContext());
 
         getActivity().setTitle(getSubjectName(db.getSubject(code)));
 

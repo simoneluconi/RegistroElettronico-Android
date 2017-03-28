@@ -24,8 +24,7 @@ import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Activities.AddEventActivity;
 import com.sharpdroid.registroelettronico.Adapters.AgendaAdapter;
-import com.sharpdroid.registroelettronico.Databases.AgendaDB;
-import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
+import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.Client.AdvancedEvent;
 import com.sharpdroid.registroelettronico.R;
 import com.transitionseverywhere.ChangeText;
@@ -75,8 +74,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     private CompactCalendarView mCompactCalendarView;
     private Toolbar mToolbar;
     private Context mContext;
-    private AgendaDB mAgendaDB;
-    private SubjectsDB mSubjectsDB;
+    private RegistroDB mRegistroDB;
     private AgendaAdapter adapter;
     private Date mDate;
     private List<AdvancedEvent> events = new ArrayList<>();
@@ -98,8 +96,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         ButterKnife.bind(this, view);
 
         mToolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-        mAgendaDB = new AgendaDB(mContext);
-        mSubjectsDB = new SubjectsDB(mContext);
+        mRegistroDB = new RegistroDB(mContext);
 
         mCompactCalendarView = (CompactCalendarView) getActivity().findViewById(R.id.calendar);
         mCompactCalendarView.setVisibility(View.VISIBLE);
@@ -112,7 +109,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         eserciziFAB.setOnClickListener(v -> startActivity(new Intent(mContext, AddEventActivity.class).putExtra("type", "Compiti").putExtra("time", mDate.getTime())));
         altroFAB.setOnClickListener(v -> startActivity(new Intent(mContext, AddEventActivity.class).putExtra("type", "Altro").putExtra("time", mDate.getTime())));
 
-        adapter = new AgendaAdapter(mContext, place_holder, mSubjectsDB);
+        adapter = new AgendaAdapter(mContext, place_holder, mRegistroDB);
         adapter.setItemClickListener(this);
         recycler.setLayoutManager(new LinearLayoutManager(mContext));
         recycler.setAdapter(adapter);
@@ -153,11 +150,11 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
 
     private void fetchEvents() {
         events.clear();
-        events.addAll(mAgendaDB.getAllEvents());
+        events.addAll(mRegistroDB.getAllEvents());
     }
 
     private void updateAdapter() {
-        setAdapterEvents(mAgendaDB.getAllEvents(mDate.getTime()));
+        setAdapterEvents(mRegistroDB.getAllEvents(mDate.getTime()));
     }
 
     private void updateCalendar() {
@@ -180,7 +177,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(events -> {
                     Log.d(TAG, "Scaricati " + events.size() + " eventi");
-                    mAgendaDB.addEvents(events);
+                    mRegistroDB.addEvents(events);
 
                     updateCalendar();
                     updateAdapter();
@@ -227,7 +224,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
             mCompactCalendarView.setCurrentDate(mDate);
             setTitleSubtitle(mDate);
 
-            setAdapterEvents(mAgendaDB.getAllEvents(mDate.getTime()));
+            setAdapterEvents(mRegistroDB.getAllEvents(mDate.getTime()));
         }
         return super.onOptionsItemSelected(item);
     }
@@ -235,8 +232,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     @Override
     public void onDetach() {
         super.onDetach();
-        mAgendaDB.close();
-        mSubjectsDB.close();
+        mRegistroDB.close();
         mToolbar.setSubtitle("");
     }
 
@@ -257,12 +253,12 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
 
     @Override
     public void onBottomSheetItemClicked(int position, AdvancedEvent event) {
-        String head = getSubjectNameOrProfessorName(event, mSubjectsDB);
+        String head = getSubjectNameOrProfessorName(event, mRegistroDB);
         switch (position) {
             case 0:
-                if (mAgendaDB.isCompleted(event.getId()))
-                    mAgendaDB.setUncompleted(event.getId());
-                else mAgendaDB.setCompleted(event.getId());
+                if (mRegistroDB.isCompleted(event.getId()))
+                    mRegistroDB.setUncompleted(event.getId());
+                else mRegistroDB.setCompleted(event.getId());
                 updateAdapter();
                 break;
             case 1:
@@ -282,7 +278,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
 
                 break;
             case 4:
-                mAgendaDB.archive(event.getId());
+                mRegistroDB.archive(event.getId());
                 updateAdapter();
                 updateCalendar();
                 break;

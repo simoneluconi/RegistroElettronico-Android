@@ -12,7 +12,7 @@ import android.text.TextUtils;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariAPI;
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
-import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
+import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absence;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absences;
 import com.sharpdroid.registroelettronico.Interfaces.API.Delay;
@@ -439,7 +439,7 @@ public class Metodi {
                 .getSubjects()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subjects -> {
-                    SubjectsDB db = new SubjectsDB(c);
+                    RegistroDB db = new RegistroDB(c);
 
                     //Per ogni materia aggiungo il suo professore cercandolo dalle lezioni
                     for (LessonSubject subject : subjects) {
@@ -478,8 +478,9 @@ public class Metodi {
         return a.substring(0, 1).toUpperCase() + a.substring(1);
     }
 
-    public static String getSubjectNameOrProfessorName(Event event, SubjectsDB mSubjectsDB) {
-        return WordUtils.capitalizeFully(mSubjectsDB.getSubjectOrProfessorName(event.getAutore_id()).isEmpty() ? event.getAutore_desc() : mSubjectsDB.getSubjectOrProfessorName(event.getAutore_id()), Delimeters);
+    public static String getSubjectNameOrProfessorName(Event event, RegistroDB db) {
+        String subjectOrProf = TextUtils.isEmpty(event.getMateria_desc()) ? db.getSubjectOrProfessorName(event.getAutore_id()) : event.getMateria_desc();
+        return WordUtils.capitalizeFully(TextUtils.isEmpty(subjectOrProf) ? event.getAutore_desc() : subjectOrProf, Delimeters);
     }
 
     public static String eventToString(Event e, String head) {
