@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
-import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
+import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
 import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Media;
@@ -62,7 +62,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     MarksView marksView;
 
     MarkSubject data;
-    SubjectsDB subjectsDB;
+    RegistroDB db;
     Subject subject;
     Media media;
 
@@ -81,7 +81,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         }
 
         //DATABASE
-        subjectsDB = new SubjectsDB(this);
+        db = new RegistroDB(this);
 
         // toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -98,7 +98,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        subject = subjectsDB.getSubject(data.getName().toLowerCase());
+        subject = db.getSubject(data.getName().toLowerCase());
         setTitle(getSubjectName(subject));
 
         setInfo(subject);
@@ -214,23 +214,23 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
 
         ContentValues values = new ContentValues();
         values.put("target", String.valueOf((int) new_target));
-        subjectsDB.editSubject(subject.getCode(), values);
+        db.editSubject(subject.getCode(), values);
         subject.setTarget(new_target);
         marksView.setLimitLines(new_target, media.getMediaGenerale());
     }
 
     private void setLessons(int code) {
-        lessonsView.update(subjectsDB, code);
+        lessonsView.update(db, code);
 
-        for (Integer prof : subjectsDB.getProfessorCodes(code)) {
+        for (Integer prof : db.getProfessorCodes(code)) {
             new SpiaggiariApiClient(this)
                     .getLessons(code, String.valueOf(prof))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(lessons -> {
-                        subjectsDB.removeLessons(code);
-                        subjectsDB.addLessons(code, prof, lessons);
-                        lessonsView.update(subjectsDB, code);
-                        subjectsDB.addProfessor(code, prof, getProfessorOfThisSubject(lessons));
+                        db.removeLessons(code);
+                        db.addLessons(code, prof, lessons);
+                        lessonsView.update(db, code);
+                        db.addProfessor(code, prof, getProfessorOfThisSubject(lessons));
                     }, Throwable::printStackTrace);
         }
     }
@@ -254,7 +254,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         //CLOSE DATABASE
-        subjectsDB.close();
+        db.close();
         super.onDestroy();
     }
 }

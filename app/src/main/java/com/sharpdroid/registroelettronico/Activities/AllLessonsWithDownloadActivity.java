@@ -12,7 +12,7 @@ import android.view.MenuItem;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Adapters.AllLessonsAdapter;
-import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
+import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
 import com.sharpdroid.registroelettronico.R;
 
@@ -38,7 +38,7 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
     SwipeRefreshLayout mSwipeRefreshLayout;
     AllLessonsAdapter mRVAdapter;
 
-    SubjectsDB db;
+    RegistroDB db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,7 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
         code = getIntent().getIntExtra("code", -1);
-        db = new SubjectsDB(this);
+        db = new RegistroDB(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -105,7 +105,7 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
                         .getLessons(code, String.valueOf(prof))
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(lessons -> {
-                            //update subjectsDB
+                            //update db
                             db.removeLessons(code);
                             db.addLessons(code, prof, lessons);
                             db.addProfessor(code, prof, getProfessorOfThisSubject(lessons));

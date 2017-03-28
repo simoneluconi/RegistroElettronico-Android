@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.sharpdroid.registroelettronico.Adapters.Holders.HeaderHolder;
-import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
+import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.Client.AdvancedEvent;
 import com.sharpdroid.registroelettronico.Interfaces.Client.AgendaEntry;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Entry;
@@ -39,9 +39,9 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM", Locale.getDefault());
     private View place_holder;
     private AgendaClickListener mClickListener;
-    private SubjectsDB db;
+    private RegistroDB db;
 
-    public AgendaAdapter(Context mContext, View ph, SubjectsDB db) {
+    public AgendaAdapter(Context mContext, View ph, RegistroDB db) {
         this.mContext = mContext;
         CVDataList = new ArrayList<>();
         place_holder = ph;

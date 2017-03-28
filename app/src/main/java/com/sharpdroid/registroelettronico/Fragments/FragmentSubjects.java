@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sharpdroid.registroelettronico.Adapters.SubjectsAdapter;
-import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
+import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -27,7 +27,7 @@ public class FragmentSubjects extends Fragment implements SubjectsAdapter.Subjec
     RecyclerView recycler;
 
     SubjectsAdapter adapter;
-    SubjectsDB db;
+    RegistroDB db;
 
     public FragmentSubjects() {
         // Required empty public constructor
@@ -44,7 +44,7 @@ public class FragmentSubjects extends Fragment implements SubjectsAdapter.Subjec
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        db = new SubjectsDB(getContext());
+        db = new RegistroDB(getContext());
 
         getActivity().setTitle(getString(R.string.lessons));
 

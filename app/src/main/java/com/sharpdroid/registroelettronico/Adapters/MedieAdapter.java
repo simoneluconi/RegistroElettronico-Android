@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.sharpdroid.registroelettronico.Activities.MarkSubjectDetailActivity;
-import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
+import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Media;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
@@ -40,9 +40,9 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
     private final List<MarkSubject> CVDataList;
     private final Context mContext;
 
-    private final SubjectsDB db;
+    private final RegistroDB db;
 
-    public MedieAdapter(Context context, List<MarkSubject> CVDataList, SubjectsDB db) {
+    public MedieAdapter(Context context, List<MarkSubject> CVDataList, RegistroDB db) {
         this.mContext = context;
         this.CVDataList = CVDataList;
         this.db = db;

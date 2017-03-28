@@ -10,7 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
 
-import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
+import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.R;
 
@@ -36,7 +36,7 @@ public class EditSubjectDetailsActivity extends AppCompatActivity {
     TextInputEditText notes;
 
     Subject subject;
-    SubjectsDB db;
+    RegistroDB db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +52,7 @@ public class EditSubjectDetailsActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        db = new SubjectsDB(this);
+        db = new RegistroDB(this);
 
         name.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_title), null, null, null);
         classroom.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_room), null, null, null);

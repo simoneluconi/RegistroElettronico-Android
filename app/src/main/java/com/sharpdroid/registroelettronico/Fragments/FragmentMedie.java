@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sharpdroid.registroelettronico.Adapters.MedieAdapter;
-import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
+import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
 import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
 import com.sharpdroid.registroelettronico.R;
@@ -31,7 +31,7 @@ public class FragmentMedie extends Fragment {
     final private String TAG = FragmentMedie.class.getSimpleName();
 
     Context mContext;
-    SubjectsDB subjectsDB;
+    RegistroDB subjectsDB;
     int periodo;
     private MedieAdapter mRVAdapter;
 
@@ -52,7 +52,7 @@ public class FragmentMedie extends Fragment {
         ButterKnife.bind(this, view);
 
         periodo = getArguments().getInt("q");
-        subjectsDB = new SubjectsDB(mContext);
+        subjectsDB = new RegistroDB(mContext);
 
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);
         mRecyclerView.setBackgroundColor(Color.parseColor("#F1F1F1"));

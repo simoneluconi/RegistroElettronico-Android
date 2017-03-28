@@ -24,7 +24,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.Utils;
 import com.sharpdroid.registroelettronico.Adapters.MarkAdapter;
-import com.sharpdroid.registroelettronico.Databases.AgendaDB;
+import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
 import com.sharpdroid.registroelettronico.Interfaces.Client.AdvancedEvent;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
@@ -77,7 +77,7 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
 
     void init(Context context) {
         mContext = context;
-        events = new AgendaDB(mContext).getEvents();
+        events = new RegistroDB(mContext).getEvents();
 
         inflate(mContext, R.layout.view_marks, this);
         ButterKnife.bind(this);

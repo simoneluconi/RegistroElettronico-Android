@@ -19,7 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
-import com.sharpdroid.registroelettronico.Databases.AgendaDB;
+import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
 import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
 import com.sharpdroid.registroelettronico.R;
@@ -125,7 +125,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
     private String getSnackBarMessage(List<MarkSubject> marks) {
         double average = getOverallAverage(marks);
 
-        String className = new AgendaDB(mContext).getClassDescription();
+        String className = new RegistroDB(mContext).getClassDescription();
         if (className != null) {
             className = className.split("\\s+")[0];
             int classyear;

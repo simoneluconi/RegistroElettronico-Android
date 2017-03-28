@@ -15,8 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.sharpdroid.registroelettronico.Databases.AgendaDB;
-import com.sharpdroid.registroelettronico.Databases.SubjectsDB;
+import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.Client.LocalEvent;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.R;
@@ -55,8 +54,7 @@ public class AddEventActivity extends AppCompatActivity {
     FloatingActionButton confirm;
 
     SimpleDateFormat format = new SimpleDateFormat("EEEE d MMMM yyyy", Locale.ITALIAN);
-    SubjectsDB subjectsDB;
-    AgendaDB agendaDB;
+    RegistroDB registroDB;
     Animation animShake;
 
     int selectedSubject = -1;
@@ -70,8 +68,7 @@ public class AddEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event);
         ButterKnife.bind(this);
-        subjectsDB = new SubjectsDB(this);
-        agendaDB = new AgendaDB(this);
+        registroDB = new RegistroDB(this);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("");
@@ -95,7 +92,7 @@ public class AddEventActivity extends AppCompatActivity {
             case "verifica":
                 if (handleTitle() && handleSubtitle() && handleSubject() && handleProfessor() && handleDate()) {
                     selectedDay = betterDate(selectedDay);
-                    agendaDB.addLocalEvent(new LocalEvent(UUID.randomUUID().toString(), title.getEditText().getText().toString(), note.getEditText().getText().toString(), type, selectedDay, selectedSubjectCode, selectedProfessorCode, null));
+                    registroDB.addLocalEvent(new LocalEvent(UUID.randomUUID().toString(), title.getEditText().getText().toString(), note.getEditText().getText().toString(), type, selectedDay, selectedSubjectCode, selectedProfessorCode, null));
                     finish();
                 } else {
                     ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(40);
@@ -104,7 +101,7 @@ public class AddEventActivity extends AppCompatActivity {
             case "compiti":
                 if (handleTitle() && handleSubtitle() && handleSubject() && handleProfessor() && handleDate()) {
                     selectedDay = betterDate(selectedDay);
-                    agendaDB.addLocalEvent(new LocalEvent(UUID.randomUUID().toString(), title.getEditText().getText().toString(), note.getEditText().getText().toString(), type, selectedDay, selectedSubjectCode, selectedProfessorCode, null));
+                    registroDB.addLocalEvent(new LocalEvent(UUID.randomUUID().toString(), title.getEditText().getText().toString(), note.getEditText().getText().toString(), type, selectedDay, selectedSubjectCode, selectedProfessorCode, null));
                     finish();
                 } else {
                     ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(40);
@@ -113,7 +110,7 @@ public class AddEventActivity extends AppCompatActivity {
             default:
                 if (handleTitle() && handleSubtitle() && handleDate()) {
                     selectedDay = betterDate(selectedDay);
-                    agendaDB.addLocalEvent(new LocalEvent(UUID.randomUUID().toString(), title.getEditText().getText().toString(), note.getEditText().getText().toString(), type, selectedDay, selectedSubjectCode, selectedProfessorCode, null));
+                    registroDB.addLocalEvent(new LocalEvent(UUID.randomUUID().toString(), title.getEditText().getText().toString(), note.getEditText().getText().toString(), type, selectedDay, selectedSubjectCode, selectedProfessorCode, null));
                     finish();
                 } else {
                     ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(40);
@@ -148,7 +145,7 @@ public class AddEventActivity extends AppCompatActivity {
 
         }
 
-        subjectList = subjectsDB.getSubjects();
+        subjectList = registroDB.getSubjects();
 
         new MaterialDialog.Builder(this)
                 .title("Seleziona una materia")
@@ -167,7 +164,7 @@ public class AddEventActivity extends AppCompatActivity {
         MaterialDialog.Builder dialog = new MaterialDialog.Builder(this)
                 .title("Seleziona un professore");
 
-        List<Pair<Integer, String>> professors = subjectsDB.getProfessors();
+        List<Pair<Integer, String>> professors = registroDB.getProfessors();
         List<String> professorsNames = capitalizeList(pairToSecond(professors));
         List<Integer> professorsCodes = pairToFirst(professors);
 
@@ -216,8 +213,7 @@ public class AddEventActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        subjectsDB.close();
-        agendaDB.close();
+        registroDB.close();
     }
 
     boolean handleTitle() {
