@@ -19,6 +19,8 @@ import com.sharpdroid.registroelettronico.Interfaces.Client.Entry;
 import com.sharpdroid.registroelettronico.Interfaces.Client.HeaderEntry;
 import com.sharpdroid.registroelettronico.R;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -69,6 +71,11 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             eventHolder.date.setText(dateFormat.format(event.getStart()));
             eventHolder.subject.setText(getSubjectNameOrProfessorName(event, db));
+            if (!TextUtils.isEmpty(event.getMateria_id())) {
+                if (!db.isProfessorOfSubject(event.getMateria_id(), event.getAutore_id())) {
+                    eventHolder.subject.setText(getSubjectNameOrProfessorName(event, db) + " - " + WordUtils.capitalizeFully(db.getProfessorName(event.getAutore_id())));
+                }
+            }
             Spannable title = new SpannableString(event.getTitle());
             if (event.isCompleted()) {
                 title.setSpan(new StrikethroughSpan(), 0, event.getTitle().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
