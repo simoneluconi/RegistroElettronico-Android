@@ -421,8 +421,8 @@ public class Metodi {
 
     public static boolean isEventTest(com.sharpdroid.registroelettronico.Interfaces.API.Event event) {
         String title = event.getTitle().toLowerCase();
-        return event.getTipo().equalsIgnoreCase("verifica") || title.contains("compito") || title.contains("interrogazione scritta") || title.contains("prova ")
-                || title.contains("verifica ") || title.contains("test ") || title.endsWith("test");
+        return title.contains("compito") || title.endsWith("compito") || title.endsWith("verifica") || title.contains("verifica ")
+                || title.contains("interrogazione scritta") || title.contains("prova ") || title.contains("test ") || title.endsWith("test");
     }
 
     public static List<com.github.sundeepk.compactcalendarview.domain.Event> convertEvents(List<AdvancedEvent> events) {
