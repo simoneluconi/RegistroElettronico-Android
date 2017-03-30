@@ -489,17 +489,6 @@ public class RegistroDB extends SQLiteOpenHelper {
         return names;
     }
 
-    public String getProfessorName(String id) {
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT professors.teacher_name FROM professors WHERE professors.teacher_code =?", new String[]{id});
-
-        String prof = "";
-        if (c.moveToFirst())
-            prof = c.getString(0);
-        c.close();
-        return prof;
-    }
-
     public String getSubjectOrProfessorName(String id) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor c = db.rawQuery("SELECT subjects.original_name, subjects.name, professors.teacher_name FROM subjects LEFT JOIN professors ON subjects.code=professors.subject_code WHERE professors.teacher_code=?", new String[]{String.valueOf(id)});
@@ -515,6 +504,22 @@ public class RegistroDB extends SQLiteOpenHelper {
 
         c.close();
         return s.toLowerCase();
+    }
+
+    public boolean isProfessorOfSubject(String subject, String prof) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM professors WHERE professors.subject_code=? AND professors.teacher_code=?", new String[]{subject, prof});
+        boolean b = c.moveToFirst();
+        c.close();
+        return b;
+    }
+
+    public String getProfessorName(String id) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT professors.teacher_name FROM professors WHERE professors.teacher_code=?", new String[]{id});
+        String s = c.moveToFirst() ? c.getString(0) : "";
+        c.close();
+        return s;
     }
     //endregion
 }

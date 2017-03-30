@@ -266,7 +266,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT, eventToString(event, head));
                 sendIntent.setType("text/plain");
-                startActivity(sendIntent);
+                startActivity(Intent.createChooser(sendIntent, getString(R.string.share_with)));
                 break;
             case 2:
                 addEventToCalendar(mContext, event);
