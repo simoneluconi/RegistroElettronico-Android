@@ -103,7 +103,6 @@ public class MainActivity extends AppCompatActivity
                     anim = ObjectAnimator.ofFloat(toggle.getDrawerArrowDrawable(), "progress", 0f);
                     anim.setDuration(250);
                     anim.start();
-                    toggle.getDrawerArrowDrawable().setProgress(0f);
                     drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
                     drawer.addDrawerListener(toggle);
                     toggle.syncState();
