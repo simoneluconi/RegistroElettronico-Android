@@ -122,7 +122,6 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         addFAB.hideMenuButton(false);
         addFAB.showMenuButton(true);
 
-        updateAdapter();
         updateDB();
     }
 
