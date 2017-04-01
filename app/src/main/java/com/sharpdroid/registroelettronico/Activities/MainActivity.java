@@ -7,25 +7,27 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.view.animation.LinearInterpolator;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
+import com.mikepenz.materialdrawer.AccountHeader;
+import com.mikepenz.materialdrawer.AccountHeaderBuilder;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SectionDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.sharpdroid.registroelettronico.Fragments.FragmentAgenda;
 import com.sharpdroid.registroelettronico.Fragments.FragmentAllAbsences;
 import com.sharpdroid.registroelettronico.Fragments.FragmentCommunications;
@@ -44,18 +46,16 @@ import butterknife.ButterKnife;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.updateSubjects;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
-    @BindView(R.id.nav_view)
-    NavigationView mNavigationView;
+        implements Drawer.OnDrawerItemClickListener {
     @BindView(R.id.calendar)
     CompactCalendarView calendarView;
     @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    Toolbar toolbar;/*
     @BindView(R.id.drawer_layout)
-    DrawerLayout drawer;
+    DrawerLayout drawerLayout;*/
     @BindView(R.id.tab_layout)
     TabLayout tabLayout;
-
+    Drawer drawer;
     AppBarLayout.LayoutParams params;
 
     FragmentManager fragmentManager;
@@ -78,8 +78,6 @@ public class MainActivity extends AppCompatActivity
         //  Back/Menu Icon
         bindDrawerToggle();
 
-        mNavigationView.setNavigationItemSelectedListener(this);
-
         //  first run
         settings = getSharedPreferences("REGISTRO", MODE_PRIVATE);
         if (settings.getBoolean("primo_avvio", true)) {
@@ -92,26 +90,25 @@ public class MainActivity extends AppCompatActivity
         fragmentManager = getSupportFragmentManager();
         fragmentManager.addOnBackStackChangedListener(() -> {
             canOpenDrawer = fragmentManager.getBackStackEntryCount() == 0;
-            Log.d("DRAWER", "CAN OPEN? " + String.valueOf(canOpenDrawer));
             if (toggle != null) {
                 if (!canOpenDrawer) {
                     anim = ObjectAnimator.ofFloat(toggle.getDrawerArrowDrawable(), "progress", 1f);
+                    anim.setInterpolator(new LinearInterpolator());
                     anim.setDuration(250);
                     anim.start();
-                    drawer.removeDrawerListener(toggle);
+                    drawer.getDrawerLayout().removeDrawerListener(toggle);
                 } else {
                     anim = ObjectAnimator.ofFloat(toggle.getDrawerArrowDrawable(), "progress", 0f);
+                    anim.setInterpolator(new LinearInterpolator());
                     anim.setDuration(250);
                     anim.start();
-                    drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-                    drawer.addDrawerListener(toggle);
-                    toggle.syncState();
+                    drawer.getDrawerLayout().addDrawerListener(toggle);
                 }
             }
         });
         toolbar.setNavigationOnClickListener(v -> {
             if (canOpenDrawer) {
-                drawer.openDrawer(GravityCompat.START);
+                drawer.getDrawerLayout().openDrawer(GravityCompat.START);
             } else {
                 fragmentManager.popBackStack();
             }
@@ -135,25 +132,50 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void setTitle(CharSequence title) {
-        TransitionManager.beginDelayedTransition(toolbar, new ChangeText().setChangeBehavior(ChangeText.CHANGE_BEHAVIOR_IN));
+        TransitionManager.beginDelayedTransition(toolbar, new ChangeText().setChangeBehavior(ChangeText.CHANGE_BEHAVIOR_IN).setDuration(250));
         super.setTitle(title);
     }
 
     private void bindDrawerToggle() {
-        if (drawer != null && toolbar != null) {
-            toggle = new ActionBarDrawerToggle(
-                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-            toggle.setDrawerIndicatorEnabled(true);
+        AccountHeader headerResult = new AccountHeaderBuilder()
+                .withActivity(this)
+                .withHeaderBackground(R.drawable.side_nav_bar)
+                .build();
 
-            drawer.addDrawerListener(toggle);
+        drawer = new DrawerBuilder(this)
+                .withToolbar(toolbar)
+                .withActionBarDrawerToggleAnimated(true)
+                .withCloseOnClick(true)
+                .withOnDrawerItemClickListener(this)
+                .addDrawerItems(new PrimaryDrawerItem().withIdentifier(R.id.agenda).withName(R.string.agenda).withIcon(R.drawable.ic_event).withIconTintingEnabled(true),
+                        new PrimaryDrawerItem().withIdentifier(R.id.medie).withName(R.string.medie).withIcon(R.drawable.ic_timeline).withIconTintingEnabled(true),
+                        new PrimaryDrawerItem().withIdentifier(R.id.lessons).withName(R.string.lessons).withIcon(R.drawable.ic_view_agenda).withIconTintingEnabled(true),
+                        new PrimaryDrawerItem().withIdentifier(R.id.files).withName(R.string.files).withIcon(R.drawable.ic_folder).withIconTintingEnabled(true),
+                        new PrimaryDrawerItem().withIdentifier(R.id.absences).withName(R.string.absences).withIcon(R.drawable.ic_supervisor).withIconTintingEnabled(true),
+                        new PrimaryDrawerItem().withIdentifier(R.id.notes).withName(R.string.note).withIcon(R.drawable.ic_error).withIconTintingEnabled(true),
+                        new PrimaryDrawerItem().withIdentifier(R.id.communications).withName(R.string.communications).withIcon(R.drawable.ic_assignment).withIconTintingEnabled(true),
+                        new PrimaryDrawerItem().withIdentifier(R.id.settings).withName(R.string.settings).withIcon(R.drawable.ic_settings).withIconTintingEnabled(true))
+                .addDrawerItems(new SectionDrawerItem().withName(R.string.communicate),
+                        new PrimaryDrawerItem().withIdentifier(R.id.nav_share).withName(R.string.share).withIcon(R.drawable.ic_menu_share).withIconTintingEnabled(true).withSelectable(false),
+                        new PrimaryDrawerItem().withIdentifier(R.id.nav_send).withName(R.string.send).withIcon(R.drawable.ic_menu_send).withIconTintingEnabled(true).withSelectable(false))
+                .withAccountHeader(headerResult)
+                .build();
+
+        if (toolbar != null) {
+            toggle = new ActionBarDrawerToggle(
+                    this, drawer.getDrawerLayout(), toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            toggle.setDrawerIndicatorEnabled(true);
+            drawer.setActionBarDrawerToggle(toggle);
+
+            drawer.getDrawerLayout().addDrawerListener(toggle);
             toggle.syncState();
         }
     }
 
     @Override
     public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (drawer.getDrawerLayout().isDrawerOpen(GravityCompat.START)) {
+            drawer.getDrawerLayout().closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
@@ -162,16 +184,73 @@ public class MainActivity extends AppCompatActivity
     public void clearBackstack() {
         if (fragmentManager != null)
             for (int i = 0; i < fragmentManager.getBackStackEntryCount(); i++) {
-                fragmentManager.popBackStack();
+                fragmentManager.popBackStackImmediate();
             }
     }
 
+    private void init(Bundle savedInstanceState) {
+        if (needUpdate) {
+            updateSubjects(this);
+            needUpdate = false;
+        }
+        //View header = mNavigationView.getHeaderView(0);
+        //TextView text = (TextView) header.findViewById(R.id.name);
+
+        SharedPreferences settings = getSharedPreferences("REGISTRO", MODE_PRIVATE);
+        String value = settings.getString("name", getString(R.string.app_name));
+        //text.setText(value);
+
+        // Programmatically start a fragment
+        if (savedInstanceState == null) {
+            int drawer_to_open = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this)
+                    .getString("drawer_to_open", "0"));
+
+            Bundle extras = getIntent().getExtras();
+            if (extras != null) {
+                drawer_to_open = extras.getInt("drawer_to_open", drawer_to_open);
+            }
+
+            drawer.setSelectionAtPosition(drawer_to_open, true);
+            onItemClick(null, drawer_to_open, drawer.getDrawerItems().get(drawer_to_open));
+        }
+    }
+
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            event.startTracking();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            //Cancella Dati Friendly
+            Intent intent = new Intent();
+            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            Uri uri = Uri.fromParts("package", getPackageName(), null);
+            intent.setData(uri);
+            startActivity(intent);
+            return true;
+        }
+        return super.onKeyLongPress(keyCode, event);
+    }
+
+    /**
+     * Click listener for drawer's items
+     *
+     * @param view       null
+     * @param position   position of the clicked item
+     * @param drawerItem the clicked item
+     * @return true
+     */
+    @Override
+    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
         clearBackstack();
         Fragment fragment;
-        int id = item.getItemId();
+        int id = (int) drawerItem.getIdentifier();
         calendarView.setVisibility(View.GONE);
         tabLayout.setVisibility(View.GONE);
         params.setScrollFlags(0);
@@ -224,67 +303,9 @@ public class MainActivity extends AppCompatActivity
 
         // Replace whatever is in the fragment_container view with this fragment,
         // and add the transaction to the back stack so the user can navigate back
-        transaction.replace(R.id.fragment_container, fragment);
+        transaction.replace(R.id.fragment_container, fragment).commit();
 
-        // Commit the transaction
-        transaction.commit();
-
-        // Set action bar title
-        toolbar.setTitle(item.getTitle());
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        drawer.closeDrawer();
         return true;
-    }
-
-    private void init(Bundle savedInstanceState) {
-
-        if (needUpdate) {
-            updateSubjects(this);
-            needUpdate = false;
-        }
-        View header = mNavigationView.getHeaderView(0);
-        TextView text = (TextView) header.findViewById(R.id.name);
-
-        SharedPreferences settings = getSharedPreferences("REGISTRO", MODE_PRIVATE);
-        String value = settings.getString("name", getString(R.string.app_name));
-        text.setText(value);
-
-        // Programmatically start a fragment
-        if (savedInstanceState == null) {
-            int drawer_to_open = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this)
-                    .getString("drawer_to_open", "0"));
-
-            Bundle extras = getIntent().getExtras();
-            if (extras != null) {
-                drawer_to_open = extras.getInt("drawer_to_open", drawer_to_open);
-            }
-
-            mNavigationView.getMenu().getItem(drawer_to_open).setChecked(true);
-            onNavigationItemSelected(mNavigationView.getMenu().getItem(drawer_to_open));
-        }
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-            event.startTracking();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-            //Cancella Dati Friendly
-            Intent intent = new Intent();
-            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-            Uri uri = Uri.fromParts("package", getPackageName(), null);
-            intent.setData(uri);
-            startActivity(intent);
-            return true;
-        }
-        return super.onKeyLongPress(keyCode, event);
     }
 }
