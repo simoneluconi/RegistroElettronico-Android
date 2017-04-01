@@ -87,7 +87,7 @@ public class SpiaggiariApiClient implements RESTfulAPIService {
                 .cookieJar(cookieJar)
                 .cache(cache)
                 .addNetworkInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
-                .addInterceptor(CHECK_LOGIN)
+                .addNetworkInterceptor(CHECK_LOGIN)
                 .build();
 
 
