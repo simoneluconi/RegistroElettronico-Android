@@ -82,46 +82,52 @@ public class Metodi {
         double resto = 0;
         double parteIntera;
         double parteDecimale;
-        do {
-            index = index + 1;
-            sommaVotiDaPrendere = (Obb * (voti + index)) - (media * voti);
-        } while ((sommaVotiDaPrendere / index) > 10);
-        for (int i = 0; i < index; i = i + 1) {
-            votiMinimi[i] = (sommaVotiDaPrendere / index) + resto;
-            resto = 0;
-            parteIntera = Math.floor(votiMinimi[i]);
-            parteDecimale = (votiMinimi[i] - parteIntera) * 100;
-            if (parteDecimale != 25 && parteDecimale != 50 && parteDecimale != 75) {
-                int k = 0;
-                do {
-                    diff = votiMinimi[i] - (parteIntera + array[k]);
-                    k++;
-                } while (diff < 0);
-                votiMinimi[i] = votiMinimi[i] - diff;
-                resto = diff;
-            }
-            if (votiMinimi[i] > 10) {
-                diff2 = votiMinimi[i] - 10;
-                votiMinimi[i] = 10;
-                resto = resto + diff2;
-            }
-        }
-        // Stampa
-        String toReturn;
-        if (votiMinimi[0] <= 0)
-            return "Puoi stare tranquillo"; // Quando i voti da prendere sono negativi
-        if (votiMinimi[0] <= Obb)
-            toReturn = "Non prendere meno di " + votiMinimi[0];
-        else {
-            toReturn = "Devi prendere almeno ";
-            for (double aVotiMinimi : votiMinimi) {
-                if (aVotiMinimi != 0) {
-                    toReturn = toReturn + aVotiMinimi + ", ";
+        try {
+            do {
+                index = index + 1;
+                sommaVotiDaPrendere = (Obb * (voti + index)) - (media * voti);
+            } while ((sommaVotiDaPrendere / index) > 10);
+            for (int i = 0; i < index; i = i + 1) {
+                votiMinimi[i] = (sommaVotiDaPrendere / index) + resto;
+                resto = 0;
+                parteIntera = Math.floor(votiMinimi[i]);
+                parteDecimale = (votiMinimi[i] - parteIntera) * 100;
+                if (parteDecimale != 25 && parteDecimale != 50 && parteDecimale != 75) {
+                    int k = 0;
+                    do {
+                        diff = votiMinimi[i] - (parteIntera + array[k]);
+                        k++;
+                    } while (diff < 0);
+                    votiMinimi[i] = votiMinimi[i] - diff;
+                    resto = diff;
+                }
+                if (votiMinimi[i] > 10) {
+                    diff2 = votiMinimi[i] - 10;
+                    votiMinimi[i] = 10;
+                    resto = resto + diff2;
                 }
             }
-            toReturn = toReturn.substring(0, toReturn.length() - 2);
+            // Stampa
+            String toReturn;
+            if (votiMinimi[0] <= 0)
+                return "Puoi stare tranquillo"; // Quando i voti da prendere sono negativi
+            if (votiMinimi[0] <= Obb)
+                toReturn = "Non prendere meno di " + votiMinimi[0];
+            else {
+                toReturn = "Devi prendere almeno ";
+                for (double aVotiMinimi : votiMinimi) {
+                    if (aVotiMinimi != 0) {
+                        toReturn = toReturn + aVotiMinimi + ", ";
+                    }
+                }
+                toReturn = toReturn.substring(0, toReturn.length() - 2);
+            }
+            return toReturn;
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return "Impossibile calcolare i voti per arrivare all'obiettivo";
         }
-        return toReturn;
     }
 
     public static MyLinkedMap<String, Integer> sortByComparator(MyLinkedMap<String, Integer> unsortMap, final boolean order) {
