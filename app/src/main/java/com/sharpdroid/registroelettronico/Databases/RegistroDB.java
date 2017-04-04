@@ -481,7 +481,7 @@ public class RegistroDB extends SQLiteOpenHelper {
         List<Pair<Integer, String>> names = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
 
-        Cursor c = db.rawQuery("SELECT lessons.teacher_code, professors.teacher_name FROM lessons LEFT JOIN professors ON lessons.teacher_code = professors.teacher_code GROUP BY lessons.teacher_code", null);
+        Cursor c = db.rawQuery("SELECT professors.teacher_code, professors.teacher_name FROM professors ORDER BY professors.teacher_name ASC", null);
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             names.add(Pair.create(c.getInt(0), c.getString(1)));
         }
@@ -489,9 +489,9 @@ public class RegistroDB extends SQLiteOpenHelper {
         return names;
     }
 
-    public String getSubjectOrProfessorName(String id) {
+    public String getSubjectOrProfessorName(String teacher_id) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT subjects.original_name, subjects.name, professors.teacher_name FROM subjects LEFT JOIN professors ON subjects.code=professors.subject_code WHERE professors.teacher_code=?", new String[]{String.valueOf(id)});
+        Cursor c = db.rawQuery("SELECT subjects.original_name, subjects.name, professors.teacher_name FROM subjects LEFT JOIN professors ON subjects.code=professors.subject_code WHERE professors.teacher_code=?", new String[]{String.valueOf(teacher_id)});
         String s = "";
 
         if (c.moveToFirst()) {
@@ -514,9 +514,9 @@ public class RegistroDB extends SQLiteOpenHelper {
         return b;
     }
 
-    public String getProfessorName(String id) {
+    public String getProfessorName(String teacher_id) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT professors.teacher_name FROM professors WHERE professors.teacher_code=?", new String[]{id});
+        Cursor c = db.rawQuery("SELECT professors.teacher_name FROM professors WHERE professors.teacher_code=?", new String[]{teacher_id});
         String s = c.moveToFirst() ? c.getString(0) : "";
         c.close();
         return s;
