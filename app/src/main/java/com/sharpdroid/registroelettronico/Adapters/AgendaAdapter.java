@@ -66,25 +66,35 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         } else {
             EventHolder eventHolder = (EventHolder) holder;
             AdvancedEvent event = ((AgendaEntry) entry).getEvent();
-
-            eventHolder.divider.setVisibility((CVDataList.get(position - 1) instanceof HeaderEntry) ? View.INVISIBLE : View.VISIBLE);
-
-            eventHolder.date.setText(dateFormat.format(event.getStart()));
-            eventHolder.subject.setText(getSubjectNameOrProfessorName(event, db));
-            if (!TextUtils.isEmpty(event.getMateria_id())) {
-                if (!db.isProfessorOfSubject(event.getMateria_id(), event.getAutore_id())) {
-                    eventHolder.subject.setText(getSubjectNameOrProfessorName(event, db) + " - " + WordUtils.capitalizeFully(db.getProfessorName(event.getAutore_id())));
-                }
-            }
+            String subjectName = getSubjectNameOrProfessorName(event, db);
+            String profName = WordUtils.capitalizeFully(db.getProfessorName(event.getAutore_id()));
             Spannable title = new SpannableString(event.getTitle());
             if (event.isCompleted()) {
                 title.setSpan(new StrikethroughSpan(), 0, event.getTitle().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
+
+            eventHolder.date.setText(dateFormat.format(event.getStart()));
+            eventHolder.subject.setText(subjectName);
+            if (!TextUtils.isEmpty(event.getMateria_id())) {
+
+                /*
+                 * subjectName & profName: (subjectName + " - " + profName)
+                 * subjectName: subjectName
+                 * profName: profName
+                 */
+                eventHolder.subject.setText(
+                        (!TextUtils.isEmpty(subjectName))
+                                ? (!TextUtils.isEmpty(profName)
+                                ? (subjectName + " - " + profName)
+                                : subjectName)
+                                : profName);
+            }
             eventHolder.title.setText(title);
             eventHolder.notes.setText(event.getNota_2());
 
-            eventHolder.subject.setVisibility(TextUtils.isEmpty(eventHolder.subject.getText()) ? View.GONE : View.VISIBLE);
+            eventHolder.subject.setVisibility((TextUtils.isEmpty(subjectName) && TextUtils.isEmpty(db.getProfessorName(event.getAutore_id()))) ? View.GONE : View.VISIBLE);
             eventHolder.notes.setVisibility((!event.getNota_2().trim().equalsIgnoreCase(event.getTitle().trim()) && !TextUtils.isEmpty(event.getNota_2())) ? View.VISIBLE : View.GONE);
+            eventHolder.divider.setVisibility((CVDataList.get(position - 1) instanceof HeaderEntry) ? View.INVISIBLE : View.VISIBLE);
 
             eventHolder.itemView.setOnClickListener((View v) -> {
                 if (mClickListener != null)

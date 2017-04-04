@@ -18,7 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.animation.LinearInterpolator;
+import android.view.animation.DecelerateInterpolator;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -50,9 +50,7 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.calendar)
     CompactCalendarView calendarView;
     @BindView(R.id.toolbar)
-    Toolbar toolbar;/*
-    @BindView(R.id.drawer_layout)
-    DrawerLayout drawerLayout;*/
+    Toolbar toolbar;
     @BindView(R.id.tab_layout)
     TabLayout tabLayout;
     Drawer drawer;
@@ -76,7 +74,7 @@ public class MainActivity extends AppCompatActivity
         params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
 
         //  Back/Menu Icon
-        bindDrawerToggle();
+        initDrawer();
 
         //  first run
         settings = getSharedPreferences("REGISTRO", MODE_PRIVATE);
@@ -93,13 +91,13 @@ public class MainActivity extends AppCompatActivity
             if (toggle != null) {
                 if (!canOpenDrawer) {
                     anim = ObjectAnimator.ofFloat(toggle.getDrawerArrowDrawable(), "progress", 1f);
-                    anim.setInterpolator(new LinearInterpolator());
+                    anim.setInterpolator(new DecelerateInterpolator(1f));
                     anim.setDuration(250);
                     anim.start();
                     drawer.getDrawerLayout().removeDrawerListener(toggle);
                 } else {
                     anim = ObjectAnimator.ofFloat(toggle.getDrawerArrowDrawable(), "progress", 0f);
-                    anim.setInterpolator(new LinearInterpolator());
+                    anim.setInterpolator(new DecelerateInterpolator(1f));
                     anim.setDuration(250);
                     anim.start();
                     drawer.getDrawerLayout().addDrawerListener(toggle);
@@ -136,7 +134,7 @@ public class MainActivity extends AppCompatActivity
         super.setTitle(title);
     }
 
-    private void bindDrawerToggle() {
+    private void initDrawer() {
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.side_nav_bar)
