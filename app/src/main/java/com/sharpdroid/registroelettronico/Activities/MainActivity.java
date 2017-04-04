@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity
         params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
 
         //  Back/Menu Icon
-        bindDrawerToggle();
+        initDrawer();
 
         //  first run
         settings = getSharedPreferences("REGISTRO", MODE_PRIVATE);
@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity
         super.setTitle(title);
     }
 
-    private void bindDrawerToggle() {
+    private void initDrawer() {
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.side_nav_bar)
