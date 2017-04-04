@@ -26,7 +26,6 @@ public class MarkSubject implements Serializable {
     }
 
     public void setMarks(List<Mark> marks) {
-        this.marks.clear();
-        this.marks.addAll(marks);
+        this.marks = marks;
     }
 }

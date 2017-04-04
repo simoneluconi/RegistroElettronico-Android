@@ -15,10 +15,10 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.sharpdroid.registroelettronico.Activities.MarkSubjectDetailActivity;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
-import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
-import com.sharpdroid.registroelettronico.Interfaces.Client.Media;
-import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
+import com.sharpdroid.registroelettronico.Interfaces.Client.Average;
 import com.sharpdroid.registroelettronico.R;
+
+import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,24 +32,25 @@ import devlight.io.library.ArcProgressStackView;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.MessaggioVoto;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getMediaColor;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getPossibileSubjectTarget;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.getSubjectName;
 
 public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder> {
     final private String TAG = MedieAdapter.class.getSimpleName();
 
-    private final List<MarkSubject> CVDataList;
+    private final List<Average> CVDataList;
     private final Context mContext;
 
     private final RegistroDB db;
+    private int period;
 
-    public MedieAdapter(Context context, List<MarkSubject> CVDataList, RegistroDB db) {
+    public MedieAdapter(Context context, List<Average> CVDataList, RegistroDB db) {
         this.mContext = context;
         this.CVDataList = CVDataList;
         this.db = db;
     }
 
-    public void addAll(Collection<MarkSubject> list) {
+    public void addAll(Collection<Average> list, int p) {
         CVDataList.addAll(list);
+        this.period = p;
         notifyDataSetChanged();
     }
 
@@ -68,44 +69,38 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
 
     @Override
     public void onBindViewHolder(MedieHolder ViewHolder, int position) {
-        final MarkSubject marksubject = CVDataList.get(position);
-        Subject subject = db.getSubject(marksubject.getName().toLowerCase());
-        final String subjectname = getSubjectName(subject);
+        final Average avg = CVDataList.get(position);
 
-        Media media = new Media();
-        media.setMateria(subjectname);
-        media.addMarks(marksubject.getMarks());
+        ViewHolder.mTextViewMateria.setText(WordUtils.capitalizeFully(avg.name));
 
-        ViewHolder.mTextViewMateria.setText(subjectname);
+        ViewHolder.mCardViewMedia.setOnClickListener(v -> mContext.startActivity(new Intent(mContext, MarkSubjectDetailActivity.class).putExtra("data", new Gson().toJson(db.getMarks(avg.code))).putExtra("period", period)));
 
-        ViewHolder.mCardViewMedia.setOnClickListener(v -> mContext.startActivity(new Intent(mContext, MarkSubjectDetailActivity.class).putExtra("data", new Gson().toJson(marksubject))));
+        if (avg.avg != 0f) {
+            ViewHolder.mTextViewMedia.setText(String.format(Locale.getDefault(), "%.2f", avg.avg));
 
-        if (media.containsValidMarks()) {
-            ViewHolder.mTextViewMedia.setText(String.format(Locale.getDefault(), "%.2f", media.getMediaGenerale()));
+            float target = avg.target;
 
-            float target = subject.getTarget();
             if (target <= 0) {
 
                 String t = PreferenceManager.getDefaultSharedPreferences(mContext)
                         .getString("voto_obiettivo", "8");
 
                 if (t.equals("Auto")) {
-                    if (media.containsValidMarks()) {
-                        int tar = getPossibileSubjectTarget(media.getMediaGenerale());
-                        ContentValues contentValues = new ContentValues();
-                        contentValues.put("target", tar);
-                        db.editSubject(subject.getCode(), contentValues);
-                        target = tar;
-                    }
+                    int tar = getPossibileSubjectTarget(avg.avg);
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put("target", tar);
+                    db.editSubject(avg.code, contentValues);
+                    target = tar;
+
                 } else target = Float.parseFloat(t);
 
             }
             List<ArcProgressStackView.Model> models = new ArrayList<>();
-            models.add(new ArcProgressStackView.Model("media", media.getMediaGenerale() * 10, ContextCompat.getColor(mContext, getMediaColor(media, target))));
+            models.add(new ArcProgressStackView.Model("media", avg.avg * 10, ContextCompat.getColor(mContext, getMediaColor(avg.avg, target))));
 
             ViewHolder.mArcProgressStackView.setModels(models);
 
-            String obbiettivo_string = MessaggioVoto(target, media.getMediaGenerale(), media.getNumeroVoti());
+            String obbiettivo_string = MessaggioVoto(target, avg.avg, avg.count);
             ViewHolder.mTextViewDesc.setText(obbiettivo_string);
 
         } else {

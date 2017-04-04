@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SeekBar;
@@ -65,7 +66,9 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     RegistroDB db;
     Subject subject;
     Media media;
-
+    int p;
+    RegistroDB.Period period;
+    String name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,13 +78,27 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
 
         //get DATA
         try {
-            data = new Gson().getAdapter(MarkSubject.class).fromJson(getIntent().getStringExtra("data"));
+            name = new Gson().getAdapter(MarkSubject.class).fromJson(getIntent().getStringExtra("data")).getName().toLowerCase();
+            Log.d(TAG, getIntent().getStringExtra("data"));
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        p = getIntent().getIntExtra("period", 0);
+        switch (p) {
+            case 0:
+                period = RegistroDB.Period.FIRST;
+                break;
+            case 1:
+                period = RegistroDB.Period.SECOND;
+                break;
+            default:
+                period = RegistroDB.Period.ALL;
+                break;
         }
 
         //DATABASE
         db = new RegistroDB(this);
+
 
         // toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -98,7 +115,8 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        subject = db.getSubject(data.getName().toLowerCase());
+        subject = db.getSubject(name);
+        data = db.getMarks(subject.getCode(), period);
         setTitle(getSubjectName(subject));
 
         setInfo(subject);
