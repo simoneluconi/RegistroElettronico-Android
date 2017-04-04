@@ -15,6 +15,7 @@
         android:key="drawer_to_open"
         android:summary="@string/start_tab_summary"
         android:title="@string/start_tab_title" />
+
     <android.support.v7.preference.Preference
         android:key="clear_archive"
         android:summary="@string/restore_archived_summary"
