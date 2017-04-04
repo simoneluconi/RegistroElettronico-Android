@@ -13,8 +13,7 @@ import android.view.ViewGroup;
 
 import com.sharpdroid.registroelettronico.Adapters.MedieAdapter;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
-import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
-import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
+import com.sharpdroid.registroelettronico.Interfaces.Client.Average;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.Utils.ItemOffsetDecoration;
 
@@ -24,7 +23,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import butterknife.ButterKnife;
 
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.getMarksOfThisPeriod;
 
 // TODO: 19/01/2017 Visualizzare media generale e crediti scolastici in modo decente
 
@@ -69,16 +67,10 @@ public class FragmentMedie extends Fragment {
         mRecyclerView.setAdapter(mRVAdapter);
     }
 
-    public void addSubjects(List<MarkSubject> markSubjects) {
-        if (!markSubjects.isEmpty()) {
+    public void addSubjects(List<Average> markSubjects) {
+        if (!markSubjects.isEmpty() && mRVAdapter != null) {
             mRVAdapter.clear();
-
-            if (periodo == 0)
-                mRVAdapter.addAll(getMarksOfThisPeriod(markSubjects, Mark.PRIMO_PERIODO));
-            else if (periodo == 1)
-                mRVAdapter.addAll(getMarksOfThisPeriod(markSubjects, Mark.SECONDO_PERIODO));
-            else
-                mRVAdapter.addAll(markSubjects);
+            mRVAdapter.addAll(markSubjects, periodo);
         }
     }
 

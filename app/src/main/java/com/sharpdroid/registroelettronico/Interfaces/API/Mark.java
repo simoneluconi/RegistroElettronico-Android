@@ -14,7 +14,7 @@ public class Mark implements Serializable {
     private String desc;
 
 
-    Mark(String q, boolean ns, String type, Date date, String mark, String desc) {
+    public Mark(String q, boolean ns, String type, Date date, String mark, String desc) {
         this.q = q;
         this.ns = ns;
         this.type = type;

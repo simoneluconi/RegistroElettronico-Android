@@ -24,11 +24,11 @@ import butterknife.ButterKnife;
  * <p>A fragment that shows a list of items as a modal bottom sheet.</p>
  * <p>You can show this modal bottom sheet from your activity like this:</p>
  * <pre>
- *     LongClickAgenda.newInstance(30).show(getSupportFragmentManager(), "dialog");
+ *     BottomSheetAgenda.newInstance(30).show(getSupportFragmentManager(), "dialog");
  * </pre>
- * <p>You activity (or fragment) needs to implement {@link LongClickAgenda.Listener}.</p>
+ * <p>You activity (or fragment) needs to implement {@link BottomSheetAgenda.Listener}.</p>
  */
-public class LongClickAgenda extends BottomSheetDialogFragment {
+public class BottomSheetAgenda extends BottomSheetDialogFragment {
 
     private static final int mItemCount = 5;
     private static final int icons[] = {R.drawable.agenda_bsheet_share, R.drawable.agenda_bsheet_calendar, R.drawable.agenda_bsheet_copy, R.drawable.agenda_bsheet_archive};
@@ -39,8 +39,8 @@ public class LongClickAgenda extends BottomSheetDialogFragment {
     private Listener mListener;
     private AdvancedEvent event;
 
-    public static LongClickAgenda newInstance(/*int itemCount*/) {
-        final LongClickAgenda fragment = new LongClickAgenda();
+    public static BottomSheetAgenda newInstance(/*int itemCount*/) {
+        final BottomSheetAgenda fragment = new BottomSheetAgenda();
         final Bundle args = new Bundle();
         //args.putInt(ARG_ITEM_COUNT, itemCount);
         fragment.setArguments(args);

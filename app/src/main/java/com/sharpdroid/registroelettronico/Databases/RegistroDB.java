@@ -11,7 +11,10 @@ import android.text.TextUtils;
 import com.sharpdroid.registroelettronico.Interfaces.API.Event;
 import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
 import com.sharpdroid.registroelettronico.Interfaces.API.LessonSubject;
+import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
+import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
 import com.sharpdroid.registroelettronico.Interfaces.Client.AdvancedEvent;
+import com.sharpdroid.registroelettronico.Interfaces.Client.Average;
 import com.sharpdroid.registroelettronico.Interfaces.Client.LocalEvent;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 
@@ -31,6 +34,7 @@ public class RegistroDB extends SQLiteOpenHelper {
     private final static String TABLE_SUBJECTS = "subjects";
     private final static String TABLE_LESSONS = "lessons";
     private final static String TABLE_PROFESSORS = "professors";
+    private final static String TABLE_MARKS = "marks";
     private final static String subjects[] = {"id", "code", "original_name", "name", "target", "classroom", "notes"};
     private final static String lessons[] = {subjects[1], "teacher_code", "date", "content"};
     private final static String columns[] = {
@@ -44,7 +48,10 @@ public class RegistroDB extends SQLiteOpenHelper {
     private final static String l_columns[] = {
             "uuid", "title", "content", "type", "day", "subject_id", "prof_id"
     };  //COUNT = 7
-    private static int DB_VERSION = 1;
+    private final static String marks[] = {
+            "subject_code", "mark", "description", "date", "type", "period", "not_significant"
+    };
+    private static int DB_VERSION = 2;
 
     public RegistroDB(Context c) {
         super(c, DB_NAME, null, DB_VERSION);
@@ -107,18 +114,21 @@ public class RegistroDB extends SQLiteOpenHelper {
                 ");");
 
         db.execSQL("CREATE TABLE " + TABLE_PROFESSORS + "( subject_code INTEGER, teacher_code INTEGER, teacher_name TEXT);");
+        onUpgrade(db, 1, DB_VERSION);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-        db.execSQL("DROP TABLE IF EXISTS " + DB_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_API);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_LOCAL);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_COMPLETED);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ARCHIVE);
-
-        onCreate(db);
+        if (oldVersion < 2) {
+            db.execSQL("CREATE TABLE " + TABLE_MARKS + "(" +
+                    "subject_code INTEGER," +
+                    "mark TEXT," +
+                    "description TEXT," +
+                    "date INTEGER, " +
+                    "type TEXT," +
+                    "period TEXT," +
+                    "not_significant INTEGER);");
+        }
     }
 
     //region EVENTS
@@ -253,7 +263,6 @@ public class RegistroDB extends SQLiteOpenHelper {
         list.addAll(getEvents());
         return list;
     }
-
 
     public List<AdvancedEvent> getAllEvents(long day) {
         List<AdvancedEvent> list = new ArrayList<>();
@@ -481,7 +490,7 @@ public class RegistroDB extends SQLiteOpenHelper {
         List<Pair<Integer, String>> names = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
 
-        Cursor c = db.rawQuery("SELECT lessons.teacher_code, professors.teacher_name FROM lessons LEFT JOIN professors ON lessons.teacher_code = professors.teacher_code GROUP BY lessons.teacher_code", null);
+        Cursor c = db.rawQuery("SELECT professors.teacher_code, professors.teacher_name FROM professors ORDER BY professors.teacher_name ASC", null);
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             names.add(Pair.create(c.getInt(0), c.getString(1)));
         }
@@ -489,9 +498,9 @@ public class RegistroDB extends SQLiteOpenHelper {
         return names;
     }
 
-    public String getSubjectOrProfessorName(String id) {
+    public String getSubjectOrProfessorName(String teacher_id) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT subjects.original_name, subjects.name, professors.teacher_name FROM subjects LEFT JOIN professors ON subjects.code=professors.subject_code WHERE professors.teacher_code=?", new String[]{String.valueOf(id)});
+        Cursor c = db.rawQuery("SELECT subjects.original_name, subjects.name, professors.teacher_name FROM subjects LEFT JOIN professors ON subjects.code=professors.subject_code WHERE professors.teacher_code=?", new String[]{String.valueOf(teacher_id)});
         String s = "";
 
         if (c.moveToFirst()) {
@@ -514,12 +523,130 @@ public class RegistroDB extends SQLiteOpenHelper {
         return b;
     }
 
-    public String getProfessorName(String id) {
+    public String getProfessorName(String teacher_id) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT professors.teacher_name FROM professors WHERE professors.teacher_code=?", new String[]{id});
+        Cursor c = db.rawQuery("SELECT professors.teacher_name FROM professors WHERE professors.teacher_code=?", new String[]{teacher_id});
         String s = c.moveToFirst() ? c.getString(0) : "";
         c.close();
         return s;
     }
     //endregion
+
+    //region MARKS
+    public void addMarks(List<MarkSubject> markSubjects) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        int code;
+        db.beginTransaction();
+        db.delete(TABLE_MARKS, null, null);
+        for (MarkSubject subject : markSubjects) {
+            code = getSubject(subject.getName()).getCode();
+            for (Mark mark : subject.getMarks()) {
+
+                contentValues.put(marks[0], code);
+                contentValues.put(marks[1], mark.getMark());
+                contentValues.put(marks[2], mark.getDesc());
+                contentValues.put(marks[3], mark.getDate().getTime());
+                contentValues.put(marks[4], mark.getType());
+                contentValues.put(marks[5], mark.getQ());
+                contentValues.put(marks[6], mark.isNs() ? 1 : 0);
+
+                db.insert(TABLE_MARKS, null, contentValues);
+                contentValues.clear();
+            }
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+    public MarkSubject getMarks(int subject_code) {
+        List<Mark> marks = new ArrayList<>();
+        String name = "";
+        MarkSubject markSubject = new MarkSubject(name, marks);
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT subjects.original_name,subjects.name, marks.mark, marks.description, marks.date, marks.type, marks.period, marks.not_significant FROM marks " +
+                "LEFT JOIN subjects ON marks.subject_code=subjects.code WHERE marks.subject_code=?", new String[]{String.valueOf(subject_code)});
+
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            marks.add(new Mark(c.getString(6), c.getInt(7) == 1, c.getString(5), new Date(c.getLong(4)), c.getString(2), c.getString(3)));
+        }
+
+        if (c.moveToFirst()) {
+            name = c.getString(0);
+            markSubject.setName(name);
+            markSubject.setMarks(marks);
+        }
+        c.close();
+        return markSubject;
+    }
+
+    public MarkSubject getMarks(int subject_code, Period period) {
+        List<Mark> marks = new ArrayList<>();
+        String name = "";
+        MarkSubject markSubject = new MarkSubject(name, marks);
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT subjects.original_name,subjects.name, marks.mark, marks.description, marks.date, marks.type, marks.period, marks.not_significant FROM marks " +
+                "LEFT JOIN subjects ON marks.subject_code=subjects.code WHERE marks.subject_code=? AND marks.period=?", new String[]{String.valueOf(subject_code), period.getValue()});
+
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            marks.add(new Mark(c.getString(6), c.getInt(7) == 1, c.getString(5), new Date(c.getLong(4)), c.getString(2), c.getString(3)));
+        }
+
+        if (c.moveToFirst()) {
+            name = TextUtils.isEmpty(c.getString(1)) ? c.getString(0) : c.getString(1);
+            markSubject.setName(name);
+            markSubject.setMarks(marks);
+        }
+        c.close();
+        return markSubject;
+    }
+
+    public boolean hasMarks(Period period) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT subjects.original_name,subjects.name, marks.mark, marks.description, marks.date, marks.type, marks.period, marks.not_significant FROM marks \n" +
+                "LEFT JOIN subjects ON marks.subject_code=subjects.code WHERE marks.period=? AND marks.not_significant=0", new String[]{period.getValue()});
+        boolean ex = c.moveToFirst();
+        c.close();
+        return ex;
+    }
+
+
+    public List<Average> getAverages(Period period) {
+        List<Average> avg = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        String[] args = null;
+        if (period != Period.ALL)
+            args = new String[]{period.getValue()};
+        Cursor c = db.rawQuery("SELECT subjects.original_name,subjects.name, AVG(marks.mark), marks.subject_code, COUNT(marks.mark), subjects.target " +
+                "FROM marks LEFT JOIN subjects ON marks.subject_code=subjects.code " +
+                "WHERE marks.not_significant!=1 " + ((period != Period.ALL) ? "AND marks.period=?" : "") +
+                "GROUP BY subjects.original_name", args);
+
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            avg.add(new Average(TextUtils.isEmpty(c.getString(1)) ? c.getString(0) : c.getString(1), c.getInt(3), c.getFloat(2), c.getInt(4), c.getFloat(5)));
+        }
+        c.close();
+        return avg;
+    }
+    //endregion
+
+    public enum Period {
+        FIRST("q1"),
+        SECOND("q3"),
+        ALL("");
+
+        private final String id;
+
+        Period(String id) {
+            this.id = id;
+        }
+
+        public String getValue() {
+            return id;
+        }
+
+    }
 }

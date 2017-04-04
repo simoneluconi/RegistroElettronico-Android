@@ -20,24 +20,20 @@ import android.view.ViewGroup;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
-import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
 import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
+import com.sharpdroid.registroelettronico.Interfaces.Client.Average;
 import com.sharpdroid.registroelettronico.R;
-import com.sharpdroid.registroelettronico.Tasks.CacheListObservable;
 import com.sharpdroid.registroelettronico.Tasks.CacheListTask;
 import com.sharpdroid.registroelettronico.Views.CSwipeRefreshLayout;
 
-import java.io.File;
 import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.CalculateScholasticCredits;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.getMarksOfThisPeriod;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getOverallAverage;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.isNetworkAvailable;
 
@@ -62,6 +58,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
     ViewPager mViewPager;
 
     PagerAdapter pagerAdapter;
+    RegistroDB db;
 
     private boolean pager_selected;
 
@@ -87,6 +84,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) getActivity().findViewById(R.id.toolbar).getLayoutParams();
         params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
 
+        db = new RegistroDB(mContext);
         pagerAdapter = new MediePager(getChildFragmentManager());
 
         mViewPager.setAdapter(pagerAdapter);
@@ -111,9 +109,10 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
                 .getMarks()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(marks -> {
-                    addSubjects(marks, true);
                     mCSwipeRefreshLayout.setRefreshing(false);
                     Snackbar.make(mCoordinatorLayout, getSnackBarMessage(marks), Snackbar.LENGTH_LONG).show();
+                    db.addMarks(marks);
+                    bindMarksSubjectsCache();
                 }, error -> {
                     if (!isNetworkAvailable(mContext)) {
                         Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
@@ -141,38 +140,59 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         } else return null;
     }
 
-    private void addSubjects(List<MarkSubject> markSubjects, boolean docache) {
-        if (!markSubjects.isEmpty()) {
+    private void addSubjects(List<Average> averageList, boolean docache) {
+        if (!averageList.isEmpty()) {
 
             FragmentMedie fragment;
             for (int i = 0; i < pagerAdapter.getCount(); i++) {
                 fragment = (FragmentMedie) pagerAdapter.instantiateItem(mViewPager, i);
-                fragment.addSubjects(markSubjects);
+                fragment.addSubjects(averageList);
             }
 
-            if (!pager_selected && !getMarksOfThisPeriod(markSubjects, Mark.SECONDO_PERIODO).isEmpty()) {
+            if (!pager_selected && !db.hasMarks(RegistroDB.Period.SECOND)) {
                 mViewPager.setCurrentItem(1, false);
             }
             pager_selected = true;
 
             if (docache) {
                 // Update cache
-                new CacheListTask(mContext.getCacheDir(), TAG).execute((List) markSubjects);
+                new CacheListTask(mContext.getCacheDir(), TAG).execute((List) averageList);
             }
         }
     }
 
     private void bindMarksSubjectsCache() {
-        new CacheListObservable(new File(mContext.getCacheDir(), TAG))
-                .getCachedList(MarkSubject.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(marksSubjects -> addSubjects(marksSubjects, false), Throwable::printStackTrace);
+        FragmentMedie fragment;
+        for (int i = 0; i < pagerAdapter.getCount(); i++) {
+            fragment = (FragmentMedie) pagerAdapter.instantiateItem(mViewPager, i);
+            switch (i) {
+                case 0:
+                    fragment.addSubjects(db.getAverages(RegistroDB.Period.FIRST));
+                    break;
+                case 1:
+                    fragment.addSubjects(db.getAverages(RegistroDB.Period.SECOND));
+                    break;
+                case 2:
+                    fragment.addSubjects(db.getAverages(RegistroDB.Period.ALL));
+                    break;
+            }
+        }
+
+        if (!pager_selected && !db.hasMarks(RegistroDB.Period.SECOND)) {
+            mViewPager.setCurrentItem(1, false);
+        }
+        pager_selected = true;
     }
 
     @Override
     public void onRefresh() {
         UpdateMedie();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        db.close();
     }
 
     private class MediePager extends FragmentPagerAdapter {
