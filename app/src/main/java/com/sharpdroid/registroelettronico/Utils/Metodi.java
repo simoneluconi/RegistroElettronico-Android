@@ -272,7 +272,7 @@ public class Metodi {
         if (media < 6)
             return 6;
         else {
-            Long m = Math.round(media);
+            Double m = Math.ceil(media);
             return m.intValue();
         }
     }

@@ -109,7 +109,4 @@
     <string name="today">Oggi</string>
     <string name="not_set">Selezionare un\'opzione</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
 </resources>
