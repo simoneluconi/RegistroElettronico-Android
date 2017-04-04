@@ -18,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
@@ -93,13 +94,13 @@ public class MainActivity extends AppCompatActivity
             if (toggle != null) {
                 if (!canOpenDrawer) {
                     anim = ObjectAnimator.ofFloat(toggle.getDrawerArrowDrawable(), "progress", 1f);
-                    anim.setInterpolator(new LinearInterpolator());
+                    anim.setInterpolator(new DecelerateInterpolator(1f));
                     anim.setDuration(250);
                     anim.start();
                     drawer.getDrawerLayout().removeDrawerListener(toggle);
                 } else {
                     anim = ObjectAnimator.ofFloat(toggle.getDrawerArrowDrawable(), "progress", 0f);
-                    anim.setInterpolator(new LinearInterpolator());
+                    anim.setInterpolator(new DecelerateInterpolator(1f));
                     anim.setDuration(250);
                     anim.start();
                     drawer.getDrawerLayout().addDrawerListener(toggle);
