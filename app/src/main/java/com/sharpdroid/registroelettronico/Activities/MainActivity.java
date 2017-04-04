@@ -19,7 +19,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.LinearInterpolator;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -51,9 +50,7 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.calendar)
     CompactCalendarView calendarView;
     @BindView(R.id.toolbar)
-    Toolbar toolbar;/*
-    @BindView(R.id.drawer_layout)
-    DrawerLayout drawerLayout;*/
+    Toolbar toolbar;
     @BindView(R.id.tab_layout)
     TabLayout tabLayout;
     Drawer drawer;
