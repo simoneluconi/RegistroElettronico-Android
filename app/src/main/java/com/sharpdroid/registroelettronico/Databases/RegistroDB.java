@@ -31,6 +31,7 @@ public class RegistroDB extends SQLiteOpenHelper {
     private final static String TABLE_SUBJECTS = "subjects";
     private final static String TABLE_LESSONS = "lessons";
     private final static String TABLE_PROFESSORS = "professors";
+    private final static String TABLE_MARKS = "marks";
     private final static String subjects[] = {"id", "code", "original_name", "name", "target", "classroom", "notes"};
     private final static String lessons[] = {subjects[1], "teacher_code", "date", "content"};
     private final static String columns[] = {
@@ -44,7 +45,10 @@ public class RegistroDB extends SQLiteOpenHelper {
     private final static String l_columns[] = {
             "uuid", "title", "content", "type", "day", "subject_id", "prof_id"
     };  //COUNT = 7
-    private static int DB_VERSION = 1;
+    private final static String marks[] = {
+            "subject", "title", "content", "type", "day", "subject_id", "prof_id"
+    };
+    private static int DB_VERSION = 2;
 
     public RegistroDB(Context c) {
         super(c, DB_NAME, null, DB_VERSION);
@@ -107,18 +111,21 @@ public class RegistroDB extends SQLiteOpenHelper {
                 ");");
 
         db.execSQL("CREATE TABLE " + TABLE_PROFESSORS + "( subject_code INTEGER, teacher_code INTEGER, teacher_name TEXT);");
+        onUpgrade(db, 1, DB_VERSION);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-        db.execSQL("DROP TABLE IF EXISTS " + DB_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_API);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_LOCAL);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_COMPLETED);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ARCHIVE);
-
-        onCreate(db);
+        if (oldVersion < 2) {
+            db.execSQL("CREATE TABLE " + TABLE_MARKS + "(" +
+                    "subject_code INTEGER," +
+                    "mark TEXT," +
+                    "description TEXT," +
+                    "date INTEGER, " +
+                    "type INTEGER," +
+                    "period INTEGER," +
+                    "not_significant INTEGER);");
+        }
     }
 
     //region EVENTS
