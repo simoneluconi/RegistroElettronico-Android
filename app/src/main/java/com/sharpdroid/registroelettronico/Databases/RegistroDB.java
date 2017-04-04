@@ -14,6 +14,7 @@ import com.sharpdroid.registroelettronico.Interfaces.API.LessonSubject;
 import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
 import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
 import com.sharpdroid.registroelettronico.Interfaces.Client.AdvancedEvent;
+import com.sharpdroid.registroelettronico.Interfaces.Client.Average;
 import com.sharpdroid.registroelettronico.Interfaces.Client.LocalEvent;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 
@@ -558,7 +559,6 @@ public class RegistroDB extends SQLiteOpenHelper {
         db.setTransactionSuccessful();
         db.endTransaction();
     }
-    //endregion
 
     public MarkSubject getMarks(int subject_code) {
         List<Mark> marks = new ArrayList<>();
@@ -574,6 +574,28 @@ public class RegistroDB extends SQLiteOpenHelper {
         }
 
         if (c.moveToFirst()) {
+            name = c.getString(0);
+            markSubject.setName(name);
+            markSubject.setMarks(marks);
+        }
+        c.close();
+        return markSubject;
+    }
+
+    public MarkSubject getMarks(int subject_code, Period period) {
+        List<Mark> marks = new ArrayList<>();
+        String name = "";
+        MarkSubject markSubject = new MarkSubject(name, marks);
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT subjects.original_name,subjects.name, marks.mark, marks.description, marks.date, marks.type, marks.period, marks.not_significant FROM marks " +
+                "LEFT JOIN subjects ON marks.subject_code=subjects.code WHERE marks.subject_code=? AND marks.period=?", new String[]{String.valueOf(subject_code), period.getValue()});
+
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            marks.add(new Mark(c.getString(6), c.getInt(7) == 1, c.getString(5), new Date(c.getLong(4)), c.getString(2), c.getString(3)));
+        }
+
+        if (c.moveToFirst()) {
             name = TextUtils.isEmpty(c.getString(1)) ? c.getString(0) : c.getString(1);
             markSubject.setName(name);
             markSubject.setMarks(marks);
@@ -582,30 +604,35 @@ public class RegistroDB extends SQLiteOpenHelper {
         return markSubject;
     }
 
-    public List<Pair<String, Float>> getAverage(Period period) {
-        List<Pair<String, Float>> avg = new ArrayList<>();
+    public boolean hasMarks(Period period) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c;
-        if (period == Period.ALL)
-            c = db.rawQuery("SELECT subjects.original_name,subjects.name, AVG(marks.mark) " +
-                    "FROM marks LEFT JOIN subjects ON marks.subject_code=subjects.code " +
-                    "WHERE marks.not_significant!=1" +
-                    "GROUP BY subjects.original_name", null);
-        else
-            c = db.rawQuery("SELECT subjects.original_name,subjects.name, AVG(marks.mark) " +
-                    "FROM marks LEFT JOIN subjects ON marks.subject_code=subjects.code " +
-                    "WHERE marks.not_significant!=1 AND marks.period=?" +
-                    "GROUP BY subjects.original_name", new String[]{period.getValue()});
+        Cursor c = db.rawQuery("SELECT subjects.original_name,subjects.name, marks.mark, marks.description, marks.date, marks.type, marks.period, marks.not_significant FROM marks \n" +
+                "LEFT JOIN subjects ON marks.subject_code=subjects.code WHERE marks.period=? AND marks.not_significant=0", new String[]{period.getValue()});
+        boolean ex = c.moveToFirst();
+        c.close();
+        return ex;
+    }
+
+
+    public List<Average> getAverages(Period period) {
+        List<Average> avg = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        String[] args = null;
+        if (period != Period.ALL)
+            args = new String[]{period.getValue()};
+        Cursor c = db.rawQuery("SELECT subjects.original_name,subjects.name, AVG(marks.mark), marks.subject_code, COUNT(marks.mark), subjects.target " +
+                "FROM marks LEFT JOIN subjects ON marks.subject_code=subjects.code " +
+                "WHERE marks.not_significant!=1 " + ((period != Period.ALL) ? "AND marks.period=?" : "") +
+                "GROUP BY subjects.original_name", args);
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            avg.add(Pair.create(TextUtils.isEmpty(c.getString(1)) ? c.getString(0) : c.getString(1), c.getFloat(2)));
+            avg.add(new Average(TextUtils.isEmpty(c.getString(1)) ? c.getString(0) : c.getString(1), c.getInt(3), c.getFloat(2), c.getInt(4), c.getFloat(5)));
         }
         c.close();
         return avg;
     }
-
-
     //endregion
+
     public enum Period {
         FIRST("q1"),
         SECOND("q3"),

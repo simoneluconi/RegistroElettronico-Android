@@ -123,8 +123,7 @@ public class Metodi {
                 toReturn = toReturn.substring(0, toReturn.length() - 2);
             }
             return toReturn;
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             return "Impossibile calcolare i voti per arrivare all'obiettivo";
         }
@@ -224,6 +223,10 @@ public class Metodi {
 
     public static int getMediaColor(Media media, float voto_obiettivo) {
         return getMediaColor(media, "Generale", voto_obiettivo);
+    }
+
+    public static int getMediaColor(Float media, float voto_obiettivo) {
+        return getMarkColor(media, voto_obiettivo);
     }
 
     public static int getNumberDaysAbsences(List<Absence> absences) {
