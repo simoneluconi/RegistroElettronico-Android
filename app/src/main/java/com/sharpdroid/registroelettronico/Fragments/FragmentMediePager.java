@@ -62,6 +62,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
     ViewPager mViewPager;
 
     PagerAdapter pagerAdapter;
+    RegistroDB db;
 
     private boolean pager_selected;
 
@@ -87,6 +88,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) getActivity().findViewById(R.id.toolbar).getLayoutParams();
         params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
 
+        db = new RegistroDB(mContext);
         pagerAdapter = new MediePager(getChildFragmentManager());
 
         mViewPager.setAdapter(pagerAdapter);
@@ -114,6 +116,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
                     addSubjects(marks, true);
                     mCSwipeRefreshLayout.setRefreshing(false);
                     Snackbar.make(mCoordinatorLayout, getSnackBarMessage(marks), Snackbar.LENGTH_LONG).show();
+                    db.addMarks(marks);
                 }, error -> {
                     if (!isNetworkAvailable(mContext)) {
                         Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
@@ -173,6 +176,12 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
     @Override
     public void onRefresh() {
         UpdateMedie();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        db.close();
     }
 
     private class MediePager extends FragmentPagerAdapter {
