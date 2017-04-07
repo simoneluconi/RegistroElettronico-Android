@@ -191,12 +191,8 @@ public class MainActivity extends AppCompatActivity
             updateSubjects(this);
             needUpdate = false;
         }
-        //View header = mNavigationView.getHeaderView(0);
-        //TextView text = (TextView) header.findViewById(R.id.name);
 
         SharedPreferences settings = getSharedPreferences("REGISTRO", MODE_PRIVATE);
-        String value = settings.getString("name", getString(R.string.app_name));
-        //text.setText(value);
 
         // Programmatically start a fragment
         if (savedInstanceState == null) {
