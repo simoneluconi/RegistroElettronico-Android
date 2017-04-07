@@ -15,6 +15,9 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -73,6 +76,8 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
+        setHasOptionsMenu(true);
+
         getActivity().setTitle(getString(R.string.medie));
         tabLayout = (TabLayout) getActivity().findViewById(R.id.tab_layout);
         tabLayout.setVisibility(View.VISIBLE);
@@ -96,6 +101,19 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         bindMarksSubjectsCache();
 
         UpdateMedie();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.voti_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.sort) {
+            // TODO: 08/04/2017 show bottom sheet 
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void UpdateMedie() {
