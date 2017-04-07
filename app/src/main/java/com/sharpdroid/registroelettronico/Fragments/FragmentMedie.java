@@ -51,7 +51,8 @@ public class FragmentMedie extends Fragment {
         ButterKnife.bind(this, view);
 
         periodo = getArguments().getInt("q");
-        subjectsDB = new RegistroDB(mContext);
+        if (subjectsDB == null)
+            subjectsDB = new RegistroDB(mContext);
 
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);
         mRecyclerView.setBackgroundColor(Color.parseColor("#F1F1F1"));
@@ -63,14 +64,21 @@ public class FragmentMedie extends Fragment {
         }
         mRecyclerView.addItemDecoration(new ItemOffsetDecoration(mContext, R.dimen.cards_margin));
 
-        mRVAdapter = new MedieAdapter(mContext, new CopyOnWriteArrayList<>(), subjectsDB);
+        if (mRVAdapter == null)
+            mRVAdapter = new MedieAdapter(mContext, new CopyOnWriteArrayList<>(), subjectsDB);
         mRecyclerView.setAdapter(mRVAdapter);
     }
 
-    public void addSubjects(List<Average> markSubjects) {
+    public void addSubjects(List<Average> markSubjects, int p) {
+        if (subjectsDB == null)
+            subjectsDB = new RegistroDB(getContext());
+
+        if (mRVAdapter == null)
+            mRVAdapter = new MedieAdapter(getContext(), new CopyOnWriteArrayList<>(), subjectsDB);
+
         if (!markSubjects.isEmpty() && mRVAdapter != null) {
             mRVAdapter.clear();
-            mRVAdapter.addAll(markSubjects, periodo);
+            mRVAdapter.addAll(markSubjects, p);
         }
     }
 
