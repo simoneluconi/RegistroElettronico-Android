@@ -16,6 +16,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -26,6 +27,7 @@ import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.sharpdroid.registroelettronico.Fragments.FragmentAgenda;
@@ -73,15 +75,15 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
 
-        //  Back/Menu Icon
-        initDrawer();
-
         //  first run
         settings = getSharedPreferences("REGISTRO", MODE_PRIVATE);
         if (settings.getBoolean("primo_avvio", true)) {
             // first time task
             startActivityForResult(new Intent(this, Intro.class), 1);
         } else {
+
+            //  Back/Menu Icon
+            initDrawer();
             init(savedInstanceState);
         }
 
@@ -137,13 +139,15 @@ public class MainActivity extends AppCompatActivity
     private void initDrawer() {
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
+                .addProfiles(new ProfileDrawerItem().withName("Nome").withEmail("Codice utente"))
                 .withHeaderBackground(R.drawable.side_nav_bar)
                 .build();
 
-        drawer = new DrawerBuilder(this)
+        drawer = new DrawerBuilder()
+                .withActivity(this)
                 .withToolbar(toolbar)
+                .withAccountHeader(headerResult)
                 .withActionBarDrawerToggleAnimated(true)
-                .withCloseOnClick(true)
                 .withOnDrawerItemClickListener(this)
                 .addDrawerItems(new PrimaryDrawerItem().withIdentifier(R.id.agenda).withName(R.string.agenda).withIcon(R.drawable.ic_event).withIconTintingEnabled(true),
                         new PrimaryDrawerItem().withIdentifier(R.id.medie).withName(R.string.medie).withIcon(R.drawable.ic_timeline).withIconTintingEnabled(true),
@@ -156,7 +160,6 @@ public class MainActivity extends AppCompatActivity
                 .addDrawerItems(new SectionDrawerItem().withName(R.string.communicate),
                         new PrimaryDrawerItem().withIdentifier(R.id.nav_share).withName(R.string.share).withIcon(R.drawable.ic_menu_share).withIconTintingEnabled(true).withSelectable(false),
                         new PrimaryDrawerItem().withIdentifier(R.id.nav_send).withName(R.string.send).withIcon(R.drawable.ic_menu_send).withIconTintingEnabled(true).withSelectable(false))
-                .withAccountHeader(headerResult)
                 .build();
 
         if (toolbar != null) {
@@ -204,8 +207,8 @@ public class MainActivity extends AppCompatActivity
                 drawer_to_open = extras.getInt("drawer_to_open", drawer_to_open);
             }
 
-            drawer.setSelectionAtPosition(drawer_to_open, true);
-            onItemClick(null, drawer_to_open, drawer.getDrawerItems().get(drawer_to_open));
+            drawer.setSelectionAtPosition(drawer_to_open + 1, true);
+            //onItemClick(null, drawer_to_open, drawer.getDrawerItems().get(drawer_to_open));
         }
     }
 
@@ -242,6 +245,7 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+        Log.w("DRAWER", "onClick position-" + position);
         clearBackstack();
         Fragment fragment;
         int id = (int) drawerItem.getIdentifier();
@@ -300,6 +304,6 @@ public class MainActivity extends AppCompatActivity
         transaction.replace(R.id.fragment_container, fragment).commit();
 
         drawer.closeDrawer();
-        return true;
+        return false;
     }
 }
