@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fab="http://schemas.android.com/tools"
     android:id="@+id/coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -19,18 +18,20 @@
 
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/fab_big_add"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        app:menu_animationDelayPerItem="0"
+        android:paddingBottom="8dp"
+        android:paddingEnd="8dp"
+        android:paddingRight="8dp"
+        app:menu_animationDelayPerItem="20"
+        app:menu_backgroundColor="#ccffffff"
         app:menu_colorNormal="?colorPrimary"
         app:menu_colorPressed="?colorPrimary"
         app:menu_colorRipple="#4fff"
-        fab:menu_backgroundColor="#ccffffff"
-        fab:menu_fab_label="Menu label"
-        fab:menu_labels_ellipsize="end"
-        fab:menu_labels_singleLine="true">
+        app:menu_labels_ellipsize="end"
+        app:menu_labels_singleLine="true"
+        app:menu_showShadow="true">
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_mini_verifica"
@@ -57,4 +58,5 @@
             app:fab_label="Altro" />
 
     </com.github.clans.fab.FloatingActionMenu>
+
 </android.support.design.widget.CoordinatorLayout>
