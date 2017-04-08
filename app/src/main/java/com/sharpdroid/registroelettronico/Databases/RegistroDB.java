@@ -315,17 +315,18 @@ public class RegistroDB extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Subject subject = null;
 
-        Cursor c = db.rawQuery("SELECT subjects.*, professors.teacher_code, professors.teacher_name FROM subjects LEFT JOIN professors ON subjects.code=professors.subject_code WHERE subjects.code=? GROUP BY professors.teacher_code", new String[]{String.valueOf(code)});
+        Cursor c = db.rawQuery("SELECT subjects.id, subjects.code, coalesce(subjects.name, subjects.original_name) AS name, subjects.target, subjects.classroom, subjects.notes, professors.teacher_code, professors.teacher_name FROM subjects" +
+                " LEFT JOIN professors ON subjects.code=professors.subject_code WHERE subjects.code=? GROUP BY professors.teacher_code", new String[]{String.valueOf(code)});
         List<Integer> codes = new ArrayList<>();
         List<String> names = new ArrayList<>();
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            codes.add(c.getInt(7));
-            names.add(c.getString(8));
+            codes.add(c.getInt(6));
+            names.add(c.getString(7));
         }
 
         if (c.moveToFirst())
-            subject = new Subject(c.getInt(0), c.getInt(1), c.getString(2), c.getString(3), c.getFloat(4), TextUtils.join(",", names), c.getString(5), c.getString(6), codes);
+            subject = new Subject(c.getInt(0), c.getInt(1), c.getString(2), c.getFloat(3), TextUtils.join(",", names), c.getString(4), c.getString(5), codes);
 
 
         c.close();
@@ -338,11 +339,11 @@ public class RegistroDB extends SQLiteOpenHelper {
         Cursor c;
         if (name.contains("...")) {
             name = name.replace("...", "%");
-            c = db.rawQuery("SELECT subjects.*, professors.teacher_code, professors.teacher_name FROM subjects " +
+            c = db.rawQuery("SELECT subjects.id, subjects.code, coalesce(subjects.name, subjects.original_name) AS name, subjects.target, subjects.classroom, subjects.notes, professors.teacher_code, professors.teacher_name FROM subjects " +
                     "LEFT JOIN lessons ON subjects.code=lessons.code " +
                     "LEFT JOIN professors ON subjects.code = professors.subject_code WHERE " + subjects[2] + " LIKE ? OR " + subjects[3] + " LIKE ? GROUP BY professors.teacher_code", new String[]{name, name});
         } else {
-            c = db.rawQuery("SELECT subjects.*, professors.teacher_code, professors.teacher_name FROM subjects " +
+            c = db.rawQuery("SELECT subjects.id, subjects.code, coalesce(subjects.name, subjects.original_name) AS name, subjects.target, subjects.classroom, subjects.notes, professors.teacher_code, professors.teacher_name FROM subjects " +
                     "LEFT JOIN lessons ON subjects.code=lessons.code " +
                     "LEFT JOIN professors ON subjects.code = professors.subject_code WHERE " + subjects[2] + " = ? OR " + subjects[3] + " = ? GROUP BY professors.teacher_code", new String[]{name, name});
         }
@@ -351,12 +352,12 @@ public class RegistroDB extends SQLiteOpenHelper {
         List<String> names = new ArrayList<>();
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            codes.add(c.getInt(7));
-            names.add(c.getString(8));
+            codes.add(c.getInt(6));
+            names.add(c.getString(7));
         }
 
         if (c.moveToFirst())
-            subject = new Subject(c.getInt(0), c.getInt(1), c.getString(2), c.getString(3), c.getFloat(4), TextUtils.join(",", names), c.getString(5), c.getString(6), codes);
+            subject = new Subject(c.getInt(0), c.getInt(1), c.getString(2), c.getFloat(3), TextUtils.join(",", names), c.getString(4), c.getString(5), codes);
 
 
         c.close();
@@ -588,8 +589,11 @@ public class RegistroDB extends SQLiteOpenHelper {
         MarkSubject markSubject = new MarkSubject(name, marks);
 
         SQLiteDatabase db = getReadableDatabase();
+        String[] args = new String[]{String.valueOf(subject_code)};
+        if (period != Period.ALL)
+            args = new String[]{String.valueOf(subject_code), period.getValue()};
         Cursor c = db.rawQuery("SELECT subjects.original_name,subjects.name, marks.mark, marks.description, marks.date, marks.type, marks.period, marks.not_significant FROM marks " +
-                "LEFT JOIN subjects ON marks.subject_code=subjects.code WHERE marks.subject_code=? AND marks.period=?", new String[]{String.valueOf(subject_code), period.getValue()});
+                "LEFT JOIN subjects ON marks.subject_code=subjects.code WHERE marks.subject_code=? " + ((period != Period.ALL) ? "AND marks.period=?" : ""), args);
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             marks.add(new Mark(c.getString(6), c.getInt(7) == 1, c.getString(5), new Date(c.getLong(4)), c.getString(2), c.getString(3)));
@@ -628,6 +632,19 @@ public class RegistroDB extends SQLiteOpenHelper {
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             avg.add(new Average(TextUtils.isEmpty(c.getString(1)) ? c.getString(0) : c.getString(1), c.getInt(3), c.getFloat(2), c.getInt(4), c.getFloat(5)));
         }
+        c.close();
+        return avg;
+    }
+
+    public double getAverage(Period p) {
+        double avg = 0;
+        SQLiteDatabase db = getReadableDatabase();
+        String[] args = null;
+        if (p != Period.ALL)
+            args = new String[]{p.getValue()};
+        Cursor c = db.rawQuery("SELECT AVG(marks.mark) FROM marks WHERE marks.not_significant=0 " + ((p != Period.ALL) ? "AND marks.period=?" : ""), args);
+        if (c.moveToNext())
+            avg = c.getDouble(0);
         c.close();
         return avg;
     }

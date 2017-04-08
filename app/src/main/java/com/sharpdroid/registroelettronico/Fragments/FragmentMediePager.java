@@ -15,18 +15,17 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
-import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
-import com.sharpdroid.registroelettronico.Interfaces.Client.Average;
 import com.sharpdroid.registroelettronico.R;
-import com.sharpdroid.registroelettronico.Tasks.CacheListTask;
 import com.sharpdroid.registroelettronico.Views.CSwipeRefreshLayout;
 
-import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -34,7 +33,6 @@ import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.CalculateScholasticCredits;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.getOverallAverage;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.isNetworkAvailable;
 
 /**
@@ -78,6 +76,8 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
+        setHasOptionsMenu(true);
+
         getActivity().setTitle(getString(R.string.medie));
         tabLayout = (TabLayout) getActivity().findViewById(R.id.tab_layout);
         tabLayout.setVisibility(View.VISIBLE);
@@ -103,28 +103,38 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         UpdateMedie();
     }
 
-    private void UpdateMedie() {
-        mCSwipeRefreshLayout.setRefreshing(true);
-        new SpiaggiariApiClient(mContext)
-                .getMarks()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(marks -> {
-                    mCSwipeRefreshLayout.setRefreshing(false);
-                    Snackbar.make(mCoordinatorLayout, getSnackBarMessage(marks), Snackbar.LENGTH_LONG).show();
-                    db.addMarks(marks);
-                    bindMarksSubjectsCache();
-                }, error -> {
-                    if (!isNetworkAvailable(mContext)) {
-                        Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
-                    }
-                    mCSwipeRefreshLayout.setRefreshing(false);
-                });
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.voti_menu, menu);
     }
 
-    private String getSnackBarMessage(List<MarkSubject> marks) {
-        double average = getOverallAverage(marks);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.sort) {
+            // TODO: 08/04/2017 show bottom sheet 
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-        String className = new RegistroDB(mContext).getClassDescription();
+    private void UpdateMedie() {
+        mCSwipeRefreshLayout.setRefreshing(isNetworkAvailable(mContext));
+        if (isNetworkAvailable(mContext))
+            new SpiaggiariApiClient(mContext)
+                    .getMarks()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(marks -> {
+                        mCSwipeRefreshLayout.setRefreshing(false);
+                        Snackbar.make(mCoordinatorLayout, getSnackBarMessage(mViewPager.getCurrentItem()), Snackbar.LENGTH_LONG).show();
+                        db.addMarks(marks);
+                        bindMarksSubjectsCache();
+                    }, Throwable::printStackTrace);
+    }
+
+    private String getSnackBarMessage(int pos) {
+        RegistroDB.Period p = (pos == 0) ? RegistroDB.Period.FIRST : ((pos == 1) ? RegistroDB.Period.SECOND : RegistroDB.Period.ALL);
+        double average = db.getAverage(p);
+
+        String className = db.getClassDescription();
         if (className != null) {
             className = className.split("\\s+")[0];
             int classyear;
@@ -137,28 +147,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
             if (classyear > 2)
                 return String.format(Locale.getDefault(), "Media Totale: %.2f | Crediti: %2$d + %3$d", average, CalculateScholasticCredits(classyear, average), 1);
             else return "Media totale: " + String.format(Locale.getDefault(), "%.2f", average);
-        } else return null;
-    }
-
-    private void addSubjects(List<Average> averageList, boolean docache) {
-        if (!averageList.isEmpty()) {
-
-            FragmentMedie fragment;
-            for (int i = 0; i < pagerAdapter.getCount(); i++) {
-                fragment = (FragmentMedie) pagerAdapter.instantiateItem(mViewPager, i);
-                fragment.addSubjects(averageList);
-            }
-
-            if (!pager_selected && !db.hasMarks(RegistroDB.Period.SECOND)) {
-                mViewPager.setCurrentItem(1, false);
-            }
-            pager_selected = true;
-
-            if (docache) {
-                // Update cache
-                new CacheListTask(mContext.getCacheDir(), TAG).execute((List) averageList);
-            }
-        }
+        } else return "";
     }
 
     private void bindMarksSubjectsCache() {
@@ -167,13 +156,13 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
             fragment = (FragmentMedie) pagerAdapter.instantiateItem(mViewPager, i);
             switch (i) {
                 case 0:
-                    fragment.addSubjects(db.getAverages(RegistroDB.Period.FIRST));
+                    fragment.addSubjects(db.getAverages(RegistroDB.Period.FIRST), i);
                     break;
                 case 1:
-                    fragment.addSubjects(db.getAverages(RegistroDB.Period.SECOND));
+                    fragment.addSubjects(db.getAverages(RegistroDB.Period.SECOND), i);
                     break;
                 case 2:
-                    fragment.addSubjects(db.getAverages(RegistroDB.Period.ALL));
+                    fragment.addSubjects(db.getAverages(RegistroDB.Period.ALL), i);
                     break;
             }
         }

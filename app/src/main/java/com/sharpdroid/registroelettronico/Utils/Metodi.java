@@ -75,11 +75,11 @@ public class Metodi {
         if (Obb > 10 || media > 10)
             return "Errore"; // Quando l'obiettivo o la media sono > 10
         if (Obb >= 10 && media < Obb)
-            return "Impossibile raggiungere la media del " + Obb; // Quando l'obiettivo è 10 (o più) e la media è < 10 (non si potrà mai raggiungere)
+            return "Obiettivo irraggiungibile"; // Quando l'obiettivo è 10 (o più) e la media è < 10 (non si potrà mai raggiungere)
         double[] array = {0.75, 0.5, 0.25, 0};
         int index = 0;
         float sommaVotiDaPrendere;
-        double[] votiMinimi = new double[20];
+        double[] votiMinimi = new double[5];
         double diff;
         double diff2;
         double resto = 0;
@@ -127,8 +127,7 @@ public class Metodi {
             }
             return toReturn;
         } catch (Exception e) {
-            e.printStackTrace();
-            return "Impossibile calcolare i voti per arrivare all'obiettivo";
+            return "Obiettivo irraggiungibile";
         }
     }
 
@@ -245,26 +244,8 @@ public class Metodi {
     }
 
     public static String getSubjectName(Subject subject) {
-        try {
-            return (!TextUtils.isEmpty(subject.getName())) ? subject.getName() : WordUtils.capitalize(subject.getOriginalName(), Delimeters);
-        } catch (NullPointerException e) {
-            return subject.getOriginalName();
-        }
-    }
-
-    public static float getOverallAverage(List<MarkSubject> subjects) {
-        float media = 0f;
-        int n = subjects.size();
-
-        for (MarkSubject subject : subjects) {
-            Media _media = new Media();
-            _media.addMarks(subject.getMarks());
-
-            if (_media.containsValidMarks())
-                media += _media.getMediaGenerale();
-            else n--;
-        }
-        return media / n;
+        boolean hasUppercase = !subject.getName().equals(subject.getName().toLowerCase());
+        return (hasUppercase) ? subject.getName() : WordUtils.capitalizeFully(subject.getName());
     }
 
     public static Media getHypotheticalAverage(MarkSubject markSubject, Mark mark) {
