@@ -120,5 +120,8 @@
 
     <string name="restore_archived_summary">Ripristina tutti i dati archiviati dalla sezione agenda</string>
     <string name="restore_archived_title">Ripristina dati archiviati</string>
+    <string name="ordina">Ordina</string>
+    <string name="media">Media</string>
+    <string name="nome">Nome</string>
 
 </resources>
