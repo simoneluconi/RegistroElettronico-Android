@@ -3,7 +3,10 @@ package com.sharpdroid.registroelettronico.Utils;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.provider.CalendarContract;
@@ -544,6 +547,28 @@ public class Metodi {
             capitalized.add(WordUtils.capitalizeFully(s.toString(), Delimeters));
         }
         return capitalized;
+    }
+
+    public static Bitmap ImmagineAccout(String nome) {
+        Bitmap src = Bitmap.createBitmap(255, 255, Bitmap.Config.ARGB_8888);
+        src.eraseColor(Color.parseColor("#03A9F4"));
+        String nomef = "";
+        String[] lett = nome.split("\\s+");
+        for (String s :
+                lett) {
+            nomef += s.substring(0, 1).toUpperCase();
+        }
+        Canvas cs = new Canvas(src);
+        Paint tPaint = new Paint();
+        float reduce = tPaint.measureText(nomef);
+        tPaint.setTextSize(100 - reduce);
+        tPaint.setColor(Color.WHITE);
+        tPaint.setStyle(Paint.Style.FILL);
+        tPaint.setTextAlign(Paint.Align.CENTER);
+        float x_coord = src.getWidth() / 2;
+        float height = (src.getHeight() / 2) + 33;
+        cs.drawText(nomef, x_coord, height, tPaint);
+        return src;
     }
 }
 

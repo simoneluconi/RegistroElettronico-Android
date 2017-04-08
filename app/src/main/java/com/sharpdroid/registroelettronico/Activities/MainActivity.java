@@ -26,6 +26,7 @@ import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.sharpdroid.registroelettronico.Fragments.FragmentAgenda;
@@ -43,6 +44,7 @@ import com.transitionseverywhere.TransitionManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.sharpdroid.registroelettronico.Utils.Metodi.ImmagineAccout;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.updateSubjects;
 
 public class MainActivity extends AppCompatActivity
@@ -135,9 +137,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initDrawer() {
+        settings = getSharedPreferences("REGISTRO", MODE_PRIVATE);
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.side_nav_bar)
+                .addProfiles(new ProfileDrawerItem().withName(settings.getString("name", "Registro Elettronico"))
+                        .withEmail("Codice utente")
+                        .withNameShown(true)
+                        .withIcon(ImmagineAccout(settings.getString("name", "Registro Elettronico"))))
                 .build();
 
         drawer = new DrawerBuilder(this)
