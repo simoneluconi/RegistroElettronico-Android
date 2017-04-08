@@ -3,6 +3,7 @@ package com.sharpdroid.registroelettronico.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -21,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.cocosw.bottomsheet.BottomSheet;
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.R;
@@ -54,6 +56,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
     CSwipeRefreshLayout mCSwipeRefreshLayout;
     @BindView(R.id.view_pager)
     ViewPager mViewPager;
+    BottomSheet bottomSheet;
 
     PagerAdapter pagerAdapter;
     RegistroDB db;
@@ -76,6 +79,8 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
+        bottomSheet = new BottomSheet.Builder(getActivity(), R.style.BottomSheet_StyleDialog).title("Ordina per").sheet(R.menu.order_by_menu).listener((dialog, which) -> sort(which)).build();
+
         setHasOptionsMenu(true);
 
         getActivity().setTitle(getString(R.string.medie));
@@ -97,10 +102,18 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
                 R.color.redmaterial,
                 R.color.greenmaterial,
                 R.color.orangematerial);
-
-        bindMarksSubjectsCache();
-
         UpdateMedie();
+    }
+
+    private void sort(int which) {
+        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putInt("order_by", which).apply();
+        bindMarksSubjectsCache();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        bindMarksSubjectsCache();
     }
 
     @Override
@@ -111,7 +124,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.sort) {
-            // TODO: 08/04/2017 show bottom sheet 
+            bottomSheet.show();
         }
         return super.onOptionsItemSelected(item);
     }

@@ -530,7 +530,7 @@ public class Metodi {
         return capitalized;
     }
 
-    public static Bitmap ImmagineAccout(String nome) {
+    public static Bitmap AccountImage(String nome) {
         Bitmap src = Bitmap.createBitmap(255, 255, Bitmap.Config.ARGB_8888);
         src.eraseColor(Color.parseColor("#03A9F4"));
         String nomef = "";
