@@ -617,8 +617,8 @@ public class RegistroDB extends SQLiteOpenHelper {
         String[] args = null;
         if (period != Period.ALL)
             args = new String[]{period.getValue()};
-        Cursor c = db.rawQuery("SELECT coalesce(subjects.name,subjects.original_name) as name, AVG(marks.mark), marks.subject_code, COUNT(marks.mark), subjects.target FROM marks LEFT JOIN subjects ON marks.subject_code=subjects.code WHERE marks.not_significant!=1 " + ((period != Period.ALL) ? "AND marks.period=?" : "") +
-                "GROUP BY marks.subject_code", args);
+        Cursor c = db.rawQuery("SELECT coalesce(subjects.name,subjects.original_name) as _name, AVG(marks.mark) as _avg, marks.subject_code, COUNT(marks.mark), subjects.target FROM marks LEFT JOIN subjects ON marks.subject_code=subjects.code WHERE marks.not_significant!=1 " + ((period != Period.ALL) ? "AND marks.period=?" : "") +
+                "GROUP BY marks.subject_code " + sort_by, args);
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             avg.add(new Average(c.getString(0), c.getInt(2), c.getFloat(1), c.getInt(3), c.getFloat(4)));
