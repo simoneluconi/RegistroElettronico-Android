@@ -27,9 +27,9 @@ import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Fragments.FragmentAgenda;
 import com.sharpdroid.registroelettronico.Fragments.FragmentAllAbsences;
 import com.sharpdroid.registroelettronico.Fragments.FragmentCommunications;
@@ -45,7 +45,6 @@ import com.transitionseverywhere.TransitionManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.sharpdroid.registroelettronico.Utils.Metodi.AccountImage;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.updateSubjects;
 
 public class MainActivity extends AppCompatActivity
@@ -66,6 +65,8 @@ public class MainActivity extends AppCompatActivity
     boolean canOpenDrawer = true;
     ObjectAnimator anim;
 
+    RegistroDB db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,8 +83,6 @@ public class MainActivity extends AppCompatActivity
             // first time task
             startActivityForResult(new Intent(this, Intro.class), 1);
         } else {
-
-            //  Back/Menu Icon
             initDrawer();
             init(savedInstanceState);
         }
@@ -138,14 +137,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initDrawer() {
+        db = new RegistroDB(this);
         settings = getSharedPreferences("REGISTRO", MODE_PRIVATE);
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.side_nav_bar)
-                .addProfiles(new ProfileDrawerItem().withName(settings.getString("name", "Registro Elettronico"))
-                        .withEmail("Codice utente")
-                        .withNameShown(true)
-                        .withIcon(AccountImage(settings.getString("name", "Registro Elettronico"))))
+                .withProfiles(db.getProfiles())
                 .build();
 
         drawer = new DrawerBuilder()
@@ -307,5 +304,11 @@ public class MainActivity extends AppCompatActivity
 
         drawer.closeDrawer();
         return false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        db.close();
     }
 }

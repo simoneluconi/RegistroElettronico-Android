@@ -15,7 +15,9 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.heinrichreimersoftware.materialintro.app.SlideFragment;
+import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
+import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.Utils.DeviceUuidFactory;
 
@@ -99,6 +101,9 @@ public class FragmentLogin extends SlideFragment {
                     SharedPreferences.Editor editor = settings.edit();
                     editor.putString("name", WordUtils.capitalizeFully(login.getName()).trim());
                     editor.apply();
+
+                    RegistroDB db = new RegistroDB(getContext());
+                    db.addProfile(new ProfileDrawerItem().withName(WordUtils.capitalizeFully(login.getName())).withEmail(mEmail));
 
                     mButtonLogin.setText(R.string.login_riuscito);
                     Toast.makeText(mContext, R.string.login_msg, Toast.LENGTH_SHORT).show();

@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
 
+import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.sharpdroid.registroelettronico.Interfaces.API.Event;
 import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
 import com.sharpdroid.registroelettronico.Interfaces.API.LessonSubject;
@@ -22,7 +24,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
+import static com.sharpdroid.registroelettronico.Utils.Metodi.AccountImage;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.toLowerCase;
 
 public class RegistroDB extends SQLiteOpenHelper {
@@ -35,6 +39,7 @@ public class RegistroDB extends SQLiteOpenHelper {
     private final static String TABLE_LESSONS = "lessons";
     private final static String TABLE_PROFESSORS = "professors";
     private final static String TABLE_MARKS = "marks";
+    private final static String TABLE_PROFILES = "profiles";
     private final static String subjects[] = {"id", "code", "original_name", "name", "target", "classroom", "notes"};
     private final static String lessons[] = {subjects[1], "teacher_code", "date", "content"};
     private final static String columns[] = {
@@ -51,7 +56,7 @@ public class RegistroDB extends SQLiteOpenHelper {
     private final static String marks[] = {
             "subject_code", "mark", "description", "date", "type", "period", "not_significant"
     };
-    private static int DB_VERSION = 2;
+    private static int DB_VERSION = 3;
 
     public RegistroDB(Context c) {
         super(c, DB_NAME, null, DB_VERSION);
@@ -128,6 +133,14 @@ public class RegistroDB extends SQLiteOpenHelper {
                     "type TEXT," +
                     "period TEXT," +
                     "not_significant INTEGER);");
+        }
+
+        if (oldVersion < 3) {
+            db.execSQL("CREATE TABLE " + TABLE_PROFILES + "(" +
+                    "uuid TEXT," +
+                    "name TEXT," +
+                    "username TEXT," +
+                    "cookie TEXT)");
         }
     }
 
@@ -638,6 +651,34 @@ public class RegistroDB extends SQLiteOpenHelper {
             avg = c.getDouble(0);
         c.close();
         return avg;
+    }
+    //endregion
+
+    //region PROFILES
+    public void addProfile(IProfile profile) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put("uuid", UUID.randomUUID().toString());
+        cv.put("name", profile.getName().getText());
+        cv.put("username", profile.getEmail().getText());
+
+        db.insert(TABLE_PROFILES, null, cv);
+
+    }
+
+    public List<IProfile> getProfiles() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM profiles", null);
+        List<IProfile> profiles = new ArrayList<>();
+
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            profiles.add(new ProfileDrawerItem().withName(c.getString(1)).withEmail(c.getString(2)).withNameShown(true).withIcon(AccountImage(c.getString(1))));
+        }
+
+        c.close();
+
+        return profiles;
     }
     //endregion
 
