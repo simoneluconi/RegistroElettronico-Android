@@ -1,4 +1,4 @@
-package com.sharpdroid.registroelettronico.Fragments;
+package com.sharpdroid.registroelettronico.BottomSheet;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -24,11 +24,11 @@ import butterknife.ButterKnife;
  * <p>A fragment that shows a list of items as a modal bottom sheet.</p>
  * <p>You can show this modal bottom sheet from your activity like this:</p>
  * <pre>
- *     BottomSheetAgenda.newInstance(30).show(getSupportFragmentManager(), "dialog");
+ *     AgendaBS.newInstance(30).show(getSupportFragmentManager(), "dialog");
  * </pre>
- * <p>You activity (or fragment) needs to implement {@link BottomSheetAgenda.Listener}.</p>
+ * <p>You activity (or fragment) needs to implement {@link AgendaBS.Listener}.</p>
  */
-public class BottomSheetAgenda extends BottomSheetDialogFragment {
+public class AgendaBS extends BottomSheetDialogFragment {
 
     private static final int mItemCount = 5;
     private static final int icons[] = {R.drawable.agenda_bsheet_share, R.drawable.agenda_bsheet_calendar, R.drawable.agenda_bsheet_copy, R.drawable.agenda_bsheet_archive};
@@ -39,8 +39,8 @@ public class BottomSheetAgenda extends BottomSheetDialogFragment {
     private Listener mListener;
     private AdvancedEvent event;
 
-    public static BottomSheetAgenda newInstance(/*int itemCount*/) {
-        final BottomSheetAgenda fragment = new BottomSheetAgenda();
+    public static AgendaBS newInstance(/*int itemCount*/) {
+        final AgendaBS fragment = new AgendaBS();
         final Bundle args = new Bundle();
         //args.putInt(ARG_ITEM_COUNT, itemCount);
         fragment.setArguments(args);

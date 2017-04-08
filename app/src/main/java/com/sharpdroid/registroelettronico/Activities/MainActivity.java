@@ -45,7 +45,7 @@ import com.transitionseverywhere.TransitionManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.sharpdroid.registroelettronico.Utils.Metodi.ImmagineAccout;
+import static com.sharpdroid.registroelettronico.Utils.Metodi.AccountImage;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.updateSubjects;
 
 public class MainActivity extends AppCompatActivity
@@ -141,12 +141,11 @@ public class MainActivity extends AppCompatActivity
         settings = getSharedPreferences("REGISTRO", MODE_PRIVATE);
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
-                .addProfiles(new ProfileDrawerItem().withName("Nome").withEmail("Codice utente"))
                 .withHeaderBackground(R.drawable.side_nav_bar)
                 .addProfiles(new ProfileDrawerItem().withName(settings.getString("name", "Registro Elettronico"))
                         .withEmail("Codice utente")
                         .withNameShown(true)
-                        .withIcon(ImmagineAccout(settings.getString("name", "Registro Elettronico"))))
+                        .withIcon(AccountImage(settings.getString("name", "Registro Elettronico"))))
                 .build();
 
         drawer = new DrawerBuilder()
@@ -201,8 +200,6 @@ public class MainActivity extends AppCompatActivity
             needUpdate = false;
         }
 
-        SharedPreferences settings = getSharedPreferences("REGISTRO", MODE_PRIVATE);
-
         // Programmatically start a fragment
         if (savedInstanceState == null) {
             int drawer_to_open = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this)
@@ -214,7 +211,6 @@ public class MainActivity extends AppCompatActivity
             }
 
             drawer.setSelectionAtPosition(drawer_to_open + 1, true);
-            //onItemClick(null, drawer_to_open, drawer.getDrawerItems().get(drawer_to_open));
         }
     }
 
