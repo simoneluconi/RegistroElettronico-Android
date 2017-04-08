@@ -22,8 +22,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.cocosw.bottomsheet.BottomSheet;
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
+import com.sharpdroid.registroelettronico.BottomSheet.OrderMedieBS;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.Views.CSwipeRefreshLayout;
@@ -40,7 +40,7 @@ import static com.sharpdroid.registroelettronico.Utils.Metodi.isNetworkAvailable
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.OnRefreshListener, OrderMedieBS.OrderListener {
     final private String TAG = FragmentMedie.class.getSimpleName();
 
     Context mContext;
@@ -56,7 +56,6 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
     CSwipeRefreshLayout mCSwipeRefreshLayout;
     @BindView(R.id.view_pager)
     ViewPager mViewPager;
-    BottomSheet bottomSheet;
 
     PagerAdapter pagerAdapter;
     RegistroDB db;
@@ -64,7 +63,6 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
     private boolean pager_selected;
 
     public FragmentMediePager() {
-        // Required empty public constructor
     }
 
     @Override
@@ -78,8 +76,6 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-
-        bottomSheet = new BottomSheet.Builder(getActivity(), R.style.BottomSheet_StyleDialog).title("Ordina per").sheet(R.menu.order_by_menu).listener((dialog, which) -> sort(which)).build();
 
         setHasOptionsMenu(true);
 
@@ -105,11 +101,6 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         UpdateMedie();
     }
 
-    private void sort(int which) {
-        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putInt("order_by", which).apply();
-        bindMarksSubjectsCache();
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -124,9 +115,22 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.sort) {
-            bottomSheet.show();
+            OrderMedieBS.newInstance().show(getChildFragmentManager(), "dialog");
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemClicked(int position) {
+        switch (position) {
+            case 0:
+                PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString("order", "ORDER BY lower(_name) ASC").apply();
+                break;
+            case 1:
+                PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString("order", "ORDER BY _avg DESC").apply();
+                break;
+        }
+        bindMarksSubjectsCache();
     }
 
     private void UpdateMedie() {
@@ -164,18 +168,19 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
     }
 
     private void bindMarksSubjectsCache() {
+        String order = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("order", "");
         FragmentMedie fragment;
         for (int i = 0; i < pagerAdapter.getCount(); i++) {
             fragment = (FragmentMedie) pagerAdapter.instantiateItem(mViewPager, i);
             switch (i) {
                 case 0:
-                    fragment.addSubjects(db.getAverages(RegistroDB.Period.FIRST), i);
+                    fragment.addSubjects(db.getAverages(RegistroDB.Period.FIRST, order), i);
                     break;
                 case 1:
-                    fragment.addSubjects(db.getAverages(RegistroDB.Period.SECOND), i);
+                    fragment.addSubjects(db.getAverages(RegistroDB.Period.SECOND, order), i);
                     break;
                 case 2:
-                    fragment.addSubjects(db.getAverages(RegistroDB.Period.ALL), i);
+                    fragment.addSubjects(db.getAverages(RegistroDB.Period.ALL, order), i);
                     break;
             }
         }
