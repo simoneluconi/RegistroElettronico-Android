@@ -27,8 +27,8 @@ android {
         applicationId "com.sharpdroid.registroelettronico"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 460
-        versionName "2.0.60"
+        versionCode 461
+        versionName "2.0.61"
 
         vectorDrawables.useSupportLibrary = true;
     }
@@ -121,7 +121,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'com.android.support:support-v13:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
-    compile 'com.cocosw:bottomsheet:1.+@aar'
+    compile 'com.cocosw:bottomsheet:1.3.0@aar'
     compile 'com.afollestad.material-dialogs:core:0.9.3.0'
     compile 'com.heinrichreimersoftware:material-intro:1.6'
     compile 'com.jakewharton:butterknife:8.5.1'

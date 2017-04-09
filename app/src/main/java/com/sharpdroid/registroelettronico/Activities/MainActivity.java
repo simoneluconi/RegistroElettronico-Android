@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatActivity
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
                 settings.edit().putBoolean("primo_avvio", false).apply();
+                initDrawer();
                 init(null);
             } else {
                 settings.edit().putBoolean("primo_avvio", true).apply();
@@ -199,8 +200,7 @@ public class MainActivity extends AppCompatActivity
 
         // Programmatically start a fragment
         if (savedInstanceState == null) {
-            int drawer_to_open = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this)
-                    .getString("drawer_to_open", "0"));
+            int drawer_to_open = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getString("drawer_to_open", "0"));
 
             Bundle extras = getIntent().getExtras();
             if (extras != null) {
