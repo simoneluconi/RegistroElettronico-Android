@@ -80,6 +80,7 @@ public class SpiaggiariApiClient implements RESTfulAPIService {
             }
             return response;
         };
+        db.close();
 
         try {
             //Installa il supporto al TLS se non è presente

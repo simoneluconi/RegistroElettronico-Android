@@ -341,7 +341,7 @@ public class MainActivity extends AppCompatActivity
             db.removeProfile(profile.getEmail().getText());
             headerResult.clear();
             headerResult.setProfiles(db.getProfiles());
-            headerResult.addProfiles(new ProfileSettingDrawerItem());
+            headerResult.addProfiles(new ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true));
         }
         return false;
     }
