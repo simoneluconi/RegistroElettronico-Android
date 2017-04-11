@@ -119,8 +119,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        headerResult.setProfiles(db.getProfiles());
-        headerResult.addProfiles(new ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true));
+        if (db != null) {
+            headerResult.setProfiles(db.getProfiles());
+            headerResult.addProfiles(new ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true));
+        }
     }
 
     @Override
@@ -342,6 +344,13 @@ public class MainActivity extends AppCompatActivity
             headerResult.clear();
             headerResult.setProfiles(db.getProfiles());
             headerResult.addProfiles(new ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true));
+
+            if (db.getProfiles().size() > 0) {
+                PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", db.getProfiles().get(0).getEmail().getText()).apply();
+                headerResult.setActiveProfile(db.getProfile(), true);
+            } else {
+                startActivity(new Intent(this, LoginActivity.class));
+            }
         }
         return false;
     }

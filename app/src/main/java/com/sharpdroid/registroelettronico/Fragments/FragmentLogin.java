@@ -94,6 +94,9 @@ public class FragmentLogin extends SlideFragment {
         mButtonLogin.setEnabled(false);
         mButtonLogin.setText(R.string.caricamento);
 
+        String oldProfile = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("currentProfile", "");
+        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString("currentProfile", mEmail).apply();
+
         new SpiaggiariApiClient(mContext).postLogin(mEmail, mPassword, new DeviceUuidFactory(mContext).getDeviceUuid().toString())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(login -> {
@@ -103,10 +106,9 @@ public class FragmentLogin extends SlideFragment {
                     editor.putString("name", WordUtils.capitalizeFully(login.getName()).trim());
                     editor.apply();
 
-                    PreferenceManager.getDefaultSharedPreferences(mContext).edit().putString("currentProfile", mEmail).apply();
-
                     RegistroDB db = new RegistroDB(getContext());
                     db.addProfile(new ProfileDrawerItem().withName(WordUtils.capitalizeFully(login.getName())).withEmail(mEmail));
+                    db.close();
 
                     mButtonLogin.setText(R.string.login_riuscito);
                     Toast.makeText(mContext, R.string.login_msg, Toast.LENGTH_SHORT).show();
@@ -117,6 +119,8 @@ public class FragmentLogin extends SlideFragment {
                     error.printStackTrace();
                     mButtonLogin.setText(R.string.login);
                     Toast.makeText(mContext, R.string.login_msg_failer, Toast.LENGTH_SHORT).show();
+
+                    PreferenceManager.getDefaultSharedPreferences(mContext).edit().putString("currentProfile", oldProfile).apply();
 
                     mEditTextMail.setEnabled(true);
                     mEditTextPassword.setEnabled(true);
