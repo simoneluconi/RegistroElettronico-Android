@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity
     boolean needUpdate = true;
     boolean canOpenDrawer = true;
     ObjectAnimator anim;
-
+    AccountHeader headerResult;
     RegistroDB db;
 
     @Override
@@ -117,6 +117,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        headerResult.setProfiles(db.getProfiles());
+        headerResult.addProfiles(new ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true));
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
@@ -140,7 +147,7 @@ public class MainActivity extends AppCompatActivity
     private void initDrawer() {
         db = new RegistroDB(this);
         settings = getSharedPreferences("REGISTRO", MODE_PRIVATE);
-        AccountHeader headerResult = new AccountHeaderBuilder()
+        headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.side_nav_bar)
                 .withProfiles(db.getProfiles())
@@ -148,6 +155,7 @@ public class MainActivity extends AppCompatActivity
                 .withOnAccountHeaderItemLongClickListener(this)
                 .withOnAccountHeaderListener(this)
                 .build();
+        headerResult.setActiveProfile(db.getProfile());
 
         drawer = new DrawerBuilder()
                 .withActivity(this)
@@ -331,6 +339,9 @@ public class MainActivity extends AppCompatActivity
     public boolean onProfileLongClick(View view, IProfile profile, boolean current) {
         if (!(profile instanceof ProfileSettingDrawerItem)) {
             db.removeProfile(profile.getEmail().getText());
+            headerResult.clear();
+            headerResult.setProfiles(db.getProfiles());
+            headerResult.addProfiles(new ProfileSettingDrawerItem());
         }
         return false;
     }

@@ -2,10 +2,12 @@ package com.sharpdroid.registroelettronico.API;
 
 import android.content.Context;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.franmontiel.persistentcookiejar.persistence.CookiePersistor;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,8 +24,11 @@ public class SQLCookiePersistor implements CookiePersistor {
     public List<Cookie> loadAll() {
         String username = PreferenceManager.getDefaultSharedPreferences(mContext).getString("currentProfile", null);
         RegistroDB db = new RegistroDB(mContext);
-        List<Cookie> cookies = db.getCookies(username);
+        List<Cookie> cookies = new ArrayList<>();
+        if (username != null)
+            cookies.addAll(db.getCookies(username));
         db.close();
+        Log.i("COOKIEPERSISTOR", "Load cookie - " + username + cookies.toString());
         return cookies;
     }
 
@@ -33,6 +38,7 @@ public class SQLCookiePersistor implements CookiePersistor {
         RegistroDB db = new RegistroDB(mContext);
         if (username != null) {
             db.addCookies(username, cookies);
+            Log.i("COOKIEPERSISTOR", "Save cookie - " + username + cookies.toString());
         }
         db.close();
     }
@@ -40,14 +46,13 @@ public class SQLCookiePersistor implements CookiePersistor {
     @Override
     public void removeAll(Collection<Cookie> cookies) {
         RegistroDB db = new RegistroDB(mContext);
-        db.removeCookies(cookies);
+        //db.removeCookies(cookies);
         db.close();
+        Log.i("COOKIEPERSISTOR", "Remove - " + cookies.toString());
     }
 
     @Override
     public void clear() {
-        RegistroDB db = new RegistroDB(mContext);
-        db.removeCookies();
-        db.close();
+        Log.i("COOKIEPERSISTOR", "CLEAR");
     }
 }

@@ -1,6 +1,8 @@
 package com.sharpdroid.registroelettronico.Activities;
 
 import android.content.SharedPreferences;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +23,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
+import static com.sharpdroid.registroelettronico.Utils.Metodi.getThemeTextColorSecondary;
+
 public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.mail)
     TextInputEditText mEditTextMail;
@@ -28,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
     TextInputEditText mEditTextPassword;
     @BindView(R.id.login_btn)
     Button mButtonLogin;
-
+    RegistroDB db;
     private boolean loggedIn = false;
 
     @Override
@@ -37,8 +41,17 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_login);
         ButterKnife.bind(this);
 
-        mEditTextMail.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(this, R.drawable.ic_person), null, null, null);
-        mEditTextPassword.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(this, R.drawable.ic_password), null, null, null);
+        db = new RegistroDB(this);
+        Drawable p = AppCompatResources.getDrawable(this, R.drawable.ic_person);
+        Drawable l = AppCompatResources.getDrawable(this, R.drawable.ic_password);
+        if (p != null) {
+            p.setColorFilter(getThemeTextColorSecondary(this), PorterDuff.Mode.SRC_IN);
+        }
+        if (l != null) {
+            l.setColorFilter(getThemeTextColorSecondary(this), PorterDuff.Mode.SRC_IN);
+        }
+        mEditTextMail.setCompoundDrawablesWithIntrinsicBounds(p, null, null, null);
+        mEditTextPassword.setCompoundDrawablesWithIntrinsicBounds(l, null, null, null);
 
         mEditTextMail.setEnabled(!loggedIn);
         mEditTextPassword.setEnabled(!loggedIn);
@@ -72,8 +85,11 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putString("name", WordUtils.capitalizeFully(login.getName()).trim());
                     editor.apply();
 
-                    RegistroDB db = new RegistroDB(this);
-                    db.addProfile(new ProfileDrawerItem().withName(WordUtils.capitalizeFully(login.getName())).withEmail(mEmail));
+                    if (!db.isUserLogged(mEmail)) {
+                        RegistroDB db = new RegistroDB(this);
+                        db.addProfile(new ProfileDrawerItem().withName(WordUtils.capitalizeFully(login.getName())).withEmail(mEmail));
+                        db.close();
+                    }
 
                     mButtonLogin.setText(R.string.login_riuscito);
                     Toast.makeText(this, R.string.login_msg, Toast.LENGTH_SHORT).show();
@@ -88,5 +104,11 @@ public class LoginActivity extends AppCompatActivity {
                     mEditTextPassword.setEnabled(true);
                     mButtonLogin.setEnabled(true);
                 });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        db.close();
     }
 }

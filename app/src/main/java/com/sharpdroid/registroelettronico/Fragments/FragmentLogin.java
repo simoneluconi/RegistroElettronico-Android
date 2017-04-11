@@ -3,6 +3,7 @@ package com.sharpdroid.registroelettronico.Fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.content.res.AppCompatResources;
@@ -54,7 +55,7 @@ public class FragmentLogin extends SlideFragment {
                              Bundle savedInstanceState) {
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         mContext = getContext();
-        return inflater.inflate(R.layout.fragment_login, container, false);
+        return inflater.inflate(R.layout.fragment_login_light, container, false);
     }
 
     @Override
@@ -101,6 +102,8 @@ public class FragmentLogin extends SlideFragment {
                     SharedPreferences.Editor editor = settings.edit();
                     editor.putString("name", WordUtils.capitalizeFully(login.getName()).trim());
                     editor.apply();
+
+                    PreferenceManager.getDefaultSharedPreferences(mContext).edit().putString("currentProfile", mEmail).apply();
 
                     RegistroDB db = new RegistroDB(getContext());
                     db.addProfile(new ProfileDrawerItem().withName(WordUtils.capitalizeFully(login.getName())).withEmail(mEmail));
