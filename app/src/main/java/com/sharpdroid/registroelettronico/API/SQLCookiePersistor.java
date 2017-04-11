@@ -23,6 +23,7 @@ public class SQLCookiePersistor implements CookiePersistor {
         String username = PreferenceManager.getDefaultSharedPreferences(mContext).getString("currentProfile", null);
         RegistroDB db = new RegistroDB(mContext);
         List<Cookie> cookies = db.getCookies(username);
+        db.close();
         return cookies;
     }
 

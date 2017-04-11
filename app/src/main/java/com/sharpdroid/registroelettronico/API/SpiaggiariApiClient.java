@@ -2,13 +2,14 @@ package com.sharpdroid.registroelettronico.API;
 
 import android.content.Context;
 import android.content.Intent;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
-import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.google.android.gms.security.ProviderInstaller;
 import com.sharpdroid.registroelettronico.Activities.LoginActivity;
+import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absences;
 import com.sharpdroid.registroelettronico.Interfaces.API.Communication;
 import com.sharpdroid.registroelettronico.Interfaces.API.CommunicationDescription;
@@ -45,9 +46,8 @@ public class SpiaggiariApiClient implements RESTfulAPIService {
     private final RESTfulAPIService mService;
 
     public SpiaggiariApiClient(Context context) {
-        // TODO: 11/04/2017 USE SQLCookiePersistor
         CookieJar cookieJar =
-                new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
+                new PersistentCookieJar(new SetCookieCache(), new SQLCookiePersistor(context));
 
         int cacheSize = 10 * 1024 * 1024; // 10 MiB
         File cacheDir = context.getCacheDir();
@@ -67,12 +67,17 @@ public class SpiaggiariApiClient implements RESTfulAPIService {
                         .build();
             }
         };
-
+        RegistroDB db = new RegistroDB(context);
         Interceptor CHECK_LOGIN = chain -> {
             Request request = chain.request();
             okhttp3.Response response = chain.proceed(request);
             if (response.code() == 403) {
-                context.startActivity(new Intent(context, LoginActivity.class));
+                if (db.getOtherProfiles().size() > 0) {
+                    PreferenceManager.getDefaultSharedPreferences(context).edit().putString("currentProfile", db.getOtherProfiles().get(0).getEmail().toString()).apply();
+                    return chain.proceed(chain.request());
+                } else {
+                    context.startActivity(new Intent(context, LoginActivity.class));
+                }
             }
             return response;
         };

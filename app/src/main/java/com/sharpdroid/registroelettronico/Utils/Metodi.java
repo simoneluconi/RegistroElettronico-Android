@@ -9,9 +9,11 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.provider.CalendarContract;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
+import android.util.TypedValue;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariAPI;
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
@@ -555,6 +557,19 @@ public class Metodi {
 
     public static String createCookieKey(Cookie cookie) {
         return (cookie.secure() ? "https" : "http") + "://" + cookie.domain() + cookie.path() + "|" + cookie.name();
+    }
+
+    public static int getThemeTextColorSecondary(Context context) {
+        int colorAttr;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            colorAttr = android.R.attr.textColorSecondary;
+        } else {
+            //Get colorAccent defined for AppCompat
+            colorAttr = context.getResources().getIdentifier("textColorSecondary", "attr", context.getPackageName());
+        }
+        TypedValue outValue = new TypedValue();
+        context.getTheme().resolveAttribute(colorAttr, outValue, true);
+        return outValue.data;
     }
 }
 

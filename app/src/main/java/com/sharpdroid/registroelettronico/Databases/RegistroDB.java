@@ -5,8 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.preference.PreferenceManager;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.franmontiel.persistentcookiejar.persistence.SerializableCookie;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
@@ -62,7 +64,7 @@ public class RegistroDB extends SQLiteOpenHelper {
     private final static String marks[] = {
             "subject_code", "mark", "description", "date", "type", "period", "not_significant"
     };
-    private static int DB_VERSION = 3;
+    private static int DB_VERSION = 4;
     private Context mContext;
 
     public RegistroDB(Context c) {
@@ -693,6 +695,27 @@ public class RegistroDB extends SQLiteOpenHelper {
         c.close();
 
         return profiles;
+    }
+
+    public List<IProfile> getOtherProfiles() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM profiles WHERE username!=?", new String[]{PreferenceManager.getDefaultSharedPreferences(mContext).getString("currentProfile", "")});
+        List<IProfile> profiles = new ArrayList<>();
+
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            profiles.add(new ProfileDrawerItem().withName(c.getString(1)).withEmail(c.getString(2)).withNameShown(true).withIcon(AccountImage(c.getString(1))));
+        }
+
+        c.close();
+
+        return profiles;
+    }
+
+    public void removeProfile(String user) {
+        Log.d("RegistroDB", "Remove " + user);
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_PROFILES, "username=?", new String[]{user});
+        db.delete(TABLE_COOKIES, "username=?", new String[]{user});
     }
     //endregion
 

@@ -27,6 +27,7 @@ import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
 import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
@@ -49,7 +50,7 @@ import butterknife.ButterKnife;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.updateSubjects;
 
 public class MainActivity extends AppCompatActivity
-        implements Drawer.OnDrawerItemClickListener, AccountHeader.OnAccountHeaderListener {
+        implements Drawer.OnDrawerItemClickListener, AccountHeader.OnAccountHeaderListener, AccountHeader.OnAccountHeaderItemLongClickListener {
     @BindView(R.id.calendar)
     CompactCalendarView calendarView;
     @BindView(R.id.toolbar)
@@ -143,6 +144,8 @@ public class MainActivity extends AppCompatActivity
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.side_nav_bar)
                 .withProfiles(db.getProfiles())
+                .addProfiles(new ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true))
+                .withOnAccountHeaderItemLongClickListener(this)
                 .withOnAccountHeaderListener(this)
                 .build();
 
@@ -315,8 +318,20 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onProfileChanged(View view, IProfile profile, boolean current) {
-        Log.d("currentProfile", profile.getEmail().getText());
-        PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", profile.getEmail().getText()).apply();
+        if (profile instanceof ProfileSettingDrawerItem) {
+            startActivity(new Intent(this, LoginActivity.class));
+        } else {
+            Log.d("currentProfile", profile.getEmail().getText());
+            PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", profile.getEmail().getText()).apply();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onProfileLongClick(View view, IProfile profile, boolean current) {
+        if (!(profile instanceof ProfileSettingDrawerItem)) {
+            db.removeProfile(profile.getEmail().getText());
+        }
         return false;
     }
 }
