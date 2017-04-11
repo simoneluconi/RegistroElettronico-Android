@@ -64,7 +64,7 @@ public class RegistroDB extends SQLiteOpenHelper {
     private final static String marks[] = {
             "subject_code", "mark", "description", "date", "type", "period", "not_significant"
     };
-    private static int DB_VERSION = 4;
+    private static int DB_VERSION = 5;
     private Context mContext;
 
     public RegistroDB(Context c) {
@@ -156,7 +156,10 @@ public class RegistroDB extends SQLiteOpenHelper {
             db.execSQL("CREATE TABLE " + TABLE_COOKIES + "(" +
                     "username TEXT," +
                     "key TEXT," +
-                    "value TEXT)");
+                    "value TEXT UNIQUE)");
+        }
+        if (oldVersion < 5) {
+            db.execSQL("ALTER TABLE subjects ADD COLUMN user TEXT");
         }
     }
 
@@ -370,11 +373,11 @@ public class RegistroDB extends SQLiteOpenHelper {
             name = name.replace("...", "%");
             c = db.rawQuery("SELECT subjects.id, subjects.code, coalesce(subjects.name, subjects.original_name) AS name, subjects.target, subjects.classroom, subjects.notes, professors.teacher_code, professors.teacher_name FROM subjects " +
                     "LEFT JOIN lessons ON subjects.code=lessons.code " +
-                    "LEFT JOIN professors ON subjects.code = professors.subject_code WHERE " + subjects[2] + " LIKE ? OR " + subjects[3] + " LIKE ? GROUP BY professors.teacher_code", new String[]{name, name});
+                    "LEFT JOIN professors ON subjects.code = professors.subject_code WHERE (" + subjects[2] + " LIKE ? OR " + subjects[3] + " LIKE ?) AND subjects.user = ? GROUP BY professors.teacher_code", new String[]{name, name, currentProfile()});
         } else {
             c = db.rawQuery("SELECT subjects.id, subjects.code, coalesce(subjects.name, subjects.original_name) AS name, subjects.target, subjects.classroom, subjects.notes, professors.teacher_code, professors.teacher_name FROM subjects " +
                     "LEFT JOIN lessons ON subjects.code=lessons.code " +
-                    "LEFT JOIN professors ON subjects.code = professors.subject_code WHERE " + subjects[2] + " = ? OR " + subjects[3] + " = ? GROUP BY professors.teacher_code", new String[]{name, name});
+                    "LEFT JOIN professors ON subjects.code = professors.subject_code WHERE (" + subjects[2] + " = ? OR " + subjects[3] + " = ?) AND subjects.user = ? GROUP BY professors.teacher_code", new String[]{name, name, currentProfile()});
         }
 
         List<Integer> codes = new ArrayList<>();
@@ -396,7 +399,7 @@ public class RegistroDB extends SQLiteOpenHelper {
     public List<Subject> getSubjects() {
         List<Subject> subjects = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT code FROM subjects", null);
+        Cursor c = db.rawQuery("SELECT code FROM subjects WHERE user=?", new String[]{currentProfile()});
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             subjects.add(getSubject(c.getInt(0)));
@@ -416,11 +419,12 @@ public class RegistroDB extends SQLiteOpenHelper {
 
     public void addSubject(LessonSubject subject) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_SUBJECTS + " WHERE " + subjects[1] + " = ?", new String[]{String.valueOf(subject.getCode())});
+        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_SUBJECTS + " WHERE " + subjects[1] + " = ? AND user=?", new String[]{String.valueOf(subject.getCode()), currentProfile()});
         if (!c.moveToFirst()) {
             ContentValues contentValues = new ContentValues();
             contentValues.put(subjects[1], subject.getCode());
             contentValues.put(subjects[2], subject.getName().toLowerCase());
+            contentValues.put("user", currentProfile());
             db.insert(TABLE_SUBJECTS, null, contentValues);
         }
         c.close();
@@ -432,8 +436,9 @@ public class RegistroDB extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         Cursor c = db.rawQuery("SELECT professors.teacher_name, lessons.date, lessons.content FROM lessons " +
                 "LEFT JOIN professors ON lessons.teacher_code=professors.teacher_code AND lessons.code=professors.subject_code " +
-                "WHERE lessons.code = ? " +
-                "ORDER BY date DESC", new String[]{String.valueOf(code)});
+                "LEFT JOIN subjects ON lessons.code=subjects.code " +
+                "WHERE lessons.code = ? AND subjects.user=? " +
+                "ORDER BY date DESC", new String[]{String.valueOf(code), currentProfile()});
         List<Lesson> lessons = new LinkedList<>();
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             lessons.add(new Lesson(c.getString(0), new Date(c.getLong(1)), c.getString(2)));
@@ -446,9 +451,10 @@ public class RegistroDB extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         Cursor c = db.rawQuery("SELECT professors.teacher_name, lessons.date, lessons.content FROM lessons " +
                 "LEFT JOIN professors ON lessons.teacher_code=professors.teacher_code AND lessons.code=professors.subject_code " +
-                "WHERE lessons.code = ? " +
+                "LEFT JOIN subjects ON lessons.code=subjects.code " +
+                "WHERE lessons.code = ? AND subjects.user=? " +
                 "ORDER BY date DESC " +
-                "LIMIT " + limit, new String[]{String.valueOf(code)});
+                "LIMIT " + limit, new String[]{String.valueOf(code), currentProfile()});
 
         List<Lesson> lessons = new LinkedList<>();
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
@@ -520,7 +526,10 @@ public class RegistroDB extends SQLiteOpenHelper {
         List<Pair<Integer, String>> names = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
 
-        Cursor c = db.rawQuery("SELECT professors.teacher_code, professors.teacher_name FROM professors ORDER BY professors.teacher_name ASC", null);
+        Cursor c = db.rawQuery("SELECT professors.teacher_code, professors.teacher_name FROM professors " +
+                "LEFT JOIN subjects ON professors.subject_code=subjects.code " +
+                "WHERE subjects.user=? " +
+                "ORDER BY professors.teacher_name ASC", new String[]{currentProfile()});
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             names.add(Pair.create(c.getInt(0), c.getString(1)));
         }
@@ -543,14 +552,6 @@ public class RegistroDB extends SQLiteOpenHelper {
 
         c.close();
         return s.toLowerCase();
-    }
-
-    public boolean isProfessorOfSubject(String subject, String prof) {
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM professors WHERE professors.subject_code=? AND professors.teacher_code=?", new String[]{subject, prof});
-        boolean b = c.moveToFirst();
-        c.close();
-        return b;
     }
 
     public String getProfessorName(String teacher_id) {
@@ -699,7 +700,7 @@ public class RegistroDB extends SQLiteOpenHelper {
 
     public List<IProfile> getOtherProfiles() {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM profiles WHERE username!=?", new String[]{PreferenceManager.getDefaultSharedPreferences(mContext).getString("currentProfile", "")});
+        Cursor c = db.rawQuery("SELECT * FROM profiles WHERE username!=?", new String[]{currentProfile()});
         List<IProfile> profiles = new ArrayList<>();
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
@@ -728,7 +729,7 @@ public class RegistroDB extends SQLiteOpenHelper {
 
     public IProfile getProfile() {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM profiles WHERE username=?", new String[]{PreferenceManager.getDefaultSharedPreferences(mContext).getString("currentProfile", "")});
+        Cursor c = db.rawQuery("SELECT * FROM profiles WHERE username=?", new String[]{currentProfile()});
         ProfileDrawerItem iProfile = new ProfileDrawerItem();
         if (c.moveToFirst()) {
             iProfile.withName(c.getString(1)).withEmail(c.getString(2)).withNameShown(true).withIcon(AccountImage(c.getString(1)));
@@ -777,7 +778,12 @@ public class RegistroDB extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE_COOKIES, null, null);
     }
+
     //endregion
+
+    private String currentProfile() {
+        return PreferenceManager.getDefaultSharedPreferences(mContext).getString("currentProfile", "");
+    }
 
     public enum Period {
         FIRST("q1"),

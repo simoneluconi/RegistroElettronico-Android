@@ -77,6 +77,7 @@ public class LoginActivity extends AppCompatActivity {
         mButtonLogin.setEnabled(false);
         mButtonLogin.setText(R.string.caricamento);
 
+        String oldProfile = PreferenceManager.getDefaultSharedPreferences(this).getString("currentProfile", "");
         PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", mEmail).apply();
 
         new SpiaggiariApiClient(this).postLogin(mEmail, mPassword, new DeviceUuidFactory(this).getDeviceUuid().toString())
@@ -102,6 +103,7 @@ public class LoginActivity extends AppCompatActivity {
                     error.printStackTrace();
                     mButtonLogin.setText(R.string.login);
                     Toast.makeText(this, R.string.login_msg_failer, Toast.LENGTH_SHORT).show();
+                    PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", oldProfile).apply();
 
                     mEditTextMail.setEnabled(true);
                     mEditTextPassword.setEnabled(true);
