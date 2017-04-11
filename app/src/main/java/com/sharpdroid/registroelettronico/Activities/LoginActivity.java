@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.content.res.AppCompatResources;
@@ -75,6 +76,8 @@ public class LoginActivity extends AppCompatActivity {
         mEditTextPassword.setEnabled(false);
         mButtonLogin.setEnabled(false);
         mButtonLogin.setText(R.string.caricamento);
+
+        PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", mEmail).apply();
 
         new SpiaggiariApiClient(this).postLogin(mEmail, mPassword, new DeviceUuidFactory(this).getDeviceUuid().toString())
                 .observeOn(AndroidSchedulers.mainThread())
