@@ -83,7 +83,6 @@ public class MainActivity extends AppCompatActivity
             // first time task
             startActivityForResult(new Intent(this, Intro.class), 1);
         } else {
-            initDrawer();
             init(savedInstanceState);
         }
 
@@ -121,7 +120,6 @@ public class MainActivity extends AppCompatActivity
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
                 settings.edit().putBoolean("primo_avvio", false).apply();
-                initDrawer();
                 init(null);
             } else {
                 settings.edit().putBoolean("primo_avvio", true).apply();
@@ -193,6 +191,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void init(Bundle savedInstanceState) {
+        initDrawer();
+
         if (needUpdate) {
             updateSubjects(this);
             needUpdate = false;
