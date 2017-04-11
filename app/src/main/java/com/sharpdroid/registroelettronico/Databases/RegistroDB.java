@@ -717,21 +717,34 @@ public class RegistroDB extends SQLiteOpenHelper {
         db.delete(TABLE_PROFILES, "username=?", new String[]{user});
         db.delete(TABLE_COOKIES, "username=?", new String[]{user});
     }
+
+    public boolean isUserLogged(String user) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM profiles WHERE username=?", new String[]{user});
+        boolean logged = c.moveToFirst();
+        c.close();
+        return logged;
+    }
+
+    public IProfile getProfile() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM profiles WHERE username=?", new String[]{PreferenceManager.getDefaultSharedPreferences(mContext).getString("currentProfile", "")});
+        ProfileDrawerItem iProfile = new ProfileDrawerItem();
+        if (c.moveToFirst()) {
+            iProfile.withName(c.getString(1)).withEmail(c.getString(2)).withNameShown(true).withIcon(AccountImage(c.getString(1)));
+        }
+        c.close();
+        return iProfile;
+    }
     //endregion
 
     //region COOKIES
     public void addCookies(String username, Collection<Cookie> cookies) {
         SQLiteDatabase db = getWritableDatabase();
         db.beginTransaction();
-
-        ContentValues cv = new ContentValues();
-
         for (Cookie c : cookies) {
-            cv.put("username", username);
-            cv.put("key", createCookieKey(c));
-            cv.put("value", new SerializableCookie().encode(c));
-            db.insert(TABLE_COOKIES, null, cv);
-            cv.clear();
+            db.execSQL("INSERT OR REPLACE INTO cookies (username, key, value)" +
+                    "VALUES (?, ?, COALESCE((SELECT value FROM cookies WHERE username=? AND key=?),?))", new String[]{username, createCookieKey(c), username, createCookieKey(c), new SerializableCookie().encode(c)});
         }
 
         db.setTransactionSuccessful();

@@ -48,7 +48,6 @@ public class SpiaggiariApiClient implements RESTfulAPIService {
     public SpiaggiariApiClient(Context context) {
         CookieJar cookieJar =
                 new PersistentCookieJar(new SetCookieCache(), new SQLCookiePersistor(context));
-
         int cacheSize = 10 * 1024 * 1024; // 10 MiB
         File cacheDir = context.getCacheDir();
         Cache cache = new Cache(cacheDir, cacheSize);
@@ -74,7 +73,7 @@ public class SpiaggiariApiClient implements RESTfulAPIService {
             if (response.code() == 403) {
                 if (db.getOtherProfiles().size() > 0) {
                     PreferenceManager.getDefaultSharedPreferences(context).edit().putString("currentProfile", db.getOtherProfiles().get(0).getEmail().toString()).apply();
-                    return chain.proceed(chain.request());
+                    return response.newBuilder().build();
                 } else {
                     context.startActivity(new Intent(context, LoginActivity.class));
                 }
