@@ -29,6 +29,7 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Fragments.FragmentAgenda;
 import com.sharpdroid.registroelettronico.Fragments.FragmentAllAbsences;
@@ -48,7 +49,7 @@ import butterknife.ButterKnife;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.updateSubjects;
 
 public class MainActivity extends AppCompatActivity
-        implements Drawer.OnDrawerItemClickListener {
+        implements Drawer.OnDrawerItemClickListener, AccountHeader.OnAccountHeaderListener {
     @BindView(R.id.calendar)
     CompactCalendarView calendarView;
     @BindView(R.id.toolbar)
@@ -142,6 +143,7 @@ public class MainActivity extends AppCompatActivity
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.side_nav_bar)
                 .withProfiles(db.getProfiles())
+                .withOnAccountHeaderListener(this)
                 .build();
 
         drawer = new DrawerBuilder()
@@ -244,7 +246,6 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-        Log.w("DRAWER", "onClick position-" + position);
         clearBackstack();
         Fragment fragment;
         int id = (int) drawerItem.getIdentifier();
@@ -310,5 +311,12 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         db.close();
+    }
+
+    @Override
+    public boolean onProfileChanged(View view, IProfile profile, boolean current) {
+        Log.d("currentProfile", profile.getEmail().getText());
+        PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", profile.getEmail().getText()).apply();
+        return false;
     }
 }

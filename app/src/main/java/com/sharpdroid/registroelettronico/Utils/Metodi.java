@@ -54,6 +54,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import okhttp3.Cookie;
 import okhttp3.Headers;
 import okhttp3.ResponseBody;
 
@@ -550,6 +551,10 @@ public class Metodi {
         float height = (src.getHeight() / 2) + 33;
         cs.drawText(nomef, x_coord, height, tPaint);
         return src;
+    }
+
+    public static String createCookieKey(Cookie cookie) {
+        return (cookie.secure() ? "https" : "http") + "://" + cookie.domain() + cookie.path() + "|" + cookie.name();
     }
 }
 
