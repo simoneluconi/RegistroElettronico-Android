@@ -45,6 +45,7 @@ public class SpiaggiariApiClient implements RESTfulAPIService {
     private final RESTfulAPIService mService;
 
     public SpiaggiariApiClient(Context context) {
+        // TODO: 11/04/2017 USE SQLCookiePersistor
         CookieJar cookieJar =
                 new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
 

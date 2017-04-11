@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
 
+import com.franmontiel.persistentcookiejar.persistence.SerializableCookie;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.sharpdroid.registroelettronico.Interfaces.API.Event;
@@ -21,12 +22,16 @@ import com.sharpdroid.registroelettronico.Interfaces.Client.LocalEvent;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import okhttp3.Cookie;
+
 import static com.sharpdroid.registroelettronico.Utils.Metodi.AccountImage;
+import static com.sharpdroid.registroelettronico.Utils.Metodi.createCookieKey;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.toLowerCase;
 
 public class RegistroDB extends SQLiteOpenHelper {
@@ -40,6 +45,7 @@ public class RegistroDB extends SQLiteOpenHelper {
     private final static String TABLE_PROFESSORS = "professors";
     private final static String TABLE_MARKS = "marks";
     private final static String TABLE_PROFILES = "profiles";
+    private final static String TABLE_COOKIES = "cookies";
     private final static String subjects[] = {"id", "code", "original_name", "name", "target", "classroom", "notes"};
     private final static String lessons[] = {subjects[1], "teacher_code", "date", "content"};
     private final static String columns[] = {
@@ -57,9 +63,11 @@ public class RegistroDB extends SQLiteOpenHelper {
             "subject_code", "mark", "description", "date", "type", "period", "not_significant"
     };
     private static int DB_VERSION = 3;
+    private Context mContext;
 
     public RegistroDB(Context c) {
         super(c, DB_NAME, null, DB_VERSION);
+        mContext = c;
     }
 
     @Override
@@ -141,6 +149,12 @@ public class RegistroDB extends SQLiteOpenHelper {
                     "name TEXT," +
                     "username TEXT," +
                     "cookie TEXT)");
+        }
+        if (oldVersion < 4) {
+            db.execSQL("CREATE TABLE " + TABLE_COOKIES + "(" +
+                    "username TEXT," +
+                    "key TEXT," +
+                    "value TEXT)");
         }
     }
 
@@ -679,6 +693,53 @@ public class RegistroDB extends SQLiteOpenHelper {
         c.close();
 
         return profiles;
+    }
+    //endregion
+
+    //region COOKIES
+    public void addCookies(String username, Collection<Cookie> cookies) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+
+        ContentValues cv = new ContentValues();
+
+        for (Cookie c : cookies) {
+            cv.put("username", username);
+            cv.put("key", createCookieKey(c));
+            cv.put("value", new SerializableCookie().encode(c));
+            db.insert(TABLE_COOKIES, null, cv);
+            cv.clear();
+        }
+
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+    public List<Cookie> getCookies(String username) {
+        SQLiteDatabase db = getReadableDatabase();
+        List<Cookie> cookies = new ArrayList<>();
+        Cursor c = db.rawQuery("SELECT value FROM " + TABLE_COOKIES + " WHERE username=?", new String[]{username});
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            cookies.add(new SerializableCookie().decode(c.getString(0)));
+        }
+        c.close();
+        return cookies;
+    }
+
+    public void removeCookies(Collection<Cookie> cookies) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+
+        for (Cookie c : cookies)
+            db.delete(TABLE_COOKIES, "key = ? AND value = ?", new String[]{createCookieKey(c), new SerializableCookie().encode(c)});
+
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+    public void removeCookies() {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_COOKIES, null, null);
     }
     //endregion
 
