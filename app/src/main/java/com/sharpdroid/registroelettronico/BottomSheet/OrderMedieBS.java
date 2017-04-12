@@ -27,8 +27,16 @@ import com.sharpdroid.registroelettronico.R;
  */
 public class OrderMedieBS extends BottomSheetDialogFragment {
 
-    String[] texts = {"Nome", "Media"};
-    int[] images = {R.drawable.ic_title, R.drawable.ic_timeline};
+    String[] texts = {
+            getString(R.string.nome_bs),
+            getString(R.string.media_desc_bs),
+            getString(R.string.media_asc_bs)
+    };
+    int[] images = {
+            R.drawable.ic_title,
+            R.drawable.ic_timeline,
+            R.drawable.ic_timeline
+    };
     private OrderListener mListener;
 
     @Nullable
@@ -42,7 +50,7 @@ public class OrderMedieBS extends BottomSheetDialogFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new ItemAdapter(2));
+        recyclerView.setAdapter(new ItemAdapter(3));
     }
 
     @Override
@@ -84,7 +92,6 @@ public class OrderMedieBS extends BottomSheetDialogFragment {
                 }
             });
         }
-
     }
 
     private class ItemAdapter extends RecyclerView.Adapter<ViewHolder> {

@@ -129,6 +129,9 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
             case 1:
                 PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString("order", "ORDER BY _avg DESC").apply();
                 break;
+            case 2:
+                PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString("order", "ORDER BY _avg ASC").apply();
+                break;
         }
         bindMarksSubjectsCache();
     }
