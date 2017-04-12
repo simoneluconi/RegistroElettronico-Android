@@ -244,7 +244,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
 
     @Override
     public void onAgendaItemClicked(AdvancedEvent e, int p) {
-        AgendaBS bottomSheetAgenda = AgendaBS.newInstance();
+        AgendaBS bottomSheetAgenda = new AgendaBS();
         bottomSheetAgenda.setEvent(e);
         bottomSheetAgenda.show(getChildFragmentManager(), "dialog");
     }
