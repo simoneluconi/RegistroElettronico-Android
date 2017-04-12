@@ -12,6 +12,8 @@ import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageButton;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -29,6 +31,8 @@ import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
 import com.sharpdroid.registroelettronico.Interfaces.Client.AdvancedEvent;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.R;
+import com.transitionseverywhere.AutoTransition;
+import com.transitionseverywhere.TransitionManager;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.text.SimpleDateFormat;
@@ -57,7 +61,7 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
 
     PopupMenu menu;
     MarkAdapter adapter;
-
+    boolean showChart;
     List<AdvancedEvent> events;
 
     public MarksView(Context context) {
@@ -140,6 +144,7 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
 
     public void addAll(List<Mark> marks) {
         adapter.addAll(marks);
+        showChart = marks.size() > 1;
         setChart(marks);
     }
 
@@ -255,11 +260,11 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        if (item.getItemId() == R.id.show) {
+        if (item.getItemId() == R.id.show && showChart) {
             item.setChecked(!item.isChecked());
             PreferenceManager.getDefaultSharedPreferences(mContext).edit().putBoolean("show_chart", item.isChecked()).apply();
-            if (item.isChecked()) lineChartView.setVisibility(VISIBLE);
-            else lineChartView.setVisibility(GONE);
+            TransitionManager.beginDelayedTransition((ViewGroup) getRootView(), new AutoTransition().setInterpolator(new DecelerateInterpolator(1.2f)).setDuration(300));
+            lineChartView.setVisibility((item.isChecked()) ? VISIBLE : GONE);
         }
         return true;
     }

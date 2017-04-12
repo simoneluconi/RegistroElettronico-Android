@@ -257,7 +257,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     private void setMarks(List<Mark> marks) {
         marksView.setSubject(subject, media.containsValidMarks() ? media.getMediaGenerale() : 0);
         marksView.addAll(marks);
-        marksView.setShowChart(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("show_chart", true));
+        marksView.setShowChart(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("show_chart", true) && marks.size() > 1);
     }
 
     @Override
