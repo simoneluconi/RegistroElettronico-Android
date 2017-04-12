@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -50,8 +49,6 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
      **/
     TabLayout tabLayout;
 
-    @BindView(R.id.coordinator_layout)
-    CoordinatorLayout mCoordinatorLayout;
     @BindView(R.id.swiperefresh)
     CSwipeRefreshLayout mCSwipeRefreshLayout;
     @BindView(R.id.view_pager)
@@ -144,7 +141,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(marks -> {
                         mCSwipeRefreshLayout.setRefreshing(false);
-                        Snackbar.make(mCoordinatorLayout, getSnackBarMessage(mViewPager.getCurrentItem()), Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(tabLayout, getSnackBarMessage(mViewPager.getCurrentItem()), Snackbar.LENGTH_LONG).show();
                         db.addMarks(marks);
                         bindMarksSubjectsCache();
                     }, Throwable::printStackTrace);
