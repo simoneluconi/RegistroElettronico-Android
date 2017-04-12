@@ -141,9 +141,9 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(marks -> {
                         mCSwipeRefreshLayout.setRefreshing(false);
-                        Snackbar.make(tabLayout, getSnackBarMessage(mViewPager.getCurrentItem()), Snackbar.LENGTH_LONG).show();
                         db.addMarks(marks);
                         bindMarksSubjectsCache();
+                        Snackbar.make(tabLayout, getSnackBarMessage(mViewPager.getCurrentItem()), Snackbar.LENGTH_LONG).show();
                     }, Throwable::printStackTrace);
     }
 
