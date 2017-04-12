@@ -36,6 +36,7 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/divider"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
     <TextView
         android:id="@+id/notes"
         android:layout_width="match_parent"
