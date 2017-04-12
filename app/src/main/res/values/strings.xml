@@ -123,5 +123,8 @@
     <string name="ordina">Ordina</string>
     <string name="media">Media</string>
     <string name="nome">Nome</string>
+    <string name="nome_bs">Nome</string>
+    <string name="media_desc_bs">Media - Discendente</string>
+    <string name="media_asc_bs">Media - Ascendente</string>
 
 </resources>
