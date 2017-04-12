@@ -34,18 +34,18 @@ public class AgendaBS extends BottomSheetDialogFragment {
     private Listener mListener;
     private AdvancedEvent event;
 
+    private final int texts[] = {
+            R.string.condividi_bs,
+            R.string.inserisci_calendario_bs,
+            R.string.copia_bs,
+            R.string.archivia_bs
+    };
+
     private final int icons[] = {
             R.drawable.agenda_bsheet_share,
             R.drawable.agenda_bsheet_calendar,
             R.drawable.agenda_bsheet_copy,
             R.drawable.agenda_bsheet_archive
-    };
-
-    private final String texts[] = {
-            getString(R.string.condividi_bs),
-            getString(R.string.inserisci_calendario_bs),
-            getString(R.string.copia_bs),
-            getString(R.string.archivia_bs)
     };
 
     public void setEvent(AdvancedEvent event) {
@@ -116,7 +116,7 @@ public class AgendaBS extends BottomSheetDialogFragment {
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             if (position != 0) {
-                holder.text.setText(texts[position - 1]);
+                holder.text.setText(getString(texts[position - 1]));
                 holder.text.setTextColor(Color.BLACK);
                 holder.image.setImageResource(icons[position - 1]);
             } else {

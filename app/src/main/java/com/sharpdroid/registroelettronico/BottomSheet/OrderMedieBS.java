@@ -28,10 +28,10 @@ import com.sharpdroid.registroelettronico.R;
 public class OrderMedieBS extends BottomSheetDialogFragment {
     private OrderListener mListener;
 
-    private final String[] texts = {
-            getString(R.string.nome_bs),
-            getString(R.string.media_desc_bs),
-            getString(R.string.media_asc_bs)
+    private final int[] texts = {
+            R.string.nome_bs,
+            R.string.media_desc_bs,
+            R.string.media_asc_bs
     };
 
     private final int[] images = {
@@ -110,7 +110,7 @@ public class OrderMedieBS extends BottomSheetDialogFragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.text.setText(texts[position]);
+            holder.text.setText(getString(texts[position]));
             holder.image.setImageResource(images[position]);
         }
 
