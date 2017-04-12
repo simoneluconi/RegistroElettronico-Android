@@ -30,26 +30,26 @@ import butterknife.ButterKnife;
  * <p>You activity (or fragment) needs to implement {@link AgendaBS.Listener}.</p>
  */
 public class AgendaBS extends BottomSheetDialogFragment {
-
     private static final int mItemCount = 5;
-    private static final int icons[] = {R.drawable.agenda_bsheet_share, R.drawable.agenda_bsheet_calendar, R.drawable.agenda_bsheet_copy, R.drawable.agenda_bsheet_archive};
-    private static final String texts[] = {"Condividi", "Inserisci nel calendario", "Copia", "Archivia"};
-
-
-    private static final String ARG_ITEM_COUNT = "item_count";
     private Listener mListener;
     private AdvancedEvent event;
 
-    public static AgendaBS newInstance(/*int itemCount*/) {
-        final AgendaBS fragment = new AgendaBS();
-        final Bundle args = new Bundle();
-        //args.putInt(ARG_ITEM_COUNT, itemCount);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private final int icons[] = {
+            R.drawable.agenda_bsheet_share,
+            R.drawable.agenda_bsheet_calendar,
+            R.drawable.agenda_bsheet_copy,
+            R.drawable.agenda_bsheet_archive
+    };
 
-    public void setEvent(AdvancedEvent e) {
-        event = e;
+    private final String texts[] = {
+            getString(R.string.condividi_bs),
+            getString(R.string.inserisci_calendario_bs),
+            getString(R.string.copia_bs),
+            getString(R.string.archivia_bs)
+    };
+
+    public void setEvent(AdvancedEvent event) {
+        this.event = event;
     }
 
     @Nullable
@@ -105,14 +105,9 @@ public class AgendaBS extends BottomSheetDialogFragment {
                 }
             });
         }
-
     }
 
     private class ItemAdapter extends RecyclerView.Adapter<ViewHolder> {
-
-        ItemAdapter() {
-        }
-
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_item_agenda_options, parent, false));
@@ -137,5 +132,4 @@ public class AgendaBS extends BottomSheetDialogFragment {
         }
 
     }
-
 }
