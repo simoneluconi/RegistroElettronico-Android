@@ -69,6 +69,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     int p;
     RegistroDB.Period period;
     String name;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
