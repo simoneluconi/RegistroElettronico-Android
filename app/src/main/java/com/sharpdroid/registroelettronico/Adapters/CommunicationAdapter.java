@@ -8,10 +8,12 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filterable;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -37,17 +39,19 @@ import okhttp3.Headers;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getFileNamefromHeaders;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.writeResponseBodyToDisk;
 
-public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdapter.CommunicationHolder> {
+public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdapter.CommunicationHolder> implements Filterable {
     private static final String TAG = CommunicationAdapter.class.getSimpleName();
-
     private final List<Communication> CVDataList;
+    private final List<Communication> filtered;
     private final Context mContext;
     private final CoordinatorLayout mCoordinatorLayout;
     private final SimpleDateFormat formatter = new SimpleDateFormat("d MMM", Locale.ITALIAN);
+    private Filter mFilter;
     private CommunicationsDB db;
 
     public CommunicationAdapter(Context mContext, CoordinatorLayout mCoordinatorLayout, CommunicationsDB db) {
         this.CVDataList = new CopyOnWriteArrayList<>();
+        filtered = new CopyOnWriteArrayList<>();
         this.mContext = mContext;
         this.mCoordinatorLayout = mCoordinatorLayout;
         this.db = db;
@@ -55,11 +59,13 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
 
     public void addAll(Collection<Communication> list) {
         CVDataList.addAll(list);
+        filtered.addAll(list);
         notifyDataSetChanged();
     }
 
     public void clear() {
         CVDataList.clear();
+        filtered.clear();
         notifyDataSetChanged();
     }
 
@@ -72,7 +78,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
 
     @Override
     public void onBindViewHolder(CommunicationHolder ViewHolder, int i) {
-        final Communication communication = CVDataList.get(ViewHolder.getAdapterPosition());
+        final Communication communication = filtered.get(ViewHolder.getAdapterPosition());
 
         ViewHolder.Title.setText(communication.getTitle().trim());
         ViewHolder.Date.setText(formatter.format(communication.getDate()));
@@ -128,7 +134,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
 
     @Override
     public int getItemCount() {
-        return CVDataList.size();
+        return filtered.size();
     }
 
     private void askfileopen(File file, Snackbar DownloadProgressSnak) {
@@ -171,6 +177,12 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
 
     }
 
+    @Override
+    public Filter getFilter() {
+        if (mFilter == null) mFilter = new Filter();
+        return mFilter;
+    }
+
     class CommunicationHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.relative_layout)
         RelativeLayout mRelativeLayout;
@@ -184,6 +196,34 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
         CommunicationHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+        }
+    }
+
+    public class Filter extends android.widget.Filter {
+
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            FilterResults results = new FilterResults();
+            filtered.clear();
+            if (!TextUtils.isEmpty(constraint)) {
+                for (Communication c : CVDataList) {
+                    if (c.getTitle().toLowerCase().contains(constraint.toString().toLowerCase()))
+                        filtered.add(c);
+                }
+                results.values = filtered;
+                results.count = filtered.size();
+            } else {
+                results.values = CVDataList;
+                results.count = CVDataList.size();
+            }
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            filtered.clear();
+            filtered.addAll((Collection<? extends Communication>) results.values);
+            notifyDataSetChanged();
         }
     }
 }
