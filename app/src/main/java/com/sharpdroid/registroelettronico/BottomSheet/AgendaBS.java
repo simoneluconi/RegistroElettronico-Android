@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -125,7 +126,7 @@ public class AgendaBS extends BottomSheetDialogFragment {
                 holder.image.setImageResource(icons[position - 1]);
             } else {
                 holder.text.setText(event.isCompleted() ? "Non completato" : "Completato");
-                holder.text.setTextColor(getResources().getColor(R.color.intro_blue_dark));
+                holder.text.setTextColor(ContextCompat.getColor(getContext(), R.color.intro_blue_dark));
                 holder.image.setImageResource(event.isCompleted() ? R.drawable.agenda_uncomplete : R.drawable.agenda_complete);
             }
         }

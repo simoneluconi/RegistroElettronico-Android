@@ -31,11 +31,6 @@ public class OrderMedieBS extends BottomSheetDialogFragment {
     int[] images = {R.drawable.ic_title, R.drawable.ic_timeline};
     private OrderListener mListener;
 
-    public static OrderMedieBS newInstance() {
-        final OrderMedieBS fragment = new OrderMedieBS();
-        return fragment;
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,

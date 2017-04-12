@@ -115,7 +115,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.sort) {
-            OrderMedieBS.newInstance().show(getChildFragmentManager(), "dialog");
+            new OrderMedieBS().show(getChildFragmentManager(), "dialog");
         }
         return super.onOptionsItemSelected(item);
     }
