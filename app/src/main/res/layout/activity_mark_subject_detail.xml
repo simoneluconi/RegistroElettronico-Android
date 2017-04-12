@@ -23,7 +23,6 @@
             android:id="@+id/activity_mark_subject_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
             android:orientation="vertical">
 
             <com.sharpdroid.registroelettronico.Views.SubjectDetails.InfoView
