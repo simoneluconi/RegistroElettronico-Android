@@ -30,8 +30,8 @@ public class OrderMedieBS extends BottomSheetDialogFragment {
 
     private final int[] texts = {
             R.string.nome_bs,
-            R.string.media_desc_bs,
-            R.string.media_asc_bs
+            R.string.media_dec_bs,
+            R.string.media_cre_bs
     };
 
     private final int[] images = {

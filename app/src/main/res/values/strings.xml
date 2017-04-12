@@ -124,8 +124,8 @@
     <string name="media">Media</string>
     <string name="nome">Nome</string>
     <string name="nome_bs">Nome</string>
-    <string name="media_desc_bs">Media - Discendente</string>
-    <string name="media_asc_bs">Media - Ascendente</string>
+    <string name="media_dec_bs">Media - Decrescente</string>
+    <string name="media_cre_bs">Media - Crescente</string>
     <string name="condividi_bs">Condividi</string>
     <string name="inserisci_calendario_bs">Inserisci nel calendario</string>
     <string name="copia_bs">Copia</string>
