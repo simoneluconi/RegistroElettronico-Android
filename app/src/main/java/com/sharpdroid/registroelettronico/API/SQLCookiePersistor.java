@@ -2,7 +2,6 @@ package com.sharpdroid.registroelettronico.API;
 
 import android.content.Context;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.franmontiel.persistentcookiejar.persistence.CookiePersistor;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
@@ -13,10 +12,10 @@ import java.util.List;
 
 import okhttp3.Cookie;
 
-public class SQLCookiePersistor implements CookiePersistor {
+class SQLCookiePersistor implements CookiePersistor {
     private final Context mContext;
 
-    public SQLCookiePersistor(Context context) {
+    SQLCookiePersistor(Context context) {
         mContext = context;
     }
 
@@ -28,7 +27,6 @@ public class SQLCookiePersistor implements CookiePersistor {
         if (username != null)
             cookies.addAll(db.getCookies(username));
         db.close();
-        Log.i("COOKIEPERSISTOR", "Load cookie - " + username + cookies.toString());
         return cookies;
     }
 
@@ -38,7 +36,6 @@ public class SQLCookiePersistor implements CookiePersistor {
         RegistroDB db = new RegistroDB(mContext);
         if (username != null) {
             db.addCookies(username, cookies);
-            Log.i("COOKIEPERSISTOR", "Save cookie - " + username + cookies.toString());
         }
         db.close();
     }
@@ -48,11 +45,12 @@ public class SQLCookiePersistor implements CookiePersistor {
         RegistroDB db = new RegistroDB(mContext);
         //db.removeCookies(cookies);
         db.close();
-        Log.i("COOKIEPERSISTOR", "Remove - " + cookies.toString());
     }
 
     @Override
     public void clear() {
-        Log.i("COOKIEPERSISTOR", "CLEAR");
+        RegistroDB db = new RegistroDB(mContext);
+        //db.removeCookies();
+        db.close();
     }
 }
