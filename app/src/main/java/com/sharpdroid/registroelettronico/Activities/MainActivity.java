@@ -21,6 +21,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
@@ -340,17 +341,19 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onProfileLongClick(View view, IProfile profile, boolean current) {
         if (!(profile instanceof ProfileSettingDrawerItem)) {
-            db.removeProfile(profile.getEmail().getText());
-            headerResult.clear();
-            headerResult.setProfiles(db.getProfiles());
-            headerResult.addProfiles(new ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true));
+            new MaterialDialog.Builder(this).title("Eliminare il profilo?").content("Continuare con l'eliminazione di " + profile.getEmail().getText() + " ?").positiveText("SI").negativeText("NO").onPositive((dialog, which) -> {
+                db.removeProfile(profile.getEmail().getText());
+                headerResult.clear();
+                headerResult.setProfiles(db.getProfiles());
+                headerResult.addProfiles(new ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true));
 
-            if (db.getProfiles().size() > 0) {
-                PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", db.getProfiles().get(0).getEmail().getText()).apply();
-                headerResult.setActiveProfile(db.getProfile(), true);
-            } else {
-                startActivity(new Intent(this, LoginActivity.class));
-            }
+                if (db.getProfiles().size() > 0) {
+                    PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", db.getProfiles().get(0).getEmail().getText()).apply();
+                    headerResult.setActiveProfile(db.getProfile(), true);
+                } else {
+                    startActivity(new Intent(this, LoginActivity.class));
+                }
+            }).show();
         }
         return false;
     }

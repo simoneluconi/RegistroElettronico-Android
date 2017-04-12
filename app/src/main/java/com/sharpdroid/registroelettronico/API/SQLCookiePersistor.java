@@ -12,10 +12,10 @@ import java.util.List;
 
 import okhttp3.Cookie;
 
-class SQLCookiePersistor implements CookiePersistor {
+public class SQLCookiePersistor implements CookiePersistor {
     private final Context mContext;
 
-    SQLCookiePersistor(Context context) {
+    public SQLCookiePersistor(Context context) {
         mContext = context;
     }
 
@@ -43,14 +43,14 @@ class SQLCookiePersistor implements CookiePersistor {
     @Override
     public void removeAll(Collection<Cookie> cookies) {
         RegistroDB db = new RegistroDB(mContext);
-        //db.removeCookies(cookies);
+        db.removeCookies(cookies);
         db.close();
     }
 
     @Override
     public void clear() {
         RegistroDB db = new RegistroDB(mContext);
-        //db.removeCookies();
+        db.removeCookies();
         db.close();
     }
 }

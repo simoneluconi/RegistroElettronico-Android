@@ -45,12 +45,10 @@ public class LoginActivity extends AppCompatActivity {
         db = new RegistroDB(this);
         Drawable p = AppCompatResources.getDrawable(this, R.drawable.ic_person);
         Drawable l = AppCompatResources.getDrawable(this, R.drawable.ic_password);
-        if (p != null) {
-            p.setColorFilter(getThemeTextColorSecondary(this), PorterDuff.Mode.SRC_IN);
-        }
-        if (l != null) {
-            l.setColorFilter(getThemeTextColorSecondary(this), PorterDuff.Mode.SRC_IN);
-        }
+
+        p.setColorFilter(getThemeTextColorSecondary(this), PorterDuff.Mode.SRC_IN);
+        l.setColorFilter(getThemeTextColorSecondary(this), PorterDuff.Mode.SRC_IN);
+
         mEditTextMail.setCompoundDrawablesWithIntrinsicBounds(p, null, null, null);
         mEditTextPassword.setCompoundDrawablesWithIntrinsicBounds(l, null, null, null);
 
