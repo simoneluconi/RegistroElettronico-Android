@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,17 +42,15 @@ import static com.sharpdroid.registroelettronico.Utils.Metodi.writeResponseBodyT
 
 public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdapter.CommunicationHolder> implements Filterable {
     private static final String TAG = CommunicationAdapter.class.getSimpleName();
-    private final List<Communication> CVDataList;
-    private final List<Communication> filtered;
+    private final List<Communication> CVDataList = new CopyOnWriteArrayList<>();
+    private final List<Communication> filtered = new CopyOnWriteArrayList<>();
     private final Context mContext;
     private final CoordinatorLayout mCoordinatorLayout;
     private final SimpleDateFormat formatter = new SimpleDateFormat("d MMM", Locale.ITALIAN);
-    private Filter mFilter;
+    private ItemFilter mFilter = new ItemFilter();
     private CommunicationsDB db;
 
     public CommunicationAdapter(Context mContext, CoordinatorLayout mCoordinatorLayout, CommunicationsDB db) {
-        this.CVDataList = new CopyOnWriteArrayList<>();
-        filtered = new CopyOnWriteArrayList<>();
         this.mContext = mContext;
         this.mCoordinatorLayout = mCoordinatorLayout;
         this.db = db;
@@ -177,12 +176,6 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
 
     }
 
-    @Override
-    public Filter getFilter() {
-        if (mFilter == null) mFilter = new Filter();
-        return mFilter;
-    }
-
     class CommunicationHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.relative_layout)
         RelativeLayout mRelativeLayout;
@@ -199,13 +192,18 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
         }
     }
 
-    public class Filter extends android.widget.Filter {
 
+    @Override
+    public Filter getFilter() {
+        return mFilter;
+    }
+
+    private class ItemFilter extends Filter {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults results = new FilterResults();
-            filtered.clear();
             if (!TextUtils.isEmpty(constraint)) {
+                filtered.clear();
                 for (Communication c : CVDataList) {
                     if (c.getTitle().toLowerCase().contains(constraint.toString().toLowerCase()))
                         filtered.add(c);
