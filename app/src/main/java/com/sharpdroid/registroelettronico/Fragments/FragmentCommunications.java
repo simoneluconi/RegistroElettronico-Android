@@ -90,21 +90,23 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.communication_menu, menu);
 
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.getItem(0));
-        if (searchView != null)
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.search));
+        if (searchView != null) {
+            searchView.setMaxWidth(Integer.MAX_VALUE);
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
                     mRVAdapter.getFilter().filter(query);
-                    return false;
+                    return true;
                 }
 
                 @Override
                 public boolean onQueryTextChange(String newText) {
                     mRVAdapter.getFilter().filter(newText);
-                    return false;
+                    return true;
                 }
             });
+        }
     }
 
     private void addCommunications(List<Communication> communications, boolean docache) {

@@ -54,6 +54,12 @@
         <activity
             android:name=".Activities.AllLessonsWithDownloadActivity"
             tools:ignore="InnerclassSeparator" />
+        <activity
+            android:name=".Activities.AddEventActivity"
+            tools:ignore="InnerclassSeparator" />
+        <activity
+            android:name=".Activities.LoginActivity"
+            tools:ignore="InnerclassSeparator" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -69,8 +75,10 @@
             android:name="io.fabric.ApiKey"
             android:value="3124a44c739be03092b7db7c9c44a5052bd37fa5" />
 
-        <activity android:name=".Activities.AddEventActivity" />
-        <activity android:name=".Activities.LoginActivity" />
+        <meta-data
+            android:name="android.app.searchable"
+            android:resource="@xml/searchable" />
+
     </application>
 
 </manifest>
