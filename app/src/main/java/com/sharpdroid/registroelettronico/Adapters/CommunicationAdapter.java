@@ -28,6 +28,7 @@ import java.io.File;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -43,10 +44,10 @@ import static com.sharpdroid.registroelettronico.Utils.Metodi.writeResponseBodyT
 public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdapter.CommunicationHolder> implements Filterable {
     private static final String TAG = CommunicationAdapter.class.getSimpleName();
     private final List<Communication> CVDataList = new CopyOnWriteArrayList<>();
-    private final List<Communication> filtered = new CopyOnWriteArrayList<>();
     private final Context mContext;
     private final CoordinatorLayout mCoordinatorLayout;
     private final SimpleDateFormat formatter = new SimpleDateFormat("d MMM", Locale.ITALIAN);
+    private List<Communication> filtered = new CopyOnWriteArrayList<>();
     private ItemFilter mFilter = new ItemFilter();
     private CommunicationsDB db;
 
@@ -176,6 +177,11 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
 
     }
 
+    @Override
+    public Filter getFilter() {
+        return mFilter;
+    }
+
     class CommunicationHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.relative_layout)
         RelativeLayout mRelativeLayout;
@@ -192,24 +198,19 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
         }
     }
 
-
-    @Override
-    public Filter getFilter() {
-        return mFilter;
-    }
-
     private class ItemFilter extends Filter {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults results = new FilterResults();
             if (!TextUtils.isEmpty(constraint)) {
-                filtered.clear();
+                List<Communication> filt = new LinkedList<>();
+
                 for (Communication c : CVDataList) {
                     if (c.getTitle().toLowerCase().contains(constraint.toString().toLowerCase()))
-                        filtered.add(c);
+                        filt.add(c);
                 }
-                results.values = filtered;
-                results.count = filtered.size();
+                results.values = filt;
+                results.count = filt.size();
             } else {
                 results.values = CVDataList;
                 results.count = CVDataList.size();
@@ -220,8 +221,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
         @SuppressWarnings("unchecked")
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            filtered.clear();
-            filtered.addAll((Collection<? extends Communication>) results.values);
+            filtered = (List<Communication>) results.values;
             notifyDataSetChanged();
         }
     }
