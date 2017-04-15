@@ -37,7 +37,8 @@ import io.reactivex.schedulers.Schedulers;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.dpToPx;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.isNetworkAvailable;
 
-public class FragmentCommunications extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class FragmentCommunications extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
+        SearchView.OnQueryTextListener {
     final private String TAG = FragmentCommunications.class.getSimpleName();
 
     @BindView(R.id.coordinator_layout)
@@ -93,19 +94,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.search));
         if (searchView != null) {
             searchView.setMaxWidth(Integer.MAX_VALUE);
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    mRVAdapter.getFilter().filter(query);
-                    return true;
-                }
-
-                @Override
-                public boolean onQueryTextChange(String newText) {
-                    mRVAdapter.getFilter().filter(newText);
-                    return true;
-                }
-            });
+            searchView.setOnQueryTextListener(this);
         }
     }
 
@@ -158,5 +147,17 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
     public void onDestroyView() {
         super.onDestroyView();
         db.close();
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        mRVAdapter.getFilter().filter(query);
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        mRVAdapter.getFilter().filter(newText);
+        return false;
     }
 }
