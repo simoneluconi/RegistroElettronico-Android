@@ -27,6 +27,7 @@ import com.sharpdroid.registroelettronico.R;
 import java.io.File;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -200,24 +201,28 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
     private class ItemFilter extends Filter {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            FilterResults results = new FilterResults();
+            List<Communication> list = new ArrayList<>();
+            FilterResults filterResults = new FilterResults();
+
             if (!TextUtils.isEmpty(constraint)) {
-                filtered.clear();
                 for (Communication c : CVDataList) {
                     if (c.getTitle().toLowerCase().contains(constraint.toString().toLowerCase()))
-                        filtered.add(c);
+                        list.add(c);
                 }
-                results.values = filtered;
-                results.count = filtered.size();
             } else {
-                results.values = CVDataList;
-                results.count = CVDataList.size();
+                list.addAll(CVDataList);
             }
-            return results;
+
+            filterResults.values = list;
+            filterResults.count = list.size();
+            return filterResults;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
+            filtered.clear();
+            filtered.addAll((Collection<? extends Communication>) results.values);
             notifyDataSetChanged();
         }
     }
