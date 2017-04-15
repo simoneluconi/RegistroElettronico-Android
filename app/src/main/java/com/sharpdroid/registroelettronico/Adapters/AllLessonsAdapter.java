@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.sharpdroid.registroelettronico.Adapters.Holders.HeaderHolder;
@@ -56,9 +55,6 @@ public class AllLessonsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof HeaderHolder) {
             ((HeaderHolder) holder).content.setText(((HeaderEntry) types.get(position)).getContent());
-            if (((HeaderHolder) holder).divider != null) {
-                ((HeaderHolder) holder).divider.setVisibility(position == 0 ? View.GONE : View.VISIBLE);
-            }
         } else {
             LessonHolder lessonHolder = (LessonHolder) holder;
 
@@ -118,7 +114,7 @@ public class AllLessonsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private class HeaderEntry extends Entry {
         @LayoutRes
-        final static int ID = R.layout.adapter_header_divider;
+        final static int ID = R.layout.adapter_header;
         private String content;
 
         HeaderEntry(String content) {
