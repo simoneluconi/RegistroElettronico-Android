@@ -74,7 +74,6 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 FileTeacher ft = (FileTeacher) fe;
                 String profHeader = ft.getName();
-                subHolder.divider.setVisibility(position == 0 ? View.GONE : View.VISIBLE);
                 subHolder.teacher.setText(WordUtils.capitalizeFully(profHeader, Delimeters));
 
                 break;
@@ -85,7 +84,7 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public int getItemViewType(int position) {
         if (fileElements.get(position) instanceof FileTeacher)
-            return R.layout.adapter_header_divider_72_padding;
+            return R.layout.adapter_header;
         else return R.layout.adapter_folder;
     }
 
@@ -107,8 +106,6 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     class SubheaderHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.content)
         TextView teacher;
-        @BindView(R.id.divider)
-        View divider;
 
         SubheaderHolder(View layout) {
             super(layout);

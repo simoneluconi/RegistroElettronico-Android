@@ -219,6 +219,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
             return results;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             filtered.clear();
