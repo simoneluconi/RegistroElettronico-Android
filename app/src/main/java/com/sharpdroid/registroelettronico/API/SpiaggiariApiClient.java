@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
-import com.google.android.gms.security.ProviderInstaller;
 import com.sharpdroid.registroelettronico.Activities.LoginActivity;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absences;
@@ -66,6 +65,7 @@ public class SpiaggiariApiClient implements RESTfulAPIService {
                         .build();
             }
         };
+
         RegistroDB db = new RegistroDB(context);
         Interceptor CHECK_LOGIN = chain -> {
             Request request = chain.request();
@@ -82,20 +82,12 @@ public class SpiaggiariApiClient implements RESTfulAPIService {
         };
         db.close();
 
-        try {
-            //Installa il supporto al TLS se non è presente
-            ProviderInstaller.installIfNeeded(context);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .cookieJar(cookieJar)
                 .cache(cache)
                 .addNetworkInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
                 .addInterceptor(CHECK_LOGIN)
                 .build();
-
 
         // Retrofit
         Retrofit retrofit = new Retrofit.Builder()
