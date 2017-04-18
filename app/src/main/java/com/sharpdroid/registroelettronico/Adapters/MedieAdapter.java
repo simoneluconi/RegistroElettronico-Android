@@ -17,17 +17,16 @@ import com.sharpdroid.registroelettronico.Activities.MarkSubjectDetailActivity;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Average;
 import com.sharpdroid.registroelettronico.R;
+import com.sharpdroid.registroelettronico.Views.CircleProgressBar;
 
 import org.apache.commons.lang3.text.WordUtils;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import devlight.io.library.ArcProgressStackView;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.MessaggioVoto;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getMediaColor;
@@ -81,7 +80,6 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
             float target = avg.target;
 
             if (target <= 0) {
-
                 String t = PreferenceManager.getDefaultSharedPreferences(mContext)
                         .getString("voto_obiettivo", "8");
 
@@ -95,18 +93,14 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
                 } else target = Float.parseFloat(t);
 
             }
-            List<ArcProgressStackView.Model> models = new ArrayList<>();
-            models.add(new ArcProgressStackView.Model("media", avg.avg * 10, ContextCompat.getColor(mContext, getMediaColor(avg.avg, target))));
+            ViewHolder.mCircleProgressBar.setProgress(avg.avg * 10);
+            ViewHolder.mCircleProgressBar.setColor(ContextCompat.getColor(mContext, getMediaColor(avg.avg, target)));
 
-            ViewHolder.mArcProgressStackView.setModels(models);
-
-            String obbiettivo_string = MessaggioVoto(target, avg.avg, avg.count);
-            ViewHolder.mTextViewDesc.setText(obbiettivo_string);
-
+            ViewHolder.mTextViewDesc.setText(MessaggioVoto(target, avg.avg, avg.count));
         } else {
-            List<ArcProgressStackView.Model> models = new ArrayList<>();
-            models.add(new ArcProgressStackView.Model("media", 100, ContextCompat.getColor(mContext, R.color.intro_blue)));
-            ViewHolder.mArcProgressStackView.setModels(models);
+            ViewHolder.mCircleProgressBar.setProgress(100);
+            ViewHolder.mCircleProgressBar.setColor(ContextCompat.getColor(mContext, R.color.intro_blue));
+
             ViewHolder.mTextViewMedia.setText("-");
             ViewHolder.mTextViewDesc.setText(mContext.getString(R.string.nessun_voto_numerico));
         }
@@ -120,8 +114,8 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
     class MedieHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.cardview_medie)
         CardView mCardViewMedia;
-        @BindView(R.id.progressvoti)
-        ArcProgressStackView mArcProgressStackView;
+        @BindView(R.id.custom_progressBar)
+        CircleProgressBar mCircleProgressBar;
         @BindView(R.id.materia)
         TextView mTextViewMateria;
         @BindView(R.id.media)

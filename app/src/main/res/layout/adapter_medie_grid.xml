@@ -36,15 +36,14 @@
                 android:textColor="@color/textcolorgrey"
                 android:textSize="16sp" />
 
-            <devlight.io.library.ArcProgressStackView
-                android:id="@+id/progressvoti"
+            <com.sharpdroid.registroelettronico.Views.CircleProgressBar
+                android:id="@+id/custom_progressBar"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:layout_centerInParent="true"
-                app:apsv_draw_width="10dp"
-                app:apsv_rounded="true"
-                app:apsv_shadowed="false"
-                app:apsv_text_color="#00ffffff" />
+                app:max="100"
+                app:min="0"
+                app:progressBarThickness="10dp" />
         </RelativeLayout>
 
         <LinearLayout
