@@ -22,12 +22,8 @@
     <color name="light_gray">#F5F5F5</color>
 
     <color name="md_white_1000">#ffffff</color>
-    <color name="red_strong">#D50000</color>
-    <color name="red_light">#FF5252</color>
 
-    <color name="cyan">#00BCD4</color>
     <color name="light_green">#8BC34A</color>
-    <color name="brown">#795548</color>
 
     <color name="shortcut_circle">#F5F5F5</color>
     <color name="grey_middle">#9E9E9E</color>

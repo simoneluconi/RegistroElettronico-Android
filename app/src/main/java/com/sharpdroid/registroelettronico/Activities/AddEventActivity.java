@@ -141,10 +141,6 @@ public class AddEventActivity extends AppCompatActivity {
     private void subjectDialog(View v) {
         List<Subject> subjectList;
 
-        if (selectedProfessorCode != -1 && selectedSubjectCode == -1) {      //Se è stato selezionato un professore ma non la materia
-
-        }
-
         subjectList = registroDB.getSubjects();
 
         new MaterialDialog.Builder(this)

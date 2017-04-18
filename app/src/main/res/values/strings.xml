@@ -7,7 +7,6 @@
     <!-- DRAWER -->
     <string name="agenda">Agenda</string>
     <string name="medie">Voti</string>
-    <string name="timetable">Orario</string>
     <string name="share">Condividi</string>
     <string name="send">Contattaci</string>
     <string name="communicate">Communicate</string>
@@ -20,7 +19,6 @@
 
     <!--ERRORI-->
     <string name="nointernet">Non sei connesso ad internet!</string>
-    <string name="error">Errore</string>
 
     <string name="share_with">Condividi con</string>
 
@@ -40,27 +38,16 @@
     <string name="benvenuto">Benvenuto!</string>
     <string name="login">Login</string>
     <string name="login_msg">Login riuscito</string>
-    <string name="mail">Mail</string>
     <string name="password">Password</string>
     <string name="caricamento">Caricamento…</string>
     <string name="login_msg_failer">Login fallito</string>
     <string name="absences">Assenze</string>
 
-    <string name="add_cal">Aggiungi al calendario</string>
-
 
     <string name="mail_user">Email o Username</string>
     <string name="login_riuscito">Login completato</string>
-    <string name="ritardi">Ritardi</string>
-    <string name="uscite_anticipate">Uscite anticipate</string>
-    <string name="oggi">Oggi</string>
-    <string name="nessuna_giustificazione">Nessuna giustificazione</string>
-    <string name="attiva">Attiva</string>
-    <string name="gg">gg</string>
     <string name="download_in_corso">Download in corso…</string>
-    <string name="click_to_open">Clicca per aprire</string>
     <string name="open">Apri</string>
-    <string name="missing_pdf_app">Nessuna app può aprire questo documento</string>
     <string name="missing_app">Nessuna app può aprire questo file (%1$s)</string>
     <string name="file_downloaded">%1$s scaricato</string>
     <string name="download_fallito">Download fallito (%1$s)</string>
@@ -69,11 +56,6 @@
     <string name="aula">Aula</string>
     <string name="mostra_grafico">Mostra grafico</string>
     <string name="i_tuoi_voti">I tuoi voti</string>
-
-    <plurals name="attiva">
-        <item quantity="one">%d Attiva</item>
-        <item quantity="other">%d Attive</item>
-    </plurals>
 
     <plurals name="days">
         <item quantity="one">Assente tutto il giorno</item>
@@ -100,7 +82,6 @@
     <string name="imposta">Imposta</string>
     <string name="edit">Modifica</string>
 
-    <string name="numero_non_valido">Numero non valido</string>
     <string name="senza_nome">Senza nome</string>
 
     <string name="ok">OK</string>
@@ -108,7 +89,6 @@
     <string name="not_set">Selezionare un\'opzione</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
     <!-- Settings -->
@@ -121,8 +101,6 @@
     <string name="restore_archived_summary">Ripristina tutti i dati archiviati dalla sezione agenda</string>
     <string name="restore_archived_title">Ripristina dati archiviati</string>
     <string name="ordina">Ordina</string>
-    <string name="media">Media</string>
-    <string name="nome">Nome</string>
     <string name="nome_bs">Nome</string>
     <string name="media_dec_bs">Media - Decrescente</string>
     <string name="media_cre_bs">Media - Crescente</string>

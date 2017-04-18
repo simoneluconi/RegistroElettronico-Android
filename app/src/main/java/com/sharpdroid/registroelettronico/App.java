@@ -8,6 +8,10 @@ import android.util.Log;
 import com.google.android.gms.security.ProviderInstaller;
 
 public class App extends Application {
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
     private final String TAG = App.class.getSimpleName();
 
     @Override
@@ -28,9 +32,5 @@ public class App extends Application {
                 Log.w(TAG, "Failed installing security provider, error code: " + i);
             }
         });
-    }
-
-    static {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 }

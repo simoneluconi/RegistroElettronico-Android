@@ -62,7 +62,7 @@ public class FragmentSubjects extends Fragment implements SubjectsAdapter.Subjec
     }
 
     @Override
-    public void onSubjectClick(Subject subject, View container) {
+    public void onSubjectClick(Subject subject) {
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).replace(R.id.fragment_container, FragmentLessons.newInstance(subject.getCode())).addToBackStack(null);
 

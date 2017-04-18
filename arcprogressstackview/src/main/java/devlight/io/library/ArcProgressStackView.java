@@ -31,7 +31,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.SweepGradient;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.support.annotation.FloatRange;
 import android.support.v4.view.ViewCompat;
 import android.text.TextPaint;
@@ -180,7 +179,7 @@ public class ArcProgressStackView extends View {
         ViewCompat.setLayerType(this, ViewCompat.LAYER_TYPE_SOFTWARE, null);
 
         // Detect if features available
-        mIsFeaturesAvailable = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
+        mIsFeaturesAvailable = true;
 
         // Retrieve attributes from xml
         final TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ArcProgressStackView);

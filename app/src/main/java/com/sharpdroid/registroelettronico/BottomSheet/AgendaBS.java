@@ -31,22 +31,20 @@ import butterknife.ButterKnife;
  */
 public class AgendaBS extends BottomSheetDialogFragment {
     private static final int mItemCount = 5;
-    private Listener mListener;
-    private AdvancedEvent event;
-
     private final int texts[] = {
             R.string.condividi_bs,
             R.string.inserisci_calendario_bs,
             R.string.copia_bs,
             R.string.archivia_bs
     };
-
     private final int icons[] = {
             R.drawable.agenda_bsheet_share,
             R.drawable.agenda_bsheet_calendar,
             R.drawable.agenda_bsheet_copy,
             R.drawable.agenda_bsheet_archive
     };
+    private Listener mListener;
+    private AdvancedEvent event;
 
     public void setEvent(AdvancedEvent event) {
         this.event = event;

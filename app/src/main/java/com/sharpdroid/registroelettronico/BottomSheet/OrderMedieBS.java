@@ -26,19 +26,17 @@ import com.sharpdroid.registroelettronico.R;
  * <p>You activity (or fragment) needs to implement {@link OrderListener}.</p>
  */
 public class OrderMedieBS extends BottomSheetDialogFragment {
-    private OrderListener mListener;
-
     private final int[] texts = {
             R.string.nome_bs,
             R.string.media_dec_bs,
             R.string.media_cre_bs
     };
-
     private final int[] images = {
             R.drawable.ic_title,
             R.drawable.ic_timeline,
             R.drawable.ic_timeline
     };
+    private OrderListener mListener;
 
     @Nullable
     @Override
