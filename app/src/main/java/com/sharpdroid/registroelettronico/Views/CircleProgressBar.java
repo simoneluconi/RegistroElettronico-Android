@@ -31,6 +31,11 @@ public class CircleProgressBar extends View {
     private RectF rectF;
     private Paint mProgressPaint;
 
+    public CircleProgressBar(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context, attrs);
+    }
+
     public void setProgress(float progress) {
         this.progress = progress;
         invalidate();
@@ -41,11 +46,6 @@ public class CircleProgressBar extends View {
         mProgressPaint.setColor(color);
         invalidate();
         requestLayout();
-    }
-
-    public CircleProgressBar(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context, attrs);
     }
 
     private void init(Context context, AttributeSet attrs) {
