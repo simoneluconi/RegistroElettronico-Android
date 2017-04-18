@@ -78,7 +78,7 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerView.setItemAnimator(null);
 
-        mRVAdapter = new FolderAdapter(getActivity().getSupportFragmentManager(), this);
+        mRVAdapter = new FolderAdapter(this);
         mRecyclerView.setAdapter(mRVAdapter);
 
         bindFileTeacherCache();
@@ -131,7 +131,7 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
     }
 
     @Override
-    public void onFolderClick(Folder f, View container) {
+    public void onFolderClick(Folder f) {
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).replace(R.id.fragment_container, FragmentFiles.newInstance(f)).addToBackStack(null);
         transaction.commit();

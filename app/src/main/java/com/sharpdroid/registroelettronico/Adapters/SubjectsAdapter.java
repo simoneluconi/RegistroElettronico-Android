@@ -48,7 +48,7 @@ public class SubjectsAdapter extends RecyclerView.Adapter<SubjectsAdapter.Subjec
             holder.prof.setText(WordUtils.capitalizeFully(TextUtils.join(" - ", item.getProfessors()), Delimeters));
         }
         holder.layout.setOnClickListener(view -> {
-            if (subjectListener != null) subjectListener.onSubjectClick(item, view);
+            if (subjectListener != null) subjectListener.onSubjectClick(item);
         });
     }
 
@@ -69,7 +69,7 @@ public class SubjectsAdapter extends RecyclerView.Adapter<SubjectsAdapter.Subjec
     }
 
     public interface SubjectListener {
-        void onSubjectClick(Subject subject, View container);
+        void onSubjectClick(Subject subject);
     }
 
     protected class SubjectHolder extends RecyclerView.ViewHolder {

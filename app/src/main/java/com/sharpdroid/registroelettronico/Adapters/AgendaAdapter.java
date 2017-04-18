@@ -98,7 +98,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             eventHolder.itemView.setOnClickListener((View v) -> {
                 if (mClickListener != null)
-                    mClickListener.onAgendaItemClicked(event, position);
+                    mClickListener.onAgendaItemClicked(event);
             });
         }
     }
@@ -176,7 +176,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     public interface AgendaClickListener {
-        void onAgendaItemClicked(AdvancedEvent e, int position);
+        void onAgendaItemClicked(AdvancedEvent e);
     }
 
     class EventHolder extends RecyclerView.ViewHolder {

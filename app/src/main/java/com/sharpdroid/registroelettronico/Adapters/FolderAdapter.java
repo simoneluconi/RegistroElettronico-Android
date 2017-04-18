@@ -1,6 +1,5 @@
 package com.sharpdroid.registroelettronico.Adapters;
 
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,11 +29,9 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private final SimpleDateFormat formatter = new SimpleDateFormat("MMM d, yyyy", Locale.ITALIAN);
     private FileElement fileElements = new FileElement();
-    private FragmentManager fragmentManager;
     private Listener listener;
 
-    public FolderAdapter(FragmentManager fragmentManager, Listener listener) {
-        this.fragmentManager = fragmentManager;
+    public FolderAdapter(Listener listener) {
         this.listener = listener;
     }
 
@@ -63,7 +60,7 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 folderHolder.layout.setOnClickListener(view -> {
                     if (listener != null)
-                        listener.onFolderClick(f, view);
+                        listener.onFolderClick(f);
                 });
 
                 folderHolder.title.setText(f.getName().trim());
@@ -100,7 +97,7 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     public interface Listener {
-        void onFolderClick(Folder f, View container);
+        void onFolderClick(Folder f);
     }
 
     class SubheaderHolder extends RecyclerView.ViewHolder {
