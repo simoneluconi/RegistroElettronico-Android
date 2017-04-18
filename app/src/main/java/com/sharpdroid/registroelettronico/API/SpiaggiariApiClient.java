@@ -20,14 +20,11 @@ import com.sharpdroid.registroelettronico.Interfaces.API.Login;
 import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
 import com.sharpdroid.registroelettronico.Interfaces.API.Note;
 import com.sharpdroid.registroelettronico.Interfaces.API.Scrutiny;
-import com.sharpdroid.registroelettronico.Utils.Metodi;
 
-import java.io.File;
 import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.Cache;
 import okhttp3.CookieJar;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -47,24 +44,6 @@ public class SpiaggiariApiClient implements RESTfulAPIService {
     public SpiaggiariApiClient(Context context) {
         CookieJar cookieJar =
                 new PersistentCookieJar(new SetCookieCache(), new SQLCookiePersistor(context));
-        int cacheSize = 10 * 1024 * 1024; // 10 MiB
-        File cacheDir = context.getCacheDir();
-        Cache cache = new Cache(cacheDir, cacheSize);
-
-        Interceptor REWRITE_CACHE_CONTROL_INTERCEPTOR = chain -> {
-            okhttp3.Response originalResponse = chain.proceed(chain.request());
-            if (Metodi.isNetworkAvailable(context)) {
-                int maxAge = 0; // read from cache for 1 minute
-                return originalResponse.newBuilder()
-                        .header("Cache-Control", "public, max-age=" + maxAge)
-                        .build();
-            } else {
-                int maxStale = 60 * 60 * 24 * 28; // tolerate 4-weeks stale
-                return originalResponse.newBuilder()
-                        .header("Cache-Control", "public, only-if-cached, max-stale=" + maxStale)
-                        .build();
-            }
-        };
 
         RegistroDB db = new RegistroDB(context);
         Interceptor CHECK_LOGIN = chain -> {
@@ -84,8 +63,6 @@ public class SpiaggiariApiClient implements RESTfulAPIService {
 
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .cookieJar(cookieJar)
-                .cache(cache)
-                .addNetworkInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
                 .addInterceptor(CHECK_LOGIN)
                 .build();
 
