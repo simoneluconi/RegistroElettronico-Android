@@ -73,7 +73,7 @@ public class Metodi {
         return activeNetworkInfo != null;
     }
 
-    public static String MessaggioVoto(float Obb, float media, int voti) {
+    public static String MessaggioVoto(float Obb, float media, int nVoti) {
         // Calcolo
         if (Obb > 10 || media > 10)
             return "Errore"; // Quando l'obiettivo o la media sono > 10
@@ -91,7 +91,7 @@ public class Metodi {
         try {
             do {
                 index = index + 1;
-                sommaVotiDaPrendere = (Obb * (voti + index)) - (media * voti);
+                sommaVotiDaPrendere = (Obb * (nVoti + index)) - (media * nVoti);
             } while ((sommaVotiDaPrendere / index) > 10);
             for (int i = 0; i < index; i = i + 1) {
                 votiMinimi[i] = (sommaVotiDaPrendere / index) + resto;
