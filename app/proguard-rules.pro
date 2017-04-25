@@ -18,7 +18,7 @@
 
 -dontwarn java.lang.invoke.*
 
--keep class com.sharpdroid.registroelettronico.Interfaces.** { *; }
+-keepattributes InnerClasses
 
 -dontwarn retrofit2.**
 -keep class retrofit2.** { *; }
