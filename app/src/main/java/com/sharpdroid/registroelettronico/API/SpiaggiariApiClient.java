@@ -54,7 +54,7 @@ public class SpiaggiariApiClient implements RESTfulAPIService {
                     PreferenceManager.getDefaultSharedPreferences(context).edit().putString("currentProfile", db.getOtherProfiles().get(0).getEmail().toString()).apply();
                     return response.newBuilder().build();
                 } else {
-                    context.startActivity(new Intent(context, LoginActivity.class));
+                    context.startActivity(new Intent(context, LoginActivity.class).putExtra("user", PreferenceManager.getDefaultSharedPreferences(context).getString("currentProfile", null)));
                 }
             }
             return response;
