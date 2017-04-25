@@ -32,7 +32,6 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.login_btn)
     Button mButtonLogin;
     RegistroDB db;
-    private boolean loggedIn = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,10 +48,6 @@ public class LoginActivity extends AppCompatActivity {
 
         mEditTextMail.setCompoundDrawablesWithIntrinsicBounds(p, null, null, null);
         mEditTextPassword.setCompoundDrawablesWithIntrinsicBounds(l, null, null, null);
-
-        mEditTextMail.setEnabled(!loggedIn);
-        mEditTextPassword.setEnabled(!loggedIn);
-        mButtonLogin.setEnabled(!loggedIn);
 
         String s = getIntent().getStringExtra("user");
         if (s != null)
@@ -89,7 +84,6 @@ public class LoginActivity extends AppCompatActivity {
 
                     mButtonLogin.setText(R.string.login_riuscito);
                     Toast.makeText(this, R.string.login_msg, Toast.LENGTH_SHORT).show();
-                    loggedIn = true;
                     finish();
                 }, error -> {
                     error.printStackTrace();
