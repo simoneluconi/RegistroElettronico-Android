@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.content.res.AppCompatResources;
 import android.view.inputmethod.EditorInfo;
@@ -44,8 +45,8 @@ public class LoginActivity extends AppCompatActivity {
         Drawable p = AppCompatResources.getDrawable(this, R.drawable.ic_person);
         Drawable l = AppCompatResources.getDrawable(this, R.drawable.ic_password);
 
-        p.setColorFilter(getResources().getColor(android.R.color.secondary_text_dark), PorterDuff.Mode.SRC_IN);
-        l.setColorFilter(getResources().getColor(android.R.color.secondary_text_dark), PorterDuff.Mode.SRC_IN);
+        p.setColorFilter(ContextCompat.getColor(this, android.R.color.secondary_text_dark), PorterDuff.Mode.SRC_IN);
+        l.setColorFilter(ContextCompat.getColor(this, android.R.color.secondary_text_dark), PorterDuff.Mode.SRC_IN);
 
         mEditTextMail.setCompoundDrawablesWithIntrinsicBounds(p, null, null, null);
         mEditTextPassword.setCompoundDrawablesWithIntrinsicBounds(l, null, null, null);
