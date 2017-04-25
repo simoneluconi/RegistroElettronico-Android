@@ -18,11 +18,6 @@
 
 -dontwarn java.lang.invoke.*
 
--dontwarn android.databinding.** 
--keep class android.databinding.** { *; }
-
--dontwarn com.heinrichreimersoftware.materialintro.databinding.MiActivityIntroBinding
-
 -keep class com.sharpdroid.registroelettronico.Interfaces.** { *; }
 
 -dontwarn retrofit2.**
