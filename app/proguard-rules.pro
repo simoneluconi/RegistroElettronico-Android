@@ -34,3 +34,5 @@
 -dontwarn com.akexorcist.roundcornerprogressbar.**
 
 -keepclassmembers class android.support.v7.graphics.drawable.DrawerArrowDrawable { public *; }
+
+-keep class android.support.v7.widget.SearchView { *; }
