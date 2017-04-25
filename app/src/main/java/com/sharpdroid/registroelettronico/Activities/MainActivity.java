@@ -2,7 +2,6 @@ package com.sharpdroid.registroelettronico.Activities;
 
 import android.animation.ObjectAnimator;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -62,7 +61,6 @@ public class MainActivity extends AppCompatActivity
     AppBarLayout.LayoutParams params;
 
     FragmentManager fragmentManager;
-    SharedPreferences settings;
     ActionBarDrawerToggle toggle;
     boolean needUpdate = true;
     boolean canOpenDrawer = true;
@@ -81,8 +79,7 @@ public class MainActivity extends AppCompatActivity
         params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
 
         //  first run
-        settings = getSharedPreferences("REGISTRO", MODE_PRIVATE);
-        if (settings.getBoolean("primo_avvio", true)) {
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("first_run", true)) {
             // first time task
             startActivityForResult(new Intent(this, Intro.class), 1);
         } else {
@@ -131,10 +128,10 @@ public class MainActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-                settings.edit().putBoolean("primo_avvio", false).apply();
+                PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("first_run", false).apply();
                 init(null);
             } else {
-                settings.edit().putBoolean("primo_avvio", true).apply();
+                PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("first_run", true).apply();
                 //User cancelled the intro so we'll finish this activity too.
                 finish();
             }
@@ -149,7 +146,6 @@ public class MainActivity extends AppCompatActivity
 
     private void initDrawer() {
         db = new RegistroDB(this);
-        settings = getSharedPreferences("REGISTRO", MODE_PRIVATE);
         headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.side_nav_bar)

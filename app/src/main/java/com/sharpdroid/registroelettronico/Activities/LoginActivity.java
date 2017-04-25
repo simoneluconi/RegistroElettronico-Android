@@ -1,6 +1,5 @@
 package com.sharpdroid.registroelettronico.Activities;
 
-import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -84,12 +83,6 @@ public class LoginActivity extends AppCompatActivity {
         new SpiaggiariApiClient(this).postLogin(mEmail, mPassword, new DeviceUuidFactory(this).getDeviceUuid().toString())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(login -> {
-                    SharedPreferences settings = getSharedPreferences("REGISTRO", MODE_PRIVATE);
-                    // Writing data to SharedPreferences
-                    SharedPreferences.Editor editor = settings.edit();
-                    editor.putString("name", WordUtils.capitalizeFully(login.getName()).trim());
-                    editor.apply();
-
                     if (!db.isUserLogged(mEmail)) {
                         db.addProfile(new ProfileDrawerItem().withName(WordUtils.capitalizeFully(login.getName())).withEmail(mEmail));
                     }

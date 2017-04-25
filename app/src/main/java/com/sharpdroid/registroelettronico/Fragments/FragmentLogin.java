@@ -1,7 +1,6 @@
 package com.sharpdroid.registroelettronico.Fragments;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -27,8 +26,6 @@ import org.apache.commons.lang3.text.WordUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class FragmentLogin extends SlideFragment {
 
@@ -100,12 +97,6 @@ public class FragmentLogin extends SlideFragment {
         new SpiaggiariApiClient(mContext).postLogin(mEmail, mPassword, new DeviceUuidFactory(mContext).getDeviceUuid().toString())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(login -> {
-                    SharedPreferences settings = mContext.getSharedPreferences("REGISTRO", MODE_PRIVATE);
-                    // Writing data to SharedPreferences
-                    SharedPreferences.Editor editor = settings.edit();
-                    editor.putString("name", WordUtils.capitalizeFully(login.getName()).trim());
-                    editor.apply();
-
                     RegistroDB db = new RegistroDB(getContext());
                     db.addProfile(new ProfileDrawerItem().withName(WordUtils.capitalizeFully(login.getName())).withEmail(mEmail));
                     db.close();
