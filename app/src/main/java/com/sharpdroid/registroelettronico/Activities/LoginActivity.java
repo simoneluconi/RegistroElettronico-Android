@@ -55,6 +55,10 @@ public class LoginActivity extends AppCompatActivity {
         mEditTextPassword.setEnabled(!loggedIn);
         mButtonLogin.setEnabled(!loggedIn);
 
+        String s = getIntent().getStringExtra("user");
+        if (s != null)
+            mEditTextMail.setText(s);
+
         mButtonLogin.setOnClickListener(v -> Login());
         mEditTextPassword.setOnEditorActionListener((textView, i, keyEvent) -> {
             if (i == EditorInfo.IME_ACTION_DONE) {
@@ -87,9 +91,7 @@ public class LoginActivity extends AppCompatActivity {
                     editor.apply();
 
                     if (!db.isUserLogged(mEmail)) {
-                        RegistroDB db = new RegistroDB(this);
                         db.addProfile(new ProfileDrawerItem().withName(WordUtils.capitalizeFully(login.getName())).withEmail(mEmail));
-                        db.close();
                     }
 
                     mButtonLogin.setText(R.string.login_riuscito);

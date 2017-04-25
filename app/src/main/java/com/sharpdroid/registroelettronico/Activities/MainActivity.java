@@ -27,9 +27,9 @@ import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
-import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity
                         new PrimaryDrawerItem().withIdentifier(R.id.notes).withName(R.string.note).withIcon(R.drawable.ic_error).withIconTintingEnabled(true),
                         new PrimaryDrawerItem().withIdentifier(R.id.communications).withName(R.string.communications).withIcon(R.drawable.ic_assignment).withIconTintingEnabled(true),
                         new PrimaryDrawerItem().withIdentifier(R.id.settings).withName(R.string.settings).withIcon(R.drawable.ic_settings).withIconTintingEnabled(true))
-                .addDrawerItems(new SectionDrawerItem().withName(R.string.communicate),
+                .addDrawerItems(new DividerDrawerItem(),
                         new PrimaryDrawerItem().withIdentifier(R.id.nav_share).withName(R.string.share).withIcon(R.drawable.ic_menu_share).withIconTintingEnabled(true).withSelectable(false),
                         new PrimaryDrawerItem().withIdentifier(R.id.nav_send).withName(R.string.send).withIcon(R.drawable.ic_menu_send).withIconTintingEnabled(true).withSelectable(false))
                 .build();
