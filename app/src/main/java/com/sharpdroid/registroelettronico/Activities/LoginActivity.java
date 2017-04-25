@@ -24,8 +24,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
-import static com.sharpdroid.registroelettronico.Utils.Metodi.getThemeTextColorSecondary;
-
 public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.mail)
     TextInputEditText mEditTextMail;
@@ -46,8 +44,8 @@ public class LoginActivity extends AppCompatActivity {
         Drawable p = AppCompatResources.getDrawable(this, R.drawable.ic_person);
         Drawable l = AppCompatResources.getDrawable(this, R.drawable.ic_password);
 
-        p.setColorFilter(getThemeTextColorSecondary(this), PorterDuff.Mode.SRC_IN);
-        l.setColorFilter(getThemeTextColorSecondary(this), PorterDuff.Mode.SRC_IN);
+        p.setColorFilter(getResources().getColor(android.R.color.secondary_text_dark), PorterDuff.Mode.SRC_IN);
+        l.setColorFilter(getResources().getColor(android.R.color.secondary_text_dark), PorterDuff.Mode.SRC_IN);
 
         mEditTextMail.setCompoundDrawablesWithIntrinsicBounds(p, null, null, null);
         mEditTextPassword.setCompoundDrawablesWithIntrinsicBounds(l, null, null, null);

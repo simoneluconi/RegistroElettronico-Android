@@ -38,7 +38,7 @@
             style="@style/MenuButtonsStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/agenda_fab_verifiche"
+            android:src="@drawable/agenda_fab_verifiche"
             app:fab_label="Verifica" />
 
         <com.github.clans.fab.FloatingActionButton
@@ -46,7 +46,7 @@
             style="@style/MenuButtonsStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/agenda_fab_compiti"
+            android:src="@drawable/agenda_fab_compiti"
             app:fab_label="Compiti" />
 
         <com.github.clans.fab.FloatingActionButton
@@ -54,7 +54,7 @@
             style="@style/MenuButtonsStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/agenda_fab_altro"
+            android:src="@drawable/agenda_fab_altro"
             app:fab_label="Altro" />
 
     </com.github.clans.fab.FloatingActionMenu>
