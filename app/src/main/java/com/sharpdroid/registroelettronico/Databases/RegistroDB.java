@@ -173,6 +173,7 @@ public class RegistroDB extends SQLiteOpenHelper {
             db.execSQL("CREATE TABLE profiles(uuid TEXT,name TEXT,username TEXT UNIQUE);");
             db.execSQL("INSERT INTO profiles(uuid,name,username) SELECT uuid,name,username from profiles1 GROUP BY username;");
             db.execSQL("DROP TABLE profiles1;");
+            db.delete(TABLE_SUBJECTS, "user IS NULL", null);
         }
     }
 

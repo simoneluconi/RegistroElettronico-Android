@@ -320,7 +320,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        RegistroDB.getInstance(this).close();
     }
 
     @Override
@@ -330,6 +330,8 @@ public class MainActivity extends AppCompatActivity
         } else {
             Log.d("currentProfile", profile.getEmail().getText());
             PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", profile.getEmail().getText()).apply();
+            updateSubjects(this, db);
+            drawer.setSelection(drawer.getDrawerItem(drawer.getCurrentSelection()), true);
         }
         return false;
     }
