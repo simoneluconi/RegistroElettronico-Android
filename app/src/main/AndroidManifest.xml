@@ -59,6 +59,7 @@
             tools:ignore="InnerclassSeparator" />
         <activity
             android:name=".Activities.LoginActivity"
+            android:launchMode="singleInstance"
             tools:ignore="InnerclassSeparator" />
 
         <provider

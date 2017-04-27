@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.sharpdroid.registroelettronico.Activities.LoginActivity;
-import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absences;
 import com.sharpdroid.registroelettronico.Interfaces.API.Communication;
 import com.sharpdroid.registroelettronico.Interfaces.API.CommunicationDescription;
@@ -45,7 +44,6 @@ public class SpiaggiariApiClient implements RESTfulAPIService {
         CookieJar cookieJar =
                 new PersistentCookieJar(new SetCookieCache(), new SQLCookiePersistor(context));
 
-        RegistroDB db = RegistroDB.getInstance(context);
         Interceptor CHECK_LOGIN = chain -> {
             Request request = chain.request();
             okhttp3.Response response = chain.proceed(request);
@@ -54,7 +52,6 @@ public class SpiaggiariApiClient implements RESTfulAPIService {
             }
             return response;
         };
-
 
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .cookieJar(cookieJar)
