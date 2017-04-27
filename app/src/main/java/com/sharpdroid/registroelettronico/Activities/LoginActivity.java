@@ -39,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_login);
         ButterKnife.bind(this);
 
-        db = new RegistroDB(this);
+        db = RegistroDB.getInstance(this);
         Drawable p = AppCompatResources.getDrawable(this, R.drawable.ic_person);
         Drawable l = AppCompatResources.getDrawable(this, R.drawable.ic_password);
 

@@ -45,7 +45,7 @@ public class SpiaggiariApiClient implements RESTfulAPIService {
         CookieJar cookieJar =
                 new PersistentCookieJar(new SetCookieCache(), new SQLCookiePersistor(context));
 
-        RegistroDB db = new RegistroDB(context);
+        RegistroDB db = RegistroDB.getInstance(context);
         Interceptor CHECK_LOGIN = chain -> {
             Request request = chain.request();
             okhttp3.Response response = chain.proceed(request);

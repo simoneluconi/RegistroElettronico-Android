@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initDrawer() {
-        db = new RegistroDB(this);
+        db = RegistroDB.getInstance(this);
         headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.side_nav_bar)

@@ -97,7 +97,7 @@ public class FragmentLogin extends SlideFragment {
         new SpiaggiariApiClient(mContext).postLogin(mEmail, mPassword, new DeviceUuidFactory(mContext).getDeviceUuid().toString())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(login -> {
-                    RegistroDB db = new RegistroDB(getContext());
+                    RegistroDB db = RegistroDB.getInstance(getContext());
                     db.addProfile(new ProfileDrawerItem().withName(WordUtils.capitalizeFully(login.getName())).withEmail(mEmail));
                     db.close();
 

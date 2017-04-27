@@ -22,7 +22,7 @@ public class SQLCookiePersistor implements CookiePersistor {
     @Override
     public List<Cookie> loadAll() {
         String username = PreferenceManager.getDefaultSharedPreferences(mContext).getString("currentProfile", null);
-        RegistroDB db = new RegistroDB(mContext);
+        RegistroDB db = RegistroDB.getInstance(mContext);
         List<Cookie> cookies = new ArrayList<>();
         if (username != null)
             cookies.addAll(db.getCookies(username));
@@ -33,7 +33,7 @@ public class SQLCookiePersistor implements CookiePersistor {
     @Override
     public void saveAll(Collection<Cookie> cookies) {
         String username = PreferenceManager.getDefaultSharedPreferences(mContext).getString("currentProfile", null);
-        RegistroDB db = new RegistroDB(mContext);
+        RegistroDB db = RegistroDB.getInstance(mContext);
         if (username != null) {
             db.addCookies(username, cookies);
         }
@@ -42,14 +42,14 @@ public class SQLCookiePersistor implements CookiePersistor {
 
     @Override
     public void removeAll(Collection<Cookie> cookies) {
-        RegistroDB db = new RegistroDB(mContext);
+        RegistroDB db = RegistroDB.getInstance(mContext);
         db.removeCookies(cookies);
         db.close();
     }
 
     @Override
     public void clear() {
-        RegistroDB db = new RegistroDB(mContext);
+        RegistroDB db = RegistroDB.getInstance(mContext);
         db.removeCookies();
         db.close();
     }

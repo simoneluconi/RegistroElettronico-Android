@@ -82,7 +82,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) getActivity().findViewById(R.id.toolbar).getLayoutParams();
         params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
 
-        db = new RegistroDB(mContext);
+        db = RegistroDB.getInstance(mContext);
         pagerAdapter = new MediePager(getChildFragmentManager());
 
         mViewPager.setAdapter(pagerAdapter);
