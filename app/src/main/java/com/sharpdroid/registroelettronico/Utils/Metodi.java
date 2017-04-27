@@ -429,13 +429,12 @@ public class Metodi {
         return list;
     }
 
-    public static void updateSubjects(Context c) {
+    public static void updateSubjects(Context c, RegistroDB db) {
         //scarica le materie (nome, id, prof) per poter in seguito modificare a piacere tutte le caratteristiche nel db
         new SpiaggiariApiClient(c)
                 .getSubjects()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subjects -> {
-                    RegistroDB db = new RegistroDB(c);
 
                     //Per ogni materia aggiungo il suo professore cercandolo dalle lezioni
                     for (LessonSubject subject : subjects) {
@@ -454,8 +453,6 @@ public class Metodi {
                                         //Log.d("Trova professore", String.format(Locale.getDefault(), "Professore di %1$s è %2$s", subject.getName(), profName));
                                     }, Throwable::printStackTrace);
                     }
-
-                    db.close();
                 }, Throwable::printStackTrace);
     }
 
