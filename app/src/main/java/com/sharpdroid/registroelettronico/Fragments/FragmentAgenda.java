@@ -98,7 +98,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         ButterKnife.bind(this, view);
 
         mToolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-        mRegistroDB = new RegistroDB(mContext);
+        mRegistroDB = RegistroDB.getInstance(mContext);
 
         mCompactCalendarView = (CompactCalendarView) getActivity().findViewById(R.id.calendar);
         mCompactCalendarView.setVisibility(View.VISIBLE);

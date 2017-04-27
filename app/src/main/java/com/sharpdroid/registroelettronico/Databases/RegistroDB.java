@@ -64,12 +64,18 @@ public class RegistroDB extends SQLiteOpenHelper {
     private final static String marks[] = {
             "subject_code", "mark", "description", "date", "type", "period", "not_significant"
     };
+    public static RegistroDB instance;
     private static int DB_VERSION = 8;
     private Context mContext;
 
     public RegistroDB(Context c) {
         super(c, DB_NAME, null, DB_VERSION);
         mContext = c;
+    }
+
+    public static RegistroDB getInstance(Context c) {
+        if (instance == null) instance = new RegistroDB(c);
+        return instance;
     }
 
     @Override

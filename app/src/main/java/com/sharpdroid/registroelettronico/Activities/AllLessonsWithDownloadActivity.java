@@ -47,7 +47,7 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
         code = getIntent().getIntExtra("code", -1);
-        db = new RegistroDB(this);
+        db = RegistroDB.getInstance(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
