@@ -50,12 +50,7 @@ public class SpiaggiariApiClient implements RESTfulAPIService {
             Request request = chain.request();
             okhttp3.Response response = chain.proceed(request);
             if (response.code() == 403) {
-                if (db.getOtherProfiles().size() > 0) {
-                    PreferenceManager.getDefaultSharedPreferences(context).edit().putString("currentProfile", db.getOtherProfiles().get(0).getEmail().toString()).apply();
-                    return response.newBuilder().build();
-                } else {
-                    context.startActivity(new Intent(context, LoginActivity.class).putExtra("user", PreferenceManager.getDefaultSharedPreferences(context).getString("currentProfile", null)));
-                }
+                context.startActivity(new Intent(context, LoginActivity.class).putExtra("user", PreferenceManager.getDefaultSharedPreferences(context).getString("currentProfile", null)));
             }
             return response;
         };
