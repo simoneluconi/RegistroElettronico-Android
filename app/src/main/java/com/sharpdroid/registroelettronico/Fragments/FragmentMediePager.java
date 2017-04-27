@@ -199,7 +199,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
     @Override
     public void onDestroy() {
         super.onDestroy();
-        db.close();
+
     }
 
     private class MediePager extends FragmentPagerAdapter {

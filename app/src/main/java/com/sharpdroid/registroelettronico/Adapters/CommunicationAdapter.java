@@ -122,7 +122,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
                                         DownloadFile(communication, dir, db, DownloadProgressSnack, false);
                                 }
 
-                                db.close();
+
                             });
                         }
 

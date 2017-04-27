@@ -83,7 +83,7 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
         mContext = context;
         RegistroDB db = new RegistroDB(mContext);
         events = db.getEvents();
-        db.close();
+
 
         inflate(mContext, R.layout.view_marks, this);
         ButterKnife.bind(this);

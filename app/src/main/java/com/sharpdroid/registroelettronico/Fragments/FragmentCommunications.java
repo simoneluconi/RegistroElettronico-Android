@@ -146,7 +146,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        db.close();
+
     }
 
     @Override

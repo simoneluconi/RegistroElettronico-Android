@@ -70,6 +70,6 @@ public class FragmentSettings extends PreferenceFragmentCompat implements Shared
     @Override
     public void onDestroy() {
         super.onDestroy();
-        db.close();
+
     }
 }

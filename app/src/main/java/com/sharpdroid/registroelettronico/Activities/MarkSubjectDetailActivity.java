@@ -273,7 +273,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         //CLOSE DATABASE
-        db.close();
+
         super.onDestroy();
     }
 }

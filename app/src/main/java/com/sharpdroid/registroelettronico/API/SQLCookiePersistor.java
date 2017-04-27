@@ -26,7 +26,7 @@ public class SQLCookiePersistor implements CookiePersistor {
         List<Cookie> cookies = new ArrayList<>();
         if (username != null)
             cookies.addAll(db.getCookies(username));
-        db.close();
+
         return cookies;
     }
 
@@ -37,20 +37,20 @@ public class SQLCookiePersistor implements CookiePersistor {
         if (username != null) {
             db.addCookies(username, cookies);
         }
-        db.close();
+
     }
 
     @Override
     public void removeAll(Collection<Cookie> cookies) {
         RegistroDB db = RegistroDB.getInstance(mContext);
         db.removeCookies(cookies);
-        db.close();
+
     }
 
     @Override
     public void clear() {
         RegistroDB db = RegistroDB.getInstance(mContext);
         db.removeCookies();
-        db.close();
+
     }
 }

@@ -95,7 +95,7 @@ public class FragmentLessons extends Fragment implements SwipeRefreshLayout.OnRe
     @Override
     public void onDetach() {
         super.onDetach();
-        db.close();
+
     }
 
     @Override
