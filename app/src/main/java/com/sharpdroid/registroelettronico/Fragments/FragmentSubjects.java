@@ -58,7 +58,7 @@ public class FragmentSubjects extends Fragment implements SubjectsAdapter.Subjec
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        db.close();
+
     }
 
     @Override

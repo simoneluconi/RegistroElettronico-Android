@@ -85,6 +85,6 @@ public class FragmentMedie extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        subjectsDB.close();
+        subjects
     }
 }

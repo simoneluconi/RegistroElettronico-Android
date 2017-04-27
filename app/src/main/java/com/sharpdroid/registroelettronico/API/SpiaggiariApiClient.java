@@ -59,7 +59,7 @@ public class SpiaggiariApiClient implements RESTfulAPIService {
             }
             return response;
         };
-        db.close();
+
 
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .cookieJar(cookieJar)

@@ -123,7 +123,7 @@ public class EditSubjectDetailsActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        db.close();
+
         super.onStop();
     }
 }

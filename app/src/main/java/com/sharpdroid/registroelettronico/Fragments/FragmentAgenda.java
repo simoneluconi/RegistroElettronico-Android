@@ -230,7 +230,6 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     @Override
     public void onDetach() {
         super.onDetach();
-        mRegistroDB.close();
         mToolbar.setSubtitle("");
     }
 

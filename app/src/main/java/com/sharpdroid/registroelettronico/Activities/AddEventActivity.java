@@ -209,7 +209,7 @@ public class AddEventActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        registroDB.close();
+
     }
 
     boolean handleTitle() {
