@@ -73,9 +73,15 @@ public class RegistroDB extends SQLiteOpenHelper {
         mContext = c;
     }
 
-    public static RegistroDB getInstance(Context c) {
+    public static synchronized RegistroDB getInstance(Context c) {
         if (instance == null) instance = new RegistroDB(c);
         return instance;
+    }
+
+    @Override
+    public synchronized void close() {
+        super.close();
+        instance = null;
     }
 
     @Override
