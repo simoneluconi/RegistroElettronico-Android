@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity
         initDrawer();
 
         if (needUpdate) {
-            updateSubjects(this);
+            updateSubjects(this, db);
             needUpdate = false;
         }
 
