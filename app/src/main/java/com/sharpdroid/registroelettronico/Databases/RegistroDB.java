@@ -64,7 +64,7 @@ public class RegistroDB extends SQLiteOpenHelper {
     private final static String marks[] = {
             "subject_code", "mark", "description", "date", "type", "period", "not_significant"
     };
-    private static int DB_VERSION = 5;
+    private static int DB_VERSION = 8;
     private Context mContext;
 
     public RegistroDB(Context c) {
@@ -134,7 +134,7 @@ public class RegistroDB extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 2) {
+        if (oldVersion < 2)
             db.execSQL("CREATE TABLE " + TABLE_MARKS + "(" +
                     "subject_code INTEGER," +
                     "mark TEXT," +
@@ -143,23 +143,24 @@ public class RegistroDB extends SQLiteOpenHelper {
                     "type TEXT," +
                     "period TEXT," +
                     "not_significant INTEGER);");
-        }
-
-        if (oldVersion < 3) {
+        if (oldVersion < 3)
             db.execSQL("CREATE TABLE " + TABLE_PROFILES + "(" +
                     "uuid TEXT," +
                     "name TEXT," +
                     "username TEXT," +
                     "cookie TEXT)");
-        }
-        if (oldVersion < 4) {
+        if (oldVersion < 4)
             db.execSQL("CREATE TABLE " + TABLE_COOKIES + "(" +
                     "username TEXT," +
                     "key TEXT," +
                     "value TEXT UNIQUE)");
-        }
-        if (oldVersion < 5) {
+        if (oldVersion < 5)
             db.execSQL("ALTER TABLE subjects ADD COLUMN user TEXT");
+        if (oldVersion < 8) {
+            db.execSQL("ALTER TABLE profiles RENAME TO profiles1;");
+            db.execSQL("CREATE TABLE profiles(uuid TEXT,name TEXT,username TEXT UNIQUE);");
+            db.execSQL("INSERT INTO profiles(uuid,name,username) SELECT uuid,name,username from profiles1 GROUP BY username;");
+            db.execSQL("DROP TABLE profiles1;");
         }
     }
 
