@@ -310,7 +310,7 @@ public class MainActivity extends AppCompatActivity
 
         // Replace whatever is in the fragment_container view with this fragment,
         // and add the transaction to the back stack so the user can navigate back
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).replace(R.id.fragment_container, fragment).commit();
+        transaction.replace(R.id.fragment_container, fragment).commit();
 
         drawer.closeDrawer();
         return false;
