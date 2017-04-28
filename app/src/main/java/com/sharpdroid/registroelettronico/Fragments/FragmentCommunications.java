@@ -144,12 +144,6 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-
-    }
-
-    @Override
     public boolean onQueryTextSubmit(String query) {
         mRVAdapter.getFilter().filter(query);
         return false;

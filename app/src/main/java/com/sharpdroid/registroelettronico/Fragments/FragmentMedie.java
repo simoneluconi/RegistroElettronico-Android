@@ -81,9 +81,4 @@ public class FragmentMedie extends Fragment {
             mRVAdapter.addAll(markSubjects, p);
         }
     }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
 }
