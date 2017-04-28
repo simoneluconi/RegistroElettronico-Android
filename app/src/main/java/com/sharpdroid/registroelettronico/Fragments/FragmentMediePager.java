@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -77,14 +76,10 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         setHasOptionsMenu(true);
 
         getActivity().setTitle(getString(R.string.medie));
-        tabLayout = (TabLayout) getActivity().findViewById(R.id.tab_layout);
-        tabLayout.setVisibility(View.VISIBLE);
-        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) getActivity().findViewById(R.id.toolbar).getLayoutParams();
-        params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
 
         db = RegistroDB.getInstance(mContext);
         pagerAdapter = new MediePager(getChildFragmentManager());
-
+        tabLayout = (TabLayout) getActivity().findViewById(R.id.tab_layout);
         mViewPager.setAdapter(pagerAdapter);
         mViewPager.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(mViewPager);

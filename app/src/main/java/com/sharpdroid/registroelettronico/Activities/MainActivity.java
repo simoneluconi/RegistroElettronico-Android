@@ -263,9 +263,12 @@ public class MainActivity extends AppCompatActivity
         params.setScrollFlags(0);
         switch (id) {
             case R.id.agenda:
+                calendarView.setVisibility(View.VISIBLE);
                 fragment = new FragmentAgenda();
                 break;
             case R.id.medie:
+                tabLayout.setVisibility(View.VISIBLE);
+                params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
                 fragment = new FragmentMediePager();
                 break;
             case R.id.communications:
