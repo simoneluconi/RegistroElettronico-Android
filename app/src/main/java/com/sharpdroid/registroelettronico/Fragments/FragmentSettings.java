@@ -66,10 +66,4 @@ public class FragmentSettings extends PreferenceFragmentCompat implements Shared
         getPreferenceScreen().getSharedPreferences()
                 .unregisterOnSharedPreferenceChangeListener(this);
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-    }
 }

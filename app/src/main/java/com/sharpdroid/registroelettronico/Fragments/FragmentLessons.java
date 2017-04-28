@@ -93,12 +93,6 @@ public class FragmentLessons extends Fragment implements SwipeRefreshLayout.OnRe
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-
-    }
-
-    @Override
     public void onRefresh() {
         UpdateLessons();
     }

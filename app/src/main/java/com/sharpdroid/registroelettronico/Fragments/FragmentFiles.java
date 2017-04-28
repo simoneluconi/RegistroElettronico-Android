@@ -78,10 +78,4 @@ public class FragmentFiles extends Fragment {
         mRVAdapter.clear();
         mRVAdapter.addAll(folder.getElements());
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-    }
 }

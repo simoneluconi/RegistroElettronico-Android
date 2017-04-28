@@ -105,7 +105,6 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
 
     public void onRefresh() {
         UpdateNotes();
-
     }
 
     private void UpdateNotes() {

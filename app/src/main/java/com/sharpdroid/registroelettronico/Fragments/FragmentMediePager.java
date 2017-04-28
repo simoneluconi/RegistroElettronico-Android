@@ -191,12 +191,6 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         UpdateMedie();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-    }
-
     private class MediePager extends FragmentPagerAdapter {
         MediePager(FragmentManager fm) {
             super(fm);
