@@ -197,9 +197,8 @@ public class MainActivity extends AppCompatActivity
 
     public void clearBackstack() {
         if (fragmentManager != null)
-            for (int i = 0; i < fragmentManager.getBackStackEntryCount(); i++) {
-                fragmentManager.popBackStackImmediate();
-            }
+            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
     }
 
     private void init(Bundle savedInstanceState) {
@@ -311,7 +310,7 @@ public class MainActivity extends AppCompatActivity
 
         // Replace whatever is in the fragment_container view with this fragment,
         // and add the transaction to the back stack so the user can navigate back
-        transaction.replace(R.id.fragment_container, fragment).commit();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).replace(R.id.fragment_container, fragment).commit();
 
         drawer.closeDrawer();
         return false;
