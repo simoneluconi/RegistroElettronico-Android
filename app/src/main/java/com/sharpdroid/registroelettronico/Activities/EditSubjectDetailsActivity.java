@@ -103,7 +103,7 @@ public class EditSubjectDetailsActivity extends AppCompatActivity {
         values.put("classroom", classroom);
         values.put("notes", notes);
 
-        db.editSubject(subject.getCode(), values);
+        db.editSubject(subject.getId(), values);
 
         finish();
     }
