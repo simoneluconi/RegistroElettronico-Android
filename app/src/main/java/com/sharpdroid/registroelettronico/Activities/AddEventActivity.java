@@ -27,7 +27,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -92,7 +91,7 @@ public class AddEventActivity extends AppCompatActivity {
             case "verifica":
                 if (handleTitle() && handleSubtitle() && handleSubject() && handleProfessor() && handleDate()) {
                     selectedDay = betterDate(selectedDay);
-                    registroDB.addLocalEvent(new LocalEvent(UUID.randomUUID().toString(), title.getEditText().getText().toString(), note.getEditText().getText().toString(), type, selectedDay, selectedSubjectCode, selectedProfessorCode, null));
+                    registroDB.addLocalEvent(new LocalEvent(title.getEditText().getText().toString(), note.getEditText().getText().toString(), type, selectedDay, selectedSubjectCode, selectedProfessorCode, null));
                     finish();
                 } else {
                     ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(40);
@@ -101,7 +100,7 @@ public class AddEventActivity extends AppCompatActivity {
             case "compiti":
                 if (handleTitle() && handleSubtitle() && handleSubject() && handleProfessor() && handleDate()) {
                     selectedDay = betterDate(selectedDay);
-                    registroDB.addLocalEvent(new LocalEvent(UUID.randomUUID().toString(), title.getEditText().getText().toString(), note.getEditText().getText().toString(), type, selectedDay, selectedSubjectCode, selectedProfessorCode, null));
+                    registroDB.addLocalEvent(new LocalEvent(title.getEditText().getText().toString(), note.getEditText().getText().toString(), type, selectedDay, selectedSubjectCode, selectedProfessorCode, null));
                     finish();
                 } else {
                     ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(40);
@@ -110,7 +109,7 @@ public class AddEventActivity extends AppCompatActivity {
             default:
                 if (handleTitle() && handleSubtitle() && handleDate()) {
                     selectedDay = betterDate(selectedDay);
-                    registroDB.addLocalEvent(new LocalEvent(UUID.randomUUID().toString(), title.getEditText().getText().toString(), note.getEditText().getText().toString(), type, selectedDay, selectedSubjectCode, selectedProfessorCode, null));
+                    registroDB.addLocalEvent(new LocalEvent(title.getEditText().getText().toString(), note.getEditText().getText().toString(), type, selectedDay, selectedSubjectCode, selectedProfessorCode, null));
                     finish();
                 } else {
                     ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(40);

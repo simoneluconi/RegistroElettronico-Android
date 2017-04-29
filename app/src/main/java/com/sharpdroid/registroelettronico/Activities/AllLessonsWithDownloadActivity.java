@@ -106,7 +106,7 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(lessons -> {
                             //update db
-                            db.removeLessons(code);
+                            //db.removeLessons(code);
                             db.addLessons(code, prof, lessons);
                             db.addProfessor(code, prof, getProfessorOfThisSubject(lessons));
                             bindLessonsCache();

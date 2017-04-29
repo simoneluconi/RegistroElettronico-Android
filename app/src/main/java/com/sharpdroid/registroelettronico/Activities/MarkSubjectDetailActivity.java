@@ -117,19 +117,19 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         super.onResume();
 
         subject = db.getSubject(name);
-        data = db.getMarks(subject.getCode(), period);
+        data = db.getMarks(subject.getId(), period);
         setTitle(getSubjectName(subject));
 
         setInfo(subject);
         setOverall(data.getMarks());
         setTarget();
-        setLessons(subject.getCode());
+        setLessons(subject.getId());
         setMarks(data.getMarks());
     }
 
     private void setInfo(Subject subject) {
         infoView.setSubjectDetails(subject);
-        infoView.setEditListener(view -> startActivity(new Intent(this, EditSubjectDetailsActivity.class).putExtra("code", subject.getCode())));
+        infoView.setEditListener(view -> startActivity(new Intent(this, EditSubjectDetailsActivity.class).putExtra("code", subject.getId())));
     }
 
     void setOverall(List<Mark> marks) {
@@ -233,7 +233,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
 
         ContentValues values = new ContentValues();
         values.put("target", String.valueOf((int) new_target));
-        db.editSubject(subject.getCode(), values);
+        db.editSubject(subject.getId(), values);
         subject.setTarget(new_target);
         marksView.setLimitLines(new_target, media.getMediaGenerale());
     }
@@ -246,7 +246,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
                     .getLessons(code, String.valueOf(prof))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(lessons -> {
-                        db.removeLessons(code);
+                        //db.removeLessons(code);
                         db.addLessons(code, prof, lessons);
                         lessonsView.update(db, code);
                         db.addProfessor(code, prof, getProfessorOfThisSubject(lessons));

@@ -100,6 +100,7 @@ public class FragmentLogin extends SlideFragment {
                     RegistroDB db = RegistroDB.getInstance(getContext());
                     db.addProfile(new ProfileDrawerItem().withName(WordUtils.capitalizeFully(login.getName())).withEmail(mEmail));
 
+                    PreferenceManager.getDefaultSharedPreferences(mContext).edit().putBoolean("first_run", false).apply();
 
                     mButtonLogin.setText(R.string.login_riuscito);
                     Toast.makeText(mContext, R.string.login_msg, Toast.LENGTH_SHORT).show();

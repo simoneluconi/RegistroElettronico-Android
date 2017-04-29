@@ -119,7 +119,7 @@ public class FragmentLessons extends Fragment implements SwipeRefreshLayout.OnRe
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(lessons -> {
                             //update subjectsDB
-                            db.removeLessons(code);
+                            //db.removeLessons(code);
                             db.addLessons(code, prof, lessons);
                             db.addProfessor(code, prof, getProfessorOfThisSubject(lessons));
                             bindLessonsCache();

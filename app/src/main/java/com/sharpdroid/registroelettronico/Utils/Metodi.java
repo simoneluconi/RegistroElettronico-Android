@@ -446,7 +446,7 @@ public class Metodi {
                                         String profName = getProfessorOfThisSubject(lessons);
 
                                         db.addSubject(subject);
-                                        db.removeLessons(teacher_code);
+                                        //db.removeLessons(teacher_code);
                                         db.addLessons(subject.getCode(), teacher_code, lessons);
                                         db.addProfessor(subject.getCode(), teacher_code, profName);
 
@@ -491,7 +491,7 @@ public class Metodi {
     public static int[] getCodesFromSubjects(List<Subject> subjects) {
         int[] codes = new int[subjects.size()];
         for (int i = 0; i < subjects.size(); i++) {
-            codes[i] = subjects.get(i).getCode();
+            codes[i] = subjects.get(i).getId();
         }
         return codes;
     }

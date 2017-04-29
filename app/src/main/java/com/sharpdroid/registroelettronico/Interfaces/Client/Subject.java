@@ -4,15 +4,14 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Subject implements Serializable {
-    private int id, code;
+    private int id;
     private String name;
     private float target;
     private String professor, classroom, notes;
     private List<Integer> teacherCode;
 
-    public Subject(int id, int code, String name, float target, String professor, String classroom, String notes, List<Integer> teacherCode) {
+    public Subject(int id, String name, float target, String professor, String classroom, String notes, List<Integer> teacherCode) {
         this.id = id;
-        this.code = code;
         this.name = name;
         this.target = target;
         this.professor = professor;
@@ -23,10 +22,6 @@ public class Subject implements Serializable {
 
     public String getClassroom() {
         return classroom;
-    }
-
-    public int getCode() {
-        return code;
     }
 
     public int getId() {

@@ -1,6 +1,10 @@
 package com.sharpdroid.registroelettronico.Interfaces.API;
 
+import android.util.Base64;
+
 import java.io.Serializable;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 public class Mark implements Serializable {
@@ -49,5 +53,17 @@ public class Mark implements Serializable {
 
     public String getDesc() {
         return desc;
+    }
+
+    public String getHash() {
+        MessageDigest messageDigest;
+        try {
+            messageDigest = MessageDigest.getInstance("SHA-256");
+            messageDigest.update(q.concat(type).concat(date.toString()).concat(mark).concat(desc).getBytes());
+            return Base64.encodeToString(messageDigest.digest(), Base64.DEFAULT);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }

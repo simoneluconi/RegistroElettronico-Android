@@ -120,6 +120,7 @@ public class MainActivity extends AppCompatActivity
         if (db != null) {
             headerResult.setProfiles(db.getProfiles());
             headerResult.addProfiles(new ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true));
+            onProfileChanged(null, db.getProfile(), true);
         }
     }
 
@@ -332,6 +333,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             Log.d("currentProfile", profile.getEmail().getText());
             PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", profile.getEmail().getText()).apply();
+            db.updateProfile();
             updateSubjects(this, db);
             drawer.setSelection(drawer.getDrawerItem(drawer.getCurrentSelection()), true);
         }
