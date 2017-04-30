@@ -431,7 +431,8 @@ public class Metodi {
         return list;
     }
 
-    public static void updateSubjects(Context c, RegistroDB db) {
+    public static void updateSubjects(Context c) {
+        RegistroDB db = RegistroDB.getInstance(c);
         //scarica le materie (nome, id, prof) per poter in seguito modificare a piacere tutte le caratteristiche nel db
         new SpiaggiariApiClient(c)
                 .getSubjects()

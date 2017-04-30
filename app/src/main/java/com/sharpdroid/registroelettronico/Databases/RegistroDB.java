@@ -13,6 +13,9 @@ import com.franmontiel.persistentcookiejar.persistence.SerializableCookie;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.sharpdroid.registroelettronico.Interfaces.API.Event;
+import com.sharpdroid.registroelettronico.Interfaces.API.File;
+import com.sharpdroid.registroelettronico.Interfaces.API.FileTeacher;
+import com.sharpdroid.registroelettronico.Interfaces.API.Folder;
 import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
 import com.sharpdroid.registroelettronico.Interfaces.API.LessonSubject;
 import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
@@ -51,7 +54,7 @@ public class RegistroDB extends SQLiteOpenHelper {
     private final static String TABLE_COOKIES = "cookies";
 
     public static RegistroDB instance;
-    private static int DB_VERSION = 20;
+    private static int DB_VERSION = 24;
     private String current_profile;
     private Context mContext;
 
@@ -84,7 +87,7 @@ public class RegistroDB extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE teachers(id INTEGER NOT NULL, name TEXT NOT NULL, PRIMARY KEY (id));");
         db.execSQL("CREATE TABLE cookies(username TEXT NOT NULL, key TEXT NOT NULL, value TEXT NOT NULL, FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
         db.execSQL("CREATE TABLE api_events(id INTEGER NOT NULL, title TEXT NOT NULL, content TEXT NOT NULL, start INTEGER NOT NULL, end INTEGER NOT NULL, all_day INTEGER NOT NULL, type INTEGER NOT NULL, completed INTEGER, archived INTEGER, username TEXT NOT NULL, teacher_id INTEGER NOT NULL, teacher_name TEXT NOT NULL, PRIMARY KEY (id), FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
-        db.execSQL("CREATE TABLE folders(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, date INTEGER NOT NULL, teacher_id INTEGER NOT NULL, FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE);");
+        db.execSQL("CREATE TABLE folders(id TEXT PRIMARY KEY, name TEXT NOT NULL, date INTEGER NOT NULL);");
         db.execSQL("CREATE TABLE files(id INTEGER NOT NULL, name TEXT NOT NULL, type TEXT NOT NULL, date INTEGER NOT NULL, cksum TEXT, link TEXT, hidden INTEGER NOT NULL, folder_id INTEGER NOT NULL, PRIMARY KEY (id), FOREIGN KEY (folder_id) REFERENCES folders(id) ON DELETE CASCADE);");
         db.execSQL("CREATE TABLE communications(id INTEGER NOT NULL, title TEXT NOT NULL, date INTEGER NOT NULL, type TEXT NOT NULL, username TEXT NOT NULL, PRIMARY KEY (id), FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
         db.execSQL("CREATE TABLE notes(content TEXT NOT NULL, date INTEGER NOT NULL, type TEXT NOT NULL, username TEXT NOT NULL, teacher_id INTEGER NOT NULL, FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE, FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
@@ -92,15 +95,16 @@ public class RegistroDB extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE lessons (id TEXT NOT NULL, date INTEGER NOT NULL, content TEXT NOT NULL, subject_id INTEGER NOT NULL, teacher_id INTEGER NOT NULL, PRIMARY KEY(id), FOREIGN KEY(subject_id) REFERENCES subjects(id) ON DELETE CASCADE, FOREIGN KEY(teacher_id) REFERENCES teachers(id) ON DELETE CASCADE)");
         db.execSQL("CREATE TABLE marks (id TEXT NOT NULL, subject_id INTEGER NOT NULL, mark TEXT NOT NULL, description TEXT, date INTEGER NOT NULL, type TEXT NOT NULL, period TEXT NOT NULL, not_significant INTEGER NOT NULL, PRIMARY KEY(id), FOREIGN KEY(subject_id) REFERENCES subjects(id) ON DELETE CASCADE)");
         db.execSQL("CREATE TABLE subject_teacher(teacher_id INTEGER NOT NULL, subject_id INTEGER NOT NULL, FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE, FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE);");
+        db.execSQL("CREATE TABLE teacher_folder(teacher_id INTEGER, folder_id INTEGER NOT NULL, teacher_name TEXT NOT NULL, username TEXT NOT NULL, FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE, FOREIGN KEY (folder_id) REFERENCES folders(id) ON DELETE CASCADE, FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
         db.execSQL("CREATE TABLE local_events ( id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, content TEXT NOT NULL, type TEXT NOT NULL, day INTEGER NOT NULL, teacher_id INTEGER, subject_id INTEGER, completed INTEGER, archived INTEGER, username TEXT NOT NULL, FOREIGN KEY(username) REFERENCES profiles(username) ON DELETE CASCADE, FOREIGN KEY(teacher_id) REFERENCES teachers(id) ON DELETE CASCADE, FOREIGN KEY(subject_id) REFERENCES subjects(id) ON DELETE CASCADE);");
 
-        if (DB_VERSION != 20)
+        if (DB_VERSION != 24)
             onUpgrade(db, 1, DB_VERSION);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 20) {
+        if (oldVersion < 24) {
             db.execSQL("DROP TABLE IF EXISTS api");
             db.execSQL("DROP TABLE IF EXISTS archive");
             db.execSQL("DROP TABLE IF EXISTS completed");
@@ -119,6 +123,7 @@ public class RegistroDB extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS api_events");
             db.execSQL("DROP TABLE IF EXISTS notes");
             db.execSQL("DROP TABLE IF EXISTS local_events");
+            db.execSQL("DROP TABLE IF EXISTS teacher_folder");
             onCreate(db);
             PreferenceManager.getDefaultSharedPreferences(mContext).edit().putBoolean("first_run", true).apply();
         }
@@ -130,7 +135,7 @@ public class RegistroDB extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
         if (events.size() > 0) {
-            setClass(events.get(0).getClasse_desc());
+            setClassDescription(events.get(0).getClasse_desc());
         }
         for (Event e : events) {
             db.execSQL("INSERT OR REPLACE INTO api_events VALUES(?,?,?,?,?,?,?,(SELECT completed FROM api_events WHERE id = ?),(SELECT archived FROM api_events WHERE id = ?),?,?,?)", new Object[]{e.getId(), e.getTitle(), e.getNota_2(), e.getStart().getTime(), e.getEnd().getTime(), e.isAllDay() ? 1 : 0, e.getTipo(), e.getId(), e.getId(), currentProfile(), e.getAutore_id(), e.getAutore_desc()});
@@ -216,7 +221,7 @@ public class RegistroDB extends SQLiteOpenHelper {
         return s;
     }
 
-    public void setClass(String c) {
+    public void setClassDescription(String c) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put("class", c);
@@ -653,6 +658,69 @@ public class RegistroDB extends SQLiteOpenHelper {
         db.delete(TABLE_COOKIES, null, null);
     }
 
+    //endregion
+
+    //region FOLDERS
+    public void addFileTeachers(List<FileTeacher> fileTeacherList) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String folder_id;
+        db.beginTransaction();
+        for (FileTeacher teacher_folders : fileTeacherList) {
+            for (Folder folder : teacher_folders.getFolders()) {
+                folder.setProfName(teacher_folders.getName());
+                folder_id = folder.getHash();
+                db.execSQL("INSERT OR REPLACE INTO folders VALUES(?,?,?)", new Object[]{folder_id, folder.getName(), folder.getLast().getTime()});
+                //Inserisci solamente se la cartella non è gia presente nel db
+                db.execSQL("INSERT INTO teacher_folder SELECT * FROM (SELECT (SELECT id FROM teachers WHERE lower(name)=?), ?, ?, ?) AS tmp WHERE NOT EXISTS (SELECT folder_id FROM teacher_folder WHERE teacher_id = (SELECT id FROM teachers WHERE lower(name)=? LIMIT 1) AND folder_id=?) LIMIT 1", new Object[]{folder.getProfName().toLowerCase(), folder_id, folder.getProfName(), currentProfile(), folder.getProfName().toLowerCase(), folder_id});
+                for (File f : folder.getElements()) {
+                    db.execSQL("INSERT OR REPLACE INTO files VALUES(?,?,?,?,?,?,?,?)", new Object[]{f.getId(), f.getName(), f.getType(), f.getDate().getTime(), f.getCksum(), f.getLink(), f.isHidden() ? 1 : 0, folder_id});
+                }
+            }
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+    public List<FileTeacher> getFileTeachers() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        //Select from the right user
+        Cursor teachers = db.rawQuery("SELECT teacher_id,teacher_name FROM teacher_folder WHERE username=? GROUP BY teacher_id ", new String[]{currentProfile()});
+        Cursor folders, files;
+
+        List<FileTeacher> teachers_folders = new ArrayList<>();
+        List<Folder> temp_folders = new ArrayList<>();
+        List<File> temp_files = new ArrayList<>();
+        int temp_teacher_id;
+        String temp_teacher_name, temp_folder_id;
+
+        for (teachers.moveToFirst(); !teachers.isAfterLast(); teachers.moveToNext()) {
+            temp_teacher_id = teachers.getInt(0);
+            temp_teacher_name = teachers.getString(1);
+            folders = db.rawQuery("SELECT folders.* FROM teacher_folder LEFT JOIN folders ON folders.id = teacher_folder.folder_id WHERE teacher_id=? OR teacher_name=?", new String[]{String.valueOf(temp_teacher_id), temp_teacher_name});
+
+            for (folders.moveToFirst(); !folders.isAfterLast(); folders.moveToNext()) {
+                temp_folder_id = folders.getString(0);
+                files = db.rawQuery("SELECT * FROM files WHERE folder_id=?", new String[]{temp_folder_id});
+
+                for (files.moveToFirst(); !files.isAfterLast(); files.moveToNext()) {
+                    temp_files.add(new File(files.getString(0), files.getString(1), files.getString(2), new Date(files.getLong(3)), files.getString(4), files.getString(5), files.getInt(6) == 1));
+                }
+
+                temp_folders.add(new Folder(folders.getString(1), new Date(folders.getLong(2)), new ArrayList<>(temp_files)));
+                files.close();
+                temp_files.clear();
+            }
+
+            teachers_folders.add(new FileTeacher(teachers.getString(1), new ArrayList<>(temp_folders)));
+
+            folders.close();
+            temp_folders.clear();
+        }
+
+
+        teachers.close();
+        return teachers_folders;
+    }
     //endregion
 
     private String currentProfile() {

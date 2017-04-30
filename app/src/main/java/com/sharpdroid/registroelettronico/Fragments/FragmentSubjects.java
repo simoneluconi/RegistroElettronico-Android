@@ -21,6 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.dpToPx;
+import static com.sharpdroid.registroelettronico.Utils.Metodi.updateSubjects;
 
 public class FragmentSubjects extends Fragment implements SubjectsAdapter.SubjectListener {
     @BindView(R.id.recycler)
@@ -47,7 +48,7 @@ public class FragmentSubjects extends Fragment implements SubjectsAdapter.Subjec
         db = RegistroDB.getInstance(getContext());
 
         getActivity().setTitle(getString(R.string.lessons));
-
+        updateSubjects(getContext());
         adapter = new SubjectsAdapter(this);
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
         recycler.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getContext()).colorResId(R.color.divider).size(dpToPx(1)).build());

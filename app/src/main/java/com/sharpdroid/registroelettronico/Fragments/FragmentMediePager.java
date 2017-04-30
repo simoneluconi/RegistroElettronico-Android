@@ -31,6 +31,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.CalculateScholasticCredits;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.isNetworkAvailable;
@@ -133,6 +134,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         if (isNetworkAvailable(mContext))
             new SpiaggiariApiClient(mContext)
                     .getMarks()
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(marks -> {
                         mCSwipeRefreshLayout.setRefreshing(false);
