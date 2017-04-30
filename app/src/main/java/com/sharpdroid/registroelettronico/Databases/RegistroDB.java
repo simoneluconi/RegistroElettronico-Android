@@ -172,10 +172,11 @@ public class RegistroDB extends SQLiteOpenHelper {
         values.put("title", e.getTitle());
         values.put("content", e.getContent());
         values.put("type", e.getType());
+        values.put("teacher_id", e.getProfId());
+        values.put("subject_id", e.getSubjectId());
         values.put("day", e.getDay().getTime());
         values.put("username", currentProfile());
         db.insert("local_events", null, values);
-
         db.setTransactionSuccessful();
         db.endTransaction();
     }
@@ -264,14 +265,14 @@ public class RegistroDB extends SQLiteOpenHelper {
     //region ARCHIVE
     public void archive(String id) {
         SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("UPDATE api_events SET archive = ? WHERE id=?", new Object[]{System.currentTimeMillis(), id});
-        db.execSQL("UPDATE local_events SET archive = ? WHERE id=?", new Object[]{System.currentTimeMillis(), id});
+        db.execSQL("UPDATE api_events SET archived = ? WHERE id=?", new Object[]{System.currentTimeMillis(), id});
+        db.execSQL("UPDATE local_events SET archived = ? WHERE id=?", new Object[]{System.currentTimeMillis(), id});
     }
 
     public void clearArchive() {
         SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("UPDATE api_events SET archive = NULL");
-        db.execSQL("UPDATE local_events SET archive = NULL");
+        db.execSQL("UPDATE api_events SET archived = NULL");
+        db.execSQL("UPDATE local_events SET archived = NULL");
     }
     //endregion
 
@@ -436,6 +437,7 @@ public class RegistroDB extends SQLiteOpenHelper {
     }
 
     public String getProfessorName(String teacher_id) {
+        if (TextUtils.isEmpty(teacher_id)) return "";
         SQLiteDatabase db = getReadableDatabase();
         Cursor c = db.rawQuery("SELECT name FROM teachers WHERE id=?", new String[]{teacher_id});
         String s = c.moveToFirst() ? c.getString(0) : "";
