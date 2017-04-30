@@ -23,7 +23,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getProfessorOfThisSubject;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getSubjectName;
@@ -117,7 +116,6 @@ public class FragmentLessons extends Fragment implements SwipeRefreshLayout.OnRe
             for (Integer prof : db.getProfessorCodes(code)) {
                 new SpiaggiariApiClient(getContext())
                         .getLessons(code, String.valueOf(prof))
-                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(lessons -> {
                             //update subjectsDB

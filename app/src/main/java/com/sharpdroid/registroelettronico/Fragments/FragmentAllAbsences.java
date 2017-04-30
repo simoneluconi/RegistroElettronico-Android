@@ -26,7 +26,6 @@ import java.io.File;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.isNetworkAvailable;
 
@@ -89,7 +88,6 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
     private void bindAbsencesCache() {
         new CacheObjectObservable(new File(mContext.getCacheDir(), TAG))
                 .getCachedList(Absences.class)
-                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(absences -> {
                     addAbsences(absences, false);
