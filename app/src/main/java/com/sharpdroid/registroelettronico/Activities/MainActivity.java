@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity
         if (headerResult != null) {
             headerResult.setProfiles(db.getProfiles());
             headerResult.addProfiles(new ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true));
-            headerResult.setActiveProfile(db.getProfile(), false);
+            headerResult.setActiveProfile(db.getProfile().getIdentifier(), false);
             Log.d("MAIN", "RESUME - " + db.getProfile().getEmail() + " - " + headerResult.getActiveProfile().getEmail());
         }
     }
