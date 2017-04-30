@@ -27,6 +27,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
+import static com.sharpdroid.registroelettronico.Utils.Metodi.loginFeedback;
+
 public class FragmentLogin extends SlideFragment {
 
     @BindView(R.id.mail)
@@ -93,14 +95,16 @@ public class FragmentLogin extends SlideFragment {
 
         String oldProfile = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("currentProfile", "");
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString("currentProfile", mEmail).apply();
+        RegistroDB db = RegistroDB.getInstance(getContext());
+        //INSERT IN DB BEFORE REQUEST TO AVOID CONSTRAINT ERRORS
+        db.addProfile(new ProfileDrawerItem().withEmail(mEmail));
 
         new SpiaggiariApiClient(mContext).postLogin(mEmail, mPassword, new DeviceUuidFactory(mContext).getDeviceUuid().toString())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(login -> {
-                    RegistroDB db = RegistroDB.getInstance(getContext());
-                    db.addProfile(new ProfileDrawerItem().withName(WordUtils.capitalizeFully(login.getName())).withEmail(mEmail));
+                    db.updateProfile(new ProfileDrawerItem().withName(WordUtils.capitalizeFully(login.getName())).withEmail(mEmail));
 
-                    PreferenceManager.getDefaultSharedPreferences(mContext).edit().putBoolean("first_run", false).apply();
+                    PreferenceManager.getDefaultSharedPreferences(mContext).edit().putString("currentProfile", mEmail).putBoolean("first_run", false).apply();
 
                     mButtonLogin.setText(R.string.login_riuscito);
                     Toast.makeText(mContext, R.string.login_msg, Toast.LENGTH_SHORT).show();
@@ -108,12 +112,12 @@ public class FragmentLogin extends SlideFragment {
                     updateNavigation();
                     nextSlide();
                 }, error -> {
-                    error.printStackTrace();
-                    mButtonLogin.setText(R.string.login);
-                    Toast.makeText(mContext, R.string.login_msg_failer, Toast.LENGTH_SHORT).show();
+                    loginFeedback(error, getContext());
 
                     PreferenceManager.getDefaultSharedPreferences(mContext).edit().putString("currentProfile", oldProfile).apply();
+                    db.removeProfile(mEmail);
 
+                    mButtonLogin.setText(R.string.login);
                     mEditTextMail.setEnabled(true);
                     mEditTextPassword.setEnabled(true);
                     mButtonLogin.setEnabled(true);

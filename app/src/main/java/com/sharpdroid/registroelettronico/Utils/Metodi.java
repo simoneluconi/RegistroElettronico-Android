@@ -14,6 +14,7 @@ import android.provider.CalendarContract;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
 import android.util.TypedValue;
+import android.widget.Toast;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariAPI;
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
@@ -59,6 +60,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import okhttp3.Cookie;
 import okhttp3.Headers;
 import okhttp3.ResponseBody;
+import retrofit2.HttpException;
 
 public class Metodi {
     public static SimpleDateFormat month_year = new SimpleDateFormat("MMMM yyyy", Locale.ITALIAN);
@@ -447,8 +449,8 @@ public class Metodi {
 
                                         db.addSubject(subject);
                                         //db.removeLessons(teacher_code);
-                                        db.addLessons(subject.getCode(), teacher_code, lessons);
                                         db.addProfessor(subject.getCode(), teacher_code, profName);
+                                        db.addLessons(subject.getCode(), teacher_code, lessons);
 
                                         //Log.d("Trova professore", String.format(Locale.getDefault(), "Professore di %1$s è %2$s", subject.getName(), profName));
                                     }, Throwable::printStackTrace);
@@ -567,6 +569,16 @@ public class Metodi {
         TypedValue outValue = new TypedValue();
         context.getTheme().resolveAttribute(colorAttr, outValue, true);
         return outValue.data;
+    }
+
+    public static void loginFeedback(Throwable error, Context c) {
+        error.printStackTrace();
+        if (error instanceof HttpException) {
+            if (((HttpException) error).code() == 401)
+                Toast.makeText(c, R.string.credenziali, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(c, R.string.login_msg_failer, Toast.LENGTH_SHORT).show();
+        }
     }
 }
 

@@ -109,5 +109,6 @@
     <string name="copia_bs">Copia</string>
     <string name="archivia_bs">Archivia</string>
     <string name="cerca">Cerca</string>
+    <string name="credenziali">Credenziali errate</string>
 
 </resources>
