@@ -28,7 +28,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.dpToPx;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.isNetworkAvailable;
@@ -95,7 +94,6 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
     private void bindNoteCache() {
         new CacheListObservable(new File(getContext().getCacheDir(), TAG))
                 .getCachedList(Note.class)
-                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(notes -> {
                     addNotes(notes, false);

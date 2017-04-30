@@ -32,7 +32,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.dpToPx;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.isNetworkAvailable;
@@ -113,7 +112,6 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
     private void bindCommunicationsCache() {
         new CacheListObservable(new File(getContext().getCacheDir(), TAG))
                 .getCachedList(Communication.class)
-                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(communications -> {
                     addCommunications(communications, false);

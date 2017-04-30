@@ -44,7 +44,6 @@ import java.util.TimeZone;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.addEventToCalendar;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.convertEvents;
@@ -172,7 +171,6 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     private void updateDB() {
         new SpiaggiariApiClient(mContext)
                 .getEvents(0L, Long.MAX_VALUE)
-                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(events -> {
                     Log.d(TAG, "Scaricati " + events.size() + " eventi");

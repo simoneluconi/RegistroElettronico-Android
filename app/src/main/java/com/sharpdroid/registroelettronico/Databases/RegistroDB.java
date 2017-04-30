@@ -723,6 +723,10 @@ public class RegistroDB extends SQLiteOpenHelper {
     }
     //endregion
 
+    //region COMMUNICATIONS
+
+    //endregion
+
     private String currentProfile() {
         if (current_profile == null) updateProfile();
         return current_profile;
