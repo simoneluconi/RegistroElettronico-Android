@@ -23,6 +23,7 @@ import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
 import com.sharpdroid.registroelettronico.Interfaces.API.LessonSubject;
 import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
 import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
+import com.sharpdroid.registroelettronico.Interfaces.API.Note;
 import com.sharpdroid.registroelettronico.Interfaces.Client.AdvancedEvent;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Average;
 import com.sharpdroid.registroelettronico.Interfaces.Client.LocalEvent;
@@ -58,8 +59,7 @@ public class RegistroDB extends SQLiteOpenHelper {
     private final static String TABLE_COOKIES = "cookies";
 
     public static RegistroDB instance;
-    private static int DB_VERSION = 25;
-    private String current_profile;
+    private static int DB_VERSION = 26;
     private Context mContext;
 
     public RegistroDB(Context c) {
@@ -94,7 +94,7 @@ public class RegistroDB extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE folders(id TEXT PRIMARY KEY, name TEXT NOT NULL, date INTEGER NOT NULL);");
         db.execSQL("CREATE TABLE files(id INTEGER NOT NULL, name TEXT NOT NULL, type TEXT NOT NULL, date INTEGER NOT NULL, cksum TEXT, link TEXT, hidden INTEGER NOT NULL, filename TEXT, folder_id INTEGER NOT NULL, PRIMARY KEY (id), FOREIGN KEY (folder_id) REFERENCES folders(id) ON DELETE CASCADE);");
         db.execSQL("CREATE TABLE communications(id INTEGER NOT NULL, title TEXT NOT NULL, content TEXT, date INTEGER NOT NULL, type TEXT NOT NULL, filename TEXT, attachment INTEGER, username TEXT NOT NULL, PRIMARY KEY (id), FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
-        db.execSQL("CREATE TABLE notes(content TEXT NOT NULL, date INTEGER NOT NULL, type TEXT NOT NULL, username TEXT NOT NULL, teacher_id INTEGER NOT NULL, FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE, FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
+        db.execSQL("CREATE TABLE notes(id TEXT PRIMARY KEY, content TEXT, date INTEGER NOT NULL, type TEXT NOT NULL, username TEXT NOT NULL, teacher_id INTEGER NOT NULL, FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE, FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
         db.execSQL("CREATE TABLE subjects(id INTEGER NOT NULL, original_name TEXT NOT NULL, name TEXT, target FLOAT, classroom TEXT, notes TEXT, username TEXT NOT NULL, PRIMARY KEY (id), FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
         db.execSQL("CREATE TABLE lessons (id TEXT NOT NULL, date INTEGER NOT NULL, content TEXT NOT NULL, subject_id INTEGER NOT NULL, teacher_id INTEGER NOT NULL, PRIMARY KEY(id), FOREIGN KEY(subject_id) REFERENCES subjects(id) ON DELETE CASCADE, FOREIGN KEY(teacher_id) REFERENCES teachers(id) ON DELETE CASCADE)");
         db.execSQL("CREATE TABLE marks (id TEXT NOT NULL, subject_id INTEGER NOT NULL, mark TEXT NOT NULL, description TEXT, date INTEGER NOT NULL, type TEXT NOT NULL, period TEXT NOT NULL, not_significant INTEGER NOT NULL, PRIMARY KEY(id), FOREIGN KEY(subject_id) REFERENCES subjects(id) ON DELETE CASCADE)");
@@ -102,13 +102,13 @@ public class RegistroDB extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE teacher_folder(teacher_id INTEGER, folder_id INTEGER NOT NULL, teacher_name TEXT NOT NULL, username TEXT NOT NULL, FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE, FOREIGN KEY (folder_id) REFERENCES folders(id) ON DELETE CASCADE, FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
         db.execSQL("CREATE TABLE local_events ( id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, content TEXT NOT NULL, type TEXT NOT NULL, day INTEGER NOT NULL, teacher_id INTEGER, subject_id INTEGER, completed INTEGER, archived INTEGER, username TEXT NOT NULL, FOREIGN KEY(username) REFERENCES profiles(username) ON DELETE CASCADE, FOREIGN KEY(teacher_id) REFERENCES teachers(id) ON DELETE CASCADE, FOREIGN KEY(subject_id) REFERENCES subjects(id) ON DELETE CASCADE);");
 
-        if (DB_VERSION != 25)
+        if (DB_VERSION != 26)
             onUpgrade(db, 1, DB_VERSION);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 25) {
+        if (oldVersion < 26) {
             db.execSQL("DROP TABLE IF EXISTS api");
             db.execSQL("DROP TABLE IF EXISTS archive");
             db.execSQL("DROP TABLE IF EXISTS completed");
@@ -798,14 +798,33 @@ public class RegistroDB extends SQLiteOpenHelper {
     }
     //endregion
 
-    private String currentProfile() {
-        if (current_profile == null) updateProfile();
-        return current_profile;
+    //region NOTES
+    public void addNotes(List<Note> noteList) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        for (Note n : noteList) {
+            db.execSQL("INSERT OR IGNORE INTO notes VALUES(?,?,?,?,?,(select id from teachers where lower(name)=? limit 1))", new Object[]{n.getHash(), n.getContent(), n.getDate().getTime(), n.getType(), currentProfile(), n.getTeacher().toLowerCase()});
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
     }
 
-    public void updateProfile() {
-        current_profile = PreferenceManager.getDefaultSharedPreferences(mContext).getString("currentProfile", "");
+    public List<Note> getNotes() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT teachers.name, notes.content, notes.date, notes.type FROM notes LEFT JOIN teachers ON teachers.id=notes.teacher_id WHERE notes.username=? ORDER BY notes.date DESC", new String[]{currentProfile()});
+        List<Note> list = new ArrayList<>();
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            list.add(new Note(c.getString(0), c.getString(1), new Date(c.getLong(2)), c.getString(3)));
+        }
+        c.close();
+        return list;
     }
+    //endregion
+
+    private String currentProfile() {
+        return PreferenceManager.getDefaultSharedPreferences(mContext).getString("currentProfile", "");
+    }
+
 
     public enum Period {
         FIRST("q1"),

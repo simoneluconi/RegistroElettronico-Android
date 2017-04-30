@@ -85,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
                 .subscribe(login -> {
                     db.updateProfile(new ProfileDrawerItem().withName(WordUtils.capitalizeFully(login.getName())).withEmail(mEmail));
 
-                    PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", mEmail).apply();
+                    PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", mEmail).putBoolean("first_run", false).apply();
                     mButtonLogin.setText(R.string.login_riuscito);
                     Toast.makeText(this, R.string.login_msg, Toast.LENGTH_SHORT).show();
                     finish();
