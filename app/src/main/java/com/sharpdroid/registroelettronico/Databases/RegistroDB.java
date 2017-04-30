@@ -254,7 +254,7 @@ public class RegistroDB extends SQLiteOpenHelper {
 
     public boolean isCompleted(String id) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT api_events.id, api_events.completed FROM api_events WHERE id=? AND completed IS NULL UNION ALL SELECT local_events.id, local_events.completed FROM local_events WHERE id=? AND completed IS NULL", new String[]{id, id});
+        Cursor c = db.rawQuery("SELECT api_events.id, api_events.completed FROM api_events WHERE id=? AND completed IS NOT NULL UNION ALL SELECT local_events.id, local_events.completed FROM local_events WHERE id=? AND completed IS NOT NULL", new String[]{id, id});
         boolean completed = c.moveToFirst();
         c.close();
         return completed;
