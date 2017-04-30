@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sharpdroid.registroelettronico.Adapters.FileAdapter;
-import com.sharpdroid.registroelettronico.Databases.FilesDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Folder;
 import com.sharpdroid.registroelettronico.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -22,7 +21,6 @@ import static com.sharpdroid.registroelettronico.Utils.Metodi.dpToPx;
 public class FragmentFiles extends Fragment {
     private Folder data;
     private FileAdapter mRVAdapter;
-    private FilesDB db;
 
     public FragmentFiles() {
     }
@@ -57,8 +55,7 @@ public class FragmentFiles extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);
         CoordinatorLayout coordinatorLayout = (CoordinatorLayout) view;
-        db = new FilesDB(getContext());
-        mRVAdapter = new FileAdapter(getContext(), coordinatorLayout, db);
+        mRVAdapter = new FileAdapter(getContext(), coordinatorLayout);
         addSubjects(data);
         setTitle(data.getName().trim());
 
