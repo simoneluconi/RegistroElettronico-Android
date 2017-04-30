@@ -85,42 +85,17 @@ public class MainActivity extends AppCompatActivity
         } else {
             init(savedInstanceState);
         }
-
-        fragmentManager = getSupportFragmentManager();
-        fragmentManager.addOnBackStackChangedListener(() -> {
-            canOpenDrawer = fragmentManager.getBackStackEntryCount() == 0;
-            if (toggle != null) {
-                if (!canOpenDrawer) {
-                    anim = ObjectAnimator.ofFloat(toggle.getDrawerArrowDrawable(), "progress", 1f);
-                    anim.setInterpolator(new DecelerateInterpolator(1f));
-                    anim.setDuration(250);
-                    anim.start();
-                    drawer.getDrawerLayout().removeDrawerListener(toggle);
-                } else {
-                    anim = ObjectAnimator.ofFloat(toggle.getDrawerArrowDrawable(), "progress", 0f);
-                    anim.setInterpolator(new DecelerateInterpolator(1f));
-                    anim.setDuration(250);
-                    anim.start();
-                    drawer.getDrawerLayout().addDrawerListener(toggle);
-                }
-            }
-        });
-        toolbar.setNavigationOnClickListener(v -> {
-            if (canOpenDrawer) {
-                drawer.getDrawerLayout().openDrawer(GravityCompat.START);
-            } else {
-                fragmentManager.popBackStack();
-            }
-        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (db != null) {
+        if (db == null) db = RegistroDB.getInstance(this);
+        if (headerResult != null) {
             headerResult.setProfiles(db.getProfiles());
             headerResult.addProfiles(new ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true));
-            onProfileChanged(null, db.getProfile(), true);
+            headerResult.setActiveProfile(db.getProfile(), false);
+            Log.d("MAIN", "RESUME - " + db.getProfile().getEmail() + " - " + headerResult.getActiveProfile().getEmail());
         }
     }
 
@@ -155,7 +130,6 @@ public class MainActivity extends AppCompatActivity
                 .withOnAccountHeaderItemLongClickListener(this)
                 .withOnAccountHeaderListener(this)
                 .build();
-        headerResult.setActiveProfile(db.getProfile());
 
         drawer = new DrawerBuilder()
                 .withActivity(this)
@@ -185,6 +159,7 @@ public class MainActivity extends AppCompatActivity
             drawer.getDrawerLayout().addDrawerListener(toggle);
             toggle.syncState();
         }
+        Log.d("MAIN", "INIT");
     }
 
     @Override
@@ -199,11 +174,38 @@ public class MainActivity extends AppCompatActivity
     public void clearBackstack() {
         if (fragmentManager != null)
             fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-
     }
 
     private void init(Bundle savedInstanceState) {
         initDrawer();
+
+        fragmentManager = getSupportFragmentManager();
+        fragmentManager.addOnBackStackChangedListener(() -> {
+            canOpenDrawer = fragmentManager.getBackStackEntryCount() == 0;
+            Log.d("MAIN", "BACKSTACK " + (canOpenDrawer ? "=" : ">") + " 0");
+            if (toggle != null) {
+                if (!canOpenDrawer) {
+                    anim = ObjectAnimator.ofFloat(toggle.getDrawerArrowDrawable(), "progress", 1f);
+                    anim.setInterpolator(new DecelerateInterpolator(1f));
+                    anim.setDuration(250);
+                    anim.start();
+                    drawer.getDrawerLayout().removeDrawerListener(toggle);
+                } else {
+                    anim = ObjectAnimator.ofFloat(toggle.getDrawerArrowDrawable(), "progress", 0f);
+                    anim.setInterpolator(new DecelerateInterpolator(1f));
+                    anim.setDuration(250);
+                    anim.start();
+                    drawer.getDrawerLayout().addDrawerListener(toggle);
+                }
+            }
+        });
+        toolbar.setNavigationOnClickListener(v -> {
+            if (canOpenDrawer) {
+                drawer.getDrawerLayout().openDrawer(GravityCompat.START);
+            } else {
+                fragmentManager.popBackStack();
+            }
+        });
 
         if (needUpdate) {
             updateSubjects(this, db);
@@ -248,11 +250,6 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Click listener for drawer's items
-     *
-     * @param view       null
-     * @param position   position of the clicked item
-     * @param drawerItem the clicked item
-     * @return true
      */
     @Override
     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
@@ -332,9 +329,12 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(this, LoginActivity.class));
         } else {
             Log.d("currentProfile", profile.getEmail().getText());
+
             PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", profile.getEmail().getText()).apply();
             db.updateProfile();
+
             updateSubjects(this, db);
+            //Update fragment
             drawer.setSelection(drawer.getDrawerItem(drawer.getCurrentSelection()), true);
         }
         return false;
@@ -345,9 +345,10 @@ public class MainActivity extends AppCompatActivity
         if (!(profile instanceof ProfileSettingDrawerItem)) {
             new MaterialDialog.Builder(this).title("Eliminare il profilo?").content("Continuare con l'eliminazione di " + profile.getEmail().getText() + " ?").positiveText("SI").negativeText("NO").onPositive((dialog, which) -> {
                 db.removeProfile(profile.getEmail().getText());
-                headerResult.clear();
-                headerResult.setProfiles(db.getProfiles());
-                headerResult.addProfiles(new ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true));
+                //headerResult.clear();
+                headerResult.removeProfile(profile);
+                //headerResult.setProfiles(db.getProfiles());
+                //headerResult.addProfiles(new ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true));
 
                 if (db.getProfiles().size() > 0) {
                     PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", db.getProfiles().get(0).getEmail().getText()).apply();

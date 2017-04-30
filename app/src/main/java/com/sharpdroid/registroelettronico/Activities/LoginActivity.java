@@ -24,6 +24,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
+import static com.sharpdroid.registroelettronico.Utils.Metodi.loginFeedback;
+
 public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.mail)
     TextInputEditText mEditTextMail;
@@ -75,22 +77,24 @@ public class LoginActivity extends AppCompatActivity {
         String oldProfile = PreferenceManager.getDefaultSharedPreferences(this).getString("currentProfile", "");
         PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", mEmail).apply();
 
+        //INSERT IN DB BEFORE REQUEST TO AVOID CONSTRAINT ERRORS
+        db.addProfile(new ProfileDrawerItem().withEmail(mEmail));
+
         new SpiaggiariApiClient(this).postLogin(mEmail, mPassword, new DeviceUuidFactory(this).getDeviceUuid().toString())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(login -> {
-                    if (!db.isUserLogged(mEmail)) {
-                        db.addProfile(new ProfileDrawerItem().withName(WordUtils.capitalizeFully(login.getName())).withEmail(mEmail));
-                    }
+                    db.updateProfile(new ProfileDrawerItem().withName(WordUtils.capitalizeFully(login.getName())).withEmail(mEmail));
 
                     mButtonLogin.setText(R.string.login_riuscito);
                     Toast.makeText(this, R.string.login_msg, Toast.LENGTH_SHORT).show();
                     finish();
                 }, error -> {
-                    error.printStackTrace();
-                    mButtonLogin.setText(R.string.login);
-                    Toast.makeText(this, R.string.login_msg_failer, Toast.LENGTH_SHORT).show();
-                    PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", oldProfile).apply();
+                    loginFeedback(error, this);
 
+                    PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", oldProfile).apply();
+                    db.removeProfile(mEmail);
+
+                    mButtonLogin.setText(R.string.login);
                     mEditTextMail.setEnabled(true);
                     mEditTextPassword.setEnabled(true);
                     mButtonLogin.setEnabled(true);

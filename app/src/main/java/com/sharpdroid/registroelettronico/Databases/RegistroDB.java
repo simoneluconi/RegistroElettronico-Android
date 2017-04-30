@@ -25,6 +25,9 @@ import com.sharpdroid.registroelettronico.Utils.Metodi;
 
 import org.apache.commons.lang3.text.WordUtils;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -48,7 +51,7 @@ public class RegistroDB extends SQLiteOpenHelper {
     private final static String TABLE_COOKIES = "cookies";
 
     public static RegistroDB instance;
-    private static int DB_VERSION = 14;
+    private static int DB_VERSION = 20;
     private String current_profile;
     private Context mContext;
 
@@ -58,7 +61,8 @@ public class RegistroDB extends SQLiteOpenHelper {
     }
 
     public static synchronized RegistroDB getInstance(Context c) {
-        if (instance == null) instance = new RegistroDB(c);
+        if (instance == null)
+            instance = new RegistroDB(c);
         return instance;
     }
 
@@ -69,28 +73,34 @@ public class RegistroDB extends SQLiteOpenHelper {
     }
 
     @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        db.execSQL("PRAGMA foreign_keys=ON");
+    }
+
+    @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE profiles(username TEXT NOT NULL, name TEXT NOT NULL, class TEXT, PRIMARY KEY (username));");
+        db.execSQL("CREATE TABLE profiles(username TEXT NOT NULL, name TEXT, class TEXT, PRIMARY KEY (username));");
         db.execSQL("CREATE TABLE teachers(id INTEGER NOT NULL, name TEXT NOT NULL, PRIMARY KEY (id));");
         db.execSQL("CREATE TABLE cookies(username TEXT NOT NULL, key TEXT NOT NULL, value TEXT NOT NULL, FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
         db.execSQL("CREATE TABLE api_events(id INTEGER NOT NULL, title TEXT NOT NULL, content TEXT NOT NULL, start INTEGER NOT NULL, end INTEGER NOT NULL, all_day INTEGER NOT NULL, type INTEGER NOT NULL, completed INTEGER, archived INTEGER, username TEXT NOT NULL, teacher_id INTEGER NOT NULL, teacher_name TEXT NOT NULL, PRIMARY KEY (id), FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
         db.execSQL("CREATE TABLE folders(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, date INTEGER NOT NULL, teacher_id INTEGER NOT NULL, FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE);");
         db.execSQL("CREATE TABLE files(id INTEGER NOT NULL, name TEXT NOT NULL, type TEXT NOT NULL, date INTEGER NOT NULL, cksum TEXT, link TEXT, hidden INTEGER NOT NULL, folder_id INTEGER NOT NULL, PRIMARY KEY (id), FOREIGN KEY (folder_id) REFERENCES folders(id) ON DELETE CASCADE);");
-        db.execSQL("CREATE TABLE communications(id INTEGER NOT NULL, title TEXT NOT NULL, date INTEGER NOT NULL, type TEXT NOT NULL, username TEXT NOT NULL, PRIMARY KEY (id), FOREIGN KEY (username) REFERENCES profiles(username));");
-        db.execSQL("CREATE TABLE notes(content TEXT NOT NULL, date INTEGER NOT NULL, type TEXT NOT NULL, username TEXT NOT NULL, teacher_id INTEGER NOT NULL, FOREIGN KEY (teacher_id) REFERENCES teachers(id), FOREIGN KEY (username) REFERENCES profiles(username));");
+        db.execSQL("CREATE TABLE communications(id INTEGER NOT NULL, title TEXT NOT NULL, date INTEGER NOT NULL, type TEXT NOT NULL, username TEXT NOT NULL, PRIMARY KEY (id), FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
+        db.execSQL("CREATE TABLE notes(content TEXT NOT NULL, date INTEGER NOT NULL, type TEXT NOT NULL, username TEXT NOT NULL, teacher_id INTEGER NOT NULL, FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE, FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
         db.execSQL("CREATE TABLE subjects(id INTEGER NOT NULL, original_name TEXT NOT NULL, name TEXT, target FLOAT, classroom TEXT, notes TEXT, username TEXT NOT NULL, PRIMARY KEY (id), FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
-        db.execSQL("CREATE TABLE lessons (id TEXT NOT NULL, date INTEGER NOT NULL, content TEXT NOT NULL, subject_id INTEGER NOT NULL, teacher_id INTEGER NOT NULL, PRIMARY KEY(id), FOREIGN KEY(subject_id) REFERENCES subjects(id), FOREIGN KEY(teacher_id) REFERENCES teachers(id))");
+        db.execSQL("CREATE TABLE lessons (id TEXT NOT NULL, date INTEGER NOT NULL, content TEXT NOT NULL, subject_id INTEGER NOT NULL, teacher_id INTEGER NOT NULL, PRIMARY KEY(id), FOREIGN KEY(subject_id) REFERENCES subjects(id) ON DELETE CASCADE, FOREIGN KEY(teacher_id) REFERENCES teachers(id) ON DELETE CASCADE)");
         db.execSQL("CREATE TABLE marks (id TEXT NOT NULL, subject_id INTEGER NOT NULL, mark TEXT NOT NULL, description TEXT, date INTEGER NOT NULL, type TEXT NOT NULL, period TEXT NOT NULL, not_significant INTEGER NOT NULL, PRIMARY KEY(id), FOREIGN KEY(subject_id) REFERENCES subjects(id) ON DELETE CASCADE)");
         db.execSQL("CREATE TABLE subject_teacher(teacher_id INTEGER NOT NULL, subject_id INTEGER NOT NULL, FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE, FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE);");
         db.execSQL("CREATE TABLE local_events ( id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, content TEXT NOT NULL, type TEXT NOT NULL, day INTEGER NOT NULL, teacher_id INTEGER, subject_id INTEGER, completed INTEGER, archived INTEGER, username TEXT NOT NULL, FOREIGN KEY(username) REFERENCES profiles(username) ON DELETE CASCADE, FOREIGN KEY(teacher_id) REFERENCES teachers(id) ON DELETE CASCADE, FOREIGN KEY(subject_id) REFERENCES subjects(id) ON DELETE CASCADE);");
 
-        if (DB_VERSION != 14)
+        if (DB_VERSION != 20)
             onUpgrade(db, 1, DB_VERSION);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 14) {
+        if (oldVersion < 20) {
             db.execSQL("DROP TABLE IF EXISTS api");
             db.execSQL("DROP TABLE IF EXISTS archive");
             db.execSQL("DROP TABLE IF EXISTS completed");
@@ -373,20 +383,13 @@ public class RegistroDB extends SQLiteOpenHelper {
         db.endTransaction();
     }
 
-    /*public void removeLessons(int code) {
-        SQLiteDatabase db = getWritableDatabase();
-        db.beginTransaction();
-        db.delete(TABLE_LESSONS, lessons[1] + "=?", new String[]{String.valueOf(code)});
-        db.setTransactionSuccessful();
-        db.endTransaction();
-    }*/
     //endregion
 
     //region PROFESSORS
     public void addProfessor(int subject_id, int teacher_id, String teacher_name) {
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("INSERT OR IGNORE INTO teachers VALUES(?,?)", new Object[]{teacher_id, teacher_name});
-        //inserisci se in subject_teacher non esiste un record teacher_id-subject_id
+        //inserisci se in subject_teacher non esiste un record (teacher_id, subject_id)
         db.execSQL("INSERT INTO subject_teacher SELECT * FROM (SELECT ?, ?) AS tmp WHERE NOT EXISTS (SELECT teacher_id FROM subject_teacher WHERE teacher_id = ? AND subject_id=?) LIMIT 1", new Object[]{teacher_id, subject_id, teacher_id, subject_id});
     }
 
@@ -546,20 +549,32 @@ public class RegistroDB extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-        cv.put("name", profile.getName().getText());
+        if (profile.getName() != null) cv.put("name", profile.getName().getText());
         cv.put("username", profile.getEmail().getText());
 
-        db.insert(TABLE_PROFILES, null, cv);
+        db.insertWithOnConflict(TABLE_PROFILES, null, cv, SQLiteDatabase.CONFLICT_IGNORE);
+    }
 
+    public void updateProfile(IProfile profile) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put("name", profile.getName().getText());
+
+        db.update("profiles", cv, "username=?", new String[]{profile.getEmail().getText()});
     }
 
     public List<IProfile> getProfiles() {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM profiles", null);
+        Cursor c = db.rawQuery("SELECT username, name FROM profiles", null);
         List<IProfile> profiles = new ArrayList<>();
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            profiles.add(new ProfileDrawerItem().withName(c.getString(1)).withEmail(c.getString(0)).withNameShown(true).withIcon(AccountImage(c.getString(1))));
+            try {
+                profiles.add(new ProfileDrawerItem().withName(c.getString(1)).withEmail(c.getString(0)).withNameShown(true).withIcon(AccountImage(c.getString(1))).withIdentifier(new BigInteger(MessageDigest.getInstance("SHA-256").digest(c.getString(0).getBytes())).longValue()));
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
         }
 
         c.close();
@@ -582,10 +597,14 @@ public class RegistroDB extends SQLiteOpenHelper {
 
     public IProfile getProfile() {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM profiles WHERE username=?", new String[]{currentProfile()});
+        Cursor c = db.rawQuery("SELECT username, name FROM profiles WHERE username=?", new String[]{currentProfile()});
         ProfileDrawerItem iProfile = new ProfileDrawerItem();
         if (c.moveToFirst()) {
-            iProfile.withName(c.getString(1)).withEmail(c.getString(0)).withNameShown(true).withIcon(AccountImage(c.getString(1)));
+            try {
+                iProfile.withName(c.getString(1)).withEmail(c.getString(0)).withNameShown(true).withIcon(AccountImage(c.getString(1))).withIdentifier(new BigInteger(MessageDigest.getInstance("SHA-256").digest(c.getString(0).getBytes())).longValue());
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
         }
         c.close();
         return iProfile;
