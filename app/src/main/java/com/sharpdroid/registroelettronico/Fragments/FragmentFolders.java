@@ -12,20 +12,17 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Adapters.FolderAdapter;
+import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.FileTeacher;
 import com.sharpdroid.registroelettronico.Interfaces.API.Folder;
 import com.sharpdroid.registroelettronico.R;
-import com.sharpdroid.registroelettronico.Tasks.CacheListObservable;
-import com.sharpdroid.registroelettronico.Tasks.CacheListTask;
 
-import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
@@ -44,6 +41,7 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
     Context mContext;
     FolderAdapter mRVAdapter;
     ActionBar supportActionBar;
+    RegistroDB db;
 
     public FragmentFolders() {
     }
@@ -72,6 +70,8 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
                 R.color.greenmaterial,
                 R.color.orangematerial);
 
+        db = RegistroDB.getInstance(getContext());
+
         getActivity().setTitle(getString(R.string.files));
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);
         mRecyclerView.setHasFixedSize(true);
@@ -81,9 +81,8 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
         mRVAdapter = new FolderAdapter(this);
         mRecyclerView.setAdapter(mRVAdapter);
 
-        bindFileTeacherCache();
-
-        UpdateFiles();
+        load();
+        update();
 
     }
 
@@ -93,33 +92,28 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
 
             if (docache) {
                 // Update cache
-                new CacheListTask(mContext.getCacheDir(), TAG).execute((List) result);
+                db.addFileTeachers(result);
             }
         }
     }
 
-    private void bindFileTeacherCache() {
-        new CacheListObservable(new File(mContext.getCacheDir(), TAG))
-                .getCachedList(FileTeacher.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(files -> {
-                    addFiles(files, false);
-                    Log.d(TAG, "Restored cache");
-                }, Throwable::printStackTrace);
+    private void load() {
+        addFiles(db.getFileTeachers(), false);
     }
 
     public void onRefresh() {
-        UpdateFiles();
+        update();
     }
 
-    private void UpdateFiles() {
+    private void update() {
         mSwipeRefreshLayout.setRefreshing(true);
         new SpiaggiariApiClient(mContext)
                 .getFiles()
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(files -> {
-                    addFiles(files, true);
+                    db.addFileTeachers(files);
+                    load();
                     mSwipeRefreshLayout.setRefreshing(false);
                 }, error -> {
                     error.printStackTrace();

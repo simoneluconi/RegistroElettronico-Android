@@ -182,7 +182,6 @@ public class MainActivity extends AppCompatActivity
         fragmentManager = getSupportFragmentManager();
         fragmentManager.addOnBackStackChangedListener(() -> {
             canOpenDrawer = fragmentManager.getBackStackEntryCount() == 0;
-            Log.d("MAIN", "BACKSTACK " + (canOpenDrawer ? "=" : ">") + " 0");
             if (toggle != null) {
                 if (!canOpenDrawer) {
                     anim = ObjectAnimator.ofFloat(toggle.getDrawerArrowDrawable(), "progress", 1f);
@@ -208,7 +207,7 @@ public class MainActivity extends AppCompatActivity
         });
 
         if (needUpdate) {
-            updateSubjects(this, db);
+            updateSubjects(this);
             needUpdate = false;
         }
 
@@ -318,8 +317,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
         RegistroDB.getInstance(this).close();
     }
 
@@ -333,7 +332,7 @@ public class MainActivity extends AppCompatActivity
             PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", profile.getEmail().getText()).apply();
             db.updateProfile();
 
-            updateSubjects(this, db);
+            updateSubjects(this);
             //Update fragment
             drawer.setSelection(drawer.getDrawerItem(drawer.getCurrentSelection()), true);
         }
