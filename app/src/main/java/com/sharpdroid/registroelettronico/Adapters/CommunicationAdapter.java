@@ -20,8 +20,8 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
-import com.sharpdroid.registroelettronico.Databases.CommunicationsDB;
-import com.sharpdroid.registroelettronico.Interfaces.API.Communication;
+import com.sharpdroid.registroelettronico.Databases.RegistroDB;
+import com.sharpdroid.registroelettronico.Interfaces.Client.SuperCommunication;
 import com.sharpdroid.registroelettronico.R;
 
 import java.io.File;
@@ -43,21 +43,21 @@ import static com.sharpdroid.registroelettronico.Utils.Metodi.writeResponseBodyT
 
 public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdapter.CommunicationHolder> implements Filterable {
     private static final String TAG = CommunicationAdapter.class.getSimpleName();
-    private final List<Communication> CVDataList = new CopyOnWriteArrayList<>();
-    private final List<Communication> filtered = new CopyOnWriteArrayList<>();
+    private final List<SuperCommunication> CVDataList = new CopyOnWriteArrayList<>();
+    private final List<SuperCommunication> filtered = new CopyOnWriteArrayList<>();
     private final Context mContext;
     private final CoordinatorLayout mCoordinatorLayout;
     private final SimpleDateFormat formatter = new SimpleDateFormat("d MMM", Locale.ITALIAN);
     private ItemFilter mFilter = new ItemFilter();
-    private CommunicationsDB db;
+    private RegistroDB db;
 
-    public CommunicationAdapter(Context mContext, CoordinatorLayout mCoordinatorLayout, CommunicationsDB db) {
+    public CommunicationAdapter(Context mContext, CoordinatorLayout mCoordinatorLayout) {
         this.mContext = mContext;
         this.mCoordinatorLayout = mCoordinatorLayout;
-        this.db = db;
+        this.db = RegistroDB.getInstance(mContext);
     }
 
-    public void addAll(Collection<Communication> list) {
+    public void addAll(Collection<SuperCommunication> list) {
         CVDataList.addAll(list);
         filtered.addAll(list);
         notifyDataSetChanged();
@@ -78,58 +78,65 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
 
     @Override
     public void onBindViewHolder(CommunicationHolder ViewHolder, int i) {
-        final Communication communication = filtered.get(ViewHolder.getAdapterPosition());
+        final SuperCommunication communication = filtered.get(i);
 
         ViewHolder.Title.setText(communication.getTitle().trim());
         ViewHolder.Date.setText(formatter.format(communication.getDate()));
         ViewHolder.Type.setText(communication.getType());
 
         ViewHolder.mRelativeLayout.setOnClickListener(v -> {
-            // QUANDO L'UTENTE CLICCA SCARICARE MAGGIORI INFORMAZIONI
-            new SpiaggiariApiClient(mContext)
-                    .getCommunicationDesc(communication.getId())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(communicationDescription -> {
-                        MaterialDialog.Builder dialog = new MaterialDialog.Builder(mContext)
-                                .title(communicationDescription.getLongTitle().trim())
-                                .content(communicationDescription.getDesc().trim())
-                                .positiveText(R.string.ok);
-
-                        if (communicationDescription.isAttachment()) {
-                            dialog.neutralText(db.isPresent(communication.getId()) ? "APRI" : "SCARICA");
-
-                            dialog.onNeutral((dialog1, which) -> {
-                                Snackbar DownloadProgressSnack = Snackbar.make(mCoordinatorLayout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE);
-
-                                File dir = new File(
-                                        Environment.getExternalStorageDirectory() +
-                                                File.separator +
-                                                "Registro Elettronico" + File.separator + "Circolari");
-
-                                if (!dir.exists() && !dir.mkdirs()) {
-                                    Log.d(TAG, "Failed to create download directory");
-                                    return;
-                                }
-
-                                if (!db.isPresent(communication.getId())) {
-                                    DownloadFile(communication, dir, db, DownloadProgressSnack, true);
-                                } else {
-                                    String filename = db.getFileName(communication.getId());
-                                    File file = new File(dir + File.separator + filename);
-                                    if (file.exists())
-                                        openfile(file);
-                                    else
-                                        DownloadFile(communication, dir, db, DownloadProgressSnack, false);
-                                }
-
-
-                            });
-                        }
-
-                        dialog.build().show();
-
-                    }, Throwable::printStackTrace);
+            if (communication.isContent()) {
+                dialog(communication.getId(), communication.getTitle(), communication.getContent(), communication.isAttachment(), communication.getFilename()).build().show();
+            } else {
+                // SCARICA PIU' INFORMAZIONI
+                new SpiaggiariApiClient(mContext)
+                        .getCommunicationDesc(communication.getId())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(communicationDescription -> {
+                            db.updateCommunication(communication.getId(), communicationDescription);
+                            dialog(communication.getId(), communication.getTitle(), communicationDescription.getDesc(), communicationDescription.isAttachment(), null).build().show();
+                        }, Throwable::printStackTrace);
+            }
         });
+    }
+
+    private MaterialDialog.Builder dialog(int id, String title, String content, boolean attachment, String filename) {
+        MaterialDialog.Builder dialog = new MaterialDialog.Builder(mContext)
+                .title(title.trim())
+                .content(content.trim())
+                .positiveText(R.string.ok);
+
+        return showActions(dialog, id, attachment, filename);
+    }
+
+    private MaterialDialog.Builder showActions(MaterialDialog.Builder dialog, int id, boolean attachment, String filename) {
+        if (attachment) {
+            dialog.neutralText(!TextUtils.isEmpty(filename) ? "APRI" : "SCARICA");
+
+            dialog.onNeutral((dialog1, which) -> {
+                Snackbar DownloadProgressSnack = Snackbar.make(mCoordinatorLayout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE);
+
+                File dir = new File(Environment.getExternalStorageDirectory() + File.separator + "Registro Elettronico" + File.separator + "Circolari");
+
+                if (!dir.exists() && !dir.mkdirs()) {
+                    Log.d(TAG, "Failed to create download directory");
+                    return;
+                }
+
+                if (TextUtils.isEmpty(filename)) {
+                    download(id, dir, DownloadProgressSnack, true);
+                } else {
+                    File file = new File(dir + File.separator + filename);
+                    if (file.exists())
+                        open(file);
+                    else
+                        download(id, dir, DownloadProgressSnack, false);
+                }
+
+
+            });
+        }
+        return dialog;
     }
 
     @Override
@@ -137,16 +144,10 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
         return filtered.size();
     }
 
-    private void askfileopen(File file, Snackbar DownloadProgressSnak) {
-        DownloadProgressSnak.setText(mContext.getString(R.string.file_downloaded, file.getName()));
-        DownloadProgressSnak.setAction(R.string.open, v -> openfile(file));
-        DownloadProgressSnak.show();
-    }
-
-    private void DownloadFile(Communication communication, File dir, CommunicationsDB db, Snackbar DownloadProgressSnak, boolean addRecord) {
+    private void download(int id, File dir, Snackbar DownloadProgressSnak, boolean addRecord) {
         DownloadProgressSnak.show();
         new SpiaggiariApiClient(mContext)
-                .getCommunicationDownload(communication.getId())
+                .getCommunicationDownload(id)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(communication_file -> {
                     Headers headers = communication_file.headers();
@@ -154,8 +155,8 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
                     File file = new File(dir + File.separator + filename);
                     writeResponseBodyToDisk(communication_file.body(), file);
                     if (addRecord)
-                        db.addRecord(filename, communication.getId());
-                    askfileopen(file, DownloadProgressSnak);
+                        db.setCommunicationFilename(id, filename);
+                    onDownloadCompleted(file, DownloadProgressSnak);
                 }, error -> {
                     error.printStackTrace();
                     DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, error.getLocalizedMessage()));
@@ -164,7 +165,13 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
 
     }
 
-    private void openfile(File file) {
+    private void onDownloadCompleted(File file, Snackbar DownloadProgressSnak) {
+        DownloadProgressSnak.setText(mContext.getString(R.string.file_downloaded, file.getName()));
+        DownloadProgressSnak.setAction(R.string.open, v -> open(file));
+        DownloadProgressSnak.show();
+    }
+
+    private void open(File file) {
         String mime = URLConnection.guessContentTypeFromName(file.toString());
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(FileProvider.getUriForFile(mContext, mContext.getPackageName() + ".fileprovider", file), mime);
@@ -201,11 +208,11 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
     private class ItemFilter extends Filter {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            List<Communication> list = new ArrayList<>();
+            List<SuperCommunication> list = new ArrayList<>();
             FilterResults filterResults = new FilterResults();
 
             if (!TextUtils.isEmpty(constraint)) {
-                for (Communication c : CVDataList) {
+                for (SuperCommunication c : CVDataList) {
                     if (c.getTitle().toLowerCase().contains(constraint.toString().toLowerCase()))
                         list.add(c);
                 }
@@ -222,7 +229,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             filtered.clear();
-            filtered.addAll((Collection<? extends Communication>) results.values);
+            filtered.addAll((Collection<? extends SuperCommunication>) results.values);
             notifyDataSetChanged();
         }
     }

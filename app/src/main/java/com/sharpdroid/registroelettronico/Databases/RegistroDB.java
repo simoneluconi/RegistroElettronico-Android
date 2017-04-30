@@ -1,5 +1,6 @@
 package com.sharpdroid.registroelettronico.Databases;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -12,6 +13,8 @@ import android.text.TextUtils;
 import com.franmontiel.persistentcookiejar.persistence.SerializableCookie;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
+import com.sharpdroid.registroelettronico.Interfaces.API.Communication;
+import com.sharpdroid.registroelettronico.Interfaces.API.CommunicationDescription;
 import com.sharpdroid.registroelettronico.Interfaces.API.Event;
 import com.sharpdroid.registroelettronico.Interfaces.API.File;
 import com.sharpdroid.registroelettronico.Interfaces.API.FileTeacher;
@@ -24,6 +27,7 @@ import com.sharpdroid.registroelettronico.Interfaces.Client.AdvancedEvent;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Average;
 import com.sharpdroid.registroelettronico.Interfaces.Client.LocalEvent;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
+import com.sharpdroid.registroelettronico.Interfaces.Client.SuperCommunication;
 import com.sharpdroid.registroelettronico.Utils.Metodi;
 
 import org.apache.commons.lang3.text.WordUtils;
@@ -54,7 +58,7 @@ public class RegistroDB extends SQLiteOpenHelper {
     private final static String TABLE_COOKIES = "cookies";
 
     public static RegistroDB instance;
-    private static int DB_VERSION = 24;
+    private static int DB_VERSION = 25;
     private String current_profile;
     private Context mContext;
 
@@ -88,8 +92,8 @@ public class RegistroDB extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE cookies(username TEXT NOT NULL, key TEXT NOT NULL, value TEXT NOT NULL, FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
         db.execSQL("CREATE TABLE api_events(id INTEGER NOT NULL, title TEXT NOT NULL, content TEXT NOT NULL, start INTEGER NOT NULL, end INTEGER NOT NULL, all_day INTEGER NOT NULL, type INTEGER NOT NULL, completed INTEGER, archived INTEGER, username TEXT NOT NULL, teacher_id INTEGER NOT NULL, teacher_name TEXT NOT NULL, PRIMARY KEY (id), FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
         db.execSQL("CREATE TABLE folders(id TEXT PRIMARY KEY, name TEXT NOT NULL, date INTEGER NOT NULL);");
-        db.execSQL("CREATE TABLE files(id INTEGER NOT NULL, name TEXT NOT NULL, type TEXT NOT NULL, date INTEGER NOT NULL, cksum TEXT, link TEXT, hidden INTEGER NOT NULL, folder_id INTEGER NOT NULL, PRIMARY KEY (id), FOREIGN KEY (folder_id) REFERENCES folders(id) ON DELETE CASCADE);");
-        db.execSQL("CREATE TABLE communications(id INTEGER NOT NULL, title TEXT NOT NULL, date INTEGER NOT NULL, type TEXT NOT NULL, username TEXT NOT NULL, PRIMARY KEY (id), FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
+        db.execSQL("CREATE TABLE files(id INTEGER NOT NULL, name TEXT NOT NULL, type TEXT NOT NULL, date INTEGER NOT NULL, cksum TEXT, link TEXT, hidden INTEGER NOT NULL, filename TEXT, folder_id INTEGER NOT NULL, PRIMARY KEY (id), FOREIGN KEY (folder_id) REFERENCES folders(id) ON DELETE CASCADE);");
+        db.execSQL("CREATE TABLE communications(id INTEGER NOT NULL, title TEXT NOT NULL, content TEXT, date INTEGER NOT NULL, type TEXT NOT NULL, filename TEXT, attachment INTEGER, username TEXT NOT NULL, PRIMARY KEY (id), FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
         db.execSQL("CREATE TABLE notes(content TEXT NOT NULL, date INTEGER NOT NULL, type TEXT NOT NULL, username TEXT NOT NULL, teacher_id INTEGER NOT NULL, FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE, FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
         db.execSQL("CREATE TABLE subjects(id INTEGER NOT NULL, original_name TEXT NOT NULL, name TEXT, target FLOAT, classroom TEXT, notes TEXT, username TEXT NOT NULL, PRIMARY KEY (id), FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
         db.execSQL("CREATE TABLE lessons (id TEXT NOT NULL, date INTEGER NOT NULL, content TEXT NOT NULL, subject_id INTEGER NOT NULL, teacher_id INTEGER NOT NULL, PRIMARY KEY(id), FOREIGN KEY(subject_id) REFERENCES subjects(id) ON DELETE CASCADE, FOREIGN KEY(teacher_id) REFERENCES teachers(id) ON DELETE CASCADE)");
@@ -98,13 +102,13 @@ public class RegistroDB extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE teacher_folder(teacher_id INTEGER, folder_id INTEGER NOT NULL, teacher_name TEXT NOT NULL, username TEXT NOT NULL, FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE, FOREIGN KEY (folder_id) REFERENCES folders(id) ON DELETE CASCADE, FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
         db.execSQL("CREATE TABLE local_events ( id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, content TEXT NOT NULL, type TEXT NOT NULL, day INTEGER NOT NULL, teacher_id INTEGER, subject_id INTEGER, completed INTEGER, archived INTEGER, username TEXT NOT NULL, FOREIGN KEY(username) REFERENCES profiles(username) ON DELETE CASCADE, FOREIGN KEY(teacher_id) REFERENCES teachers(id) ON DELETE CASCADE, FOREIGN KEY(subject_id) REFERENCES subjects(id) ON DELETE CASCADE);");
 
-        if (DB_VERSION != 24)
+        if (DB_VERSION != 25)
             onUpgrade(db, 1, DB_VERSION);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 24) {
+        if (oldVersion < 25) {
             db.execSQL("DROP TABLE IF EXISTS api");
             db.execSQL("DROP TABLE IF EXISTS archive");
             db.execSQL("DROP TABLE IF EXISTS completed");
@@ -352,7 +356,11 @@ public class RegistroDB extends SQLiteOpenHelper {
 
     public void addSubject(LessonSubject subject) {
         SQLiteDatabase db = this.getWritableDatabase();
+
+        db.beginTransaction();
         db.execSQL("INSERT OR IGNORE INTO subjects(id,original_name,username) VALUES(?,?,?)", new Object[]{subject.getCode(), subject.getName(), currentProfile()});
+        db.setTransactionSuccessful();
+        db.endTransaction();
     }
     //endregion
 
@@ -559,7 +567,10 @@ public class RegistroDB extends SQLiteOpenHelper {
         if (profile.getName() != null) cv.put("name", profile.getName().getText());
         cv.put("username", profile.getEmail().getText());
 
+        db.beginTransaction();
         db.insertWithOnConflict(TABLE_PROFILES, null, cv, SQLiteDatabase.CONFLICT_IGNORE);
+        db.setTransactionSuccessful();
+        db.endTransaction();
     }
 
     public void updateProfile(IProfile profile) {
@@ -581,6 +592,7 @@ public class RegistroDB extends SQLiteOpenHelper {
                 profiles.add(new ProfileDrawerItem().withName(c.getString(1)).withEmail(c.getString(0)).withNameShown(true).withIcon(AccountImage(c.getString(1))).withIdentifier(new BigInteger(MessageDigest.getInstance("SHA-256").digest(c.getString(0).getBytes())).longValue()));
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
+                ((Activity) mContext).finish();
             }
         }
 
@@ -591,15 +603,10 @@ public class RegistroDB extends SQLiteOpenHelper {
 
     public void removeProfile(String user) {
         SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
         db.delete("profiles", "username=?", new String[]{user});
-    }
-
-    public boolean isUserLogged(String user) {
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM profiles WHERE username=?", new String[]{user});
-        boolean logged = c.moveToFirst();
-        c.close();
-        return logged;
+        db.setTransactionSuccessful();
+        db.endTransaction();
     }
 
     public IProfile getProfile() {
@@ -611,6 +618,7 @@ public class RegistroDB extends SQLiteOpenHelper {
                 iProfile.withName(c.getString(1)).withEmail(c.getString(0)).withNameShown(true).withIcon(AccountImage(c.getString(1))).withIdentifier(new BigInteger(MessageDigest.getInstance("SHA-256").digest(c.getString(0).getBytes())).longValue());
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
+                ((Activity) mContext).finish();
             }
         }
         c.close();
@@ -655,7 +663,10 @@ public class RegistroDB extends SQLiteOpenHelper {
 
     public void removeCookies() {
         SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
         db.delete(TABLE_COOKIES, null, null);
+        db.setTransactionSuccessful();
+        db.endTransaction();
     }
 
     //endregion
@@ -673,7 +684,7 @@ public class RegistroDB extends SQLiteOpenHelper {
                 //Inserisci solamente se la cartella non è gia presente nel db
                 db.execSQL("INSERT INTO teacher_folder SELECT * FROM (SELECT (SELECT id FROM teachers WHERE lower(name)=?), ?, ?, ?) AS tmp WHERE NOT EXISTS (SELECT folder_id FROM teacher_folder WHERE teacher_id = (SELECT id FROM teachers WHERE lower(name)=? LIMIT 1) AND folder_id=?) LIMIT 1", new Object[]{folder.getProfName().toLowerCase(), folder_id, folder.getProfName(), currentProfile(), folder.getProfName().toLowerCase(), folder_id});
                 for (File f : folder.getElements()) {
-                    db.execSQL("INSERT OR REPLACE INTO files VALUES(?,?,?,?,?,?,?,?)", new Object[]{f.getId(), f.getName(), f.getType(), f.getDate().getTime(), f.getCksum(), f.getLink(), f.isHidden() ? 1 : 0, folder_id});
+                    db.execSQL("INSERT OR REPLACE INTO files VALUES(?,?,?,?,?,?,?,NULL,?)", new Object[]{f.getId(), f.getName(), f.getType(), f.getDate().getTime(), f.getCksum(), f.getLink(), f.isHidden() ? 1 : 0, folder_id});
                 }
             }
         }
@@ -721,10 +732,70 @@ public class RegistroDB extends SQLiteOpenHelper {
         teachers.close();
         return teachers_folders;
     }
+
+    public void setFileDownloaded(String cksum, String code, String filename) {
+        ContentValues cv = new ContentValues();
+        cv.put("filename", filename);
+        getWritableDatabase().update("files", cv, "cksum=? AND id=?", new String[]{cksum, code});
+    }
+    //endregion
+
+    //region FILES
+    public boolean isFileDownloaded(String id, String cksum) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM files WHERE id=? AND cksum=? AND filename IS NOT NULL", new String[]{id, cksum});
+        boolean bool = c.moveToFirst();
+        c.close();
+        return bool;
+    }
+
+    public String getFileName(String id, String cksum) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT filename FROM files WHERE id=? AND cksum=? AND filename IS NOT NULL", new String[]{id, cksum});
+        String st = "";
+        if (c.moveToFirst()) st = c.getString(0);
+        c.close();
+        return st;
+    }
     //endregion
 
     //region COMMUNICATIONS
+    public void addCommunications(List<Communication> communicationList) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        for (Communication c : communicationList) {
+            db.execSQL("INSERT OR IGNORE INTO communications VALUES(?,?,(select content from communications where id=?),?,?,(select filename from communications where id=?),(select attachment from communications where id=?),?)", new Object[]{c.getId(), c.getTitle(), c.getId(), c.getDate().getTime(), c.getType(), c.getId(), c.getId(), currentProfile()});
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
 
+    public void setCommunicationFilename(int id, String filename) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        db.execSQL("UPDATE communications SET filename=? WHERE id=?", new Object[]{filename, id});
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+    public void updateCommunication(int id, CommunicationDescription cd) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        db.execSQL("UPDATE communications SET content=?, attachment=? WHERE id=?", new Object[]{cd.getDesc().trim(), cd.isAttachment() ? 1 : 0, id});
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+    public List<SuperCommunication> getCommunications() {
+        SQLiteDatabase db = getReadableDatabase();
+        List<SuperCommunication> list = new ArrayList<>();
+        Cursor c = db.rawQuery("SELECT * FROM communications WHERE username=? ORDER BY date DESC", new String[]{currentProfile()});
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            list.add(new SuperCommunication(c.getInt(0), c.getString(1), c.getString(2), new Date(c.getLong(3)), c.getString(4), c.getString(5), c.getInt(6) == 1));
+        }
+        c.close();
+        return list;
+    }
     //endregion
 
     private String currentProfile() {

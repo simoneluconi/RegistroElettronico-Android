@@ -92,10 +92,11 @@ public class MainActivity extends AppCompatActivity
         super.onResume();
         if (db == null) db = RegistroDB.getInstance(this);
         if (headerResult != null) {
+            db.updateProfile();
             headerResult.setProfiles(db.getProfiles());
             headerResult.addProfiles(new ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true));
             headerResult.setActiveProfile(db.getProfile().getIdentifier(), false);
-            Log.d("MAIN", "RESUME - " + db.getProfile().getEmail() + " - " + headerResult.getActiveProfile().getEmail());
+
         }
     }
 
@@ -159,7 +160,6 @@ public class MainActivity extends AppCompatActivity
             drawer.getDrawerLayout().addDrawerListener(toggle);
             toggle.syncState();
         }
-        Log.d("MAIN", "INIT");
     }
 
     @Override
@@ -327,8 +327,8 @@ public class MainActivity extends AppCompatActivity
         if (profile instanceof ProfileSettingDrawerItem) {
             startActivity(new Intent(this, LoginActivity.class));
         } else {
-            Log.d("currentProfile", profile.getEmail().getText());
 
+            Log.d("currentProfile", profile.getEmail().getText());
             PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", profile.getEmail().getText()).apply();
             db.updateProfile();
 
@@ -344,13 +344,15 @@ public class MainActivity extends AppCompatActivity
         if (!(profile instanceof ProfileSettingDrawerItem)) {
             new MaterialDialog.Builder(this).title("Eliminare il profilo?").content("Continuare con l'eliminazione di " + profile.getEmail().getText() + " ?").positiveText("SI").negativeText("NO").onPositive((dialog, which) -> {
                 db.removeProfile(profile.getEmail().getText());
-                //headerResult.clear();
-                headerResult.removeProfile(profile);
-                //headerResult.setProfiles(db.getProfiles());
-                //headerResult.addProfiles(new ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true));
+                headerResult.clear();
+                //headerResult.removeProfile(profile);
+
+                headerResult.setProfiles(db.getProfiles());
+                headerResult.addProfiles(new ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true));
 
                 if (db.getProfiles().size() > 0) {
                     PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", db.getProfiles().get(0).getEmail().getText()).apply();
+                    db.updateProfile();
                     headerResult.setActiveProfile(db.getProfile(), true);
                 } else {
                     startActivity(new Intent(this, LoginActivity.class));

@@ -17,7 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
-import com.sharpdroid.registroelettronico.Databases.FilesDB;
+import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.File;
 import com.sharpdroid.registroelettronico.R;
 
@@ -40,16 +40,16 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
     final static String TAG = FileAdapter.class.getSimpleName();
 
     private final SimpleDateFormat formatter = new SimpleDateFormat("MMM d, yyyy", Locale.ITALIAN);
-    private FilesDB db;
+    private RegistroDB db;
     private Context mContext;
     private CoordinatorLayout mCoordinatorLayout;
     private List<File> CVDataList;
 
-    public FileAdapter(Context mContext, CoordinatorLayout mCoordinatorLayout, FilesDB db) {
+    public FileAdapter(Context mContext, CoordinatorLayout mCoordinatorLayout) {
         this.mContext = mContext;
         this.mCoordinatorLayout = mCoordinatorLayout;
         CVDataList = new ArrayList<>();
-        this.db = db;
+        this.db = RegistroDB.getInstance(mContext);
     }
 
     public void addAll(List<File> CVDataList) {
@@ -93,7 +93,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
 
                 if (!dir.exists()) dir.mkdirs();
 
-                if (!db.isPresent(file.getId(), file.getCksum())) {
+                if (!db.isFileDownloaded(file.getId(), file.getCksum())) {
                     DownloadFile(file, dir, db, DownloadProgressSnak, true);
                 } else {
                     String filename = db.getFileName(file.getId(), file.getCksum());
@@ -106,7 +106,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
         });
     }
 
-    private void DownloadFile(File file, java.io.File dir, FilesDB db, Snackbar DownloadProgressSnak, boolean addRecord) {
+    private void DownloadFile(File file, java.io.File dir, RegistroDB db, Snackbar DownloadProgressSnak, boolean addRecord) {
         DownloadProgressSnak.show();
         new SpiaggiariApiClient(mContext).getDownload(file.getId(), file.getCksum())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -116,7 +116,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
                     java.io.File f = new java.io.File(dir + java.io.File.separator + filename);
                     writeResponseBodyToDisk(files_file.body(), f);
                     if (addRecord)
-                        db.addRecord(filename, file.getId(), file.getCksum());
+                        db.setFileDownloaded(file.getCksum(), file.getId(), filename);
                     askfileopen(f, DownloadProgressSnak);
 
                 }, error -> {

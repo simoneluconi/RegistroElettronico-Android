@@ -10,7 +10,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,14 +18,11 @@ import android.view.ViewGroup;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Adapters.CommunicationAdapter;
-import com.sharpdroid.registroelettronico.Databases.CommunicationsDB;
-import com.sharpdroid.registroelettronico.Interfaces.API.Communication;
+import com.sharpdroid.registroelettronico.Databases.RegistroDB;
+import com.sharpdroid.registroelettronico.Interfaces.Client.SuperCommunication;
 import com.sharpdroid.registroelettronico.R;
-import com.sharpdroid.registroelettronico.Tasks.CacheListObservable;
-import com.sharpdroid.registroelettronico.Tasks.CacheListTask;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
-import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
@@ -46,7 +42,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
     SwipeRefreshLayout mSwipeRefreshLayout;
 
     private CommunicationAdapter mRVAdapter;
-    private CommunicationsDB db;
+    private RegistroDB db;
 
     public FragmentCommunications() {
 
@@ -55,7 +51,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
     @Override
     public View onCreateView(final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        db = new CommunicationsDB(getContext());
+        db = RegistroDB.getInstance(getContext());
         return inflater.inflate(R.layout.coordinator_swipe_recycler, container, false);
     }
 
@@ -78,12 +74,13 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getContext()).colorResId(R.color.divider).size(dpToPx(1)).build());
         mRecyclerView.setItemAnimator(null);
+        mRecyclerView.setVerticalScrollBarEnabled(true);
 
-        mRVAdapter = new CommunicationAdapter(getContext(), mCoordinatorLayout, db);
+        mRVAdapter = new CommunicationAdapter(getContext(), mCoordinatorLayout);
         mRecyclerView.setAdapter(mRVAdapter);
 
-        bindCommunicationsCache();
-        UpdateCommunications();
+        load();
+        download();
     }
 
     @Override
@@ -97,39 +94,29 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
         }
     }
 
-    private void addCommunications(List<Communication> communications, boolean docache) {
+    private void addCommunications(List<SuperCommunication> communications) {
         if (!communications.isEmpty()) {
             mRVAdapter.clear();
             mRVAdapter.addAll(communications);
-
-            if (docache) {
-                // Update cache
-                new CacheListTask(getContext().getCacheDir(), TAG).execute((List) communications);
-            }
         }
     }
 
-    private void bindCommunicationsCache() {
-        new CacheListObservable(new File(getContext().getCacheDir(), TAG))
-                .getCachedList(Communication.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(communications -> {
-                    addCommunications(communications, false);
-                    Log.d(TAG, "Restored cache");
-                }, Throwable::printStackTrace);
+    private void load() {
+        addCommunications(db.getCommunications());
     }
 
     public void onRefresh() {
-        UpdateCommunications();
+        download();
     }
 
-    private void UpdateCommunications() {
+    private void download() {
         mSwipeRefreshLayout.setRefreshing(true);
         new SpiaggiariApiClient(getContext())
                 .getCommunications()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(communications -> {
-                    addCommunications(communications, true);
+                    db.addCommunications(communications);
+                    load();
                     mSwipeRefreshLayout.setRefreshing(false);
                 }, error -> {
                     error.printStackTrace();
