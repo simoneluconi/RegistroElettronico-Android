@@ -90,13 +90,13 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
                 R.color.redmaterial,
                 R.color.greenmaterial,
                 R.color.orangematerial);
-        UpdateMedie();
+        download();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        bindMarksSubjectsCache();
+        load();
     }
 
     @Override
@@ -125,10 +125,10 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
                 PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString("order", "ORDER BY _avg ASC").apply();
                 break;
         }
-        bindMarksSubjectsCache();
+        load();
     }
 
-    private void UpdateMedie() {
+    private void download() {
         mCSwipeRefreshLayout.setRefreshing(isNetworkAvailable(mContext));
         if (isNetworkAvailable(mContext))
             new SpiaggiariApiClient(mContext)
@@ -137,7 +137,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
                     .subscribe(marks -> {
                         mCSwipeRefreshLayout.setRefreshing(false);
                         db.addMarks(marks);
-                        bindMarksSubjectsCache();
+                        load();
                         Snackbar.make(tabLayout, getSnackBarMessage(mViewPager.getCurrentItem()), Snackbar.LENGTH_LONG).show();
                     }, Throwable::printStackTrace);
     }
@@ -162,7 +162,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
         } else return "";
     }
 
-    private void bindMarksSubjectsCache() {
+    private void load() {
         String order = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("order", "");
         FragmentMedie fragment;
         for (int i = 0; i < pagerAdapter.getCount(); i++) {
@@ -188,7 +188,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
 
     @Override
     public void onRefresh() {
-        UpdateMedie();
+        download();
     }
 
     private class MediePager extends FragmentPagerAdapter {

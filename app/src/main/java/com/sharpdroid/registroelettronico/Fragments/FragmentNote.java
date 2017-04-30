@@ -8,20 +8,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Adapters.NoteAdapter;
+import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Note;
 import com.sharpdroid.registroelettronico.R;
-import com.sharpdroid.registroelettronico.Tasks.CacheListObservable;
-import com.sharpdroid.registroelettronico.Tasks.CacheListTask;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
-import java.io.File;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -41,6 +38,7 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
     SwipeRefreshLayout mSwipeRefreshLayout;
 
     private NoteAdapter mRVAdapter;
+    private RegistroDB db;
 
     public FragmentNote() {
     }
@@ -63,6 +61,7 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
                 R.color.greenmaterial,
                 R.color.orangematerial);
 
+        db = RegistroDB.getInstance(getContext());
         getActivity().setTitle(getString(R.string.note));
 
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);
@@ -74,51 +73,45 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
         mRVAdapter = new NoteAdapter(getContext(), new CopyOnWriteArrayList<>());
         mRecyclerView.setAdapter(mRVAdapter);
 
-        bindNoteCache();
-
-        UpdateNotes();
+        load();
+        download();
     }
 
-    void addNotes(List<Note> notes, boolean docache) {
+    void addNotes(List<Note> notes) {
         if (!notes.isEmpty()) {
             mRVAdapter.clear();
             mRVAdapter.addAll(notes);
-
-            if (docache) {
-                // Update cache
-                new CacheListTask(getContext().getCacheDir(), TAG).execute((List) notes);
-            }
         }
     }
 
-    private void bindNoteCache() {
-        new CacheListObservable(new File(getContext().getCacheDir(), TAG))
-                .getCachedList(Note.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(notes -> {
-                    addNotes(notes, false);
-                    Log.d(TAG, "Restored cache");
-                }, Throwable::printStackTrace);
+    private void load() {
+        addNotes(db.getNotes());
+    }
+
+    private void save(List<Note> list) {
+        db.addNotes(list);
     }
 
     public void onRefresh() {
-        UpdateNotes();
+        download();
     }
 
-    private void UpdateNotes() {
+    private void download() {
         mSwipeRefreshLayout.setRefreshing(true);
         new SpiaggiariApiClient(getContext())
                 .getNotes()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(notes -> {
-                    addNotes(notes, true);
+                    save(notes);
+                    load();
                     mSwipeRefreshLayout.setRefreshing(false);
                 }, error -> {
                     error.printStackTrace();
                     if (!isNetworkAvailable(getContext())) {
                         Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
-                    } else
+                    } else {
                         Snackbar.make(mCoordinatorLayout, error.getLocalizedMessage(), Snackbar.LENGTH_LONG).show();
+                    }
                     mSwipeRefreshLayout.setRefreshing(false);
                 });
     }

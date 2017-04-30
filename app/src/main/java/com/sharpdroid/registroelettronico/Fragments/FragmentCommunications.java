@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Adapters.CommunicationAdapter;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
+import com.sharpdroid.registroelettronico.Interfaces.API.Communication;
 import com.sharpdroid.registroelettronico.Interfaces.Client.SuperCommunication;
 import com.sharpdroid.registroelettronico.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -101,12 +102,16 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
         }
     }
 
+    public void onRefresh() {
+        download();
+    }
+
     private void load() {
         addCommunications(db.getCommunications());
     }
 
-    public void onRefresh() {
-        download();
+    private void save(List<Communication> list) {
+        db.addCommunications(list);
     }
 
     private void download() {
@@ -115,7 +120,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
                 .getCommunications()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(communications -> {
-                    db.addCommunications(communications);
+                    save(communications);
                     load();
                     mSwipeRefreshLayout.setRefreshing(false);
                 }, error -> {

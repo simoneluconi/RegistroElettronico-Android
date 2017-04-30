@@ -92,7 +92,6 @@ public class MainActivity extends AppCompatActivity
         super.onResume();
         if (db == null) db = RegistroDB.getInstance(this);
         if (headerResult != null) {
-            db.updateProfile();
             headerResult.setProfiles(db.getProfiles());
             headerResult.addProfiles(new ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true));
             headerResult.setActiveProfile(db.getProfile().getIdentifier(), false);
@@ -330,7 +329,6 @@ public class MainActivity extends AppCompatActivity
 
             Log.d("currentProfile", profile.getEmail().getText());
             PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", profile.getEmail().getText()).apply();
-            db.updateProfile();
 
             updateSubjects(this);
             //Update fragment
@@ -352,7 +350,6 @@ public class MainActivity extends AppCompatActivity
 
                 if (db.getProfiles().size() > 0) {
                     PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", db.getProfiles().get(0).getEmail().getText()).apply();
-                    db.updateProfile();
                     headerResult.setActiveProfile(db.getProfile(), true);
                 } else {
                     startActivity(new Intent(this, LoginActivity.class));

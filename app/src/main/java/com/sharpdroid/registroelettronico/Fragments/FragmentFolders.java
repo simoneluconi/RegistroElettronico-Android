@@ -96,12 +96,16 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
         }
     }
 
+    public void onRefresh() {
+        update();
+    }
+
     private void load() {
         addFiles(db.getFileTeachers(), false);
     }
 
-    public void onRefresh() {
-        update();
+    private void save(List<FileTeacher> files) {
+        db.addFileTeachers(files);
     }
 
     private void update() {
@@ -110,7 +114,7 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
                 .getFiles()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(files -> {
-                    db.addFileTeachers(files);
+                    save(files);
                     load();
                     mSwipeRefreshLayout.setRefreshing(false);
                 }, error -> {
