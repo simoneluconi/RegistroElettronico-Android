@@ -54,7 +54,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
     public CommunicationAdapter(Context mContext, CoordinatorLayout mCoordinatorLayout) {
         this.mContext = mContext;
         this.mCoordinatorLayout = mCoordinatorLayout;
-        this.db = RegistroDB.getInstance(mContext);
+        this.db = RegistroDB.Companion.getInstance(mContext);
     }
 
     public void addAll(Collection<SuperCommunication> list) {

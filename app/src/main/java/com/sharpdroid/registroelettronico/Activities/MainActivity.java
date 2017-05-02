@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        if (db == null) db = RegistroDB.getInstance(this);
+        if (db == null) db = RegistroDB.Companion.getInstance(this);
         if (headerResult != null) {
             headerResult.setProfiles(db.getProfiles());
             headerResult.addProfiles(new ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true));
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initDrawer() {
-        db = RegistroDB.getInstance(this);
+        db = RegistroDB.Companion.getInstance(this);
         headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.side_nav_bar)
@@ -318,7 +318,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
-        RegistroDB.getInstance(this).close();
+        RegistroDB.Companion.getInstance(this).close();
     }
 
     @Override

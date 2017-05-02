@@ -52,7 +52,7 @@ public class FragmentMedie extends Fragment {
 
         periodo = getArguments().getInt("q");
         if (subjectsDB == null)
-            subjectsDB = RegistroDB.getInstance(mContext);
+            subjectsDB = RegistroDB.Companion.getInstance(mContext);
 
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);
         mRecyclerView.setBackgroundColor(Color.parseColor("#F1F1F1"));
@@ -71,7 +71,7 @@ public class FragmentMedie extends Fragment {
 
     public void addSubjects(List<Average> markSubjects, int p) {
         if (subjectsDB == null)
-            subjectsDB = RegistroDB.getInstance(getContext());
+            subjectsDB = RegistroDB.Companion.getInstance(getContext());
 
         if (mRVAdapter == null)
             mRVAdapter = new MedieAdapter(getContext(), new CopyOnWriteArrayList<>(), subjectsDB);

@@ -52,7 +52,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
     @Override
     public View onCreateView(final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        db = RegistroDB.getInstance(getContext());
+        db = RegistroDB.Companion.getInstance(getContext());
         return inflater.inflate(R.layout.coordinator_swipe_recycler, container, false);
     }
 

@@ -67,7 +67,7 @@ public class AddEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event);
         ButterKnife.bind(this);
-        registroDB = RegistroDB.getInstance(this);
+        registroDB = RegistroDB.Companion.getInstance(this);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("");

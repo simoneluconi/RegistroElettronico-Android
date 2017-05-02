@@ -98,7 +98,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         }
 
         //DATABASE
-        db = RegistroDB.getInstance(this);
+        db = RegistroDB.Companion.getInstance(this);
 
 
         // toolbar
