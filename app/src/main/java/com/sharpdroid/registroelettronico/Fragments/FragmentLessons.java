@@ -72,7 +72,7 @@ public class FragmentLessons extends Fragment implements SwipeRefreshLayout.OnRe
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        db = RegistroDB.Companion.getInstance(getContext());
+        db = RegistroDB.getInstance(getContext());
 
         getActivity().setTitle(getSubjectName(db.getSubject(code)));
 

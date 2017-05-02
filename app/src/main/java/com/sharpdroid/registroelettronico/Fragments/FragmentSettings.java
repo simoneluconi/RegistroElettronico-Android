@@ -23,7 +23,7 @@ public class FragmentSettings extends PreferenceFragmentCompat implements Shared
     public void onCreatePreferences(Bundle bundle, String s) {
         //add xml
         addPreferencesFromResource(R.xml.preferences);
-        db = RegistroDB.Companion.getInstance(getContext());
+        db = RegistroDB.getInstance(getContext());
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         onSharedPreferenceChanged(sharedPreferences, "voto_obiettivo");

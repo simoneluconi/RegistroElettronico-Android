@@ -98,7 +98,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         ButterKnife.bind(this, view);
 
         mToolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-        mRegistroDB = RegistroDB.Companion.getInstance(mContext);
+        mRegistroDB = RegistroDB.getInstance(mContext);
 
         mCompactCalendarView = (CompactCalendarView) getActivity().findViewById(R.id.calendar);
         mCompactCalendarView.setLocale(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALIAN);

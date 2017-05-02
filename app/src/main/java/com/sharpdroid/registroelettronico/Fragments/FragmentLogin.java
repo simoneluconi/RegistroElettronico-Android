@@ -95,7 +95,7 @@ public class FragmentLogin extends SlideFragment {
 
         String oldProfile = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("currentProfile", "");
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString("currentProfile", mEmail).apply();
-        RegistroDB db = RegistroDB.Companion.getInstance(getContext());
+        RegistroDB db = RegistroDB.getInstance(getContext());
         //INSERT IN DB BEFORE REQUEST TO AVOID CONSTRAINT ERRORS
         db.addProfile(new ProfileDrawerItem().withEmail(mEmail));
 
