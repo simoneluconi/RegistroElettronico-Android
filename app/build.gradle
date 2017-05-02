@@ -11,10 +11,12 @@ buildscript {
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply plugin: 'io.fabric'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
+    mavenCentral()
 }
 
 apply plugin: 'me.tatarka.retrolambda'
@@ -146,4 +148,5 @@ dependencies {
     compile 'org.apache.commons:commons-lang3:3.5'
 
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
