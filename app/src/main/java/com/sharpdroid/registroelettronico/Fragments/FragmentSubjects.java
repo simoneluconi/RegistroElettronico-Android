@@ -45,7 +45,7 @@ public class FragmentSubjects extends Fragment implements SubjectsAdapter.Subjec
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        db = RegistroDB.Companion.getInstance(getContext());
+        db = RegistroDB.getInstance(getContext());
 
         getActivity().setTitle(getString(R.string.lessons));
         updateSubjects(getContext());

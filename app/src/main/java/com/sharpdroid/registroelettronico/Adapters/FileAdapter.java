@@ -49,7 +49,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
         this.mContext = mContext;
         this.mCoordinatorLayout = mCoordinatorLayout;
         CVDataList = new ArrayList<>();
-        this.db = RegistroDB.Companion.getInstance(mContext);
+        this.db = RegistroDB.getInstance(mContext);
     }
 
     public void addAll(List<File> CVDataList) {

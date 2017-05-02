@@ -77,7 +77,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
 
         getActivity().setTitle(getString(R.string.medie));
 
-        db = RegistroDB.Companion.getInstance(mContext);
+        db = RegistroDB.getInstance(mContext);
         pagerAdapter = new MediePager(getChildFragmentManager());
         tabLayout = (TabLayout) getActivity().findViewById(R.id.tab_layout);
         mViewPager.setAdapter(pagerAdapter);

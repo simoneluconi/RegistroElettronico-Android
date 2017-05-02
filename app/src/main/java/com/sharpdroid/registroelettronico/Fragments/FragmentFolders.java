@@ -69,7 +69,7 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
                 R.color.greenmaterial,
                 R.color.orangematerial);
 
-        db = RegistroDB.Companion.getInstance(getContext());
+        db = RegistroDB.getInstance(getContext());
 
         getActivity().setTitle(getString(R.string.files));
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);

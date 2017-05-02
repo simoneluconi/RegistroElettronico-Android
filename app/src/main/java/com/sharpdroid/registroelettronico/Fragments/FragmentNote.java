@@ -61,7 +61,7 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
                 R.color.greenmaterial,
                 R.color.orangematerial);
 
-        db = RegistroDB.Companion.getInstance(getContext());
+        db = RegistroDB.getInstance(getContext());
         getActivity().setTitle(getString(R.string.note));
 
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);
