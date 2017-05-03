@@ -239,7 +239,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     }
 
     private void setLessons(int code) {
-        lessonsView.update(db, code);
+        lessonsView.update(code);
 
         for (Integer prof : db.getProfessorCodes(code)) {
             new SpiaggiariApiClient(this)
@@ -248,7 +248,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
                     .subscribe(lessons -> {
                         //db.removeLessons(code);
                         db.addLessons(code, prof, lessons);
-                        lessonsView.update(db, code);
+                        lessonsView.update(code);
                         db.addProfessor(code, prof, getProfessorOfThisSubject(lessons));
                     }, Throwable::printStackTrace);
         }
@@ -257,6 +257,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     private void setMarks(List<Mark> marks) {
         marksView.setSubject(subject, media.containsValidMarks() ? media.getMediaGenerale() : 0);
         marksView.addAll(marks);
+        marksView.setChart(db.getMarksAsEntries(subject.getId(), period));
         marksView.setShowChart(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("show_chart", true) && marks.size() > 1);
     }
 

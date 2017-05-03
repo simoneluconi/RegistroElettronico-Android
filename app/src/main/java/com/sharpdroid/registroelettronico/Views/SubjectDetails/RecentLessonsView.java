@@ -57,9 +57,9 @@ public class RecentLessonsView extends CardView {
         mRecyclerView.setAdapter(adapter);
     }
 
-    public void update(RegistroDB db, int code) {
+    public void update(int code) {
         adapter.clear();
-        adapter.addAll(db.getLessons(code, 5));
+        adapter.addAll(RegistroDB.getInstance(mContext).getLessons(code, 5));
         showAllButton.setOnClickListener(view -> mContext.startActivity(new Intent(mContext, AllLessonsWithDownloadActivity.class).putExtra("code", code)));
     }
 
