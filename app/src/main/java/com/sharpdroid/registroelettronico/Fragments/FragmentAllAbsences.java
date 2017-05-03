@@ -9,19 +9,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Adapters.AllAbsencesAdapter;
+import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absences;
 import com.sharpdroid.registroelettronico.R;
-import com.sharpdroid.registroelettronico.Tasks.CacheObjectObservable;
-import com.sharpdroid.registroelettronico.Tasks.CacheObjectTask;
-
-import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,6 +37,8 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
 
     AllAbsencesAdapter adapter;
     Context mContext;
+
+    RegistroDB db;
 
     public FragmentAllAbsences() {
     }
@@ -66,46 +64,42 @@ public class FragmentAllAbsences extends Fragment implements SwipeRefreshLayout.
 
         getActivity().setTitle(getString(R.string.absences));
 
+        db = RegistroDB.getInstance(getContext());
+
         adapter = new AllAbsencesAdapter(mContext);
         recycler.setLayoutManager(new LinearLayoutManager(mContext));
         recycler.setAdapter(adapter);
 
-        bindAbsencesCache();
-
-        UpdateAllAbsences();
+        load();
+        download();
 
     }
 
-    void addAbsences(Absences absences, boolean docache) {
+    void addAbsences(Absences absences) {
         adapter.clear();
         adapter.addAll(absences);
-
-        if (docache) {
-            new CacheObjectTask(mContext.getCacheDir(), TAG).execute(absences);
-        }
     }
 
-    private void bindAbsencesCache() {
-        new CacheObjectObservable(new File(mContext.getCacheDir(), TAG))
-                .getCachedList(Absences.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(absences -> {
-                    addAbsences(absences, false);
-                    Log.d(TAG, "Restored cache");
-                }, Throwable::printStackTrace);
+    private void load() {
+        addAbsences(db.getAbsences());
+    }
+
+    private void save(Absences abs) {
+        db.addAbsences(abs);
     }
 
     public void onRefresh() {
-        UpdateAllAbsences();
+        download();
     }
 
-    private void UpdateAllAbsences() {
+    private void download() {
         mSwipeRefreshLayout.setRefreshing(true);
         new SpiaggiariApiClient(mContext)
                 .getAbsences()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(absences -> {
-                    addAbsences(absences, true);
+                    save(absences);
+                    load();
                     mSwipeRefreshLayout.setRefreshing(false);
                 }, error -> {
                     error.printStackTrace();

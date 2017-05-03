@@ -1,6 +1,10 @@
 package com.sharpdroid.registroelettronico.Interfaces.API;
 
+import android.util.Base64;
+
 import java.io.Serializable;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 public class Absence implements Serializable {
@@ -20,8 +24,13 @@ public class Absence implements Serializable {
         this.justification = justification;
     }
 
-    public int getId() {
-        return id;
+    public String getId() {
+        try {
+            return Base64.encodeToString(MessageDigest.getInstance("SHA-256").digest("absence".concat(String.valueOf(id).concat(String.valueOf(done)).concat(from.toString()).concat(to.toString()).concat(String.valueOf(days))).getBytes()), Base64.DEFAULT);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     public boolean isDone() {
@@ -43,4 +52,5 @@ public class Absence implements Serializable {
     public String getJustification() {
         return justification;
     }
+
 }
