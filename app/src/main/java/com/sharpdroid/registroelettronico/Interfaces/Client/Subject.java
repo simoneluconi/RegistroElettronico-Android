@@ -1,6 +1,7 @@
 package com.sharpdroid.registroelettronico.Interfaces.Client;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Subject implements Serializable {
@@ -10,14 +11,17 @@ public class Subject implements Serializable {
     private String professor, classroom, notes;
     private List<Integer> teacherCode;
 
-    public Subject(int id, String name, float target, String professor, String classroom, String notes, List<Integer> teacherCode) {
+    public Subject(int id, String name, float target, String professor, String classroom, String notes, String[] teacherCode) {
         this.id = id;
         this.name = name;
         this.target = target;
         this.professor = professor;
         this.classroom = classroom;
         this.notes = notes;
-        this.teacherCode = teacherCode;
+        this.teacherCode = new ArrayList<>();
+        for (String s : teacherCode) {
+            this.teacherCode.add(Integer.valueOf(s));
+        }
     }
 
     public String getClassroom() {
