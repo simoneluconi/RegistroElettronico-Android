@@ -14,9 +14,13 @@ import com.franmontiel.persistentcookiejar.persistence.SerializableCookie;
 import com.github.mikephil.charting.data.Entry;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
+import com.sharpdroid.registroelettronico.Interfaces.API.Absence;
+import com.sharpdroid.registroelettronico.Interfaces.API.Absences;
 import com.sharpdroid.registroelettronico.Interfaces.API.Communication;
 import com.sharpdroid.registroelettronico.Interfaces.API.CommunicationDescription;
+import com.sharpdroid.registroelettronico.Interfaces.API.Delay;
 import com.sharpdroid.registroelettronico.Interfaces.API.Event;
+import com.sharpdroid.registroelettronico.Interfaces.API.Exit;
 import com.sharpdroid.registroelettronico.Interfaces.API.File;
 import com.sharpdroid.registroelettronico.Interfaces.API.FileTeacher;
 import com.sharpdroid.registroelettronico.Interfaces.API.Folder;
@@ -60,7 +64,7 @@ public class RegistroDB extends SQLiteOpenHelper {
     private final static String TABLE_COOKIES = "cookies";
 
     public static RegistroDB instance;
-    private static int DB_VERSION = 26;
+    private static int DB_VERSION = 27;
     private Context mContext;
 
     public RegistroDB(Context c) {
@@ -88,6 +92,7 @@ public class RegistroDB extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        db.beginTransaction();
         db.execSQL("CREATE TABLE profiles(username TEXT NOT NULL, name TEXT, class TEXT, PRIMARY KEY (username));");
         db.execSQL("CREATE TABLE teachers(id INTEGER NOT NULL, name TEXT NOT NULL, PRIMARY KEY (id));");
         db.execSQL("CREATE TABLE cookies(username TEXT NOT NULL, key TEXT NOT NULL, value TEXT NOT NULL, FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
@@ -102,14 +107,18 @@ public class RegistroDB extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE subject_teacher(teacher_id INTEGER NOT NULL, subject_id INTEGER NOT NULL, FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE, FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE);");
         db.execSQL("CREATE TABLE teacher_folder(teacher_id INTEGER, folder_id INTEGER NOT NULL, teacher_name TEXT NOT NULL, username TEXT NOT NULL, FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE, FOREIGN KEY (folder_id) REFERENCES folders(id) ON DELETE CASCADE, FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
         db.execSQL("CREATE TABLE local_events ( id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, content TEXT NOT NULL, type TEXT NOT NULL, day INTEGER NOT NULL, teacher_id INTEGER, subject_id INTEGER, completed INTEGER, archived INTEGER, username TEXT NOT NULL, FOREIGN KEY(username) REFERENCES profiles(username) ON DELETE CASCADE, FOREIGN KEY(teacher_id) REFERENCES teachers(id) ON DELETE CASCADE, FOREIGN KEY(subject_id) REFERENCES subjects(id) ON DELETE CASCADE);");
+        db.execSQL("CREATE TABLE absences(id TEXT PRIMARY KEY,done INTEGER NOT NULL,_from INTEGER NOT NULL,_to INTEGER, days INTEGER, hours INTEGER, justification TEXT, type TEXT NOT NULL, username TEXT NOT NULL, FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
 
-        if (DB_VERSION != 26)
+        if (DB_VERSION != 27)
             onUpgrade(db, 1, DB_VERSION);
+        db.setTransactionSuccessful();
+        db.endTransaction();
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 26) {
+        if (oldVersion < 27) {
+            db.beginTransaction();
             db.execSQL("DROP TABLE IF EXISTS api");
             db.execSQL("DROP TABLE IF EXISTS archive");
             db.execSQL("DROP TABLE IF EXISTS completed");
@@ -129,6 +138,8 @@ public class RegistroDB extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS notes");
             db.execSQL("DROP TABLE IF EXISTS local_events");
             db.execSQL("DROP TABLE IF EXISTS teacher_folder");
+            db.setTransactionSuccessful();
+            db.endTransaction();
             onCreate(db);
             PreferenceManager.getDefaultSharedPreferences(mContext).edit().putBoolean("first_run", true).apply();
         }
@@ -142,8 +153,9 @@ public class RegistroDB extends SQLiteOpenHelper {
         if (events.size() > 0) {
             setClassDescription(events.get(0).getClasse_desc());
         }
+        String currentProfile = currentProfile();
         for (Event e : events) {
-            db.execSQL("INSERT OR REPLACE INTO api_events VALUES(?,?,?,?,?,?,?,(SELECT completed FROM api_events WHERE id = ?),(SELECT archived FROM api_events WHERE id = ?),?,?,?)", new Object[]{e.getId(), e.getTitle(), e.getNota_2(), e.getStart().getTime(), e.getEnd().getTime(), e.isAllDay() ? 1 : 0, e.getTipo(), e.getId(), e.getId(), currentProfile(), e.getAutore_id(), e.getAutore_desc()});
+            db.execSQL("INSERT OR REPLACE INTO api_events VALUES(?,?,?,?,?,?,?,(SELECT completed FROM api_events WHERE id = ?),(SELECT archived FROM api_events WHERE id = ?),?,?,?)", new Object[]{e.getId(), e.getTitle(), e.getNota_2(), e.getStart().getTime(), e.getEnd().getTime(), e.isAllDay() ? 1 : 0, e.getTipo(), e.getId(), e.getId(), currentProfile, e.getAutore_id(), e.getAutore_desc()});
         }
         db.setTransactionSuccessful();
         db.endTransaction();
@@ -151,7 +163,8 @@ public class RegistroDB extends SQLiteOpenHelper {
 
     public List<AdvancedEvent> getEvents() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT api_events.id, title, start,end,all_day, content,teachers.id AS teacher_id, coalesce(teachers.name, teacher_name),type,completed FROM api_events LEFT JOIN teachers ON teacher_id=teachers.id WHERE archived IS NULL AND username=?", new String[]{currentProfile()});
+        String currentProfile = currentProfile();
+        Cursor c = db.rawQuery("SELECT api_events.id, title, start,end,all_day, content,teachers.id AS teacher_id, coalesce(teachers.name, teacher_name),type,completed FROM api_events LEFT JOIN teachers ON teacher_id=teachers.id WHERE archived IS NULL AND username=?", new String[]{currentProfile});
         List<AdvancedEvent> list = new ArrayList<>();
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             list.add(new AdvancedEvent(c.getString(0), c.getString(1), new Date(c.getLong(2)), new Date(c.getLong(3)), c.getInt(4) == 1, null, c.getString(5), null, null, null, 0, c.getString(7), c.getString(6), c.getString(8), null, null, c.getLong(9)));
@@ -193,7 +206,8 @@ public class RegistroDB extends SQLiteOpenHelper {
 
     public List<AdvancedEvent> getLocalEvents() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT local_events.id,title,content,type,day,subject_id,teacher_id,completed,coalesce(subjects.name,subjects.original_name) AS subject_name, teachers.name AS teacher_name FROM local_events LEFT JOIN subjects ON subject_id = subjects.id LEFT JOIN teachers ON teacher_id = teachers.id WHERE local_events.archived IS NULL AND local_events.username=?", new String[]{currentProfile()});
+        String currentProfile = currentProfile();
+        Cursor c = db.rawQuery("SELECT local_events.id,title,content,type,day,subject_id,teacher_id,completed,coalesce(subjects.name,subjects.original_name) AS subject_name, teachers.name AS teacher_name FROM local_events LEFT JOIN subjects ON subject_id = subjects.id LEFT JOIN teachers ON teacher_id = teachers.id WHERE local_events.archived IS NULL AND local_events.username=?", new String[]{currentProfile});
         List<AdvancedEvent> list = new ArrayList<>();
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
@@ -206,7 +220,8 @@ public class RegistroDB extends SQLiteOpenHelper {
 
     public List<AdvancedEvent> getLocalEvents(long day) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT local_events.id,title,content,type,day,subject_id,teacher_id,completed,coalesce(subjects.name,subjects.original_name) AS subject_name, teachers.name AS teacher_name FROM local_events LEFT JOIN subjects ON subject_id = subjects.id LEFT JOIN teachers ON teacher_id = teachers.id WHERE local_events.archived IS NULL AND day BETWEEN ? AND ? AND local_events.username=?", new String[]{String.valueOf(day), String.valueOf(day + 86399999), currentProfile()});
+        String currentProfile = currentProfile();
+        Cursor c = db.rawQuery("SELECT local_events.id,title,content,type,day,subject_id,teacher_id,completed,coalesce(subjects.name,subjects.original_name) AS subject_name, teachers.name AS teacher_name FROM local_events LEFT JOIN subjects ON subject_id = subjects.id LEFT JOIN teachers ON teacher_id = teachers.id WHERE local_events.archived IS NULL AND day BETWEEN ? AND ? AND local_events.username=?", new String[]{String.valueOf(day), String.valueOf(day + 86399999), currentProfile});
         List<AdvancedEvent> list = new ArrayList<>();
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
@@ -290,7 +305,8 @@ public class RegistroDB extends SQLiteOpenHelper {
     public Subject getSubject(int code) {
         SQLiteDatabase db = this.getReadableDatabase();
         Subject subject = null;
-        Cursor c = db.rawQuery("SELECT subjects.id, coalesce(subjects.name, subjects.original_name) AS name, target,classroom,notes,GROUP_CONCAT(teacher_id),GROUP_CONCAT(teachers.name) FROM subjects LEFT JOIN subject_teacher ON subject_teacher.subject_id=subjects.id LEFT JOIN teachers ON teachers.id=teacher_id WHERE subject_id=? AND username=?", new String[]{String.valueOf(code), currentProfile()});
+        String currentProfile = currentProfile();
+        Cursor c = db.rawQuery("SELECT subjects.id, coalesce(subjects.name, subjects.original_name) AS name, target,classroom,notes,GROUP_CONCAT(teacher_id),GROUP_CONCAT(teachers.name) FROM subjects LEFT JOIN subject_teacher ON subject_teacher.subject_id=subjects.id LEFT JOIN teachers ON teachers.id=teacher_id WHERE subject_id=? AND username=?", new String[]{String.valueOf(code), currentProfile});
 
         if (c.moveToFirst())
             subject = new Subject(c.getInt(0), WordUtils.capitalizeFully(c.getString(1), Metodi.Delimeters), c.getFloat(2), c.getString(6), c.getString(3), c.getString(4), c.getString(5).split(","));
@@ -448,6 +464,8 @@ public class RegistroDB extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         db.beginTransaction();
         String name, query;
+        String currentProfile = currentProfile();
+
         for (MarkSubject subject : markSubjects) {
             name = subject.getName();
             if (name.contains("...")) {
@@ -457,7 +475,7 @@ public class RegistroDB extends SQLiteOpenHelper {
                 query = "SELECT subjects.id FROM subjects LEFT JOIN subject_teacher ON subject_teacher.subject_id=subjects.id LEFT JOIN teachers ON teachers.id=teacher_id WHERE (lower(subjects.original_name) LIKE ? OR lower(subjects.name) LIKE ?) AND username=?";
             }
             for (Mark mark : subject.getMarks()) {
-                db.execSQL("INSERT OR REPLACE INTO marks VALUES(?,(" + query + "),?,?,?,?,?,?)", new Object[]{mark.getHash(), name, name, currentProfile(), mark.getMark(), mark.getDesc(), mark.getDate().getTime(), mark.getType(), mark.getQ(), mark.isNs() ? 1 : 0});
+                db.execSQL("INSERT OR REPLACE INTO marks VALUES(?,(" + query + "),?,?,?,?,?,?)", new Object[]{mark.getHash(), name, name, currentProfile, mark.getMark(), mark.getDesc(), mark.getDate().getTime(), mark.getType(), mark.getQ(), mark.isNs() ? 1 : 0});
             }
         }
         db.setTransactionSuccessful();
@@ -576,11 +594,7 @@ public class RegistroDB extends SQLiteOpenHelper {
 
     public void updateProfile(IProfile profile) {
         SQLiteDatabase db = getWritableDatabase();
-        ContentValues cv = new ContentValues();
-
-        cv.put("name", profile.getName().getText());
-
-        db.update("profiles", cv, "username=?", new String[]{profile.getEmail().getText()});
+        db.execSQL("UPDATE profiles SET name=? WHERE username=?", new Object[]{profile.getName().getText(), profile.getEmail().getText()});
     }
 
     public List<IProfile> getProfiles() {
@@ -675,6 +689,7 @@ public class RegistroDB extends SQLiteOpenHelper {
     //region FOLDERS
     public void addFileTeachers(List<FileTeacher> fileTeacherList) {
         SQLiteDatabase db = this.getWritableDatabase();
+        String currentProfile = currentProfile();
         String folder_id;
         db.beginTransaction();
         for (FileTeacher teacher_folders : fileTeacherList) {
@@ -683,7 +698,7 @@ public class RegistroDB extends SQLiteOpenHelper {
                 folder_id = folder.getHash();
                 db.execSQL("INSERT OR REPLACE INTO folders VALUES(?,?,?)", new Object[]{folder_id, folder.getName(), folder.getLast().getTime()});
                 //Inserisci solamente se la cartella non è gia presente nel db
-                db.execSQL("INSERT INTO teacher_folder SELECT * FROM (SELECT (SELECT id FROM teachers WHERE lower(name)=?), ?, ?, ?) AS tmp WHERE NOT EXISTS (SELECT folder_id FROM teacher_folder WHERE teacher_id = (SELECT id FROM teachers WHERE lower(name)=? LIMIT 1) AND folder_id=?) LIMIT 1", new Object[]{folder.getProfName().toLowerCase(), folder_id, folder.getProfName(), currentProfile(), folder.getProfName().toLowerCase(), folder_id});
+                db.execSQL("INSERT INTO teacher_folder SELECT * FROM (SELECT (SELECT id FROM teachers WHERE lower(name)=?), ?, ?, ?) AS tmp WHERE NOT EXISTS (SELECT folder_id FROM teacher_folder WHERE teacher_id = (SELECT id FROM teachers WHERE lower(name)=? LIMIT 1) AND folder_id=?) LIMIT 1", new Object[]{folder.getProfName().toLowerCase(), folder_id, folder.getProfName(), currentProfile, folder.getProfName().toLowerCase(), folder_id});
                 for (File f : folder.getElements()) {
                     db.execSQL("INSERT OR REPLACE INTO files VALUES(?,?,?,?,?,?,?,NULL,?)", new Object[]{f.getId(), f.getName(), f.getType(), f.getDate().getTime(), f.getCksum(), f.getLink(), f.isHidden() ? 1 : 0, folder_id});
                 }
@@ -763,9 +778,10 @@ public class RegistroDB extends SQLiteOpenHelper {
     //region COMMUNICATIONS
     public void addCommunications(List<Communication> communicationList) {
         SQLiteDatabase db = getWritableDatabase();
+        String currentProfile = currentProfile();
         db.beginTransaction();
         for (Communication c : communicationList) {
-            db.execSQL("INSERT OR REPLACE INTO communications VALUES(?,?,(select content from communications where id=?),?,?,(select filename from communications where id=?),(select attachment from communications where id=?),?)", new Object[]{c.getId(), c.getTitle(), c.getId(), c.getDate().getTime(), c.getType(), c.getId(), c.getId(), currentProfile()});
+            db.execSQL("INSERT OR REPLACE INTO communications VALUES(?,?,(select content from communications where id=?),?,?,(select filename from communications where id=?),(select attachment from communications where id=?),?)", new Object[]{c.getId(), c.getTitle(), c.getId(), c.getDate().getTime(), c.getType(), c.getId(), c.getId(), currentProfile});
         }
         db.setTransactionSuccessful();
         db.endTransaction();
@@ -802,9 +818,10 @@ public class RegistroDB extends SQLiteOpenHelper {
     //region NOTES
     public void addNotes(List<Note> noteList) {
         SQLiteDatabase db = getWritableDatabase();
+        String currentProfile = currentProfile();
         db.beginTransaction();
         for (Note n : noteList) {
-            db.execSQL("INSERT OR REPLACE INTO notes VALUES(?,?,?,?,?,(select id from teachers where lower(name)=? limit 1))", new Object[]{n.getHash(), n.getContent(), n.getDate().getTime(), n.getType(), currentProfile(), n.getTeacher().toLowerCase()});
+            db.execSQL("INSERT OR REPLACE INTO notes VALUES(?,?,?,?,?,(select id from teachers where lower(name)=? limit 1))", new Object[]{n.getHash(), n.getContent(), n.getDate().getTime(), n.getType(), currentProfile, n.getTeacher().toLowerCase()});
         }
         db.setTransactionSuccessful();
         db.endTransaction();
@@ -819,6 +836,50 @@ public class RegistroDB extends SQLiteOpenHelper {
         }
         c.close();
         return list;
+    }
+    //endregion
+
+    //region ABSENCES
+    public void addAbsences(Absences absences) {
+        SQLiteDatabase db = getWritableDatabase();
+        String currentProfile = currentProfile();
+        db.beginTransaction();
+        for (Absence a : absences.getAbsences())
+            db.execSQL("INSERT OR REPLACE INTO absences VALUES(?,?,?,?,?,NULL,?,'absence',?)", new Object[]{a.getId(), a.isDone() ? 1 : 0, a.getFrom().getTime(), a.getTo().getTime(), a.getDays(), a.getJustification(), currentProfile});
+        for (Delay d : absences.getDelays())
+            db.execSQL("INSERT OR REPLACE INTO absences VALUES(?,?,?,NULL,NULL,?,?,'delay',?)", new Object[]{d.getId(), d.isDone() ? 1 : 0, d.getDay().getTime(), d.getHour(), d.getJustification(), currentProfile});
+        for (Exit e : absences.getExits())
+            db.execSQL("INSERT OR REPLACE INTO absences VALUES(?,?,?,NULL,NULL,?,?,'exit',?)", new Object[]{e.getId(), e.isDone() ? 1 : 0, e.getDay().getTime(), e.getHour(), e.getJustification(), currentProfile});
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+    public Absences getAbsences() {
+        SQLiteDatabase db = getReadableDatabase();
+        List<Absence> absences = new ArrayList<>();
+        List<Delay> delays = new ArrayList<>();
+        List<Exit> exits = new ArrayList<>();
+
+        Cursor c = db.rawQuery("SELECT * FROM absences WHERE username = ?", new String[]{currentProfile()});
+
+        c.moveToFirst();
+        while (!c.isAfterLast()) {
+            switch (c.getString(7)) {
+                case "absence":
+                    absences.add(new Absence(0, c.getInt(1) == 1, new Date(c.getLong(2)), new Date(c.getLong(3)), c.getInt(4), c.getString(6)));
+                    break;
+                case "delay":
+                    delays.add(new Delay(0, c.getInt(1) == 1, new Date(c.getLong(2)), c.getInt(5), c.getString(6)));
+                    break;
+                case "exit":
+                    exits.add(new Exit(0, c.getInt(1) == 1, new Date(c.getLong(2)), c.getInt(5), c.getString(6)));
+                    break;
+            }
+            c.moveToNext();
+        }
+
+        c.close();
+        return new Absences(absences, delays, exits);
     }
     //endregion
 
