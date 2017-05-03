@@ -289,18 +289,10 @@ public class RegistroDB extends SQLiteOpenHelper {
     public Subject getSubject(int code) {
         SQLiteDatabase db = this.getReadableDatabase();
         Subject subject = null;
+        Cursor c = db.rawQuery("SELECT subjects.id, coalesce(subjects.name, subjects.original_name) AS name, target,classroom,notes,GROUP_CONCAT(teacher_id),GROUP_CONCAT(teachers.name) FROM subjects LEFT JOIN subject_teacher ON subject_teacher.subject_id=subjects.id LEFT JOIN teachers ON teachers.id=teacher_id WHERE subject_id=? AND username=?", new String[]{String.valueOf(code), currentProfile()});
 
-        Cursor c = db.rawQuery("SELECT subjects.id, coalesce(subjects.name, subjects.original_name) AS name, target,classroom,notes,teacher_id,teachers.name AS teacher_name FROM subjects LEFT JOIN subject_teacher ON subject_teacher.subject_id=subjects.id LEFT JOIN teachers ON teachers.id=teacher_id WHERE subject_id=? AND username=?", new String[]{String.valueOf(code), currentProfile()});
-        List<Integer> codes = new ArrayList<>();
-        List<String> names = new ArrayList<>();
-
-        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            codes.add(c.getInt(5));
-            names.add(c.getString(6));
-        }
         if (c.moveToFirst())
-            subject = new Subject(c.getInt(0), WordUtils.capitalizeFully(c.getString(1), Metodi.Delimeters), c.getFloat(2), TextUtils.join(",", names), c.getString(3), c.getString(4), codes);
-
+            subject = new Subject(c.getInt(0), WordUtils.capitalizeFully(c.getString(1), Metodi.Delimeters), c.getFloat(2), c.getString(6), c.getString(3), c.getString(4), c.getString(5).split(","));
 
         c.close();
         return subject;
@@ -312,21 +304,12 @@ public class RegistroDB extends SQLiteOpenHelper {
         Cursor c;
         if (name.contains("...")) {
             name = name.replace("...", "%").toLowerCase();
-            c = db.rawQuery("SELECT subjects.id, coalesce(subjects.name, subjects.original_name) AS _name, target,classroom,notes,teacher_id,teachers.name AS teacher_name FROM subjects INNER JOIN subject_teacher ON subject_teacher.subject_id=subjects.id LEFT JOIN teachers ON teachers.id=teacher_id WHERE (lower(subjects.original_name) LIKE ? OR lower(subjects.name) LIKE ?) AND username=?", new String[]{name, name, currentProfile()});
+            c = db.rawQuery("SELECT subjects.id, coalesce(subjects.name, subjects.original_name) AS _name, target,classroom,notes,GROUP_CONCAT(teacher_id),GROUP_CONCAT(teachers.name) FROM subjects INNER JOIN subject_teacher ON subject_teacher.subject_id=subjects.id LEFT JOIN teachers ON teachers.id=teacher_id WHERE (lower(subjects.original_name) LIKE ? OR lower(subjects.name) LIKE ?) AND username=?", new String[]{name, name, currentProfile()});
         } else {
-            c = db.rawQuery("SELECT subjects.id, coalesce(subjects.name, subjects.original_name) AS _name, target,classroom,notes,teacher_id,teachers.name AS teacher_name FROM subjects INNER JOIN subject_teacher ON subject_teacher.subject_id=subjects.id LEFT JOIN teachers ON teachers.id=teacher_id WHERE (lower(subjects.original_name) LIKE ? OR lower(subjects.name) LIKE ?) AND username=?", new String[]{name, name, currentProfile()});
+            c = db.rawQuery("SELECT subjects.id, coalesce(subjects.name, subjects.original_name) AS _name, target,classroom,notes,GROUP_CONCAT(teacher_id),GROUP_CONCAT(teachers.name) FROM subjects INNER JOIN subject_teacher ON subject_teacher.subject_id=subjects.id LEFT JOIN teachers ON teachers.id=teacher_id WHERE (lower(subjects.original_name) LIKE ? OR lower(subjects.name) LIKE ?) AND username=?", new String[]{name, name, currentProfile()});
         }
-
-        List<Integer> codes = new ArrayList<>();
-        List<String> names = new ArrayList<>();
-
-        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            codes.add(c.getInt(5));
-            names.add(c.getString(6));
-        }
-
         if (c.moveToFirst())
-            subject = new Subject(c.getInt(0), WordUtils.capitalizeFully(c.getString(1), Metodi.Delimeters), c.getFloat(2), TextUtils.join(",", names), c.getString(3), c.getString(4), codes);
+            subject = new Subject(c.getInt(0), WordUtils.capitalizeFully(c.getString(1), Metodi.Delimeters), c.getFloat(2), c.getString(6), c.getString(3), c.getString(4), c.getString(5).split(","));
 
 
         c.close();
@@ -764,7 +747,7 @@ public class RegistroDB extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         db.beginTransaction();
         for (Communication c : communicationList) {
-            db.execSQL("INSERT OR IGNORE INTO communications VALUES(?,?,(select content from communications where id=?),?,?,(select filename from communications where id=?),(select attachment from communications where id=?),?)", new Object[]{c.getId(), c.getTitle(), c.getId(), c.getDate().getTime(), c.getType(), c.getId(), c.getId(), currentProfile()});
+            db.execSQL("INSERT OR REPLACE INTO communications VALUES(?,?,(select content from communications where id=?),?,?,(select filename from communications where id=?),(select attachment from communications where id=?),?)", new Object[]{c.getId(), c.getTitle(), c.getId(), c.getDate().getTime(), c.getType(), c.getId(), c.getId(), currentProfile()});
         }
         db.setTransactionSuccessful();
         db.endTransaction();
@@ -803,7 +786,7 @@ public class RegistroDB extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         db.beginTransaction();
         for (Note n : noteList) {
-            db.execSQL("INSERT OR IGNORE INTO notes VALUES(?,?,?,?,?,(select id from teachers where lower(name)=? limit 1))", new Object[]{n.getHash(), n.getContent(), n.getDate().getTime(), n.getType(), currentProfile(), n.getTeacher().toLowerCase()});
+            db.execSQL("INSERT OR REPLACE INTO notes VALUES(?,?,?,?,?,(select id from teachers where lower(name)=? limit 1))", new Object[]{n.getHash(), n.getContent(), n.getDate().getTime(), n.getType(), currentProfile(), n.getTeacher().toLowerCase()});
         }
         db.setTransactionSuccessful();
         db.endTransaction();
