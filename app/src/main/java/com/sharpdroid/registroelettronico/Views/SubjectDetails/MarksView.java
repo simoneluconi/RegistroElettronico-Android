@@ -28,7 +28,6 @@ import com.github.mikephil.charting.utils.Utils;
 import com.sharpdroid.registroelettronico.Adapters.MarkAdapter;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
-import com.sharpdroid.registroelettronico.Interfaces.Client.AdvancedEvent;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.R;
 import com.transitionseverywhere.AutoTransition;
@@ -37,9 +36,7 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -62,7 +59,6 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
     PopupMenu menu;
     MarkAdapter adapter;
     boolean showChart;
-    List<AdvancedEvent> events;
 
     public MarksView(Context context) {
         super(context);
@@ -81,8 +77,6 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
 
     void init(Context context) {
         mContext = context;
-        RegistroDB db = new RegistroDB(mContext);
-        events = db.getEvents();
 
 
         inflate(mContext, R.layout.view_marks, this);
@@ -113,7 +107,6 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
         leftAxis.setAxisMinimum(0f);
         leftAxis.setAxisMaximum(10f);
 
-
         //not zoomable nor draggable
         lineChartView.setDragEnabled(false);
         lineChartView.setScaleEnabled(false);
@@ -127,7 +120,7 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
     public void setSubject(Subject subject, float media) {
         setLimitLines(subject.getTarget(), media);
 
-        adapter = new MarkAdapter(mContext, subject, events);
+        adapter = new MarkAdapter(mContext, subject, RegistroDB.getInstance(mContext).getEvents());
         setTarget(subject);
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.invalidate();
@@ -145,7 +138,6 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
     public void addAll(List<Mark> marks) {
         adapter.addAll(marks);
         showChart = marks.size() > 1;
-        setChart(marks);
     }
 
     public void setLimitLines(float target, float media) {
@@ -186,17 +178,18 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
         else lineChartView.setVisibility(GONE);
     }
 
-    void setChart(List<Mark> marks) {
+    public void setChart(List<Entry> marks) {
         List<ILineDataSet> lines = new ArrayList<>();
 
-        LineDataSet line = new LineDataSet(getEntriesFromMarks(marks), "");
+        LineDataSet line = new LineDataSet(marks, "");
         line.setMode(LineDataSet.Mode.LINEAR);
         line.setColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
-        line.setDrawValues(false);
         line.setDrawFilled(true);
-        line.setDrawCircles(false);
+        line.setDrawCircles(true);
         line.setDrawCircleHole(false);
-        line.setCircleRadius(1.5f);
+        line.setCircleRadius(2f);
+        line.setDrawValues(false);
+        line.setDrawHighlightIndicators(false);
         line.setCircleColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
         line.setAxisDependency(YAxis.AxisDependency.LEFT);
         //drawable gradient
@@ -211,51 +204,7 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
         lines.add(line);
 
         LineData lineData = new LineData(lines);
-
         lineChartView.setData(lineData);
-    }
-
-    List<Entry> getEntriesFromMarks(List<Mark> marks) {
-        List<Entry> list = new ArrayList<>();
-
-        HashMap<Long, List<Mark>> collectedMarks = collectAllMarks(marks);
-
-        List<Long> sortedKeys = new ArrayList<>(collectedMarks.keySet());
-        Collections.sort(sortedKeys, Long::compareTo);
-
-        for (long date : sortedKeys) {
-            List<Mark> markList = collectedMarks.get(date);
-            float media = 0f;
-
-            for (Mark mark : markList) {
-                media += Float.parseFloat(mark.getMark());
-            }
-            media /= markList.size();
-            list.add(new Entry(date, media));
-        }
-
-        return list;
-    }
-
-    /**
-     * raggruppa tutti i voti con la stessa data
-     */
-    HashMap<Long, List<Mark>> collectAllMarks(List<Mark> marks) {
-        HashMap<Long, List<Mark>> collect = new HashMap<>();
-
-        for (Mark mark : marks) {
-            if (!mark.isNs()) {
-                long time = mark.getDate().getTime();
-                if (collect.containsKey(time)) {
-                    List<Mark> markList = new ArrayList<>(collect.get(time));
-                    markList.add(mark);
-                    collect.put(time, markList);
-                } else {
-                    collect.put(time, Collections.singletonList(mark));
-                }
-            }
-        }
-        return collect;
     }
 
     @Override

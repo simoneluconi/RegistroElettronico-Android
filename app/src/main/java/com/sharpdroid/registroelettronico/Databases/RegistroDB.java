@@ -11,6 +11,7 @@ import android.support.v4.util.Pair;
 import android.text.TextUtils;
 
 import com.franmontiel.persistentcookiejar.persistence.SerializableCookie;
+import com.github.mikephil.charting.data.Entry;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.sharpdroid.registroelettronico.Interfaces.API.Communication;
@@ -502,6 +503,23 @@ public class RegistroDB extends SQLiteOpenHelper {
         }
         c.close();
         return markSubject;
+    }
+
+    public List<Entry> getMarksAsEntries(int id, Period p) {
+        SQLiteDatabase db = getReadableDatabase();
+        String val[] = {String.valueOf(id)};
+        String query = "SELECT date, AVG(mark) FROM marks WHERE subject_id=? GROUP BY date";
+        if (p != Period.ALL) {
+            query = "SELECT date, AVG(mark) FROM marks WHERE subject_id=? AND period=? GROUP BY date";
+            val = new String[]{String.valueOf(id), p.getValue()};
+        }
+        Cursor c = db.rawQuery(query, val);
+        List<Entry> list = new ArrayList<>();
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            list.add(new Entry(c.getLong(0), c.getFloat(1)));
+        }
+        c.close();
+        return list;
     }
 
     public boolean hasMarks(Period period) {
