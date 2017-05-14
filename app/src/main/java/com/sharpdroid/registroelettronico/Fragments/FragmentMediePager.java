@@ -182,8 +182,8 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
 
         if (!pager_selected && db.hasMarks(RegistroDB.Period.SECOND)) {
             mViewPager.setCurrentItem(1, false);
+            pager_selected = true;
         }
-        pager_selected = true;
     }
 
     @Override

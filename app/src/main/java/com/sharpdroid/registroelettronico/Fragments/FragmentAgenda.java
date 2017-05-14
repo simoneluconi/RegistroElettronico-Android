@@ -235,6 +235,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     @Override
     public void onResume() {
         super.onResume();
+        getActivity().findViewById(R.id.calendar).setVisibility(View.VISIBLE);
         setTitleSubtitle(mDate);
         updateCalendar();
         updateAdapter();
