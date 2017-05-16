@@ -576,9 +576,9 @@ public class Metodi {
         error.printStackTrace();
         if (error instanceof HttpException) {
             if (((HttpException) error).code() == 401)
-                Toast.makeText(c, R.string.credenziali, Toast.LENGTH_SHORT).show();
+                Toast.makeText(c, R.string.credenziali, Toast.LENGTH_LONG).show();
         } else {
-            Toast.makeText(c, R.string.login_msg_failer, Toast.LENGTH_SHORT).show();
+            Toast.makeText(c, c.getString(R.string.login_msg_failer, error.getLocalizedMessage()), Toast.LENGTH_LONG).show();
         }
     }
 }
