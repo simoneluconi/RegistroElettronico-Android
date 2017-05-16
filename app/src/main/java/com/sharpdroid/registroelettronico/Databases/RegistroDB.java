@@ -483,22 +483,7 @@ public class RegistroDB extends SQLiteOpenHelper {
     }
 
     public MarkSubject getMarks(int subject_id) {
-        List<Mark> marks = new ArrayList<>();
-        MarkSubject markSubject = new MarkSubject("", marks);
-
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT coalesce(subjects.name,subjects.original_name), marks.mark, marks.description, marks.date,marks.type,marks.period,marks.not_significant FROM marks LEFT JOIN subjects ON subjects.id=marks.subject_id WHERE marks.subject_id=?", new String[]{String.valueOf(subject_id)});
-
-        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            marks.add(new Mark(c.getString(5), c.getInt(6) == 1, c.getString(4), new Date(c.getLong(3)), c.getString(1), c.getString(2)));
-        }
-
-        if (c.moveToFirst()) {
-            markSubject.setName(c.getString(0));
-            markSubject.setMarks(marks);
-        }
-        c.close();
-        return markSubject;
+        return getMarks(subject_id, Period.ALL);
     }
 
     public MarkSubject getMarks(int subject_id, Period period) {
