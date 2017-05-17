@@ -154,8 +154,9 @@ public class RegistroDB extends SQLiteOpenHelper {
             setClassDescription(events.get(0).getClasse_desc());
         }
         String currentProfile = currentProfile();
+        db.delete("api_events", null, null);
         for (Event e : events) {
-            db.execSQL("INSERT OR REPLACE INTO api_events VALUES(?,?,?,?,?,?,?,(SELECT completed FROM api_events WHERE id = ?),(SELECT archived FROM api_events WHERE id = ?),?,?,?)", new Object[]{e.getId(), e.getTitle(), e.getNota_2(), e.getStart().getTime(), e.getEnd().getTime(), e.isAllDay() ? 1 : 0, e.getTipo(), e.getId(), e.getId(), currentProfile, e.getAutore_id(), e.getAutore_desc()});
+            db.execSQL("INSERT OR IGNORE INTO api_events VALUES(?,?,?,?,?,?,?,(SELECT completed FROM api_events WHERE id = ?),(SELECT archived FROM api_events WHERE id = ?),?,?,?)", new Object[]{e.getId(), e.getTitle(), e.getNota_2(), e.getStart().getTime(), e.getEnd().getTime(), e.isAllDay() ? 1 : 0, e.getTipo(), e.getId(), e.getId(), currentProfile, e.getAutore_id(), e.getAutore_desc()});
         }
         db.setTransactionSuccessful();
         db.endTransaction();
@@ -511,9 +512,9 @@ public class RegistroDB extends SQLiteOpenHelper {
     public List<Entry> getMarksAsEntries(int id, Period p) {
         SQLiteDatabase db = getReadableDatabase();
         String val[] = {String.valueOf(id)};
-        String query = "SELECT date, AVG(mark) FROM marks WHERE subject_id=? GROUP BY date";
+        String query = "SELECT date, AVG(mark) FROM marks WHERE subject_id=? AND not_significant=0 GROUP BY date";
         if (p != Period.ALL) {
-            query = "SELECT date, AVG(mark) FROM marks WHERE subject_id=? AND period=? GROUP BY date";
+            query = "SELECT date, AVG(mark) FROM marks WHERE subject_id=? AND period=? AND not_significant=0 GROUP BY date";
             val = new String[]{String.valueOf(id), p.getValue()};
         }
         Cursor c = db.rawQuery(query, val);
@@ -555,7 +556,7 @@ public class RegistroDB extends SQLiteOpenHelper {
         String[] args = {currentProfile()};
         if (p != Period.ALL)
             args = new String[]{currentProfile(), p.getValue()};
-        Cursor c = db.rawQuery("SELECT AVG(marks.mark) FROM marks LEFT JOIN subjects ON marks.subject_id=subjects.id WHERE marks.not_significant=0 AND subjects.username=?  " + ((p != Period.ALL) ? "AND marks.period=?" : ""), args);
+        Cursor c = db.rawQuery("SELECT AVG(_) FROM (SELECT AVG(marks.mark) as _ from marks LEFT JOIN subjects ON marks.subject_id=subjects.id WHERE subjects.username=? AND marks.not_significant=0" + (p != Period.ALL ? " AND marks.period=?" : "") + " GROUP BY marks.subject_id)", args);
         if (c.moveToNext())
             avg = c.getDouble(0);
         c.close();
