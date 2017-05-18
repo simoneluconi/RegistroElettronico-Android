@@ -43,7 +43,6 @@
     <string name="login_msg_failer">Login fallito (%1$s)</string>
     <string name="absences">Assenze</string>
 
-
     <string name="mail_user">Email o Username</string>
     <string name="login_riuscito">Login completato</string>
     <string name="download_in_corso">Download in corso…</string>
