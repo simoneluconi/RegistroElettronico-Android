@@ -23,6 +23,7 @@ public class FragmentFiles extends Fragment {
     private FileAdapter mRVAdapter;
 
     public FragmentFiles() {
+
     }
 
     public static FragmentFiles newInstance(Folder data) {
