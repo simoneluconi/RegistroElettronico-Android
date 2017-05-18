@@ -134,7 +134,7 @@ dependencies {
     compile 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     compile 'com.github.sundeepk:compact-calendar-view:2.0.1'
-    compile 'com.google.android.gms:play-services-safetynet:10.2.4'
+    compile 'com.google.android.gms:play-services-safetynet:10.2.6'
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.heinrichreimersoftware:material-intro:1.6.2'
     compile 'com.jakewharton:butterknife:8.5.1'
