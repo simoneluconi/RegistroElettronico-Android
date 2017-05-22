@@ -55,6 +55,10 @@ public class Mark implements Serializable {
         return desc;
     }
 
+    public boolean isNumeric() {
+        return mark.matches("[0-9]+(.[0-9]+)?"); //returns true if either 7 or 7.75
+    }
+
     public String getHash() {
         MessageDigest messageDigest;
         try {
