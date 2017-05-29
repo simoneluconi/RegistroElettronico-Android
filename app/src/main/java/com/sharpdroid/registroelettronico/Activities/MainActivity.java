@@ -332,7 +332,7 @@ public class MainActivity extends AppCompatActivity
 
             updateSubjects(this);
             //Update fragment
-            drawer.setSelection(drawer.getDrawerItem(drawer.getCurrentSelection()), true);
+            drawer.setSelectionAtPosition(1, true);
         }
         return false;
     }

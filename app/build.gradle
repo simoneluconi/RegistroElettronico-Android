@@ -34,6 +34,7 @@ android {
         versionName "2.0.67"
 
         vectorDrawables.useSupportLibrary = true;
+        multiDexEnabled true
     }
 
     dataBinding {

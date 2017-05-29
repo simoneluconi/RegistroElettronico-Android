@@ -476,7 +476,7 @@ public class RegistroDB extends SQLiteOpenHelper {
                 query = "SELECT subjects.id FROM subjects LEFT JOIN subject_teacher ON subject_teacher.subject_id=subjects.id LEFT JOIN teachers ON teachers.id=teacher_id WHERE (lower(subjects.original_name) LIKE ? OR lower(subjects.name) LIKE ?) AND username=?";
             }
             for (Mark mark : subject.getMarks()) {
-                if (!mark.isNumeric()) mark.setNs(true);
+                if (!mark.isNumeric() && !mark.isNs()) mark.setNs(true);
                 db.execSQL("INSERT OR REPLACE INTO marks VALUES(?,(" + query + "),?,?,?,?,?,?)", new Object[]{mark.getHash(), name, name, currentProfile, mark.getMark(), mark.getDesc(), mark.getDate().getTime(), mark.getType(), mark.getQ(), mark.isNs() ? 1 : 0});
             }
         }
