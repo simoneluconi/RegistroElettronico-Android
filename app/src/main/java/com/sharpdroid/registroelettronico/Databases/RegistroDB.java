@@ -464,6 +464,7 @@ public class RegistroDB extends SQLiteOpenHelper {
     public void addMarks(List<MarkSubject> markSubjects) {
         SQLiteDatabase db = getWritableDatabase();
         db.beginTransaction();
+        db.delete("marks", null, null);
         String name, query;
         String currentProfile = currentProfile();
 
@@ -477,7 +478,7 @@ public class RegistroDB extends SQLiteOpenHelper {
             }
             for (Mark mark : subject.getMarks()) {
                 if (!mark.isNumeric() && !mark.isNs()) mark.setNs(true);
-                db.execSQL("INSERT OR REPLACE INTO marks VALUES(?,(" + query + "),?,?,?,?,?,?)", new Object[]{mark.getHash(), name, name, currentProfile, mark.getMark(), mark.getDesc(), mark.getDate().getTime(), mark.getType(), mark.getQ(), mark.isNs() ? 1 : 0});
+                db.execSQL("INSERT INTO marks VALUES(?,(" + query + "),?,?,?,?,?,?)", new Object[]{mark.getHash(), name, name, currentProfile, mark.getMark(), mark.getDesc(), mark.getDate().getTime(), mark.getType(), mark.getQ(), mark.isNs() ? 1 : 0});
             }
         }
         db.setTransactionSuccessful();
