@@ -8,4 +8,5 @@ data class Profile(
         @Unique() var username: String,
         @Column(name = "name", notNull = false) var name: String?,
         @Column(name = "class", notNull = false) var `class`: String?,
-        var cookie: Cookie) : SugarRecord()
+        var cookie: Cookie,
+        var remoteAgenda: List<RemoteAgenda>) : SugarRecord()
