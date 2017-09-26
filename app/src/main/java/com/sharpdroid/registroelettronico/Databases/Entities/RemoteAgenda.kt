@@ -1,7 +1,10 @@
 package com.sharpdroid.registroelettronico.Databases.Entities
 
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 import com.orm.SugarRecord
 import com.orm.dsl.Column
+import java.util.*
 
 /*
 {
@@ -22,6 +25,10 @@ import com.orm.dsl.Column
  */
 
 data class RemoteAgenda(
-        @Column(name = "evtID", unique = true) val evtID: Int,
-
-        ) : SugarRecord()
+        @Expose @SerializedName("evtId") @Column(name = "id", unique = true) val id: Int,
+        @Expose @SerializedName("evtDatetimeBegin") @Column(name = "start") val start: Date = Date(),
+        @Expose @SerializedName("evtDatetimeEnd") @Column(name = "end") val end: Date = Date(),
+        @Expose @SerializedName("isFullDay") @Column(name = "isFullDay") val isFullDay: Boolean = false,
+        @Expose @SerializedName("notes") @Column(name = "notes") val notes: String = "",
+        @Expose @SerializedName("authorName") @Column(name = "author") val author: String = ""
+) : SugarRecord()
