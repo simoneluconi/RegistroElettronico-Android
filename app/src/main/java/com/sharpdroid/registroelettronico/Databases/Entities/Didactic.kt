@@ -36,5 +36,6 @@ import com.orm.dsl.Ignore
 data class Didactic(
         @Expose @SerializedName("teacherId") val teacherId: String,
         @Expose @SerializedName("teacherName") val teacherName: String,
-        @Expose @SerializedName("teacherName") @Ignore val folders: List<Folder>
+        @Expose @SerializedName("teacherName") @Ignore val folders: List<Folder>,
+        val username: Profile
 ) : SugarRecord()

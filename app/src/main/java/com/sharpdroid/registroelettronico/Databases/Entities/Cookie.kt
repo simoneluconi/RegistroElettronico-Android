@@ -4,7 +4,7 @@ import com.orm.SugarRecord
 import com.orm.dsl.Column
 
 data class Cookie(
-        @Column(name = "id") val username: String,
+        @Column(name = "username") val username: String,
         var key: String = "",
         var value: String = ""
 ) : SugarRecord()

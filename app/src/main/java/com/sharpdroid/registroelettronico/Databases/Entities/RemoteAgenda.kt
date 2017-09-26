@@ -3,7 +3,6 @@ package com.sharpdroid.registroelettronico.Databases.Entities
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.orm.SugarRecord
-import com.orm.dsl.Column
 import java.util.*
 
 /*
@@ -26,12 +25,12 @@ import java.util.*
 
 data class RemoteAgenda(
         val username: String = "",
-        @Expose @SerializedName("evtId") @Column(name = "id", unique = true) val id: Int,
-        @Expose @SerializedName("evtDatetimeBegin") @Column(name = "start") val start: Date = Date(),
-        @Expose @SerializedName("evtDatetimeEnd") @Column(name = "end") val end: Date = Date(),
-        @Expose @SerializedName("isFullDay") @Column(name = "isFullDay") val isFullDay: Boolean = false,
-        @Expose @SerializedName("notes") @Column(name = "notes") val notes: String = "",
-        @Expose @SerializedName("authorName") @Column(name = "author") val author: String = ""
+        @Expose @SerializedName("evtId") val eventId: Int,
+        @Expose @SerializedName("evtDatetimeBegin") val start: Date = Date(),
+        @Expose @SerializedName("evtDatetimeEnd") val end: Date = Date(),
+        @Expose @SerializedName("isFullDay") val isFullDay: Boolean = false,
+        @Expose @SerializedName("notes") val notes: String = "",
+        @Expose @SerializedName("authorName") val author: String = ""
 ) : SugarRecord() {
     fun getInfo(): EventInfo {
         return SugarRecord.find(EventInfo::class.java, "remote=? AND eventId=?", "1", id.toString())[0]

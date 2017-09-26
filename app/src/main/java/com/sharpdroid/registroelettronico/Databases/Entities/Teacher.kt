@@ -5,6 +5,6 @@ import com.google.gson.annotations.SerializedName
 import com.orm.SugarRecord
 
 data class Teacher(
-        @Expose() @SerializedName("teacherId") var id: Int,
-        @Expose() @SerializedName("teacherName") var name: String = ""
+        @Expose() @SerializedName("teacherId") var teacherId: Int,
+        @Expose() @SerializedName("teacherName") var teacherName: String = ""
 ) : SugarRecord()
