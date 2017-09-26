@@ -36,3 +36,6 @@
 -keepclassmembers class android.support.v7.graphics.drawable.DrawerArrowDrawable { public *; }
 
 -keep class android.support.v7.widget.SearchView { *; }
+
+
+-keep class com.sharpdroid.registroelettronico.Database.Entities** { *; }
