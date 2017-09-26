@@ -23,5 +23,6 @@ data class File(
         @Expose @SerializedName("contentName") val contentName: String = "",
         @Expose @SerializedName("objectId") val objectId: Int,
         @Expose @SerializedName("objectType") val type: String = "",
-        @Expose @SerializedName("shareDT") val date: Date = Date()
+        @Expose @SerializedName("shareDT") val date: Date = Date(),
+        var folder: Folder
 ) : SugarRecord()

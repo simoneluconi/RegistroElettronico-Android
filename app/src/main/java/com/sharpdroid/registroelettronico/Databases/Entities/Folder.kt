@@ -3,7 +3,6 @@ package com.sharpdroid.registroelettronico.Databases.Entities
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.orm.SugarRecord
-import com.orm.dsl.Column
 import com.orm.dsl.Ignore
 import java.util.*
 
@@ -28,8 +27,9 @@ import java.util.*
 }
  */
 data class Folder(
-        @Expose @SerializedName("folderId") @Column(name = "folderId") val id: Int,
+        @Expose @SerializedName("folderId") val folderId: Int,
         @Expose @SerializedName("folderName") var name: String = "",
         @Expose @SerializedName("lastShareDT") var lastUpdate: Date = Date(),
-        @Expose @SerializedName("contents") @Ignore var files: List<File>
+        @Expose @SerializedName("contents") @Ignore var files: List<File>,
+        var teacher: Didactic
 ) : SugarRecord()

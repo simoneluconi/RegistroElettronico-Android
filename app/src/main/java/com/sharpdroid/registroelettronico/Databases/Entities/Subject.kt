@@ -24,7 +24,7 @@ import com.orm.dsl.Unique
 }
  */
 data class Subject(
-        @Expose() @SerializedName("id") val id: Int,
+        @Expose() @SerializedName("id") val myId: Int,
         @Expose() @SerializedName("description") @Unique() var description: String = "",
         @Expose() @SerializedName("teachers") @Ignore() var teachers: List<Teacher>?
 ) : SugarRecord()
