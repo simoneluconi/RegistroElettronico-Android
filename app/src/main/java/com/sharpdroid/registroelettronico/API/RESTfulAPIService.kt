@@ -1,26 +1,10 @@
 package com.sharpdroid.registroelettronico.API
 
-import com.sharpdroid.registroelettronico.Interfaces.API.Absences
-import com.sharpdroid.registroelettronico.Interfaces.API.Communication
-import com.sharpdroid.registroelettronico.Interfaces.API.CommunicationDescription
-import com.sharpdroid.registroelettronico.Interfaces.API.Event
-import com.sharpdroid.registroelettronico.Interfaces.API.FileTeacher
-import com.sharpdroid.registroelettronico.Interfaces.API.Lesson
-import com.sharpdroid.registroelettronico.Interfaces.API.LessonSubject
-import com.sharpdroid.registroelettronico.Interfaces.API.Login
-import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject
-import com.sharpdroid.registroelettronico.Interfaces.API.Note
-import com.sharpdroid.registroelettronico.Interfaces.API.Scrutiny
-
+import com.sharpdroid.registroelettronico.Interfaces.API.*
 import io.reactivex.Observable
 import okhttp3.ResponseBody
 import retrofit2.Response
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 internal interface RESTfulAPIService {
 
@@ -45,7 +29,7 @@ internal interface RESTfulAPIService {
     @get:GET("marks")
     val marks: Observable<List<MarkSubject>>
 
-    @get:GET("subjects")
+    @get:GET("subject")
     val subjects: Observable<List<LessonSubject>>
 
     @GET("subject/{id}/lessons")
