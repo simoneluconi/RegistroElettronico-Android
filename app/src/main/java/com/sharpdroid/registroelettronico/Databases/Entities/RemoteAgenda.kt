@@ -25,10 +25,15 @@ import java.util.*
  */
 
 data class RemoteAgenda(
+        val username: String = "",
         @Expose @SerializedName("evtId") @Column(name = "id", unique = true) val id: Int,
         @Expose @SerializedName("evtDatetimeBegin") @Column(name = "start") val start: Date = Date(),
         @Expose @SerializedName("evtDatetimeEnd") @Column(name = "end") val end: Date = Date(),
         @Expose @SerializedName("isFullDay") @Column(name = "isFullDay") val isFullDay: Boolean = false,
         @Expose @SerializedName("notes") @Column(name = "notes") val notes: String = "",
         @Expose @SerializedName("authorName") @Column(name = "author") val author: String = ""
-) : SugarRecord()
+) : SugarRecord() {
+    fun getInfo(): EventInfo {
+        return SugarRecord.find(EventInfo::class.java, "remote=? AND eventId=?", "1", id.toString())[0]
+    }
+}
