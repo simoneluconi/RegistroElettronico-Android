@@ -1,4 +1,4 @@
-package com.sharpdroid.registroelettronico.Interfaces.Client
+package com.sharpdroid.registroelettronico.Databases.Entities
 
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
