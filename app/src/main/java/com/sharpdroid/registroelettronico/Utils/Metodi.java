@@ -16,8 +16,8 @@ import android.text.TextUtils;
 import android.util.TypedValue;
 import android.widget.Toast;
 
-import com.sharpdroid.registroelettronico.API.SpiaggiariAPI;
-import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
+import com.sharpdroid.registroelettronico.API.V1.SpiaggiariAPI;
+import com.sharpdroid.registroelettronico.API.V1.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absence;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absences;

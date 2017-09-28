@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
+import com.sharpdroid.registroelettronico.API.V1.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Adapters.NoteAdapter;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Note;
@@ -64,7 +64,7 @@ public class FragmentNote extends Fragment implements SwipeRefreshLayout.OnRefre
         db = RegistroDB.getInstance(getContext());
         getActivity().setTitle(getString(R.string.note));
 
-        RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);
+        RecyclerView mRecyclerView = view.findViewById(R.id.recycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getContext()).colorResId(R.color.divider).size(dpToPx(1)).build());

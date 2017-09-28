@@ -1,10 +1,11 @@
-package com.sharpdroid.registroelettronico.API
+package com.sharpdroid.registroelettronico.API.V1
 
 import android.content.Context
 import android.content.Intent
 import android.preference.PreferenceManager
 import com.franmontiel.persistentcookiejar.PersistentCookieJar
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache
+import com.sharpdroid.registroelettronico.API.SQLCookiePersistor
 import com.sharpdroid.registroelettronico.Activities.LoginActivity
 import com.sharpdroid.registroelettronico.Interfaces.API.*
 import io.reactivex.Observable

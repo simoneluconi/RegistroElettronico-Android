@@ -1,4 +1,4 @@
-package com.sharpdroid.registroelettronico.API
+package com.sharpdroid.registroelettronico.API.V1
 
 import com.sharpdroid.registroelettronico.Interfaces.API.*
 import io.reactivex.Observable

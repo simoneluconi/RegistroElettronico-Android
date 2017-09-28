@@ -16,7 +16,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
+import com.sharpdroid.registroelettronico.API.V1.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Adapters.CommunicationAdapter;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Communication;
@@ -70,7 +70,7 @@ public class FragmentCommunications extends Fragment implements SwipeRefreshLayo
                 R.color.orangematerial);
         getActivity().setTitle(getString(R.string.communications));
 
-        RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);
+        RecyclerView mRecyclerView = view.findViewById(R.id.recycler);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getContext()).colorResId(R.color.divider).size(dpToPx(1)).build());

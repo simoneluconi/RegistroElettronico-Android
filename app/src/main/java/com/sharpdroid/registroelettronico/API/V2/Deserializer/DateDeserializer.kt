@@ -1,4 +1,4 @@
-package com.sharpdroid.registroelettronico.API.Deserializer
+package com.sharpdroid.registroelettronico.API.V2.Deserializer
 
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer

@@ -16,7 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
+import com.sharpdroid.registroelettronico.API.V1.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Adapters.FolderAdapter;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.FileTeacher;
@@ -72,7 +72,7 @@ public class FragmentFolders extends Fragment implements SwipeRefreshLayout.OnRe
         db = RegistroDB.getInstance(getContext());
 
         getActivity().setTitle(getString(R.string.files));
-        RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);
+        RecyclerView mRecyclerView = view.findViewById(R.id.recycler);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerView.setItemAnimator(null);

@@ -20,7 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
+import com.sharpdroid.registroelettronico.API.V1.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.BottomSheet.OrderMedieBS;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.R;
@@ -79,7 +79,7 @@ public class FragmentMediePager extends Fragment implements SwipeRefreshLayout.O
 
         db = RegistroDB.getInstance(mContext);
         pagerAdapter = new MediePager(getChildFragmentManager());
-        tabLayout = (TabLayout) getActivity().findViewById(R.id.tab_layout);
+        tabLayout = getActivity().findViewById(R.id.tab_layout);
         mViewPager.setAdapter(pagerAdapter);
         mViewPager.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(mViewPager);

@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatDelegate
 import android.util.Log
 
 import com.google.android.gms.security.ProviderInstaller
+import com.orm.SugarContext
 
 class App : Application() {
 
@@ -14,6 +15,7 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         upgradeSecurityProvider()
+        SugarContext.init(this)
     }
 
     private fun upgradeSecurityProvider() {

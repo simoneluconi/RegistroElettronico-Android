@@ -38,5 +38,5 @@ data class Communication(
         @Expose @SerializedName("cntTitle") val title: String,
         @Expose @SerializedName("cntCategory") val category: String,
         @Expose @SerializedName("cntHasAttach") val hasAttachment: String,
-        val username: String?
+        var profile: Profile?
 ) : SugarRecord()

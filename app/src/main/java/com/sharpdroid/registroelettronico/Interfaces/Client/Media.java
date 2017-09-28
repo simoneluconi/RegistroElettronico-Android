@@ -2,7 +2,7 @@ package com.sharpdroid.registroelettronico.Interfaces.Client;
 
 import android.util.Log;
 
-import com.sharpdroid.registroelettronico.API.SpiaggiariAPI;
+import com.sharpdroid.registroelettronico.API.V1.SpiaggiariAPI;
 import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
 
 import java.io.Serializable;
