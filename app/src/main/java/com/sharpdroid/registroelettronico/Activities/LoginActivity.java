@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
-import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
+import com.sharpdroid.registroelettronico.API.V1.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.Utils.DeviceUuidFactory;

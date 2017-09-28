@@ -13,7 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
+import com.sharpdroid.registroelettronico.API.V1.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Adapters.AllAbsencesAdapter;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absences;

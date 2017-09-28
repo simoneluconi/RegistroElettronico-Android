@@ -43,5 +43,6 @@ data class Absence(
         @Expose @SerializedName("evtDate") val date: Date,
         @Expose @SerializedName("isJustified") val justified: Boolean,
         @Expose @SerializedName("justifReasonCode") val reasonCode: Int?,
-        @Expose @SerializedName("justifReasonDesc") val reasonDesc: String?
+        @Expose @SerializedName("justifReasonDesc") val reasonDesc: String?,
+        var profile: Profile?
 ) : SugarRecord()

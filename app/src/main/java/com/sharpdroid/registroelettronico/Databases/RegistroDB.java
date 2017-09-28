@@ -95,8 +95,8 @@ public class RegistroDB extends SQLiteOpenHelper {
         db.beginTransaction();
         db.execSQL("CREATE TABLE profiles(username TEXT NOT NULL, name TEXT, class TEXT, PRIMARY KEY (username));");
         db.execSQL("CREATE TABLE teachers(id INTEGER NOT NULL, name TEXT NOT NULL, PRIMARY KEY (id));");
-        db.execSQL("CREATE TABLE cookies(username TEXT NOT NULL, key TEXT NOT NULL, value TEXT NOT NULL, FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
-        db.execSQL("CREATE TABLE api_events(id INTEGER NOT NULL, title TEXT NOT NULL, content TEXT acher_id INTEGER NOT NULL, teacher_name TEXT NOT NULL, PRIMARY KEY (id), FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
+        db.execSQL("CREATE TABLE cookies(username TEXT NOT NULL, `key` TEXT NOT NULL, value TEXT NOT NULL, FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
+        db.execSQL("CREATE TABLE api_events(id INTEGER NOT NULL, title TEXT NOT NULL, content TEXT, teacher_id INTEGER NOT NULL, teacher_name TEXT NOT NULL, PRIMARY KEY (id), FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");
         db.execSQL("CREATE TABLE folders(id TEXT PRIMARY KEY, name TEXT NOT NULL, date INTEGER NOT NULL);");
         db.execSQL("CREATE TABLE files(id INTEGER NOT NULL, name TEXT NOT NULL, type TEXT NOT NULL, date INTEGER NOT NULL, cksum TEXT, link TEXT, hidden INTEGER NOT NULL, filename TEXT, folder_id INTEGER NOT NULL, PRIMARY KEY (id), FOREIGN KEY (folder_id) REFERENCES folders(id) ON DELETE CASCADE);");
         db.execSQL("CREATE TABLE communications(id INTEGER NOT NULL, title TEXT NOT NULL, content TEXT, date INTEGER NOT NULL, type TEXT NOT NULL, filename TEXT, attachment INTEGER, username TEXT NOT NULL, PRIMARY KEY (id), FOREIGN KEY (username) REFERENCES profiles(username) ON DELETE CASCADE);");

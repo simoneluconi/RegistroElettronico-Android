@@ -16,7 +16,7 @@ public class MyLinkedMap<K, V> extends LinkedHashMap<K, V> {
 
     public Map.Entry<K, V> getEntry(int i) {
         // check if negetive index provided
-        Set<Entry<K, V>> entries = entrySet();
+        Set<Map.Entry<K, V>> entries = entrySet();
         int j = 0;
 
         for (Map.Entry<K, V> entry : entries)

@@ -14,7 +14,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
+import com.sharpdroid.registroelettronico.API.V1.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
 import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
@@ -102,7 +102,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
 
 
         // toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // add back arrow to toolbar
@@ -183,8 +183,8 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
             alert.setMessage(getString(R.string.obiettivo_summary));
 
             View v = getLayoutInflater().inflate(R.layout.fragment_imposta_obiettivo, null);
-            SeekBar mSeekBar = (SeekBar) v.findViewById(R.id.seekbar);
-            TextView mValueText = (TextView) v.findViewById(R.id.value);
+            SeekBar mSeekBar = v.findViewById(R.id.seekbar);
+            TextView mValueText = v.findViewById(R.id.value);
             mSeekBar.setProgress((int) getTarget());
             mValueText.setText(String.format(Locale.getDefault(), "%.0f", getTarget()));
 

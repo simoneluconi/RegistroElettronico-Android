@@ -21,7 +21,7 @@ import android.view.ViewGroup;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
-import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
+import com.sharpdroid.registroelettronico.API.V1.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Activities.AddEventActivity;
 import com.sharpdroid.registroelettronico.Adapters.AgendaAdapter;
 import com.sharpdroid.registroelettronico.BottomSheet.AgendaBS;
@@ -97,10 +97,10 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        mToolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        mToolbar = getActivity().findViewById(R.id.toolbar);
         mRegistroDB = RegistroDB.getInstance(mContext);
 
-        mCompactCalendarView = (CompactCalendarView) getActivity().findViewById(R.id.calendar);
+        mCompactCalendarView = getActivity().findViewById(R.id.calendar);
         mCompactCalendarView.setLocale(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALIAN);
         mCompactCalendarView.setUseThreeLetterAbbreviation(true);
         mCompactCalendarView.setListener(this);

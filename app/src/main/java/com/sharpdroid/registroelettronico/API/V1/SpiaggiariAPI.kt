@@ -1,4 +1,4 @@
-package com.sharpdroid.registroelettronico.API
+package com.sharpdroid.registroelettronico.API.V1
 
 object SpiaggiariAPI {
     const val ORALE = "Orale"

@@ -2,18 +2,13 @@ package com.sharpdroid.registroelettronico.BottomSheet
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.support.design.widget.BottomSheetDialogFragment
-import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-
+import com.sharpdroid.registroelettronico.BottomSheet.OrderMedieBS.OrderListener
 import com.sharpdroid.registroelettronico.R
 import kotlinx.android.synthetic.main.bottom_sheet_order_medie.view.*
 
@@ -39,9 +34,9 @@ class OrderMedieBS : BottomSheetDialogFragment() {
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        val recyclerView = view!!.findViewById(R.id.list) as RecyclerView
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = ItemAdapter(3, mListener!!)
+        val recyclerView = view?.findViewById<RecyclerView>(R.id.list)
+        recyclerView?.layoutManager = LinearLayoutManager(context)
+        recyclerView?.adapter = ItemAdapter(3, mListener!!)
     }
 
     override fun onAttach(context: Context?) {

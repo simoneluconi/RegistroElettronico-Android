@@ -15,13 +15,10 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.heinrichreimersoftware.materialintro.app.SlideFragment;
-import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
-import com.sharpdroid.registroelettronico.API.SpiaggiariApiClient;
-import com.sharpdroid.registroelettronico.Databases.RegistroDB;
+import com.sharpdroid.registroelettronico.API.V1.SpiaggiariApiClient;
+import com.sharpdroid.registroelettronico.Databases.Entities.Profile;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.Utils.DeviceUuidFactory;
-
-import org.apache.commons.lang3.text.WordUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -95,15 +92,18 @@ public class FragmentLogin extends SlideFragment {
 
         String oldProfile = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("currentProfile", "");
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString("currentProfile", mEmail).apply();
-        RegistroDB db = RegistroDB.getInstance(getContext());
+        //RegistroDB db = RegistroDB.getInstance(getContext());
+        new Profile(mEmail, "", "").save();
         //INSERT IN DB BEFORE REQUEST TO AVOID CONSTRAINT ERRORS
-        db.addProfile(new ProfileDrawerItem().withEmail(mEmail));
+        //db.addProfile(new ProfileDrawerItem().withEmail(mEmail));
 
         new SpiaggiariApiClient(mContext).postLogin(mEmail, mPassword, new DeviceUuidFactory(mContext).getDeviceUuid().toString())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(login -> {
-                    db.updateProfile(new ProfileDrawerItem().withName(WordUtils.capitalizeFully(login.getName())).withEmail(mEmail));
-
+                    //db.updateProfile(new ProfileDrawerItem().withName(WordUtils.capitalizeFully(login.getName())).withEmail(mEmail));
+                    Profile p = Profile.find(Profile.class, "username =?", mEmail).get(0);
+                    p.setName(login.getName());
+                    p.save();
                     PreferenceManager.getDefaultSharedPreferences(mContext).edit().putString("currentProfile", mEmail).putBoolean("first_run", false).apply();
 
                     mButtonLogin.setText(R.string.login_riuscito);
@@ -115,7 +115,10 @@ public class FragmentLogin extends SlideFragment {
                     loginFeedback(error, getContext());
 
                     PreferenceManager.getDefaultSharedPreferences(mContext).edit().putString("currentProfile", oldProfile).apply();
-                    db.removeProfile(mEmail);
+                    //db.removeProfile(mEmail);
+
+                    Profile p = Profile.find(Profile.class, "username =?", mEmail).get(0);
+                    p.save();
 
                     mButtonLogin.setText(R.string.login);
                     mEditTextMail.setEnabled(true);
