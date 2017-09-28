@@ -3,6 +3,7 @@ package com.sharpdroid.registroelettronico.Databases.Entities
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.orm.SugarRecord
+import java.util.*
 
 /*
 {
@@ -11,12 +12,12 @@ import com.orm.SugarRecord
             "pubId": 1156184,
             "pubDT": "2017-09-26T11:02:05+02:00",
             "readStatus": true,
-            "evtCode": "CF",
+            "evtCode": "CF", -------------------------you need this to download attachment
             "cntId": 373940,
             "cntValidFrom": "2017-09-26",
             "cntValidTo": "2017-09-27",
             "cntValidInRange": true,
-            "cntStatus": "active",
+            "cntStatus": "active", -------------------or "deleted"
             "cntTitle": "mercoledì 27 settembre 4FSA alla 3^ ora supplenza in A305",
             "cntCategory": "News",
             "cntHasChanged": false,
@@ -30,9 +31,9 @@ import com.orm.SugarRecord
  */
 data class Communication(
         @Expose @SerializedName("pubId") val pubId: Int,
-        @Expose @SerializedName("pubDT") val date: String,
+        @Expose @SerializedName("pubDT") val date: Date,
         @Expose @SerializedName("readStatus") val isRead: Boolean,
-        @Expose @SerializedName("evtCode") val evtCode: String, //use only to mark as read
+        @Expose @SerializedName("evtCode") val evtCode: String,
         @Expose @SerializedName("cntId") val myId: Int,
         @Expose @SerializedName("cntTitle") val title: String,
         @Expose @SerializedName("cntCategory") val category: String,

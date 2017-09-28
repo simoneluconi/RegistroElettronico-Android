@@ -3,28 +3,14 @@ package com.sharpdroid.registroelettronico.API
 import android.content.Context
 import android.content.Intent
 import android.preference.PreferenceManager
-
 import com.franmontiel.persistentcookiejar.PersistentCookieJar
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache
 import com.sharpdroid.registroelettronico.Activities.LoginActivity
-import com.sharpdroid.registroelettronico.Interfaces.API.Absences
-import com.sharpdroid.registroelettronico.Interfaces.API.Communication
-import com.sharpdroid.registroelettronico.Interfaces.API.CommunicationDescription
-import com.sharpdroid.registroelettronico.Interfaces.API.Event
-import com.sharpdroid.registroelettronico.Interfaces.API.FileTeacher
-import com.sharpdroid.registroelettronico.Interfaces.API.Lesson
-import com.sharpdroid.registroelettronico.Interfaces.API.LessonSubject
-import com.sharpdroid.registroelettronico.Interfaces.API.Login
-import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject
-import com.sharpdroid.registroelettronico.Interfaces.API.Note
-import com.sharpdroid.registroelettronico.Interfaces.API.Scrutiny
-
+import com.sharpdroid.registroelettronico.Interfaces.API.*
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
-import okhttp3.CookieJar
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Request
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.Retrofit
