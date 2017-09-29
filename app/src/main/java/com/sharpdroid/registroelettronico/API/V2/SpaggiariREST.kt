@@ -14,70 +14,70 @@ interface SpaggiariREST {
     fun postLogin(@Body user: LoginRequest): Observable<LoginResponse>
 
     @GET("rest/v1/students/{studentId}/absences/details")
-    fun getAbsences(@Path("studentId") studentId: String): Observable<AbsenceAPI>
+    fun getAbsences(): Observable<AbsenceAPI>
 
     @GET("rest/v1/students/{studentId}/absences/details/{begin}")
-    fun getAbsences(@Path("studentId") studentId: String, @Path("begin") begin: String): Observable<AbsenceAPI>
+    fun getAbsences(@Path("begin") begin: String): Observable<AbsenceAPI>
 
     @GET("rest/v1/students/{studentId}/absences/details/{begin}/{end}")
-    fun getAbsences(@Path("studentId") studentId: String, @Path("begin") begin: String, @Path("end") end: String): Observable<AbsenceAPI>
+    fun getAbsences(@Path("begin") begin: String, @Path("end") end: String): Observable<AbsenceAPI>
 
     @GET("rest/v1/students/{studentId}/agenda/all/{begin}/{end}")
-    fun getAgenda(@Path("studentId") studentId: String, @Path("begin") begin: String, @Path("end") end: String): Observable<AgendaAPI>
+    fun getAgenda(@Path("begin") begin: String, @Path("end") end: String): Observable<AgendaAPI>
 
     /*
         @GET("rest/v1/students/{studentId}/agenda/{eventCode}/{begin}/{end}")
-        fun getAgenda(@Path("studentId") studentId: String, @Path("eventCode") eventCode: String, @Path("begin") begin: String, @Path("end") end: String): Observable<List<Agenda>>
+        fun getAgenda( @Path("eventCode") eventCode: String, @Path("begin") begin: String, @Path("end") end: String): Observable<List<Agenda>>
     */
     @GET("rest/v1/students/{studentId}/didactics/item/{contentId}")
-    fun getAttachmentFile(@Path("studentId") studentId: String, @Path("contentId") contentId: Int): Observable<ResponseBody>
+    fun getAttachmentFile(@Path("contentId") contentId: Int): Observable<ResponseBody>
 
     @GET("rest/v1/students/{studentId}/noticeboard")
-    fun getBacheca(@Path("studentId") studentId: String): Observable<CommunicationAPI>
+    fun getBacheca(): Observable<CommunicationAPI>
 
     @GET("rest/v1/students/{studentId}/noticeboard/attach/{eventCode}/{pubId}/101")
-    fun getBachecaAttachment(@Path("studentId") studentId: String, @Path("eventCode") eventCode: String, @Path("pubId") pubId: Int): Observable<ResponseBody>
+    fun getBachecaAttachment(@Path("eventCode") eventCode: String, @Path("pubId") pubId: Int): Observable<ResponseBody>
 /*
     @GET("rest/v1/students/{studentId}/schoolbooks")
-    fun getBooks(@Path("studentId") studentId: String): Observable<List<Course>>
+    fun getBooks(): Observable<List<Course>>
 
     @GET("rest/v1/students/{studentId}/calendar/all")
-    fun getCalendar(@Path("studentId") studentId: String): Observable<List<Day>>
+    fun getCalendar(): Observable<List<Day>>
 
     @GET("rest/v1/students/{studentId}/card")
-    fun getCard(@Path("studentId") studentId: String): Observable<Card>
+    fun getCard(): Observable<Card>
 
     @GET("rest/v1/students/{studentId}/cards")
-    fun getCards(@Path("studentId") studentId: String): Observable<List<Card>>*/
+    fun getCards(): Observable<List<Card>>*/
 
     @GET("rest/v1/students/{studentId}/didactics")
-    fun getDidactics(@Path("studentId") studentId: String): Observable<DidacticAPI>
+    fun getDidactics(): Observable<DidacticAPI>
 
     @GET("rest/v1/students/{studentId}/grades")
-    fun getGrades(@Path("studentId") studentId: String): Observable<GradeAPI>
+    fun getGrades(): Observable<GradeAPI>
 
     @GET("rest/v1/students/{studentId}/grades/subjects/{subject}")
-    fun getGrades(@Path("studentId") studentId: String, @Path("subject") subject: Int): Observable<GradeAPI>
+    fun getGrades(@Path("subject") subject: Int): Observable<GradeAPI>
 
     @GET("rest/v1/students/{studentId}/lessons/today")
-    fun getLessons(@Path("studentId") studentId: String): Observable<LessonAPI>
+    fun getLessons(): Observable<LessonAPI>
 
     @GET("rest/v1/students/{studentId}/lessons/{day}")
-    fun getLessons(@Path("studentId") studentId: String, @Path("day") day: String): Observable<LessonAPI>
+    fun getLessons(@Path("day") day: String): Observable<LessonAPI>
 
     @GET("rest/v1/students/{studentId}/lessons/{start}/{end}")
-    fun getLessons(@Path("studentId") studentId: String, @Path("start") start: String, @Path("end") end: String): Observable<LessonAPI>
+    fun getLessons(@Path("start") start: String, @Path("end") end: String): Observable<LessonAPI>
 
     @GET("rest/v1/students/{studentId}/notes/all/")
-    fun getNotes(@Path("studentId") studentId: String): Observable<NoteAPI>
+    fun getNotes(): Observable<NoteAPI>
 
     @GET("rest/v1/students/{studentId}/periods")
-    fun getPeriods(@Path("studentId") studentId: String): Observable<List<Period>>
+    fun getPeriods(): Observable<List<Period>>
 
     @GET("rest/v1/students/{studentId}/subjects")
-    fun getSubjects(@Path("studentId") studentId: String): Observable<SubjectAPI>
+    fun getSubjects(): Observable<SubjectAPI>
 
     @POST("rest/v1/students/{studentId}/notes/{type}/read/{note}")
-    fun markNote(@Path("studentId") studentId: String, @Path("type") type: String, @Path("note") note: Int): Observable<ResponseBody>
+    fun markNote(@Path("type") type: String, @Path("note") note: Int): Observable<ResponseBody>
 
 }
