@@ -19,8 +19,6 @@ import com.sharpdroid.registroelettronico.Interfaces.Client.Entry;
 import com.sharpdroid.registroelettronico.Interfaces.Client.HeaderEntry;
 import com.sharpdroid.registroelettronico.R;
 
-import org.apache.commons.lang3.text.WordUtils;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,7 +30,6 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.sharpdroid.registroelettronico.Utils.Metodi.getSubjectNameOrProfessorName;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.isEventTest;
 
 public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -43,11 +40,11 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private AgendaClickListener mClickListener;
     private RegistroDB db;
 
-    public AgendaAdapter(Context mContext, View ph, RegistroDB db) {
+    public AgendaAdapter(Context mContext, View ph) {
         this.mContext = mContext;
         CVDataList = new ArrayList<>();
         place_holder = ph;
-        this.db = db;
+        //this.db = db;
     }
 
     @Override
@@ -66,8 +63,8 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         } else {
             EventHolder eventHolder = (EventHolder) holder;
             AdvancedEvent event = ((AgendaEntry) entry).getEvent();
-            String subjectName = getSubjectNameOrProfessorName(event, db);
-            String profName = WordUtils.capitalizeFully(db.getProfessorName(event.getAutore_id()));
+            String subjectName = "subject";
+            String profName = "prof";
             Spannable title = new SpannableString(event.getTitle());
             if (event.isCompleted()) {
                 title.setSpan(new StrikethroughSpan(), 0, event.getTitle().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -92,7 +89,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             eventHolder.title.setText(title);
             eventHolder.notes.setText(event.getNota_2());
 
-            eventHolder.subject.setVisibility((TextUtils.isEmpty(subjectName) && TextUtils.isEmpty(db.getProfessorName(event.getAutore_id()))) ? View.GONE : View.VISIBLE);
+            //eventHolder.subject.setVisibility((TextUtils.isEmpty(subjectName) && TextUtils.isEmpty(db.getProfessorName(event.getAutore_id()))) ? View.GONE : View.VISIBLE);
             eventHolder.notes.setVisibility((!event.getNota_2().trim().equalsIgnoreCase(event.getTitle().trim()) && !TextUtils.isEmpty(event.getNota_2())) ? View.VISIBLE : View.GONE);
             eventHolder.divider.setVisibility((CVDataList.get(position - 1) instanceof HeaderEntry) ? View.INVISIBLE : View.VISIBLE);
 
