@@ -31,5 +31,5 @@ data class Folder(
         @Expose @SerializedName("folderName") var name: String = "",
         @Expose @SerializedName("lastShareDT") var lastUpdate: Date = Date(),
         @Expose @SerializedName("contents") @Ignore var files: List<File>,
-        var teacher: Didactic
+        var teacher: Teacher
 ) : SugarRecord()

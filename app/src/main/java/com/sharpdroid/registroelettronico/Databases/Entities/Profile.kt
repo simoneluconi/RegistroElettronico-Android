@@ -10,10 +10,6 @@ data class Profile(
         @Column(name = "class", notNull = false) var `class`: String?
 ) : SugarRecord() {
 
-    fun getCookie(): Cookie? {
-        return SugarRecord.findById(Cookie::class.java, arrayOf(username))?.getOrNull(0)
-    }
-
     fun getTeachers(): List<Teacher> {
         return SugarRecord.find(SubjectTeacher::class.java, "username = ?", username)?.map { it?.teacher!! } ?: emptyList()
     }

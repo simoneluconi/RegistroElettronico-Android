@@ -22,3 +22,10 @@ data class Grade(@Expose @SerializedName("canceled") val mCanceled: Boolean,
                  @Expose @SerializedName("weightFactor") val mWeightFactor: Double,
                  var profile: Profile?
 ) : SugarRecord()
+
+data class GradeAPI(@Expose @SerializedName("grades") val grades: List<Grade>) {
+    fun getGrades(profile: Profile): List<Grade> {
+        grades.forEach { it.profile = profile }
+        return grades
+    }
+}

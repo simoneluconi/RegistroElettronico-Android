@@ -40,6 +40,7 @@ import com.sharpdroid.registroelettronico.Fragments.FragmentMediePager;
 import com.sharpdroid.registroelettronico.Fragments.FragmentNote;
 import com.sharpdroid.registroelettronico.Fragments.FragmentSettings;
 import com.sharpdroid.registroelettronico.Fragments.FragmentSubjects;
+import com.sharpdroid.registroelettronico.Info;
 import com.sharpdroid.registroelettronico.R;
 import com.transitionseverywhere.ChangeText;
 import com.transitionseverywhere.TransitionManager;
@@ -327,8 +328,8 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(this, LoginActivity.class));
         } else {
 
-            Log.d("currentProfile", profile.getEmail().getText());
-            PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", profile.getEmail().getText()).apply();
+            Log.d(Info.ACCOUNT, profile.getEmail().getText());
+            PreferenceManager.getDefaultSharedPreferences(this).edit().putString(Info.ACCOUNT, profile.getEmail().getText()).apply();
 
             updateSubjects(this);
             //Update fragment
@@ -349,7 +350,7 @@ public class MainActivity extends AppCompatActivity
                 headerResult.addProfiles(new ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true));
 
                 if (db.getProfiles().size() > 0) {
-                    PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", db.getProfiles().get(0).getEmail().getText()).apply();
+                    PreferenceManager.getDefaultSharedPreferences(this).edit().putString(Info.ACCOUNT, db.getProfiles().get(0).getEmail().getText()).apply();
                     headerResult.setActiveProfile(db.getProfile(), true);
                 } else {
                     startActivity(new Intent(this, LoginActivity.class));

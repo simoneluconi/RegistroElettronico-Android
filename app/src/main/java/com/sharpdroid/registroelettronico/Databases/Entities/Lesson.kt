@@ -20,3 +20,10 @@ data class Lesson(
         @Expose @SerializedName("lessonType") val mType: String,
         var profile: Profile?
 ) : SugarRecord()
+
+data class LessonAPI(@Expose @SerializedName("lessons") val lessons: List<Lesson>) {
+    fun getLessons(profile: Profile): List<Lesson> {
+        lessons.forEach { it.profile = profile }
+        return lessons
+    }
+}

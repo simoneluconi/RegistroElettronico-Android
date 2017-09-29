@@ -2,18 +2,16 @@ package com.sharpdroid.registroelettronico.API
 
 import android.content.Context
 import android.preference.PreferenceManager
-
 import com.franmontiel.persistentcookiejar.persistence.CookiePersistor
 import com.sharpdroid.registroelettronico.Databases.RegistroDB
-
-import java.util.ArrayList
-
+import com.sharpdroid.registroelettronico.Info
 import okhttp3.Cookie
+import java.util.*
 
 class SQLCookiePersistor(private val mContext: Context) : CookiePersistor {
 
     override fun loadAll(): List<Cookie> {
-        val username = PreferenceManager.getDefaultSharedPreferences(mContext).getString("currentProfile", null)
+        val username = PreferenceManager.getDefaultSharedPreferences(mContext).getString(Info.ACCOUNT, null)
         val db = RegistroDB.getInstance(mContext)
         val cookies = ArrayList<Cookie>()
         if (username != null)
@@ -23,7 +21,7 @@ class SQLCookiePersistor(private val mContext: Context) : CookiePersistor {
     }
 
     override fun saveAll(cookies: Collection<Cookie>) {
-        val username = PreferenceManager.getDefaultSharedPreferences(mContext).getString("currentProfile", null)
+        val username = PreferenceManager.getDefaultSharedPreferences(mContext).getString(Info.ACCOUNT, null)
         val db = RegistroDB.getInstance(mContext)
         if (username != null) {
             db!!.addCookies(username, cookies)
