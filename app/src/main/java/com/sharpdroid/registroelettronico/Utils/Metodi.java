@@ -17,7 +17,7 @@ import android.util.TypedValue;
 import android.widget.Toast;
 
 import com.sharpdroid.registroelettronico.API.V1.SpiaggiariAPI;
-import com.sharpdroid.registroelettronico.API.V1.SpiaggiariApiClient;
+import com.sharpdroid.registroelettronico.API.V2.APIClient;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absence;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absences;
@@ -25,7 +25,6 @@ import com.sharpdroid.registroelettronico.Interfaces.API.Delay;
 import com.sharpdroid.registroelettronico.Interfaces.API.Event;
 import com.sharpdroid.registroelettronico.Interfaces.API.Exit;
 import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
-import com.sharpdroid.registroelettronico.Interfaces.API.LessonSubject;
 import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
 import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
 import com.sharpdroid.registroelettronico.Interfaces.Client.AbsenceEntry;
@@ -432,31 +431,13 @@ public class Metodi {
     }
 
     public static void updateSubjects(Context c) {
-        RegistroDB db = RegistroDB.getInstance(c);
-        //scarica le materie (nome, id, prof) per poter in seguito modificare a piacere tutte le caratteristiche nel db
-        new SpiaggiariApiClient(c)
-                .getSubjects()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subjects -> {
+        APIClient.Companion.with(c).getSubjects().subscribeOn(AndroidSchedulers.mainThread()).subscribe(subjectAPI -> {
 
-                    //Per ogni materia aggiungo il suo professore cercandolo dalle lezioni
-                    for (LessonSubject subject : subjects) {
-                        for (Integer teacher_code : subject.getTeacherCodes())
-                            new SpiaggiariApiClient(c)
-                                    .getLessons(subject.getCode(), String.valueOf(teacher_code))
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(lessons -> {
-                                        String profName = getProfessorOfThisSubject(lessons);
+            for (com.sharpdroid.registroelettronico.Databases.Entities.Subject subject : subjectAPI.getSubjects()) {
+                subject.save();
+            }
 
-                                        db.addSubject(subject);
-                                        //db.removeLessons(teacher_code);
-                                        db.addProfessor(subject.getCode(), teacher_code, profName);
-                                        db.addLessons(subject.getCode(), teacher_code, lessons);
-
-                                        //Log.d("Trova professore", String.format(Locale.getDefault(), "Professore di %1$s è %2$s", subject.getName(), profName));
-                                    }, Throwable::printStackTrace);
-                    }
-                }, Throwable::printStackTrace);
+        }, Throwable::printStackTrace);
     }
 
     public static void addEventToCalendar(Context c, Event event) {

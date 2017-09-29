@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder
 import com.sharpdroid.registroelettronico.API.V2.Deserializer.DateDeserializer
 import com.sharpdroid.registroelettronico.Databases.Entities.LoginRequest
 import com.sharpdroid.registroelettronico.Databases.Entities.LoginResponse
+import com.sharpdroid.registroelettronico.Info
 import io.reactivex.schedulers.Schedulers
 import okhttp3.Interceptor
 import okhttp3.MediaType
@@ -24,6 +25,25 @@ class APIClient {
     companion object {
         fun with(context: Context): SpaggiariREST {
             val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
+
+            try {
+                //Installa il supporto al TSL se non è presente
+                ProviderInstaller.installIfNeeded(context)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            val studentId = Interceptor { chain: Interceptor.Chain ->
+                var request = chain.request()
+
+                if (request.url().toString().contains("{studentId}"))
+                    request = request.newBuilder()
+                            .method(request.method(), request.body())
+                            .url(request.url().toString().replace("{studentId}", sharedPref.getString(Info.Spaggiari.IDENT, ""))).build()
+
+                chain.proceed(request)
+            }
+
             val loginInterceptor = Interceptor { chain: Interceptor.Chain ->
                 val original = chain.request()
 
@@ -66,31 +86,26 @@ class APIClient {
 
             }
 
-
-            try {
-                //Installa il supporto al TSL se non è presente
-                ProviderInstaller.installIfNeeded(context)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-
             val zorro = Interceptor { chain ->
                 val original = chain.request()
 
                 val request = original.newBuilder()
                         .header("User-Agent", "zorro/1.0")
                         .header("Z-Dev-Apikey", "+zorro+")
-                        .header("Z-Auth-Token", sharedPref.getString("spaggiari-token", ""))
+                        .header("Z-Auth-Token", sharedPref.getString(Info.Spaggiari.TOKEN, ""))
                         .method(original.method(), original.body())
                         .build()
 
                 chain.proceed(request)
             }
 
+
             val okHttp = OkHttpClient.Builder()
-                    .addInterceptor(zorro)
+                    .addInterceptor(studentId)
                     .addInterceptor(loginInterceptor)
+                    .addInterceptor(zorro)
                     .build()
+
 
             val retrofit = Retrofit.Builder()
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
