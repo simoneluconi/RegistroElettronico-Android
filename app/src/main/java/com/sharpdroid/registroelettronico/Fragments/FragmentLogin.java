@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.content.res.AppCompatResources;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.sharpdroid.registroelettronico.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import retrofit2.HttpException;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.loginFeedback;
 
@@ -93,7 +95,7 @@ public class FragmentLogin extends SlideFragment {
         String oldProfile = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(Info.ACCOUNT, "");
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(Info.ACCOUNT, mEmail).apply();
         //RegistroDB db = RegistroDB.getInstance(getContext());
-        new Profile(mEmail, "", "").save();
+        //long id = new Profile(mEmail, "", "").save();
         //INSERT IN DB BEFORE REQUEST TO AVOID CONSTRAINT ERRORS
         //db.addProfile(new ProfileDrawerItem().withEmail(mEmail));
 
@@ -101,12 +103,11 @@ public class FragmentLogin extends SlideFragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(login -> {
                     //db.updateProfile(new ProfileDrawerItem().withName(WordUtils.capitalizeFully(login.getName())).withEmail(mEmail));
-                    Profile p = Profile.find(Profile.class, "username =?", mEmail).get(0);
-                    p.setName(login.getFirstName() + " " + login.getLastName());
-                    p.save();
+                    new Profile(mEmail, login.getFirstName() + " " + login.getLastName(), mPassword, "", login.getIdent().substring(1, 8)).save();
+
                     PreferenceManager.getDefaultSharedPreferences(mContext).edit()
                             .putString(Info.ACCOUNT, mEmail)
-                            .putString(Info.Spaggiari.IDENT, login.getIdent().substring(1, 7))
+                            .putString(Info.Spaggiari.IDENT, login.getIdent().substring(1, 8))
                             .putLong(Info.Spaggiari.EXPIRE, login.getExpire().getTime())
                             .putString(Info.Spaggiari.TOKEN, login.getToken())
                             .putBoolean("first_run", false)
@@ -118,13 +119,17 @@ public class FragmentLogin extends SlideFragment {
                     updateNavigation();
                     nextSlide();
                 }, error -> {
+                    if (error instanceof HttpException) {
+                        Log.e("FragmentLogin", ((HttpException) error).response().errorBody().string());
+                    }
+
                     loginFeedback(error, getContext());
 
                     PreferenceManager.getDefaultSharedPreferences(mContext).edit().putString(Info.ACCOUNT, oldProfile).apply();
                     //db.removeProfile(mEmail);
 
-                    Profile p = Profile.find(Profile.class, "username =?", mEmail).get(0);
-                    p.save();
+                    //Log.d("ID", "ID: " + id);
+                    //SugarRecord.deleteAll(Profile.class, "ID=" + id);
 
                     mButtonLogin.setText(R.string.login);
                     mEditTextMail.setEnabled(true);

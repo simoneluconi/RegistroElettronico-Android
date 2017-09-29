@@ -33,17 +33,6 @@ class APIClient {
                 e.printStackTrace()
             }
 
-            val studentId = Interceptor { chain: Interceptor.Chain ->
-                var request = chain.request()
-
-                if (request.url().toString().contains("{studentId}"))
-                    request = request.newBuilder()
-                            .method(request.method(), request.body())
-                            .url(request.url().toString().replace("{studentId}", sharedPref.getString(Info.Spaggiari.IDENT, ""))).build()
-
-                chain.proceed(request)
-            }
-
             val loginInterceptor = Interceptor { chain: Interceptor.Chain ->
                 val original = chain.request()
 
@@ -94,6 +83,7 @@ class APIClient {
                         .header("Z-Dev-Apikey", "+zorro+")
                         .header("Z-Auth-Token", sharedPref.getString(Info.Spaggiari.TOKEN, ""))
                         .method(original.method(), original.body())
+                        .url(original.url().toString().replace("{studentId}", sharedPref.getString(Info.Spaggiari.IDENT, "")))
                         .build()
 
                 chain.proceed(request)
@@ -101,7 +91,6 @@ class APIClient {
 
 
             val okHttp = OkHttpClient.Builder()
-                    .addInterceptor(studentId)
                     .addInterceptor(loginInterceptor)
                     .addInterceptor(zorro)
                     .build()
@@ -114,7 +103,7 @@ class APIClient {
                                     .registerTypeAdapter(Date::class.java, DateDeserializer())
                                     .create()))
 
-                    .baseUrl("https://web.spaggiari.eu/")
+                    .baseUrl("https://web.spaggiari.eu/rest/v1/")
                     .client(okHttp)
                     .build()
             return retrofit.create(SpaggiariREST::class.java)

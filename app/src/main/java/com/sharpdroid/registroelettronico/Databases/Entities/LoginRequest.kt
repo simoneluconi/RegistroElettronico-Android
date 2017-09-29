@@ -1,10 +1,11 @@
 package com.sharpdroid.registroelettronico.Databases.Entities
 
+import com.google.gson.annotations.Expose
 import java.util.*
 
 data class LoginRequest(
-        val pass: String,
-        val uid: String
+        @Expose val pass: String,
+        @Expose val uid: String
 ) {
     override fun toString(): String {
         return String.format(Locale.getDefault(), "{ \"uid\": \"%s\", \"pass\": \"%s\"}", uid, pass)
