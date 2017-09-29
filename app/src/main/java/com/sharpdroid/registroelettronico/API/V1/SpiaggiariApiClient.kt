@@ -7,6 +7,7 @@ import com.franmontiel.persistentcookiejar.PersistentCookieJar
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache
 import com.sharpdroid.registroelettronico.API.SQLCookiePersistor
 import com.sharpdroid.registroelettronico.Activities.LoginActivity
+import com.sharpdroid.registroelettronico.Info
 import com.sharpdroid.registroelettronico.Interfaces.API.*
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
@@ -32,7 +33,7 @@ class SpiaggiariApiClient(context: Context) : RESTfulAPIService {
             val request = chain.request()
             val response = chain.proceed(request)
             if (response.code() == 403) {
-                context.startActivity(Intent(context, LoginActivity::class.java).putExtra("user", PreferenceManager.getDefaultSharedPreferences(context).getString("currentProfile", null)))
+                context.startActivity(Intent(context, LoginActivity::class.java).putExtra("user", PreferenceManager.getDefaultSharedPreferences(context).getString(Info.ACCOUNT, null)))
             }
             response
         }

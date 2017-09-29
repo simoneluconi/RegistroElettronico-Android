@@ -40,3 +40,10 @@ data class Communication(
         @Expose @SerializedName("cntHasAttach") val hasAttachment: String,
         var profile: Profile?
 ) : SugarRecord()
+
+data class CommunicationAPI(@Expose @SerializedName("items") val communications: List<Communication>) {
+    fun getCommunications(profile: Profile): List<Communication> {
+        communications.forEach { it.profile = profile }
+        return communications
+    }
+}

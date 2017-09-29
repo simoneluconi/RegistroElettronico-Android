@@ -17,3 +17,10 @@ data class Agenda(
         @Expose @SerializedName("subjectDesc") val mSubjectDescription: String,
         var profile: Profile?
 ) : SugarRecord()
+
+data class AgendaAPI(@Expose @SerializedName("agenda") val agenda: List<Agenda>) {
+    fun getAgenda(profile: Profile): List<Agenda> {
+        agenda.forEach { it.profile = profile }
+        return agenda
+    }
+}

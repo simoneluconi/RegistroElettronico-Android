@@ -3,6 +3,7 @@ package com.sharpdroid.registroelettronico.API.V2
 import android.content.Context
 import android.preference.PreferenceManager
 import android.util.Log
+import com.google.android.gms.security.ProviderInstaller
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.sharpdroid.registroelettronico.API.V2.Deserializer.DateDeserializer
@@ -65,6 +66,14 @@ class APIClient {
 
             }
 
+
+            try {
+                //Installa il supporto al TSL se non è presente
+                ProviderInstaller.installIfNeeded(context)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
             val zorro = Interceptor { chain ->
                 val original = chain.request()
 
@@ -88,7 +97,6 @@ class APIClient {
                     .addConverterFactory(GsonConverterFactory.create(
                             GsonBuilder().excludeFieldsWithoutExposeAnnotation()
                                     .registerTypeAdapter(Date::class.java, DateDeserializer())
-
                                     .create()))
 
                     .baseUrl("https://web.spaggiari.eu/")

@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.sharpdroid.registroelettronico.API.V1.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
+import com.sharpdroid.registroelettronico.Info;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.Utils.DeviceUuidFactory;
 
@@ -74,8 +75,8 @@ public class LoginActivity extends AppCompatActivity {
         mButtonLogin.setEnabled(false);
         mButtonLogin.setText(R.string.caricamento);
 
-        String oldProfile = PreferenceManager.getDefaultSharedPreferences(this).getString("currentProfile", "");
-        PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", mEmail).apply();
+        String oldProfile = PreferenceManager.getDefaultSharedPreferences(this).getString(Info.ACCOUNT, "");
+        PreferenceManager.getDefaultSharedPreferences(this).edit().putString(Info.ACCOUNT, mEmail).apply();
 
         //INSERT IN DB BEFORE REQUEST TO AVOID CONSTRAINT ERRORS
         db.addProfile(new ProfileDrawerItem().withEmail(mEmail));
@@ -85,14 +86,14 @@ public class LoginActivity extends AppCompatActivity {
                 .subscribe(login -> {
                     db.updateProfile(new ProfileDrawerItem().withName(WordUtils.capitalizeFully(login.getName())).withEmail(mEmail));
 
-                    PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", mEmail).putBoolean("first_run", false).apply();
+                    PreferenceManager.getDefaultSharedPreferences(this).edit().putString(Info.ACCOUNT, mEmail).putBoolean("first_run", false).apply();
                     mButtonLogin.setText(R.string.login_riuscito);
                     Toast.makeText(this, R.string.login_msg, Toast.LENGTH_SHORT).show();
                     finish();
                 }, error -> {
                     loginFeedback(error, this);
 
-                    PreferenceManager.getDefaultSharedPreferences(this).edit().putString("currentProfile", oldProfile).apply();
+                    PreferenceManager.getDefaultSharedPreferences(this).edit().putString(Info.ACCOUNT, oldProfile).apply();
                     db.removeProfile(mEmail);
 
                     mButtonLogin.setText(R.string.login);

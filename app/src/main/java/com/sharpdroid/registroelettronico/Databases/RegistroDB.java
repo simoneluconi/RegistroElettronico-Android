@@ -14,6 +14,7 @@ import com.franmontiel.persistentcookiejar.persistence.SerializableCookie;
 import com.github.mikephil.charting.data.Entry;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
+import com.sharpdroid.registroelettronico.Info;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absence;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absences;
 import com.sharpdroid.registroelettronico.Interfaces.API.Communication;
@@ -872,7 +873,7 @@ public class RegistroDB extends SQLiteOpenHelper {
     //endregion
 
     private String currentProfile() {
-        return PreferenceManager.getDefaultSharedPreferences(mContext).getString("currentProfile", "");
+        return PreferenceManager.getDefaultSharedPreferences(mContext).getString(Info.ACCOUNT, "");
     }
 
 
