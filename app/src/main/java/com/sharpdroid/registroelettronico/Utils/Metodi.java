@@ -19,7 +19,10 @@ import android.widget.Toast;
 import com.sharpdroid.registroelettronico.API.V1.SpiaggiariAPI;
 import com.sharpdroid.registroelettronico.API.V2.APIClient;
 import com.sharpdroid.registroelettronico.Databases.Entities.Grade;
+import com.sharpdroid.registroelettronico.Databases.Entities.Profile;
+import com.sharpdroid.registroelettronico.Databases.Entities.SubjectTeacher;
 import com.sharpdroid.registroelettronico.Databases.Entities.SuperAgenda;
+import com.sharpdroid.registroelettronico.Databases.Entities.Teacher;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absence;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absences;
@@ -433,9 +436,12 @@ public class Metodi {
 
     public static void updateSubjects(Context c) {
         APIClient.Companion.with(c).getSubjects().subscribeOn(AndroidSchedulers.mainThread()).subscribe(subjectAPI -> {
-
             for (com.sharpdroid.registroelettronico.Databases.Entities.Subject subject : subjectAPI.getSubjects()) {
-                subject.save();
+                subject.setId(subject.save());
+                for (Teacher t : subject.getTeachers()) {
+                    t.setId(t.save());
+                    new SubjectTeacher(subject, t, Profile.Companion.getProfile(c)).save();
+                }
             }
 
         }, Throwable::printStackTrace);
