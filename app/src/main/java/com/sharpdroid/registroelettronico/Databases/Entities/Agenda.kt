@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName
 import com.orm.SugarRecord
 import java.util.*
 
+data class SuperAgenda(val agenda: RemoteAgenda, var completed: Boolean)
+
 data class Agenda(
         @Expose @SerializedName("authorName") val mAuthor: String,
         @Expose @SerializedName("evtDatetimeBegin") val mBegin: Date,
@@ -17,10 +19,3 @@ data class Agenda(
         @Expose @SerializedName("subjectDesc") val mSubjectDescription: String,
         var profile: Profile?
 ) : SugarRecord()
-
-data class AgendaAPI(@Expose @SerializedName("agenda") val agenda: List<Agenda>) {
-    fun getAgenda(profile: Profile): List<Agenda> {
-        agenda.forEach { it.profile = profile }
-        return agenda
-    }
-}

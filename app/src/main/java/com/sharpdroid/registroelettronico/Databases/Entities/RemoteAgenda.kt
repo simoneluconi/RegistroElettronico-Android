@@ -25,14 +25,40 @@ import java.util.*
 
 data class RemoteAgenda(
         @Expose @SerializedName("evtId") val eventId: Int,
-        @Expose @SerializedName("evtDatetimeBegin") val start: Date = Date(),
-        @Expose @SerializedName("evtDatetimeEnd") val end: Date = Date(),
-        @Expose @SerializedName("isFullDay") val isFullDay: Boolean = false,
-        @Expose @SerializedName("notes") val notes: String = "",
-        @Expose @SerializedName("authorName") val author: String = "",
+        @Expose @SerializedName("evtDatetimeBegin") val start: Date,
+        @Expose @SerializedName("evtDatetimeEnd") val end: Date,
+        @Expose @SerializedName("isFullDay") val isFullDay: Boolean,
+        @Expose @SerializedName("notes") val notes: String,
+        @Expose @SerializedName("authorName") val author: String,
         var profile: Profile?
 ) : SugarRecord() {
+
+    constructor() : this(0, Date(), Date(), false, "", "", null)
+
     fun getInfo(): EventInfo {
         return SugarRecord.find(EventInfo::class.java, "remote=? AND eventId=?", "1", id.toString())[0]
+    }
+
+    companion object {
+        fun getSuperAgenda(user: String): List<SuperAgenda> {
+            val completed: MutableList<EventInfo> = SugarRecord.find(EventInfo::class.java, "REMOTE=1 AND ARCHIVED=0 AND COMPLETED=1") ?: mutableListOf()
+            val events = SugarRecord.find(RemoteAgenda::class.java, "PROFILE='$user'")
+
+            return events.map { agenda -> SuperAgenda(agenda, completed.any { it.id == agenda.id }) }
+        }
+
+        fun getAgenda(user: String, date: Calendar): List<SuperAgenda> {
+            val completed: MutableList<EventInfo> = SugarRecord.find(EventInfo::class.java, "REMOTE=1 AND ARCHIVED=0 AND COMPLETED=1") ?: mutableListOf()
+            val events = SugarRecord.find(RemoteAgenda::class.java, "PROFILE='$user' AND M_BEGIN=${date.timeInMillis}")
+
+            return events.map { agenda -> SuperAgenda(agenda, completed.any { it.id == agenda.id }) }
+        }
+    }
+}
+
+data class AgendaAPI(@Expose @SerializedName("agenda") val agenda: List<RemoteAgenda>) {
+    fun getAgenda(profile: Profile): List<RemoteAgenda> {
+        agenda.forEach { it.profile = profile }
+        return agenda
     }
 }
