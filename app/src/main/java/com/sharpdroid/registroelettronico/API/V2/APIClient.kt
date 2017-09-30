@@ -85,11 +85,15 @@ class APIClient {
                         .header("Z-Dev-Apikey", "+zorro+")
                         .header("Z-Auth-Token", sharedPref.getString(Info.Spaggiari.TOKEN, ""))
                         .method(original.method(), original.body())
-                        .url(original.url().toString().replace("{studentId}", sharedPref.getString(Info.Spaggiari.IDENT, "")))
+                        .url(original.url().toString().replace("%7BstudentId%7D", sharedPref.getString(Info.Spaggiari.IDENT, "")))
                         .build()
-                Log.d("METHOD", request.method())
-                Log.d("METHOD", request.url().toString())
-                chain.proceed(request)
+                Log.d("REQUEST", "---------------------------------")
+                Log.d("REQUEST", request.method() + " " + request.url().toString())
+                val res = chain.proceed(request)
+                if (!res.isSuccessful)
+                    Log.d("REQUEST", res.body()?.string())
+                Log.d("REQUEST", "---------------------------------")
+                res
             }
 
 
