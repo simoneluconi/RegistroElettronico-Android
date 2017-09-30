@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import com.sharpdroid.registroelettronico.API.V1.SpiaggiariAPI;
 import com.sharpdroid.registroelettronico.API.V2.APIClient;
+import com.sharpdroid.registroelettronico.Databases.Entities.Grade;
+import com.sharpdroid.registroelettronico.Databases.Entities.SuperAgenda;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absence;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absences;
@@ -29,7 +31,6 @@ import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
 import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
 import com.sharpdroid.registroelettronico.Interfaces.Client.AbsenceEntry;
 import com.sharpdroid.registroelettronico.Interfaces.Client.AbsencesEntry;
-import com.sharpdroid.registroelettronico.Interfaces.Client.AdvancedEvent;
 import com.sharpdroid.registroelettronico.Interfaces.Client.DelayEntry;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Entry;
 import com.sharpdroid.registroelettronico.Interfaces.Client.ExitEntry;
@@ -306,8 +307,8 @@ public class Metodi {
         return contentd;
     }
 
-    public static List<Mark> sortMarksByDate(List<Mark> marks) {
-        Collections.sort(marks, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
+    public static List<Grade> sortMarksByDate(List<Grade> marks) {
+        Collections.sort(marks, (o1, o2) -> o1.getMDate().compareTo(o2.getMDate()));
         return marks;
     }
 
@@ -416,16 +417,16 @@ public class Metodi {
         return "";
     }
 
-    public static boolean isEventTest(com.sharpdroid.registroelettronico.Interfaces.API.Event event) {
-        String title = event.getTitle().toLowerCase();
+    public static boolean isEventTest(SuperAgenda event) {
+        String title = event.getAgenda().getNotes().toLowerCase();
         return title.contains("compito") || title.endsWith("compito") || title.endsWith("verifica") || title.contains("verifica ")
                 || title.contains("interrogazione scritta") || title.contains("prova ") || title.contains("test ") || title.endsWith("test") || title.contains("verifiche orali");
     }
 
-    public static List<com.github.sundeepk.compactcalendarview.domain.Event> convertEvents(List<AdvancedEvent> events) {
+    public static List<com.github.sundeepk.compactcalendarview.domain.Event> convertEvents(List<SuperAgenda> events) {
         List<com.github.sundeepk.compactcalendarview.domain.Event> list = new ArrayList<>();
-        for (com.sharpdroid.registroelettronico.Interfaces.API.Event event : events) {
-            list.add(new com.github.sundeepk.compactcalendarview.domain.Event(isEventTest(event) ? Color.parseColor("#FF9800") : Color.WHITE, event.getStart().getTime(), null));
+        for (SuperAgenda event : events) {
+            list.add(new com.github.sundeepk.compactcalendarview.domain.Event(isEventTest(event) ? Color.parseColor("#FF9800") : Color.WHITE, event.getAgenda().getStart().getTime(), null));
         }
         return list;
     }
@@ -440,14 +441,14 @@ public class Metodi {
         }, Throwable::printStackTrace);
     }
 
-    public static void addEventToCalendar(Context c, Event event) {
+    public static void addEventToCalendar(Context c, SuperAgenda event) {
         Intent calIntent = new Intent(Intent.ACTION_INSERT);
         calIntent.setType("vnd.android.cursor.item/event");
-        calIntent.putExtra(CalendarContract.Events.DESCRIPTION, event.getTitle());
-        calIntent.putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, event.isAllDay());
-        calIntent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, event.getStart().getTime());
-        if (!event.isAllDay())
-            calIntent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, event.getEnd().getTime());
+        calIntent.putExtra(CalendarContract.Events.DESCRIPTION, event.getAgenda().getNotes());
+        calIntent.putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, event.getAgenda().isFullDay());
+        calIntent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, event.getAgenda().getStart().getTime());
+        if (!event.getAgenda().isFullDay())
+            calIntent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, event.getAgenda().getEnd().getTime());
         c.startActivity(calIntent);
     }
 
@@ -460,8 +461,8 @@ public class Metodi {
         return WordUtils.capitalizeFully(TextUtils.isEmpty(subjectOrProf) ? event.getAutore_desc() : subjectOrProf, Delimeters);
     }
 
-    public static String eventToString(Event e, String head) {
-        return capitalizeFirst(complex.format(e.getStart())) + "\n---" + head + "---\n" + capitalizeFirst(e.getTitle()) + (e.getNota_2().trim().equalsIgnoreCase(e.getTitle().trim()) ? "" : "\n" + e.getNota_2());
+    public static String eventToString(SuperAgenda e, String head) {
+        return capitalizeFirst(complex.format(e.getAgenda().getStart())) + "\n---" + head + "---\n" + capitalizeFirst(e.getAgenda().getNotes());
     }
 
     public static List<String> getNamesFromSubjects(List<Subject> subjects) {

@@ -3,6 +3,7 @@ package com.sharpdroid.registroelettronico.Fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -21,13 +22,17 @@ import android.view.ViewGroup;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
-import com.sharpdroid.registroelettronico.API.V1.SpiaggiariApiClient;
+import com.sharpdroid.registroelettronico.API.V2.APIClient;
 import com.sharpdroid.registroelettronico.Activities.AddEventActivity;
 import com.sharpdroid.registroelettronico.Adapters.AgendaAdapter;
 import com.sharpdroid.registroelettronico.BottomSheet.AgendaBS;
-import com.sharpdroid.registroelettronico.Databases.RegistroDB;
-import com.sharpdroid.registroelettronico.Interfaces.Client.AdvancedEvent;
+import com.sharpdroid.registroelettronico.Databases.Entities.Agenda;
+import com.sharpdroid.registroelettronico.Databases.Entities.EventInfo;
+import com.sharpdroid.registroelettronico.Databases.Entities.Profile;
+import com.sharpdroid.registroelettronico.Databases.Entities.RemoteAgenda;
+import com.sharpdroid.registroelettronico.Databases.Entities.SuperAgenda;
 import com.sharpdroid.registroelettronico.R;
+import com.sharpdroid.registroelettronico.Utils.Account;
 import com.transitionseverywhere.ChangeText;
 import com.transitionseverywhere.TransitionManager;
 
@@ -48,7 +53,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.addEventToCalendar;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.convertEvents;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.eventToString;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.getSubjectNameOrProfessorName;
 
 // DONE: 19/01/2017 Aggiungere eventi all'agenda
 // DONE: 19/01/2017 Aggiungere eventi dell'agenda nel calendario del telefono
@@ -57,6 +61,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     final private String TAG = FragmentAgenda.class.getSimpleName();
     SimpleDateFormat month = new SimpleDateFormat("MMMM", Locale.getDefault());
     SimpleDateFormat year = new SimpleDateFormat("yyyy", Locale.getDefault());
+    SimpleDateFormat agenda = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
     @BindView(R.id.recycler)
     RecyclerView recycler;
     @BindView(R.id.place_holder)
@@ -75,10 +80,10 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     private CompactCalendarView mCompactCalendarView;
     private Toolbar mToolbar;
     private Context mContext;
-    private RegistroDB mRegistroDB;
+    //private RegistroDB mRegistroDB;
     private AgendaAdapter adapter;
     private Date mDate;
-    private List<AdvancedEvent> events = new ArrayList<>();
+    private List<SuperAgenda> events = new ArrayList<>();
 
 
     public FragmentAgenda() {
@@ -98,7 +103,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         ButterKnife.bind(this, view);
 
         mToolbar = getActivity().findViewById(R.id.toolbar);
-        mRegistroDB = RegistroDB.getInstance(mContext);
+        //mRegistroDB = RegistroDB.getInstance(mContext);
 
         mCompactCalendarView = getActivity().findViewById(R.id.calendar);
         mCompactCalendarView.setLocale(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALIAN);
@@ -112,7 +117,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         eserciziFAB.setOnClickListener(v -> startActivity(new Intent(mContext, AddEventActivity.class).putExtra("type", "Compiti").putExtra("time", mDate.getTime())));
         altroFAB.setOnClickListener(v -> startActivity(new Intent(mContext, AddEventActivity.class).putExtra("type", "Altro").putExtra("time", mDate.getTime())));
 
-        adapter = new AgendaAdapter(mContext, place_holder, mRegistroDB);
+        adapter = new AgendaAdapter(mContext, place_holder);
         adapter.setItemClickListener(this);
         recycler.setLayoutManager(new LinearLayoutManager(mContext));
         recycler.setAdapter(adapter);
@@ -145,13 +150,19 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         mDate = cal.getTime();
     }
 
+    private List<SuperAgenda> fetch() {
+        return RemoteAgenda.Companion.getSuperAgenda(Account.Companion.with(getActivity()).getUser());
+    }
+
     private void load() {
         events.clear();
-        events.addAll(mRegistroDB.getAllEvents());
+        events.addAll(fetch());
+        // TODO: 30/09/2017 ADD LOCAL EVENTS
+        //events.addAll(Agenda.Companion.getSuperAgenda(getActivity()));
     }
 
     private void updateAdapter() {
-        setAdapterEvents(mRegistroDB.getAllEvents(mDate.getTime()));
+        setAdapterEvents(fetch());
     }
 
     private void updateCalendar() {
@@ -169,12 +180,25 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     }
 
     private void updateDB() {
-        new SpiaggiariApiClient(mContext)
-                .getEvents(0L, Long.MAX_VALUE)
+        String from, to;
+        Calendar cal = Calendar.getInstance();
+        if (cal.get(Calendar.MONTH) + 1 >= 9) { // Prima di gennaio
+            from = cal.get(Calendar.YEAR) + "0901";
+            to = (cal.get(Calendar.YEAR) + 1) + "0831";
+        }else{
+            from = (cal.get(Calendar.YEAR) - 1) + "0901";
+            to = cal.get(Calendar.YEAR) + "0831";
+        }
+
+        Log.d(from, to);
+
+        APIClient.Companion.with(getActivity()).getAgenda(from, to)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(events -> {
-                    Log.d(TAG, "Scaricati " + events.size() + " eventi");
-                    mRegistroDB.addEvents(events);
+                    Log.d(TAG, "Scaricati " + events.getAgenda().size() + " eventi");
+                    //mRegistroDB.addEvents(events);
+
+                    Agenda.saveInTx(events.getAgenda(Profile.Companion.getProfile(getActivity())));
 
                     updateCalendar();
                     updateAdapter();
@@ -203,7 +227,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         mToolbar.setSubtitle(WordUtils.capitalizeFully(year.format(d)));
     }
 
-    private void setAdapterEvents(List<AdvancedEvent> events) {
+    private void setAdapterEvents(List<SuperAgenda> events) {
         adapter.clear();
         adapter.addAll(events);
     }
@@ -221,7 +245,8 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
             mCompactCalendarView.setCurrentDate(mDate);
             setTitleSubtitle(mDate);
 
-            setAdapterEvents(mRegistroDB.getAllEvents(mDate.getTime()));
+            // TODO: 30/09/2017 Get today's agenda
+            //setAdapterEvents(mRegistroDB.getAllEvents(mDate.getTime()));
         }
         return super.onOptionsItemSelected(item);
     }
@@ -242,26 +267,28 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     }
 
     @Override
-    public void onAgendaItemClicked(AdvancedEvent e) {
+    public void onAgendaItemClicked(SuperAgenda e) {
         AgendaBS bottomSheetAgenda = new AgendaBS();
         bottomSheetAgenda.setEvent(e);
         bottomSheetAgenda.show(getChildFragmentManager(), "dialog");
     }
 
     @Override
-    public void onBottomSheetItemClicked(int position, AdvancedEvent event) {
-        String head = getSubjectNameOrProfessorName(event, mRegistroDB);
+    public void onBottomSheetItemClicked(int position, @NonNull SuperAgenda event) {
+        // TODO: 30/09/2017 Head?
+        //String head = getSubjectNameOrProfessorName(event, mRegistroDB);
         switch (position) {
             case 0:
-                if (mRegistroDB.isCompleted(event.getId()))
-                    mRegistroDB.setUncompleted(event.getId());
-                else mRegistroDB.setCompleted(event.getId());
+                EventInfo found = EventInfo.find(EventInfo.class, "ID=" + event.getAgenda().getId()).get(0);
+                if (found != null)
+                    found.delete();
+                else new EventInfo(true, event.getAgenda().getId().intValue(), true, false).save();
                 updateAdapter();
                 break;
             case 1:
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, eventToString(event, head));
+                sendIntent.putExtra(Intent.EXTRA_TEXT, eventToString(event, ""));
                 sendIntent.setType("text/plain");
                 startActivity(Intent.createChooser(sendIntent, getString(R.string.share_with)));
                 break;
@@ -270,12 +297,19 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
                 break;
             case 3:
                 android.content.ClipboardManager clipboard = (android.content.ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
-                android.content.ClipData clip = android.content.ClipData.newPlainText("Evento copiato", eventToString(event, head));
-                clipboard.setPrimaryClip(clip);
+                android.content.ClipData clip = android.content.ClipData.newPlainText("Evento copiato", eventToString(event, ""));
+                if (clipboard != null) {
+                    clipboard.setPrimaryClip(clip);
+                }
 
                 break;
             case 4:
-                mRegistroDB.archive(event.getId());
+                EventInfo found_ = EventInfo.find(EventInfo.class, "ID=" + event.getAgenda().getId()).get(0);
+                if (found_ != null) {
+                    found_.setArchived(true);
+                    found_.save();
+                } else
+                    new EventInfo(true, event.getAgenda().getId().intValue(), false, true).save();
                 updateAdapter();
                 updateCalendar();
                 break;

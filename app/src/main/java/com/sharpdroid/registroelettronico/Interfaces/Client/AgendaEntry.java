@@ -2,14 +2,15 @@ package com.sharpdroid.registroelettronico.Interfaces.Client;
 
 import android.support.annotation.LayoutRes;
 
+import com.sharpdroid.registroelettronico.Databases.Entities.SuperAgenda;
 import com.sharpdroid.registroelettronico.R;
 
 public class AgendaEntry extends Entry {
     @LayoutRes
     private final static int ID = R.layout.adapter_event;
-    private AdvancedEvent event;
+    private SuperAgenda event;
 
-    public AgendaEntry(AdvancedEvent event) {
+    public AgendaEntry(SuperAgenda event) {
         this.event = event;
     }
 
@@ -18,7 +19,7 @@ public class AgendaEntry extends Entry {
         return ID;
     }
 
-    public AdvancedEvent getEvent() {
+    public SuperAgenda getEvent() {
         return event;
     }
 }

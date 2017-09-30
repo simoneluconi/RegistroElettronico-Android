@@ -10,7 +10,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.sharpdroid.registroelettronico.Interfaces.Client.AdvancedEvent
+import com.sharpdroid.registroelettronico.Databases.Entities.SuperAgenda
 import com.sharpdroid.registroelettronico.R
 import kotlinx.android.synthetic.main.fragment_item_agenda_options.view.*
 
@@ -29,9 +29,9 @@ class AgendaBS : BottomSheetDialogFragment() {
     private val texts = intArrayOf(R.string.condividi_bs, R.string.inserisci_calendario_bs, R.string.copia_bs, R.string.archivia_bs)
     private val icons = intArrayOf(R.drawable.agenda_bsheet_share, R.drawable.agenda_bsheet_calendar, R.drawable.agenda_bsheet_copy, R.drawable.agenda_bsheet_archive)
     private var mListener: Listener? = null
-    private var event: AdvancedEvent? = null
+    private var event: SuperAgenda? = null
 
-    fun setEvent(event: AdvancedEvent) {
+    fun setEvent(event: SuperAgenda) {
         this.event = event
     }
 
@@ -62,7 +62,7 @@ class AgendaBS : BottomSheetDialogFragment() {
     }
 
     interface Listener {
-        fun onBottomSheetItemClicked(position: Int, e: AdvancedEvent)
+        fun onBottomSheetItemClicked(position: Int, e: SuperAgenda)
     }
 
     private inner class ItemAdapter(val clickListener: Listener) : RecyclerView.Adapter<ItemAdapter.ViewHolder>() {
@@ -86,9 +86,9 @@ class AgendaBS : BottomSheetDialogFragment() {
             if (position != 0) {
                 holder.bindData(getString(texts[position - 1]), Color.BLACK, icons[position - 1])
             } else {
-                holder.bindData(if (event!!.isCompleted) "Non completato" else "Completato",
+                holder.bindData(if (event!!.completed) "Non completato" else "Completato",
                         ContextCompat.getColor(context, R.color.intro_blue_dark),
-                        if (event!!.isCompleted) R.drawable.agenda_uncomplete else R.drawable.agenda_complete)
+                        if (event!!.completed) R.drawable.agenda_uncomplete else R.drawable.agenda_complete)
             }
         }
 
