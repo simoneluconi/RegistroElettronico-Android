@@ -5,20 +5,21 @@ import android.util.Log
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IProfile
 import com.orm.SugarRecord
-import com.orm.dsl.Unique
+import com.orm.dsl.Table
 import com.sharpdroid.registroelettronico.Utils.Account
 import com.sharpdroid.registroelettronico.Utils.Metodi.AccountImage
 
+@Table
 data class Profile(
         var username: String,
         var name: String,
         var password: String,
         var classe: String,
-        @Unique var ident: String
+        var id: Long
 
-) : SugarRecord() {
+) {
 
-    constructor() : this("", "", "", "", "")
+    constructor() : this("", "", "", "", 0)
 
     fun asIProfile(): IProfile<ProfileDrawerItem> {
         return ProfileDrawerItem()
@@ -31,7 +32,7 @@ data class Profile(
 
     companion object {
         fun getIProfiles(): List<IProfile<*>> {
-            return find(Profile::class.java, "").map {
+            return SugarRecord.find(Profile::class.java, "").map {
                 it.asIProfile()
             }
         }
