@@ -4,7 +4,7 @@ App non ufficiale sviluppata per accedere al Registro Elettronico Spaggiari.
 
 **Quest'app funziona solo ed esclusivamente con il registro Spaggiari.**
 
-## Con quest'applicazione potrai
+## Con quest'applicazione potrai (quando sarà finita)
 - Ricevere **notifiche** alla presenza di nuovi voti, compiti, circolari ed altri eventi
 - Visualizzare **medie** divise per periodi, materie e tipologia (Scritto, Orale e Pratico)
 - Visualizzare una **media ipotetica** selezionando il voto che pensi di aver preso e potrai vedere la tua nuova media!
