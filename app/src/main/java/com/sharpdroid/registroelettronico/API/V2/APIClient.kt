@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder
 import com.sharpdroid.registroelettronico.API.V2.Deserializer.DateDeserializer
 import com.sharpdroid.registroelettronico.Databases.Entities.LoginRequest
 import com.sharpdroid.registroelettronico.Databases.Entities.LoginResponse
+import com.sharpdroid.registroelettronico.Databases.Entities.Profile
 import com.sharpdroid.registroelettronico.Info
 import io.reactivex.schedulers.Schedulers
 import okhttp3.Interceptor
@@ -37,15 +38,18 @@ class APIClient {
                 val original = chain.request()
 
                 //EXPIRED TOKEN && NOT LOGGIN IN
-                if (original.url().toString() != "https://web.spaggiari.eu/rest/v1/auth/login" && sharedPref.getLong("spaggiari-expireDate", 0L) < System.currentTimeMillis()) {
+                //TODO: use token & expireDate of each profile
+                if (original.url().toString() != "https://web.spaggiari.eu/rest/v1/auth/login" && sharedPref.getLong(Info.Spaggiari.EXPIRE, 0L) < System.currentTimeMillis()) {
                     Log.d("LOGIN INTERCEPTOR", "TOKEN EXPIRED, REQUESTING NEW TOKEN")
+
+                    val profile = Profile.getProfile(context)
 
                     val loginRes = chain.proceed(original.newBuilder()
                             .url("https://web.spaggiari.eu/rest/v1/auth/login")
                             .method("POST",
                                     RequestBody.create(
                                             MediaType.parse("application/json"),
-                                            LoginRequest(sharedPref.getString("spaggiari-pass", ""), sharedPref.getString("spaggiari-user", "")).toString() //properly override to provide a json-like string
+                                            LoginRequest(profile.password, profile.username).toString() //properly override to provide a json-like string
                                     )
                             )
                             .header("User-Agent", "zorro/1.0")
@@ -58,13 +62,12 @@ class APIClient {
                         Log.d("LOGIN INTERCEPTOR", "UPDATE TOKEN: " + loginResponse.token)
 
                         sharedPref.edit()
-                                .putString("spaggiari-token", loginResponse.token)
-                                .putLong("spaggiari-expireDate", loginResponse.expire.time)
+                                .putString(Info.Spaggiari.TOKEN, loginResponse.token)
+                                .putLong(Info.Spaggiari.EXPIRE, loginResponse.expire.time)
                                 .putBoolean("spaggiari-logged", false)
                                 .apply()
                         chain.proceed(original)
                     } else {
-                        Log.d("LOGIN INTERCEPTOR", loginRes.body().toString())
                         sharedPref.edit().putBoolean("spaggiari-logged", false).apply()
                         chain.proceed(original)
                     }
@@ -72,7 +75,6 @@ class APIClient {
                 } else {
                     chain.proceed(original)
                 }
-
             }
 
             val zorro = Interceptor { chain ->
@@ -85,7 +87,8 @@ class APIClient {
                         .method(original.method(), original.body())
                         .url(original.url().toString().replace("{studentId}", sharedPref.getString(Info.Spaggiari.IDENT, "")))
                         .build()
-
+                Log.d("METHOD", request.method())
+                Log.d("METHOD", request.url().toString())
                 chain.proceed(request)
             }
 

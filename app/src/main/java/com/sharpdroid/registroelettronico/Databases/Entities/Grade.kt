@@ -5,8 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.orm.SugarRecord
 import java.util.*
 
-data class Grade(@Expose @SerializedName("canceled") val mCanceled: Boolean,
-                 @Expose @SerializedName("evtCode") val mCode: String,
+data class Grade(@Expose @SerializedName("evtCode") val mCode: String,
                  @Expose @SerializedName("componentPos") val mComponentPos: Int,
                  @Expose @SerializedName("evtDate") val mDate: Date,
                  @Expose @SerializedName("subjectDesc") val mDescription: String,
