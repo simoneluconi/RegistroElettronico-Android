@@ -8,17 +8,18 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.JsonAdapter
 import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
-import com.orm.SugarRecord
 import com.orm.dsl.Ignore
+import com.orm.dsl.Table
 import java.lang.reflect.Type
 
 
 @JsonAdapter(TeacherAdapter::class)
+@Table
 data class Teacher(
-        @Expose var teacherId: Int,
+        @Expose var id: Long,
         @Expose var teacherName: String,
         @Expose @Ignore var folders: List<Folder>? //not present in /subjects
-) : SugarRecord() {
+) {
     constructor() : this(0, "", emptyList())
 }
 
@@ -29,7 +30,7 @@ class TeacherAdapter : JsonDeserializer<Teacher> {
         val el = json?.asJsonObject
         val folders = Gson().fromJson<List<Folder>>(el?.getAsJsonArray("folders"), object : TypeToken<List<Folder>>() {}.type)
 
-        return Teacher(el?.get("teacherId")?.asString.toString().substring(1).toInt(), el?.get("teacherName")?.asString.toString(), folders)
+        return Teacher(el?.get("teacherId")?.asString.toString().substring(1).toLong(), el?.get("teacherName")?.asString.toString(), folders)
     }
 
 }

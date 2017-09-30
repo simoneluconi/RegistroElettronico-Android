@@ -4,7 +4,7 @@ import com.orm.SugarRecord
 
 data class EventInfo(
         var remote: Boolean,
-        val eventId: Int,
+        val eventId: Long,
         var completed: Boolean,
         var archived: Boolean
 ) : SugarRecord()

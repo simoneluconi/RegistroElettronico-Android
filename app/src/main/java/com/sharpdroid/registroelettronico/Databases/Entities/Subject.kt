@@ -2,8 +2,8 @@ package com.sharpdroid.registroelettronico.Databases.Entities
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.orm.SugarRecord
 import com.orm.dsl.Ignore
+import com.orm.dsl.Table
 
 /*
 {
@@ -22,10 +22,11 @@ import com.orm.dsl.Ignore
     ]
 }
  */
+@Table
 data class Subject(
-        @Expose @SerializedName("id") val myId: Int,
+        @Expose @SerializedName("id") val id: Long,
         @Expose @SerializedName("description") val description: String,
         @Expose @SerializedName("teachers") @Ignore() var teachers: List<Teacher> = emptyList()
-) : SugarRecord()
+)
 
 data class SubjectAPI(@Expose @SerializedName("subjects") val subjects: List<Subject>)

@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
+import com.orm.SugarRecord;
 import com.sharpdroid.registroelettronico.API.V2.APIClient;
 import com.sharpdroid.registroelettronico.Activities.AddEventActivity;
 import com.sharpdroid.registroelettronico.Adapters.AgendaAdapter;
@@ -124,7 +125,8 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         prepareDate(true);
         mCompactCalendarView.setCurrentDate(mDate);
 
-        updateDB();
+
+        download();
     }
 
     private void prepareDate(boolean predictNextDay) {
@@ -178,13 +180,13 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         return cal;
     }
 
-    private void updateDB() {
+    private void download() {
         String from, to;
         Calendar cal = Calendar.getInstance();
         if (cal.get(Calendar.MONTH) + 1 >= 9) { // Prima di gennaio
             from = cal.get(Calendar.YEAR) + "0901";
             to = (cal.get(Calendar.YEAR) + 1) + "0831";
-        }else{
+        } else {
             from = (cal.get(Calendar.YEAR) - 1) + "0901";
             to = cal.get(Calendar.YEAR) + "0831";
         }
@@ -197,8 +199,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
                     Log.d(TAG, "Scaricati " + events.getAgenda().size() + " eventi");
                     //mRegistroDB.addEvents(events);
 
-                    RemoteAgenda.saveInTx(events.getAgenda(Profile.Companion.getProfile(getActivity())));
-
+                    save(events.getAgenda(Profile.Companion.getProfile(getActivity())));
 
                     updateCalendar();
                     updateAdapter();
@@ -207,6 +208,10 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
                     error.printStackTrace();
                     Snackbar.make(mCoordinatorLayout, error.getLocalizedMessage(), Snackbar.LENGTH_LONG).show();
                 });
+    }
+
+    public void save(List<RemoteAgenda> events) {
+        SugarRecord.saveInTx(events);
     }
 
     @Override
@@ -282,7 +287,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
                 EventInfo found = EventInfo.find(EventInfo.class, "ID=" + event.getAgenda().getId()).get(0);
                 if (found != null)
                     found.delete();
-                else new EventInfo(true, event.getAgenda().getId().intValue(), true, false).save();
+                else new EventInfo(true, event.getAgenda().getId(), true, false).save();
                 updateAdapter();
                 break;
             case 1:
@@ -309,7 +314,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
                     found_.setArchived(true);
                     found_.save();
                 } else
-                    new EventInfo(true, event.getAgenda().getId().intValue(), false, true).save();
+                    new EventInfo(true, event.getAgenda().getId(), false, true).save();
                 updateAdapter();
                 updateCalendar();
                 break;

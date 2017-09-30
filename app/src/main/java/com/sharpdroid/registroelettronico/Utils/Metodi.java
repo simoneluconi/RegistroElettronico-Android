@@ -13,9 +13,11 @@ import android.os.Build;
 import android.provider.CalendarContract;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.TypedValue;
 import android.widget.Toast;
 
+import com.orm.SugarRecord;
 import com.sharpdroid.registroelettronico.API.V1.SpiaggiariAPI;
 import com.sharpdroid.registroelettronico.API.V2.APIClient;
 import com.sharpdroid.registroelettronico.Databases.Entities.Grade;
@@ -429,6 +431,7 @@ public class Metodi {
     public static List<com.github.sundeepk.compactcalendarview.domain.Event> convertEvents(List<SuperAgenda> events) {
         List<com.github.sundeepk.compactcalendarview.domain.Event> list = new ArrayList<>();
         for (SuperAgenda event : events) {
+            Log.d("ADD", "SuperAgenda: " + event.getAgenda().getAuthor());
             list.add(new com.github.sundeepk.compactcalendarview.domain.Event(isEventTest(event) ? Color.parseColor("#FF9800") : Color.WHITE, event.getAgenda().getStart().getTime(), null));
         }
         return list;
@@ -436,13 +439,20 @@ public class Metodi {
 
     public static void updateSubjects(Context c) {
         APIClient.Companion.with(c).getSubjects().subscribeOn(AndroidSchedulers.mainThread()).subscribe(subjectAPI -> {
+            Profile p = Profile.Companion.getProfile(c);
+            ArrayList<Teacher> allTeachers = new ArrayList<>();
+
             for (com.sharpdroid.registroelettronico.Databases.Entities.Subject subject : subjectAPI.getSubjects()) {
-                subject.setId(subject.save());
+                allTeachers.addAll(subject.getTeachers());
                 for (Teacher t : subject.getTeachers()) {
-                    t.setId(t.save());
-                    new SubjectTeacher(subject, t, Profile.Companion.getProfile(c)).save();
+                    SubjectTeacher obj = new SubjectTeacher(subject, t, p);
+                    SugarRecord.deleteAll(SubjectTeacher.class, "PROFILE='" + p.getId() + "' AND SUBJECT='" + subject.getId() + "' AND TEACHER='" + t.getId() + "'");
+                    SugarRecord.save(obj);
                 }
             }
+
+            SugarRecord.saveInTx(allTeachers);
+            SugarRecord.saveInTx(subjectAPI.getSubjects());
 
         }, Throwable::printStackTrace);
     }

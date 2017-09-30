@@ -15,6 +15,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 
 import com.heinrichreimersoftware.materialintro.app.SlideFragment;
+import com.orm.SugarRecord;
 import com.sharpdroid.registroelettronico.API.V2.APIClient;
 import com.sharpdroid.registroelettronico.Databases.Entities.LoginRequest;
 import com.sharpdroid.registroelettronico.Databases.Entities.Profile;
@@ -103,7 +104,7 @@ public class FragmentLogin extends SlideFragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(login -> {
                     //db.updateProfile(new ProfileDrawerItem().withName(WordUtils.capitalizeFully(login.getName())).withEmail(mEmail));
-                    new Profile(mEmail, login.getFirstName() + " " + login.getLastName(), mPassword, "", login.getIdent().substring(1, 8)).save();
+                    SugarRecord.save(new Profile(mEmail, login.getFirstName() + " " + login.getLastName(), mPassword, "", Long.valueOf(login.getIdent().substring(1, 8))));
 
                     PreferenceManager.getDefaultSharedPreferences(mContext).edit()
                             .putString(Info.ACCOUNT, mEmail)
