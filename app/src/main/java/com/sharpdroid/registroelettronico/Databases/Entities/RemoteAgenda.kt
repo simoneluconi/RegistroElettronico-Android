@@ -3,6 +3,7 @@ package com.sharpdroid.registroelettronico.Databases.Entities
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.orm.SugarRecord
+import com.orm.dsl.Unique
 import java.util.*
 
 /*
@@ -24,7 +25,7 @@ import java.util.*
  */
 
 data class RemoteAgenda(
-        @Expose @SerializedName("evtId") val eventId: Int,
+        @Expose @SerializedName("evtId") @Unique val eventId: Int,
         @Expose @SerializedName("evtDatetimeBegin") val start: Date,
         @Expose @SerializedName("evtDatetimeEnd") val end: Date,
         @Expose @SerializedName("isFullDay") val isFullDay: Boolean,
