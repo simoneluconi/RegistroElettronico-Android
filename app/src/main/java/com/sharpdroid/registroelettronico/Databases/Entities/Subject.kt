@@ -28,4 +28,4 @@ data class Subject(
         @Expose @SerializedName("teachers") @Ignore() var teachers: List<Teacher>?
 ) : SugarRecord()
 
-data class SubjectAPI(@Expose @SerializedName("subject") val subjects: List<Subject>)
+data class SubjectAPI(@Expose @SerializedName("subjects") val subjects: List<Subject>)
