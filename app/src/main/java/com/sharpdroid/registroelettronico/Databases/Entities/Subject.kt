@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.orm.SugarRecord
 import com.orm.dsl.Ignore
-import com.orm.dsl.Unique
 
 /*
 {
@@ -25,7 +24,7 @@ import com.orm.dsl.Unique
  */
 data class Subject(
         @Expose @SerializedName("id") val myId: Int,
-        @Expose @SerializedName("description") @Unique() val description: String,
+        @Expose @SerializedName("description") val description: String,
         @Expose @SerializedName("teachers") @Ignore() var teachers: List<Teacher>?
 ) : SugarRecord()
 
