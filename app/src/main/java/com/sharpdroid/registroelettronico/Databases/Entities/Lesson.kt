@@ -19,7 +19,9 @@ data class Lesson(
         @Expose @SerializedName("subjectId") val mSubjectId: Int,
         @Expose @SerializedName("lessonType") val mType: String,
         var profile: Profile?
-) : SugarRecord()
+) : SugarRecord() {
+    constructor() : this("", "", "", "", Date(), 0, 0, 0, "", "", 0, "", null)
+}
 
 data class LessonAPI(@Expose @SerializedName("lessons") val lessons: List<Lesson>) {
     fun getLessons(profile: Profile): List<Lesson> {

@@ -93,7 +93,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     public void addAll(List<SuperAgenda> events) {
-        CVDataList = convert(events);
+        CVDataList.addAll(convert(events));
         if (CVDataList.isEmpty()) {
             place_holder.setVisibility(View.VISIBLE);
         } else {

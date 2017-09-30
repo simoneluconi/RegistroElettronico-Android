@@ -199,6 +199,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
 
                     RemoteAgenda.saveInTx(events.getAgenda(Profile.Companion.getProfile(getActivity())));
 
+
                     updateCalendar();
                     updateAdapter();
 

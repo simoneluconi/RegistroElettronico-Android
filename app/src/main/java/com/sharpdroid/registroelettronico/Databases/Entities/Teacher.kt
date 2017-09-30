@@ -18,7 +18,9 @@ data class Teacher(
         @Expose var teacherId: Int,
         @Expose var teacherName: String,
         @Expose @Ignore var folders: List<Folder>? //not present in /subjects
-) : SugarRecord()
+) : SugarRecord() {
+    constructor() : this(0, "", emptyList())
+}
 
 data class DidacticAPI(@Expose @SerializedName("didactics") private val didactics: List<Teacher>)
 

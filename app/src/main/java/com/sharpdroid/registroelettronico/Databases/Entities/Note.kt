@@ -14,7 +14,9 @@ data class Note(
         @Expose @SerializedName("warningType") val mWarning: String,
         var mType: String?,
         var profile: Profile?
-) : SugarRecord()
+) : SugarRecord() {
+    constructor() : this("", Date(), 0, false, "", "", "", null)
+}
 
 data class NoteAPI(
         @Expose @SerializedName("NTTE") val ntte: List<Note>,

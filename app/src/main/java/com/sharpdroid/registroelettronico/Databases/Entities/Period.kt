@@ -38,6 +38,8 @@ data class Period(
         @Expose @SerializedName("periodPos") val mPosition: Int,
         @Expose @SerializedName("dateStart") val mStart: Date,
         var profile: Profile?
-) : SugarRecord()
+) : SugarRecord() {
+    constructor() : this("", "", "", Date(), false, 0, Date(), null)
+}
 
 data class PeriodAPI(@Expose @SerializedName("periods") val periods: List<Period>)
