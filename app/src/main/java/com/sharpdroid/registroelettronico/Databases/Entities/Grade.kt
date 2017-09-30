@@ -20,7 +20,9 @@ data class Grade(@Expose @SerializedName("evtCode") val mCode: String,
                  @Expose @SerializedName("decimalValue") val mValue: Float,
                  @Expose @SerializedName("weightFactor") val mWeightFactor: Double,
                  var profile: Profile?
-) : SugarRecord()
+) : SugarRecord() {
+    constructor() : this("", 0, Date(), "", 0, "", 0, "", "", 0, "", false, 0f, 0.0, null)
+}
 
 data class GradeAPI(@Expose @SerializedName("grades") val grades: List<Grade>) {
     fun getGrades(profile: Profile): List<Grade> {

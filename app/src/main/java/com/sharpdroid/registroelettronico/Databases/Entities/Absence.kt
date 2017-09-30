@@ -45,7 +45,9 @@ data class Absence(
         @Expose @SerializedName("justifReasonCode") val reasonCode: Int?,
         @Expose @SerializedName("justifReasonDesc") val reasonDesc: String?,
         var profile: Profile?
-) : SugarRecord()
+) : SugarRecord() {
+    constructor() : this(0, "", Date(), false, 0, "", null)
+}
 
 data class AbsenceAPI(@Expose @SerializedName("events") val events: List<Absence>) {
     fun getEvents(profile: Profile): List<Absence> {
