@@ -180,14 +180,19 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
     }
 
     private void updateDB() {
-        /*Calendar cal = Calendar.getInstance();
-        if(cal.get(Calendar.MONTH)>=9){ // Prima di gennaio
-            cal.
+        String from, to;
+        Calendar cal = Calendar.getInstance();
+        if (cal.get(Calendar.MONTH) + 1 >= 9) { // Prima di gennaio
+            from = cal.get(Calendar.YEAR) + "0901";
+            to = (cal.get(Calendar.YEAR) + 1) + "0831";
         }else{
+            from = (cal.get(Calendar.YEAR) - 1) + "0901";
+            to = cal.get(Calendar.YEAR) + "0831";
+        }
 
-        }*/
+        Log.d(from, to);
 
-        APIClient.Companion.with(getActivity()).getAgenda(agenda.format(new Date(0)), agenda.format(new Date()))
+        APIClient.Companion.with(getActivity()).getAgenda(from, to)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(events -> {
                     Log.d(TAG, "Scaricati " + events.getAgenda().size() + " eventi");
