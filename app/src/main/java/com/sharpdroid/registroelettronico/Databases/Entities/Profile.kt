@@ -1,22 +1,24 @@
 package com.sharpdroid.registroelettronico.Databases.Entities
 
 import android.content.Context
-import android.preference.PreferenceManager
+import android.util.Log
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IProfile
 import com.orm.SugarRecord
 import com.orm.dsl.Unique
-import com.sharpdroid.registroelettronico.Info
+import com.sharpdroid.registroelettronico.Utils.Account
 import com.sharpdroid.registroelettronico.Utils.Metodi.AccountImage
 
 data class Profile(
-        val username: String,
+        var username: String,
         var name: String,
         var password: String,
-        var classe: String?,
-        @Unique val ident: String
+        var classe: String,
+        @Unique var ident: String
 
 ) : SugarRecord() {
+
+    constructor() : this("", "", "", "", "")
 
     fun asIProfile(): IProfile<ProfileDrawerItem> {
         return ProfileDrawerItem()
@@ -35,17 +37,19 @@ data class Profile(
         }
 
         fun getProfile(context: Context): Profile {
-            return find(Profile::class.java, "username = ?", PreferenceManager.getDefaultSharedPreferences(context).getString(Info.ACCOUNT, ""))?.get(0)!!
+            val list = SugarRecord.find(Profile::class.java, "USERNAME = '" + Account.with(context).user + "'")
+            Log.d("Profile", list.size.toString())
+            return list[0]!!
         }
     }
 
 
     fun getTeachers(): List<Teacher> {
-        return SugarRecord.find(SubjectTeacher::class.java, "username = ?", username)?.map { it?.teacher!! } ?: emptyList()
+        return SugarRecord.find(SubjectTeacher::class.java, "USERNAME = ?", username)?.map { it?.teacher!! } ?: emptyList()
     }
 
     fun getSubjects(): List<Subject> {
-        return SugarRecord.find(SubjectTeacher::class.java, "username = ?", username)?.map { it?.subject!! } ?: emptyList()
+        return SugarRecord.find(SubjectTeacher::class.java, "USERNAME = ?", username)?.map { it?.subject!! } ?: emptyList()
     }
 
     fun getEvents() {

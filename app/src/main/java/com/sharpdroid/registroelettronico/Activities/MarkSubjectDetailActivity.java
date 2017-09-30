@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.sharpdroid.registroelettronico.API.V1.SpiaggiariApiClient;
+import com.sharpdroid.registroelettronico.Databases.Entities.Grade;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
 import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
@@ -37,7 +38,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.MessaggioVoto;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getProfessorOfThisSubject;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.getSubjectName;
 
 // DONE: 03/12/2016 Dettagli (nome, aula, prof, ora, note, colore)
 // DONE: 03/12/2016 Media (scritto, orale, totale)
@@ -62,7 +62,6 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     @BindView(R.id.marks)
     MarksView marksView;
 
-    MarkSubject data;
     RegistroDB db;
     Subject subject;
     Media media;
@@ -115,7 +114,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
+/*
         subject = db.getSubject(name);
         data = db.getMarks(subject.getId(), period);
         setTitle(getSubjectName(subject));
@@ -124,7 +123,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         setOverall(data.getMarks());
         setTarget();
         setLessons(subject.getId());
-        setMarks(data.getMarks());
+        setMarks(data.getMarks());*/
     }
 
     private void setInfo(Subject subject) {
@@ -254,7 +253,7 @@ public class MarkSubjectDetailActivity extends AppCompatActivity {
         }
     }
 
-    private void setMarks(List<Mark> marks) {
+    private void setMarks(List<Grade> marks) {
         marksView.setSubject(subject, media.containsValidMarks() ? media.getMediaGenerale() : 0);
         marksView.addAll(marks);
         marksView.setChart(db.getMarksAsEntries(subject.getId(), period));

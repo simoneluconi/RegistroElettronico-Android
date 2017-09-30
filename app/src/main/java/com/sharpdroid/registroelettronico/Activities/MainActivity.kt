@@ -295,7 +295,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
     override fun onProfileLongClick(view: View?, profile: IProfile<*>, current: Boolean): Boolean {
         if (profile !is ProfileSettingDrawerItem) {
-            MaterialDialog.Builder(this).title("Eliminare il profilo?").content("Continuare con l'eliminazione di " + profile.email.text + " ?").positiveText("SI").negativeText("NO").onPositive { dialog, which ->
+            MaterialDialog.Builder(this).title("Eliminare il profilo?").content("Continuare con l'eliminazione di " + profile.email.text + " ?").positiveText("SI").negativeText("NO").onPositive { _, _ ->
 
                 SugarRecord.deleteAll(Profile::class.java, "username = ?", profile.email.text)
                 //db.removeProfile(profile.getEmail().getText());
