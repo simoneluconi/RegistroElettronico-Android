@@ -26,7 +26,6 @@ import com.sharpdroid.registroelettronico.API.V2.APIClient;
 import com.sharpdroid.registroelettronico.Activities.AddEventActivity;
 import com.sharpdroid.registroelettronico.Adapters.AgendaAdapter;
 import com.sharpdroid.registroelettronico.BottomSheet.AgendaBS;
-import com.sharpdroid.registroelettronico.Databases.Entities.Agenda;
 import com.sharpdroid.registroelettronico.Databases.Entities.EventInfo;
 import com.sharpdroid.registroelettronico.Databases.Entities.Profile;
 import com.sharpdroid.registroelettronico.Databases.Entities.RemoteAgenda;
@@ -198,7 +197,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
                     Log.d(TAG, "Scaricati " + events.getAgenda().size() + " eventi");
                     //mRegistroDB.addEvents(events);
 
-                    Agenda.saveInTx(events.getAgenda(Profile.Companion.getProfile(getActivity())));
+                    RemoteAgenda.saveInTx(events.getAgenda(Profile.Companion.getProfile(getActivity())));
 
                     updateCalendar();
                     updateAdapter();
