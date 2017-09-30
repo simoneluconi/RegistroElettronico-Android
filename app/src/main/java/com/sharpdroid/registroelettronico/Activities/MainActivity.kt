@@ -254,7 +254,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             }
             R.id.nav_send -> {
                 val intent_mail = Intent(Intent.ACTION_SENDTO)
-                intent_mail.data = Uri.parse("mailto:bugreport@registroelettronico.ml")
+                intent_mail.data = Uri.parse("mailto:registroelettronico@simoneluconi.com")
                 intent_mail.putExtra(Intent.EXTRA_SUBJECT, "Registro Elettronico")
                 intent_mail.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent_mail)
