@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.orm.SugarRecord
 import com.orm.dsl.Ignore
-import java.util.*
 
 /*
 {
@@ -26,7 +25,7 @@ import java.util.*
 data class Subject(
         @Expose @SerializedName("id") val myId: Int,
         @Expose @SerializedName("description") val description: String,
-        @Expose @SerializedName("teachers") @Ignore() var teachers: List<Teacher>?
+        @Expose @SerializedName("teachers") @Ignore() var teachers: List<Teacher> = emptyList()
 ) : SugarRecord()
 
 data class SubjectAPI(@Expose @SerializedName("subjects") val subjects: List<Subject>)
