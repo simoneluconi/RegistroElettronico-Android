@@ -3,7 +3,7 @@ package com.sharpdroid.registroelettronico.Databases.Entities
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.orm.SugarRecord
-import com.orm.dsl.Unique
+import com.orm.dsl.Table
 import java.util.*
 
 /*
@@ -23,16 +23,16 @@ import java.util.*
     ]
 }
  */
-
+@Table
 data class RemoteAgenda(
-        @Expose @SerializedName("evtId") @Unique val eventId: Int,
+        @Expose @SerializedName("evtId") val id: Long,
         @Expose @SerializedName("evtDatetimeBegin") val start: Date,
         @Expose @SerializedName("evtDatetimeEnd") val end: Date,
         @Expose @SerializedName("isFullDay") val isFullDay: Boolean,
         @Expose @SerializedName("notes") val notes: String,
         @Expose @SerializedName("authorName") val author: String,
         var profile: Profile?
-) : SugarRecord() {
+) {
 
     constructor() : this(0, Date(), Date(), false, "", "", null)
 
@@ -50,7 +50,7 @@ data class RemoteAgenda(
 
         fun getAgenda(user: String, date: Calendar): List<SuperAgenda> {
             val completed: MutableList<EventInfo> = SugarRecord.find(EventInfo::class.java, "REMOTE=1 AND ARCHIVED=0 AND COMPLETED=1") ?: mutableListOf()
-            val events = SugarRecord.find(RemoteAgenda::class.java, "PROFILE='$user' AND M_BEGIN=${date.timeInMillis}")
+            val events = SugarRecord.find(RemoteAgenda::class.java, "PROFILE='$user' AND M_BEGIN<=${date.timeInMillis} AND ${date.timeInMillis}<=M_END")
 
             return events.map { agenda -> SuperAgenda(agenda, completed.any { it.id == agenda.id }) }
         }
