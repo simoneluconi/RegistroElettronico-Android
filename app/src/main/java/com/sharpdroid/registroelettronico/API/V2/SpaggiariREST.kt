@@ -72,7 +72,7 @@ interface SpaggiariREST {
     fun getNotes(): Observable<NoteAPI>
 
     @GET("students/{studentId}/periods")
-    fun getPeriods(): Observable<List<Period>>
+    fun getPeriods(): Observable<PeriodAPI>
 
     @GET("students/{studentId}/subjects")
     fun getSubjects(): Observable<SubjectAPI>
