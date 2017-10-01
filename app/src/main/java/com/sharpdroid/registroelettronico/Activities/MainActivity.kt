@@ -67,10 +67,12 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
     override fun onResume() {
         super.onResume()
+        val id: Long = Profile.getProfile(this)?.id ?: -1
+        if (id == -1L) startActivity(Intent(this, LoginActivity::class.java))
 
         headerResult?.profiles = Profile.getIProfiles()
         headerResult?.addProfiles(ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true))
-        headerResult?.setActiveProfile(Profile.getProfile(this).id, false)
+        headerResult?.setActiveProfile(id, false)
 
     }
 
@@ -306,8 +308,8 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                 headerResult?.addProfiles(ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true))
 
                 if (SugarRecord.count<Profile>(Profile::class.java) > 0) {
-                    PreferenceManager.getDefaultSharedPreferences(this).edit().putString(Info.ACCOUNT, Profile.Companion.getProfile(this).username).apply()
-                    headerResult?.setActiveProfile(Profile.getProfile(this).asIProfile(), true)
+                    PreferenceManager.getDefaultSharedPreferences(this).edit().putString(Info.ACCOUNT, Profile.getProfile(this)?.username).apply()
+                    headerResult?.setActiveProfile(Profile.getProfile(this)?.asIProfile(), true)
                 } else {
                     startActivity(Intent(this, LoginActivity::class.java))
                 }

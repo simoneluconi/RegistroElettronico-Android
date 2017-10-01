@@ -37,10 +37,10 @@ data class Profile(
             }
         }
 
-        fun getProfile(context: Context): Profile {
+        fun getProfile(context: Context): Profile? {
             val list = SugarRecord.find(Profile::class.java, "USERNAME = '" + Account.with(context).user + "'")
             Log.d("Profile", list.size.toString())
-            return list[0]!!
+            return list.getOrNull(0)
         }
     }
 
