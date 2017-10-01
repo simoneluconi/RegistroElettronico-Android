@@ -108,9 +108,6 @@ public class FragmentLogin extends SlideFragment {
 
                     PreferenceManager.getDefaultSharedPreferences(mContext).edit()
                             .putString(Info.ACCOUNT, mEmail)
-                            .putString(Info.Spaggiari.IDENT, login.getIdent().substring(1, 8))
-                            .putLong(Info.Spaggiari.EXPIRE, login.getExpire().getTime())
-                            .putString(Info.Spaggiari.TOKEN, login.getToken())
                             .putBoolean("first_run", false)
                             .apply();
 
