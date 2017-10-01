@@ -80,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(login -> {
 
-                    SugarRecord.save(new Profile(mEmail, login.getFirstName() + " " + login.getLastName(), mPassword, "", Long.valueOf(login.getIdent().substring(1, 8))));
+                    SugarRecord.save(new Profile(mEmail, login.getFirstName() + " " + login.getLastName(), mPassword, "", Long.valueOf(login.getIdent().substring(1, 8)), login.getToken(), login.getExpire().getTime()));
 
                     PreferenceManager.getDefaultSharedPreferences(this).edit().putString(Info.ACCOUNT, mEmail).putBoolean("first_run", false).apply();
                     mButtonLogin.setText(R.string.login_riuscito);

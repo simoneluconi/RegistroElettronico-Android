@@ -6,11 +6,11 @@ import android.util.Log
 import com.google.android.gms.security.ProviderInstaller
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.orm.SugarRecord
 import com.sharpdroid.registroelettronico.API.V2.Deserializer.DateDeserializer
 import com.sharpdroid.registroelettronico.Databases.Entities.LoginRequest
 import com.sharpdroid.registroelettronico.Databases.Entities.LoginResponse
 import com.sharpdroid.registroelettronico.Databases.Entities.Profile
-import com.sharpdroid.registroelettronico.Info
 import io.reactivex.schedulers.Schedulers
 import okhttp3.Interceptor
 import okhttp3.MediaType
@@ -26,6 +26,7 @@ class APIClient {
     companion object {
         fun with(context: Context): SpaggiariREST {
             val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
+            val profile = Profile.getProfile(context)!!
 
             try {
                 //Installa il supporto al TSL se non è presente
@@ -36,20 +37,17 @@ class APIClient {
 
             val loginInterceptor = Interceptor { chain: Interceptor.Chain ->
                 val original = chain.request()
-
                 //EXPIRED TOKEN && NOT LOGGIN IN
                 //TODO: use token & expireDate of each profile
-                if (original.url().toString() != "https://web.spaggiari.eu/rest/v1/auth/login" && sharedPref.getLong(Info.Spaggiari.EXPIRE, 0L) < System.currentTimeMillis()) {
+                if (original.url().toString() != "https://web.spaggiari.eu/rest/v1/auth/login" && profile.expire < System.currentTimeMillis()) {
                     Log.d("LOGIN INTERCEPTOR", "TOKEN EXPIRED, REQUESTING NEW TOKEN")
-
-                    val profile = Profile.getProfile(context)
 
                     val loginRes = chain.proceed(original.newBuilder()
                             .url("https://web.spaggiari.eu/rest/v1/auth/login")
                             .method("POST",
                                     RequestBody.create(
                                             MediaType.parse("application/json"),
-                                            LoginRequest(profile?.password!!, profile.username).toString() //properly override to provide a json-like string
+                                            LoginRequest(profile.password, profile.username).toString() //properly override to provide a json-like string
                                     )
                             )
                             .header("User-Agent", "zorro/1.0")
@@ -61,9 +59,12 @@ class APIClient {
 
                         Log.d("LOGIN INTERCEPTOR", "UPDATE TOKEN: " + loginResponse.token)
 
+
+                        profile.expire = loginResponse.expire.time
+                        profile.token = loginResponse.token
+                        SugarRecord.update(profile)
+
                         sharedPref.edit()
-                                .putString(Info.Spaggiari.TOKEN, loginResponse.token)
-                                .putLong(Info.Spaggiari.EXPIRE, loginResponse.expire.time)
                                 .putBoolean("spaggiari-logged", false)
                                 .apply()
                         chain.proceed(original)
@@ -83,16 +84,16 @@ class APIClient {
                 val request = original.newBuilder()
                         .header("User-Agent", "zorro/1.0")
                         .header("Z-Dev-Apikey", "+zorro+")
-                        .header("Z-Auth-Token", sharedPref.getString(Info.Spaggiari.TOKEN, ""))
+                        .header("Z-Auth-Token", profile.token)
                         .method(original.method(), original.body())
-                        .url(original.url().toString().replace("%7BstudentId%7D", sharedPref.getString(Info.Spaggiari.IDENT, "")))
+                        .url(original.url().toString().replace("%7BstudentId%7D", profile.id.toString()))
                         .build()
-                Log.d("REQUEST", "---------------------------------")
-                Log.d("REQUEST", request.method() + " " + request.url().toString())
                 val res = chain.proceed(request)
+
                 if (!res.isSuccessful)
-                    Log.d("REQUEST", res.body()?.string())
-                Log.d("REQUEST", "---------------------------------")
+                    Log.d("REQUEST", request.method() + " " + request.url().toString() + " " + request.headers().toString() + " ==> " + res.body()?.string())
+                else Log.d("REQUEST", request.method() + " " + request.url().toString() + " " + request.headers().toString())
+
                 res
             }
 

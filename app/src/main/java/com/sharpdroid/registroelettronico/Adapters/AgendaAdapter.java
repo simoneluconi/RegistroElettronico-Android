@@ -29,24 +29,24 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private final Context mContext;
     private List<Entry> CVDataList;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM", Locale.getDefault());
     private View place_holder;
     private AgendaClickListener mClickListener;
+    private Context mContext;
 
-    public AgendaAdapter(Context mContext, View ph) {
-        this.mContext = mContext;
+    public AgendaAdapter(View ph) {
         CVDataList = new ArrayList<>();
         place_holder = ph;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        mContext = parent.getContext();
         if (viewType == HeaderEntry.ID)
-            return new HeaderHolder(LayoutInflater.from(mContext).inflate(viewType, parent, false));
+            return new HeaderHolder(LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false));
         else
-            return new EventHolder(LayoutInflater.from(mContext).inflate(viewType, parent, false));
+            return new EventHolder(LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false));
     }
 
     @Override
@@ -109,33 +109,33 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         LinkedHashMap<String, List<SuperAgenda>> organized = new LinkedHashMap<>();
         for (SuperAgenda e : events) {
             /*if (isEventTest(e)) {
-                if (organized.containsKey(mContext.getString(R.string.verifiche))) {
-                    List<SuperAgenda> verifiche = new ArrayList<>(organized.get(mContext.getString(R.string.verifiche)));
+                if (organized.containsKey("Verifiche")) {
+                    List<SuperAgenda> verifiche = new ArrayList<>(organized.get("Verifiche"));
                     verifiche.add(e);
-                    organized.put(mContext.getString(R.string.verifiche), verifiche);
+                    organized.put("Verifiche", verifiche);
                 } else {
-                    organized.put(mContext.getString(R.string.verifiche), Collections.singletonList(e));
+                    organized.put("Verifiche", Collections.singletonList(e));
                 }
             } else {*/
-                if (organized.containsKey(mContext.getString(R.string.altri_eventi))) {
-                    List<SuperAgenda> otherEvents = new ArrayList<>(organized.get(mContext.getString(R.string.altri_eventi)));
-                    otherEvents.add(e);
-                    organized.put(mContext.getString(R.string.altri_eventi), otherEvents);
-                } else {
-                    organized.put(mContext.getString(R.string.altri_eventi), Collections.singletonList(e));
-                }
+            if (organized.containsKey("ALTRI EVENTI")) {
+                List<SuperAgenda> otherEvents = new ArrayList<>(organized.get("ALTRI EVENTI"));
+                otherEvents.add(e);
+                organized.put("ALTRI EVENTI", otherEvents);
+            } else {
+                organized.put("ALTRI EVENTI", Collections.singletonList(e));
+            }
             //}
         }
 
         List<Entry> convert = new LinkedList<>();
 
         //Priorità alle verifiche
-        if (organized.containsKey(mContext.getString(R.string.verifiche))) {
-            convert.add(new HeaderEntry(mContext.getString(R.string.verifiche)));
-            for (SuperAgenda e : organized.get(mContext.getString(R.string.verifiche))) {
+        if (organized.containsKey("Verifiche")) {
+            convert.add(new HeaderEntry("Verifiche"));
+            for (SuperAgenda e : organized.get("Verifiche")) {
                 convert.add(new AgendaEntry(e));
             }
-            organized.remove(mContext.getString(R.string.verifiche));
+            organized.remove("Verifiche");
         }
 
         for (String k : organized.keySet()) {

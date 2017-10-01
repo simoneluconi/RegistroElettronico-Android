@@ -43,16 +43,18 @@ data class RemoteAgenda(
     companion object {
         fun getSuperAgenda(id: Long): List<SuperAgenda> {
             val completed: MutableList<RemoteAgendaInfo> = SugarRecord.find(RemoteAgendaInfo::class.java, "ARCHIVED=0 AND COMPLETED=1") ?: mutableListOf()
+            val archived: MutableList<RemoteAgendaInfo> = SugarRecord.find(RemoteAgendaInfo::class.java, "ARCHIVED=1") ?: mutableListOf()
             val events = SugarRecord.find(RemoteAgenda::class.java, "PROFILE=?", id.toString())
 
-            return events.filter { it.getInfo()?.archived == true }.map { agenda -> SuperAgenda(agenda, completed.any { it.id == agenda.id }) }
+            return events.filter { a -> !archived.any { it.id == a.id } }.map { agenda -> SuperAgenda(agenda, completed.any { it.id == agenda.id }) }
         }
 
         fun getAgenda(id: Long, date: Date): List<SuperAgenda> {
             val completed: MutableList<RemoteAgendaInfo> = SugarRecord.find(RemoteAgendaInfo::class.java, "ARCHIVED=0 AND COMPLETED=1") ?: mutableListOf()
+            val archived: MutableList<RemoteAgendaInfo> = SugarRecord.find(RemoteAgendaInfo::class.java, "ARCHIVED=1") ?: mutableListOf()
             val events = SugarRecord.find(RemoteAgenda::class.java, "PROFILE=? AND START<=? AND ?<=END", id.toString(), date.time.toString(), date.time.toString())
 
-            return events.filter { it.getInfo()?.archived == false }.map { agenda -> SuperAgenda(agenda, completed.any { it.id == agenda.id }) }
+            return events.filter { a -> !archived.any { it.id == a.id } }.map { agenda -> SuperAgenda(agenda, completed.any { it.id == agenda.id }) }
         }
     }
 }

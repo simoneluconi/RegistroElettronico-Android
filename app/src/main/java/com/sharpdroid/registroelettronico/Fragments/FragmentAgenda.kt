@@ -72,7 +72,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         fab_mini_esercizi.setOnClickListener { _ -> startActivity(Intent(mContext, AddEventActivity::class.java).putExtra("type", "Compiti").putExtra("time", mDate.time)) }
         fab_mini_altro.setOnClickListener { _ -> startActivity(Intent(mContext, AddEventActivity::class.java).putExtra("type", "Altro").putExtra("time", mDate.time)) }
 
-        adapter = AgendaAdapter(mContext, place_holder)
+        adapter = AgendaAdapter(place_holder)
         adapter.setItemClickListener(this)
         recycler.layoutManager = LinearLayoutManager(mContext)
         recycler.adapter = adapter
@@ -143,15 +143,16 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
             to = cal.get(Calendar.YEAR).toString() + "0831"
         }
 
-        Log.d(from, to)
 
+        val p = Profile.getProfile(activity)!!
         APIClient.with(activity).getAgenda(from, to)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ events ->
                     Log.d(TAG, "Scaricati " + events.agenda.size + " eventi")
                     //mRegistroDB.addEvents(events);
 
-                    save(events.getAgenda(Profile.getProfile(this.mContext!!)!!))
+                    save(events.getAgenda(p))
+                    Log.d(TAG, "Salvati " + events.agenda.size + " eventi per " + p.name)
 
                     if (active) {
                         updateCalendar()

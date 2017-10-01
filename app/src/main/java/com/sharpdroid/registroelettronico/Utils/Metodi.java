@@ -13,7 +13,6 @@ import android.os.Build;
 import android.provider.CalendarContract;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.TypedValue;
 import android.widget.Toast;
 
@@ -431,7 +430,6 @@ public class Metodi {
     public static List<com.github.sundeepk.compactcalendarview.domain.Event> convertEvents(List<SuperAgenda> events) {
         List<com.github.sundeepk.compactcalendarview.domain.Event> list = new ArrayList<>();
         for (SuperAgenda event : events) {
-            Log.d("ADD", "SuperAgenda: " + event.getAgenda().getAuthor());
             list.add(new com.github.sundeepk.compactcalendarview.domain.Event(isEventTest(event) ? Color.parseColor("#FF9800") : Color.WHITE, event.getAgenda().getStart().getTime(), null));
         }
         return list;
