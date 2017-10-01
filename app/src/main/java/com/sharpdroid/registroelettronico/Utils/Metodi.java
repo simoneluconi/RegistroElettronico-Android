@@ -449,8 +449,8 @@ public class Metodi {
                 }
             }
 
-            SugarRecord.updateInTx(allTeachers);
-            SugarRecord.updateInTx(subjectAPI.getSubjects());
+            SugarRecord.saveInTx(allTeachers);
+            SugarRecord.saveInTx(subjectAPI.getSubjects());
 
         }, Throwable::printStackTrace);
     }

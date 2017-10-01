@@ -15,7 +15,7 @@ data class Grade(@Expose @SerializedName("evtCode") val mCode: String,
                  @Expose @SerializedName("componentPos") val mComponentPos: Int,
                  @Expose @SerializedName("evtDate") val mDate: Date,
                  @Expose @SerializedName("subjectDesc") val mDescription: String,
-                 @Expose @SerializedName("evtId") @Unique val id: Int,
+                 @Expose @SerializedName("evtId") @Unique val id: Long,
                  @Expose @SerializedName("notesForFamily") val mNotes: String,
                  @Expose @SerializedName("periodPos") val mPeriod: Int,
                  @Expose @SerializedName("periodDesc") val mPeriodName: String,
@@ -30,11 +30,17 @@ data class Grade(@Expose @SerializedName("evtCode") val mCode: String,
     constructor() : this("", 0, Date(), "", 0, "", 0, "", "", 0, "", false, 0f, 0.0, null)
 
     companion object {
-        fun getAverages(): List<Average> {
-            val list = mutableListOf<Average>()
-            val subjects = SugarRecord.find(Subject::class.java, "")
-
-            return list
+        fun getAverages(context: Context, where: String, vararg args: String): List<Average> {
+            return SugarRecord.findWithQuery(Average::class.java, "SELECT " +
+                    "0 as ID, " +
+                    "M_DESCRIPTION as `NAME`, " +
+                    "M_SUBJECT_ID as `CODE`, " +
+                    "AVG(M_VALUE) as `AVG`, " +
+                    "(SELECT SUBJECT.TARGET FROM SUBJECT WHERE SUBJECT.ID=GRADE.M_SUBJECT_ID LIMIT 1) as `TARGET`, " +
+                    "COUNT(M_VALUE) as `COUNT` " +
+                    "FROM GRADE " +
+                    "WHERE $where CODE IN (SELECT SUBJECT FROM SUBJECT_TEACHER WHERE PROFILE=?) " +
+                    "GROUP BY code", Account.with(context).user.toString())
         }
 
         fun hasMarksSecondPeriod(context: Context): Boolean {
