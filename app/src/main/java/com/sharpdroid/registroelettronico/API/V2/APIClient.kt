@@ -42,7 +42,7 @@ class APIClient {
                 val original = chain.request()
                 //EXPIRED TOKEN && NOT LOGGIN IN
                 //TODO: use token & expireDate of each profile
-                if (original.url().toString() != API_URL + "/auth/login" && profile?.expire!! < System.currentTimeMillis()) {
+                if (original.url().toString() != API_URL + "/auth/login" && profile?.expire ?: 0 < System.currentTimeMillis()) {
                     Log.d("LOGIN INTERCEPTOR", "TOKEN EXPIRED, REQUESTING NEW TOKEN")
 
                     val loginRes = chain.proceed(original.newBuilder()
@@ -50,7 +50,7 @@ class APIClient {
                             .method("POST",
                                     RequestBody.create(
                                             MediaType.parse("application/json"),
-                                            LoginRequest(profile.password, profile.username).toString() //properly override to provide a json-like string
+                                            LoginRequest(profile?.password.orEmpty(), profile?.username.orEmpty()).toString() //properly override to provide a json-like string
                                     )
                             )
                             .header("User-Agent", "zorro/1.0")
@@ -63,8 +63,8 @@ class APIClient {
                         Log.d("LOGIN INTERCEPTOR", "UPDATE TOKEN: " + loginResponse.token)
 
 
-                        profile.expire = loginResponse.expire.time
-                        profile.token = loginResponse.token
+                        profile?.expire = loginResponse.expire.time
+                        profile?.token = loginResponse.token
                         SugarRecord.update(profile)
 
                         sharedPref.edit()

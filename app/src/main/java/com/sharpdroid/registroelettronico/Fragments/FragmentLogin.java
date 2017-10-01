@@ -19,8 +19,8 @@ import com.orm.SugarRecord;
 import com.sharpdroid.registroelettronico.API.V2.APIClient;
 import com.sharpdroid.registroelettronico.Databases.Entities.LoginRequest;
 import com.sharpdroid.registroelettronico.Databases.Entities.Profile;
-import com.sharpdroid.registroelettronico.Info;
 import com.sharpdroid.registroelettronico.R;
+import com.sharpdroid.registroelettronico.Utils.Account;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -93,26 +93,17 @@ public class FragmentLogin extends SlideFragment {
         mButtonLogin.setEnabled(false);
         mButtonLogin.setText(R.string.caricamento);
 
-        String oldProfile = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(Info.ACCOUNT, "");
-        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(Info.ACCOUNT, mEmail).apply();
-        //RegistroDB db = RegistroDB.getInstance(getContext());
-        //long id = new Profile(mEmail, "", "").save();
-        //INSERT IN DB BEFORE REQUEST TO AVOID CONSTRAINT ERRORS
-        //db.addProfile(new ProfileDrawerItem().withEmail(mEmail));
-
         APIClient.Companion.with(mContext).postLogin(new LoginRequest(mPassword, mEmail))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(login -> {
-                    //db.updateProfile(new ProfileDrawerItem().withName(WordUtils.capitalizeFully(login.getName())).withEmail(mEmail));
                     SugarRecord.save(new Profile(mEmail, login.getFirstName() + " " + login.getLastName(), mPassword, "", Long.valueOf(login.getIdent().substring(1, 8)), login.getToken(), login.getExpire().getTime()));
 
+                    Account.Companion.with(getActivity()).setUser(Long.valueOf(login.getIdent().substring(1, 8)));
                     PreferenceManager.getDefaultSharedPreferences(mContext).edit()
-                            .putString(Info.ACCOUNT, mEmail)
                             .putBoolean("first_run", false)
                             .apply();
 
                     mButtonLogin.setText(R.string.login_riuscito);
-                    //Toast.makeText(mContext, R.string.login_msg, Toast.LENGTH_SHORT).show();
                     loggedIn = true;
                     updateNavigation();
                     nextSlide();
@@ -122,12 +113,6 @@ public class FragmentLogin extends SlideFragment {
                     }
 
                     loginFeedback(error, getContext());
-
-                    PreferenceManager.getDefaultSharedPreferences(mContext).edit().putString(Info.ACCOUNT, oldProfile).apply();
-                    //db.removeProfile(mEmail);
-
-                    //Log.d("ID", "ID: " + id);
-                    //SugarRecord.deleteAll(Profile.class, "ID=" + id);
 
                     mButtonLogin.setText(R.string.login);
                     mEditTextMail.setEnabled(true);

@@ -29,7 +29,6 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IProfile
 import com.orm.SugarRecord
 import com.sharpdroid.registroelettronico.Databases.Entities.Profile
-import com.sharpdroid.registroelettronico.Databases.RegistroDB
 import com.sharpdroid.registroelettronico.Fragments.*
 import com.sharpdroid.registroelettronico.Info
 import com.sharpdroid.registroelettronico.R
@@ -40,14 +39,14 @@ import com.transitionseverywhere.TransitionManager
 import kotlinx.android.synthetic.main.app_bar_main.*
 
 class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, AccountHeader.OnAccountHeaderListener, AccountHeader.OnAccountHeaderItemLongClickListener {
-    internal var drawer: Drawer? = null
-    internal var params: AppBarLayout.LayoutParams? = null
-    internal var fragmentManager: FragmentManager? = null
-    internal var toggle: ActionBarDrawerToggle? = null
-    internal var needUpdate = true
-    internal var canOpenDrawer = true
-    internal var anim: ObjectAnimator? = null
-    internal var headerResult: AccountHeader? = null
+    private var drawer: Drawer? = null
+    private var params: AppBarLayout.LayoutParams? = null
+    private var fragmentManager: FragmentManager? = null
+    private var toggle: ActionBarDrawerToggle? = null
+    private var needUpdate = true
+    private var canOpenDrawer = true
+    private var anim: ObjectAnimator? = null
+    private lateinit var headerResult: AccountHeader
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,10 +71,15 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         val profile = Profile.getProfile(this)
         if (profile == null && !PreferenceManager.getDefaultSharedPreferences(this).getBoolean("first_run", true))
             startActivity(Intent(this, LoginActivity::class.java))
-
-        headerResult?.profiles = Profile.getIProfiles()
-        headerResult?.addProfiles(ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true))
-        headerResult?.setActiveProfile(profile?.id!!, false)
+        else {
+            try {
+                headerResult.profiles = Profile.getIProfiles()
+                headerResult.addProfiles(ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true))
+                headerResult.setActiveProfile(profile?.id!!, false)
+            } catch (err: Exception) {
+                err.printStackTrace()
+            }
+        }
 
     }
 
@@ -111,7 +115,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         drawer = DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
-                .withAccountHeader(headerResult!!)
+                .withAccountHeader(headerResult)
                 .withActionBarDrawerToggleAnimated(true)
                 .withOnDrawerItemClickListener(this)
                 .addDrawerItems(PrimaryDrawerItem().withIdentifier(R.id.agenda.toLong()).withName(R.string.agenda).withIcon(R.drawable.ic_event).withIconTintingEnabled(true),
@@ -146,13 +150,13 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         }
     }
 
-    fun clearBackstack() {
+    private fun clearBackstack() {
         fragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
     private fun init(savedInstanceState: Bundle?) {
         initDrawer()
-
+        Log.d("MAIN", "init drawer")
         fragmentManager = supportFragmentManager
         fragmentManager?.addOnBackStackChangedListener {
             canOpenDrawer = fragmentManager?.backStackEntryCount == 0
@@ -187,13 +191,13 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
         // Programmatically start a fragment
         if (savedInstanceState == null) {
-            var drawer_to_open = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getString("drawer_to_open", "0"))!!
+            var drawerToOpen = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getString("drawer_to_open", "0"))!!
 
             val extras = intent.extras
-            drawer_to_open = extras?.getInt("drawer_to_open", drawer_to_open) ?: 0
+            drawerToOpen = extras?.getInt("drawer_to_open", drawerToOpen) ?: 0
 
 
-            drawer?.setSelectionAtPosition(drawer_to_open + 1, true)
+            drawer?.setSelectionAtPosition(drawerToOpen + 1, true)
         }
     }
 
@@ -278,18 +282,13 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         return false
     }
 
-    override fun onStop() {
-        super.onStop()
-        RegistroDB.getInstance(this).close()
-    }
-
     override fun onProfileChanged(view: View?, profile: IProfile<*>, current: Boolean): Boolean {
         if (profile is ProfileSettingDrawerItem) {
             startActivity(Intent(this, LoginActivity::class.java))
         } else {
 
             Log.d(Info.ACCOUNT, profile.email.text)
-            PreferenceManager.getDefaultSharedPreferences(this).edit().putString(Info.ACCOUNT, profile.email.text).apply()
+            Account.with(this).user = profile.identifier
 
             updateSubjects(this)
             //Update fragment
@@ -303,16 +302,15 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             MaterialDialog.Builder(this).title("Eliminare il profilo?").content("Continuare con l'eliminazione di " + profile.email.text + " ?").positiveText("SI").negativeText("NO").onPositive { _, _ ->
 
                 SugarRecord.delete(Profile.getProfile(this))
-                //db.removeProfile(profile.getEmail().getText());
-                headerResult?.clear()
-                //headerResult.removeProfile(profile);
 
-                headerResult?.profiles = Profile.getIProfiles()
-                headerResult?.addProfiles(ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true))
+                headerResult.clear()
+                headerResult.profiles = Profile.getIProfiles()
+                headerResult.addProfiles(ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true))
 
-                if (headerResult?.profiles?.isNotEmpty()!!) {
-                    Account.with(this).user = SugarRecord.first(Profile::class.java).id
-                    headerResult?.setActiveProfile(Profile.getProfile(this)?.asIProfile(), true)
+                val p = SugarRecord.first(Profile::class.java)
+                if (p != null) {
+                    Account.with(this).user = p.id
+                    headerResult.setActiveProfile(p.id, true)
                 } else {
                     startActivity(Intent(this, LoginActivity::class.java))
                 }

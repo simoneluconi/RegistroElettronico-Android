@@ -144,25 +144,26 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         }
 
 
-        val p = Profile.getProfile(activity)!!
-        APIClient.with(activity).getAgenda(from, to)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ events ->
-                    Log.d(TAG, "Scaricati " + events.agenda.size + " eventi")
-                    //mRegistroDB.addEvents(events);
+        val p = Profile.getProfile(activity)
+        if (p != null)
+            APIClient.with(activity).getAgenda(from, to)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ events ->
+                        Log.d(TAG, "Scaricati " + events.agenda.size + " eventi")
+                        //mRegistroDB.addEvents(events);
 
-                    save(events.getAgenda(p))
-                    Log.d(TAG, "Salvati " + events.agenda.size + " eventi per " + p.name)
+                        save(events.getAgenda(p))
+                        Log.d(TAG, "Salvati " + events.agenda.size + " eventi per " + p.name)
 
-                    if (active) {
-                        updateCalendar()
-                        updateAdapter()
+                        if (active) {
+                            updateCalendar()
+                            updateAdapter()
+                        }
+                    }) { error ->
+                        error.printStackTrace()
+                        if (active)
+                            Snackbar.make(coordinator_layout, error.localizedMessage, Snackbar.LENGTH_LONG).show()
                     }
-                }) { error ->
-                    error.printStackTrace()
-                    if (active)
-                        Snackbar.make(coordinator_layout, error.localizedMessage, Snackbar.LENGTH_LONG).show()
-                }
     }
 
     fun save(events: List<RemoteAgenda>) {
