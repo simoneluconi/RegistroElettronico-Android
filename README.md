@@ -4,13 +4,13 @@ App non ufficiale sviluppata per accedere al Registro Elettronico Spaggiari.
 
 **Quest'app funziona solo ed esclusivamente con il registro Spaggiari.**
 
-## Con quest'applicazione potrai (quando sarà finita)
+## Con quest'applicazione potrai  (quando sarà finita)
 - Ricevere **notifiche** alla presenza di nuovi voti, compiti, circolari ed altri eventi
 - Visualizzare **medie** divise per periodi, materie e tipologia (Scritto, Orale e Pratico)
 - Visualizzare una **media ipotetica** selezionando il voto che pensi di aver preso e potrai vedere la tua nuova media!
 - Visualizzare tutti i **voti** con il relativo commento
 - Impostare un **obiettivo** per ogni materia e sapere i voti che devi prendere per raggiungerlo
-- Sapere cosa si è fatto final scuola
+- Sapere cosa si è fatto a scuola
 - Visualizzare **circolari** , **scrutini**, **note** e **materiali didattici**
 - Visualizzare l'**agenda scolastica**
 - Aggiungere eventi dall'agenda scolastica al calendario del telefono
@@ -26,10 +26,10 @@ App non ufficiale sviluppata per accedere al Registro Elettronico Spaggiari.
 - Se il tuo professore non inserisce un commento ad un voto esso viene prelevato dall'agenda (se possibile)
 - Vengono riconosciuti automaticamente i professori di ogni materia
 - Puoi far impostare automaticamente all'applicazione gli obiettivi di ogni materia
-- **Se hai altre idee non esitare final comunicarcele!**
+- **Se hai altre idee non esitare a comunicarcele!**
 
 ## ATTENZIONE
-Poichè molte persone si limitano solamente final dare recensioni negative con commenti che non aiutano per niente lo sviluppo dell'app, verranno inviate automaticamente segnalazioni in caso di crash, aiutandoci nello sviluppo. Nessun dato personale verrà condiviso. Se ci contatterete via mail ci darete comunque un aiuto ulteriore per risolvere il problema più velocemente.
+Poichè molte persone si limitano solamente a dare recensioni negative con commenti che non aiutano per niente lo sviluppo dell'app, verranno inviate automaticamente segnalazioni in caso di crash, aiutandoci nello sviluppo. Nessun dato personale verrà condiviso. Se ci contatterete via mail ci darete comunque un aiuto ulteriore per risolvere il problema più velocemente. 
 
 
 ## FAQ
