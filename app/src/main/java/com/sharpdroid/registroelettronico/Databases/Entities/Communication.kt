@@ -2,7 +2,8 @@ package com.sharpdroid.registroelettronico.Databases.Entities
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.orm.SugarRecord
+import com.orm.dsl.Table
+import com.orm.dsl.Unique
 import java.util.*
 
 /*
@@ -29,8 +30,9 @@ import java.util.*
     ]
 }
  */
+@Table
 data class Communication(
-        @Expose @SerializedName("pubId") val pubId: Int,
+        @Expose @SerializedName("pubId") @Unique val id: Int,
         @Expose @SerializedName("pubDT") val date: Date,
         @Expose @SerializedName("readStatus") val isRead: Boolean,
         @Expose @SerializedName("evtCode") val evtCode: String,
@@ -39,7 +41,7 @@ data class Communication(
         @Expose @SerializedName("cntCategory") val category: String,
         @Expose @SerializedName("cntHasAttach") val hasAttachment: String,
         var profile: Profile?
-) : SugarRecord() {
+) {
     constructor() : this(0, Date(), false, "", 0, "", "", "", null)
 }
 

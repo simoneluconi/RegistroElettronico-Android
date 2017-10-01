@@ -5,6 +5,7 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IProfile
 import com.orm.SugarRecord
 import com.orm.dsl.Table
+import com.orm.dsl.Unique
 import com.sharpdroid.registroelettronico.Utils.Account
 import com.sharpdroid.registroelettronico.Utils.Metodi.AccountImage
 
@@ -14,7 +15,7 @@ data class Profile(
         var name: String,
         var password: String,
         var classe: String,
-        var id: Long,
+        @Unique var id: Long,
         var token: String,
         var expire: Long
 

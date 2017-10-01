@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.orm.SugarRecord
 import com.orm.dsl.Table
+import com.orm.dsl.Unique
 import java.util.*
 
 /*
@@ -25,7 +26,7 @@ import java.util.*
  */
 @Table
 data class RemoteAgenda(
-        @Expose @SerializedName("evtId") val id: Long,
+        @Expose @SerializedName("evtId") @Unique val id: Long,
         @Expose @SerializedName("evtDatetimeBegin") val start: Date,
         @Expose @SerializedName("evtDatetimeEnd") val end: Date,
         @Expose @SerializedName("isFullDay") val isFullDay: Boolean,
