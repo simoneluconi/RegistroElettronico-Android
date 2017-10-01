@@ -33,6 +33,7 @@ import com.sharpdroid.registroelettronico.Databases.RegistroDB
 import com.sharpdroid.registroelettronico.Fragments.*
 import com.sharpdroid.registroelettronico.Info
 import com.sharpdroid.registroelettronico.R
+import com.sharpdroid.registroelettronico.Utils.Account
 import com.sharpdroid.registroelettronico.Utils.Metodi.updateSubjects
 import com.transitionseverywhere.ChangeText
 import com.transitionseverywhere.TransitionManager
@@ -301,7 +302,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         if (profile !is ProfileSettingDrawerItem) {
             MaterialDialog.Builder(this).title("Eliminare il profilo?").content("Continuare con l'eliminazione di " + profile.email.text + " ?").positiveText("SI").negativeText("NO").onPositive { _, _ ->
 
-                SugarRecord.deleteAll(Profile::class.java, "username = ?", profile.email.text)
+                SugarRecord.delete(Profile.getProfile(this))
                 //db.removeProfile(profile.getEmail().getText());
                 headerResult?.clear()
                 //headerResult.removeProfile(profile);
@@ -309,8 +310,8 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                 headerResult?.profiles = Profile.getIProfiles()
                 headerResult?.addProfiles(ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true))
 
-                if (SugarRecord.count<Profile>(Profile::class.java) > 0) {
-                    PreferenceManager.getDefaultSharedPreferences(this).edit().putString(Info.ACCOUNT, Profile.getProfile(this)?.username).apply()
+                if (headerResult?.profiles?.isNotEmpty()!!) {
+                    Account.with(this).user = SugarRecord.first(Profile::class.java).id
                     headerResult?.setActiveProfile(Profile.getProfile(this)?.asIProfile(), true)
                 } else {
                     startActivity(Intent(this, LoginActivity::class.java))

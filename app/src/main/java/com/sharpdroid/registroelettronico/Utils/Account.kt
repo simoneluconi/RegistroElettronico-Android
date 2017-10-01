@@ -8,9 +8,9 @@ import com.sharpdroid.registroelettronico.Info
 class Account(context: Context) {
     var preference: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
-    var user: String
-        get() = preference.getString(Info.ACCOUNT, "")
-        set(value) = preference.edit().putString(Info.ACCOUNT, value).apply()
+    var user: Long
+        get() = preference.getLong(Info.ACCOUNT, 0)
+        set(value) = preference.edit().putLong(Info.ACCOUNT, value).apply()
 
 
     companion object {

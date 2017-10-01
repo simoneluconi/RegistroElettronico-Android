@@ -1,7 +1,6 @@
 package com.sharpdroid.registroelettronico.Databases.Entities
 
 import android.content.Context
-import android.util.Log
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IProfile
 import com.orm.SugarRecord
@@ -40,9 +39,7 @@ data class Profile(
         }
 
         fun getProfile(context: Context): Profile? {
-            val list = SugarRecord.find(Profile::class.java, "USERNAME = ?", Account.with(context).user)
-            Log.d("Profile", list.size.toString())
-            return list.getOrNull(0)
+            return SugarRecord.findById(Profile::class.java, Account.with(context).user)
         }
     }
 
