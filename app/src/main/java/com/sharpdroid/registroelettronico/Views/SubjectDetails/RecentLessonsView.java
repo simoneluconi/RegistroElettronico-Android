@@ -8,9 +8,10 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.Button;
 
+import com.orm.SugarRecord;
 import com.sharpdroid.registroelettronico.Activities.AllLessonsWithDownloadActivity;
 import com.sharpdroid.registroelettronico.Adapters.LessonsAdapter;
-import com.sharpdroid.registroelettronico.Databases.RegistroDB;
+import com.sharpdroid.registroelettronico.Databases.Entities.Lesson;
 import com.sharpdroid.registroelettronico.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
@@ -59,7 +60,7 @@ public class RecentLessonsView extends CardView {
 
     public void update(int code) {
         adapter.clear();
-        adapter.addAll(RegistroDB.getInstance(mContext).getLessons(code, 5));
+        adapter.addAll(SugarRecord.find(Lesson.class, "M_SUBJECT_CODE=?", String.valueOf(code)));
         showAllButton.setOnClickListener(view -> mContext.startActivity(new Intent(mContext, AllLessonsWithDownloadActivity.class).putExtra("code", code)));
     }
 

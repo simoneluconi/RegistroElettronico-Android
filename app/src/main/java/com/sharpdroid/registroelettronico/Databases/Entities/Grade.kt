@@ -30,7 +30,7 @@ data class Grade(@Expose @SerializedName("evtCode") val mCode: String,
     constructor() : this("", 0, Date(), "", 0, "", 0, "", "", 0, "", false, 0f, 0.0, null)
 
     companion object {
-        fun getAverages(context: Context, where: String, vararg args: String): List<Average> {
+        fun getAverages(context: Context, where: String): List<Average> {
             return SugarRecord.findWithQuery(Average::class.java, "SELECT " +
                     "0 as ID, " +
                     "M_DESCRIPTION as `NAME`, " +

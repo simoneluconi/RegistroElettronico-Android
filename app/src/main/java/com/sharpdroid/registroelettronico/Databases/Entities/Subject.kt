@@ -27,10 +27,12 @@ import com.orm.dsl.Unique
 data class Subject(
         @Expose @SerializedName("id") @Unique val id: Long,
         @Expose @SerializedName("description") val description: String,
-        @Expose @SerializedName("teachers") @Ignore() var teachers: List<Teacher>,
-        var target: Float
+        @Expose @SerializedName("teachers") @Ignore var teachers: List<Teacher>,
+        var target: Float,
+        var classroom: String,
+        var details: String
 ) {
-    constructor() : this(0, "", emptyList(), 0f)
+    constructor() : this(0, "", emptyList(), 0f, "", "")
 }
 
 data class SubjectAPI(@Expose @SerializedName("subjects") val subjects: List<Subject>)

@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.sharpdroid.registroelettronico.Adapters.Holders.LessonHolder;
-import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
+import com.sharpdroid.registroelettronico.Databases.Entities.Lesson;
 import com.sharpdroid.registroelettronico.R;
 
 import java.text.SimpleDateFormat;
@@ -34,8 +34,8 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonHolder> {
     @Override
     public void onBindViewHolder(LessonHolder holder, int position) {
         Lesson lesson = lessons.get(position);
-        holder.content.setText(lesson.getContent().trim());
-        holder.date.setText(formatter.format(lesson.getDate()));
+        holder.content.setText(lesson.getMArgument().trim());
+        holder.date.setText(formatter.format(lesson.getMDate()));
     }
 
     public void addAll(Collection<Lesson> list) {

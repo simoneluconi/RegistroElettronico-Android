@@ -176,7 +176,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                 }
             }
         }
-        toolbar?.setNavigationOnClickListener { v ->
+        toolbar?.setNavigationOnClickListener { _ ->
             if (canOpenDrawer) {
                 drawer?.drawerLayout?.openDrawer(GravityCompat.START)
             } else {
@@ -185,6 +185,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         }
 
         if (needUpdate) {
+            //TODO: try delete
             updateSubjects(this)
             needUpdate = false
         }
@@ -262,11 +263,11 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                 return false
             }
             R.id.nav_send -> {
-                val intent_mail = Intent(Intent.ACTION_SENDTO)
-                intent_mail.data = Uri.parse("mailto:registroelettronico@simoneluconi.com")
-                intent_mail.putExtra(Intent.EXTRA_SUBJECT, "Registro Elettronico")
-                intent_mail.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent_mail)
+                val intentMail = Intent(Intent.ACTION_SENDTO)
+                intentMail.data = Uri.parse("mailto:registroelettronico@simoneluconi.com")
+                intentMail.putExtra(Intent.EXTRA_SUBJECT, "Registro Elettronico")
+                intentMail.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intentMail)
                 return false
             }
             else -> return false
@@ -290,7 +291,9 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             Log.d(Info.ACCOUNT, profile.email.text)
             Account.with(this).user = profile.identifier
 
+            //TODO: try delete
             updateSubjects(this)
+
             //Update fragment
             drawer?.setSelectionAtPosition(1, true)
         }

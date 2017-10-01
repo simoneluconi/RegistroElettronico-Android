@@ -8,6 +8,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.orm.SugarRecord
 import com.sharpdroid.registroelettronico.API.V2.Deserializer.DateDeserializer
+import com.sharpdroid.registroelettronico.API.V2.Deserializer.LongDeserializer
 import com.sharpdroid.registroelettronico.Databases.Entities.LoginRequest
 import com.sharpdroid.registroelettronico.Databases.Entities.LoginResponse
 import com.sharpdroid.registroelettronico.Databases.Entities.Profile
@@ -112,6 +113,7 @@ class APIClient {
                     .addConverterFactory(GsonConverterFactory.create(
                             GsonBuilder().excludeFieldsWithoutExposeAnnotation()
                                     .registerTypeAdapter(Date::class.java, DateDeserializer())
+                                    .registerTypeAdapter(Long::class.java, LongDeserializer())
                                     .create()))
 
                     .baseUrl(API_URL)

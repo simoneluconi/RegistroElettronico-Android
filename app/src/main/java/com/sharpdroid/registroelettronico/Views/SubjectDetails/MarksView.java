@@ -27,7 +27,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.Utils;
 import com.sharpdroid.registroelettronico.Adapters.MarkAdapter;
 import com.sharpdroid.registroelettronico.Databases.Entities.Grade;
-import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
+import com.sharpdroid.registroelettronico.Databases.Entities.Subject;
 import com.sharpdroid.registroelettronico.R;
 import com.transitionseverywhere.AutoTransition;
 import com.transitionseverywhere.TransitionManager;
@@ -119,7 +119,7 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
     public void setSubject(Subject subject, float media) {
         setLimitLines(subject.getTarget(), media);
 
-        adapter = new MarkAdapter(mContext, subject);
+        adapter = new MarkAdapter(mContext);
         setTarget(subject);
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.invalidate();

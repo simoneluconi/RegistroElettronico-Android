@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.sharpdroid.registroelettronico.Activities.MarkSubjectDetailActivity;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Average;
@@ -72,7 +71,11 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
 
         ViewHolder.mTextViewMateria.setText(WordUtils.capitalizeFully(avg.name));
 
-        ViewHolder.mCardViewMedia.setOnClickListener(v -> mContext.startActivity(new Intent(mContext, MarkSubjectDetailActivity.class).putExtra("data", new Gson().toJson(db.getMarks(avg.code))).putExtra("period", period)));
+        ViewHolder.mCardViewMedia.setOnClickListener(v ->
+                mContext.startActivity(new Intent(mContext, MarkSubjectDetailActivity.class)
+                        .putExtra("subject_id", avg.code)
+                        .putExtra("period", period))
+        );
 
         if (avg.avg != 0f) {
             ViewHolder.mTextViewMedia.setText(String.format(Locale.getDefault(), "%.2f", avg.avg));

@@ -14,7 +14,7 @@ class DateDeserializer : JsonDeserializer<Date> {
 
     override fun deserialize(json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): Date {
         val dateText = json?.asString ?: ""
-        (0..pattern.size - 1)
+        (0 until pattern.size)
                 .filter { Pattern.matches(pattern[it], dateText) }
                 .forEach {
                     try {

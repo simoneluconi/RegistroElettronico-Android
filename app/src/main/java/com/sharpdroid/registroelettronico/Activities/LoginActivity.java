@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.content.res.AppCompatResources;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.orm.SugarRecord;
 import com.sharpdroid.registroelettronico.API.V2.APIClient;
@@ -23,6 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
+import static com.sharpdroid.registroelettronico.Utils.Metodi.fetchDataOfUser;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.loginFeedback;
 
 public class LoginActivity extends AppCompatActivity {
@@ -77,10 +77,10 @@ public class LoginActivity extends AppCompatActivity {
 
                     SugarRecord.save(new Profile(mEmail, login.getFirstName() + " " + login.getLastName(), mPassword, "", Long.valueOf(login.getIdent().substring(1, 8)), login.getToken(), login.getExpire().getTime()));
                     Account.Companion.with(this).setUser(Long.valueOf(login.getIdent().substring(1, 8)));
+                    fetchDataOfUser(this);
 
                     PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("first_run", false).apply();
                     mButtonLogin.setText(R.string.login_riuscito);
-                    Toast.makeText(this, R.string.login_msg, Toast.LENGTH_SHORT).show();
                     finish();
                 }, error -> {
                     loginFeedback(error, this);
