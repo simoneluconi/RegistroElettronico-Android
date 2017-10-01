@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
     override fun onResume() {
         super.onResume()
         val id: Long = Profile.getProfile(this)?.id ?: -1
-        if (id == -1L) startActivity(Intent(this, LoginActivity::class.java))
+        if (id == -1L && !PreferenceManager.getDefaultSharedPreferences(this).getBoolean("first_run", true)) startActivity(Intent(this, LoginActivity::class.java))
 
         headerResult?.profiles = Profile.getIProfiles()
         headerResult?.addProfiles(ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true))
