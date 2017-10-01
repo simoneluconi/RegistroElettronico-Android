@@ -18,6 +18,7 @@ import com.sharpdroid.registroelettronico.Databases.Entities.Profile
 import com.sharpdroid.registroelettronico.Databases.Entities.RemoteAgenda
 import com.sharpdroid.registroelettronico.Databases.Entities.RemoteAgendaInfo
 import com.sharpdroid.registroelettronico.Databases.Entities.SuperAgenda
+import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Metodi.*
 import com.transitionseverywhere.ChangeText
@@ -33,7 +34,16 @@ import java.util.*
 // DONE: 19/01/2017 Aggiungere eventi all'agenda
 // DONE: 19/01/2017 Aggiungere eventi dell'agenda nel calendario del telefono
 
-class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListener, AgendaAdapter.AgendaClickListener, AgendaBS.Listener {
+class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListener, AgendaAdapter.AgendaClickListener, AgendaBS.Listener, NotificationManager.NotificationReceiver {
+    override fun didReceiveNotification(code: Int) {
+        when (code) {
+            NotificationManager.UPDATE_AGENDA -> {
+                updateCalendar();updateAdapter()
+            }
+        }
+        Log.d("NOTIFICATION", "RECEIVE")
+    }
+
     private val TAG = FragmentAgenda::class.java.simpleName
     internal var month = SimpleDateFormat("MMMM", Locale.getDefault())
     internal var year = SimpleDateFormat("yyyy", Locale.getDefault())
@@ -57,6 +67,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        NotificationManager.istance.addObserver(this, NotificationManager.UPDATE_AGENDA)
 
         with(activity.calendar) {
             setLocale(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALIAN)
@@ -80,6 +91,10 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         download()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        NotificationManager.istance.removeObserver(this, NotificationManager.UPDATE_AGENDA)
+    }
     private fun prepareDate(predictNextDay: Boolean) {
         mDate = Date()
 

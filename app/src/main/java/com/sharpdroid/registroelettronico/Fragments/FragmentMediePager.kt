@@ -18,6 +18,7 @@ import com.sharpdroid.registroelettronico.BottomSheet.OrderMedieBS
 import com.sharpdroid.registroelettronico.Databases.Entities.Grade
 import com.sharpdroid.registroelettronico.Databases.Entities.Profile
 import com.sharpdroid.registroelettronico.Databases.RegistroDB
+import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Metodi.CalculateScholasticCredits
 import com.sharpdroid.registroelettronico.Utils.Metodi.isNetworkAvailable
@@ -29,10 +30,16 @@ import java.util.*
 /**
  * A simple [Fragment] subclass.
  */
-class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, OrderMedieBS.OrderListener {
+class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, OrderMedieBS.OrderListener, NotificationManager.NotificationReceiver {
+    override fun didReceiveNotification(code: Int) {
+        when (code) {
+            NotificationManager.UPDATE_MARKS -> load()
+        }
+    }
+
     private val TAG = FragmentMedie::class.java.simpleName
 
-    internal lateinit var pagerAdapter: PagerAdapter
+    private lateinit var pagerAdapter: PagerAdapter
 
     private var pager_selected: Boolean = false
 
@@ -65,6 +72,12 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
     override fun onResume() {
         super.onResume()
         load()
+        NotificationManager.istance.addObserver(this, NotificationManager.UPDATE_MARKS)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        NotificationManager.istance.removeObserver(this, NotificationManager.UPDATE_MARKS)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
