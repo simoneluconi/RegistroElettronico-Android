@@ -1,6 +1,5 @@
 package com.sharpdroid.registroelettronico.Adapters;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -28,12 +27,13 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.sharpdroid.registroelettronico.Utils.Metodi.isEventTest;
+
 public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Entry> CVDataList;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM", Locale.getDefault());
     private View place_holder;
     private AgendaClickListener mClickListener;
-    private Context mContext;
 
     public AgendaAdapter(View ph) {
         CVDataList = new ArrayList<>();
@@ -42,7 +42,6 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        mContext = parent.getContext();
         if (viewType == HeaderEntry.ID)
             return new HeaderHolder(LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false));
         else
@@ -108,7 +107,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private List<Entry> convert(List<SuperAgenda> events) {
         LinkedHashMap<String, List<SuperAgenda>> organized = new LinkedHashMap<>();
         for (SuperAgenda e : events) {
-            /*if (isEventTest(e)) {
+            if (isEventTest(e)) {
                 if (organized.containsKey("Verifiche")) {
                     List<SuperAgenda> verifiche = new ArrayList<>(organized.get("Verifiche"));
                     verifiche.add(e);
@@ -116,15 +115,15 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 } else {
                     organized.put("Verifiche", Collections.singletonList(e));
                 }
-            } else {*/
-            if (organized.containsKey("ALTRI EVENTI")) {
-                List<SuperAgenda> otherEvents = new ArrayList<>(organized.get("ALTRI EVENTI"));
-                otherEvents.add(e);
-                organized.put("ALTRI EVENTI", otherEvents);
             } else {
-                organized.put("ALTRI EVENTI", Collections.singletonList(e));
+                if (organized.containsKey("ALTRI EVENTI")) {
+                    List<SuperAgenda> otherEvents = new ArrayList<>(organized.get("ALTRI EVENTI"));
+                    otherEvents.add(e);
+                    organized.put("ALTRI EVENTI", otherEvents);
+                } else {
+                    organized.put("ALTRI EVENTI", Collections.singletonList(e));
+                }
             }
-            //}
         }
 
         List<Entry> convert = new LinkedList<>();
