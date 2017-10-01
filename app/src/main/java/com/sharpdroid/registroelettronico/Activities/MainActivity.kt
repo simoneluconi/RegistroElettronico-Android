@@ -306,7 +306,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                 headerResult?.addProfiles(ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true))
 
                 if (SugarRecord.count<Profile>(Profile::class.java) > 0) {
-                    PreferenceManager.getDefaultSharedPreferences(this).edit().putString(Info.ACCOUNT, SugarRecord.first(Profile::class.java).username).apply()
+                    PreferenceManager.getDefaultSharedPreferences(this).edit().putString(Info.ACCOUNT, Profile.Companion.getProfile(this).username).apply()
                     headerResult?.setActiveProfile(Profile.getProfile(this).asIProfile(), true)
                 } else {
                     startActivity(Intent(this, LoginActivity::class.java))

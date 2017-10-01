@@ -19,5 +19,5 @@ data class Agenda(
         @Expose @SerializedName("subjectDesc") val mSubjectDescription: String,
         var profile: Profile?
 ) : SugarRecord() {
-    constructor() : this("", Date(), "", Date(), "", false, 0, "", "", null);
+    constructor() : this("", Date(), "", Date(), "", false, 0, "", "", null)
 }

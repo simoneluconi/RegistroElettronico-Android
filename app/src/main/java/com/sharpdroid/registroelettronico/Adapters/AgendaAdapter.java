@@ -28,8 +28,6 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.sharpdroid.registroelettronico.Utils.Metodi.isEventTest;
-
 public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final Context mContext;
     private List<Entry> CVDataList;
@@ -110,7 +108,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private List<Entry> convert(List<SuperAgenda> events) {
         LinkedHashMap<String, List<SuperAgenda>> organized = new LinkedHashMap<>();
         for (SuperAgenda e : events) {
-            if (isEventTest(e)) {
+            /*if (isEventTest(e)) {
                 if (organized.containsKey(mContext.getString(R.string.verifiche))) {
                     List<SuperAgenda> verifiche = new ArrayList<>(organized.get(mContext.getString(R.string.verifiche)));
                     verifiche.add(e);
@@ -118,7 +116,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 } else {
                     organized.put(mContext.getString(R.string.verifiche), Collections.singletonList(e));
                 }
-            } else {
+            } else {*/
                 if (organized.containsKey(mContext.getString(R.string.altri_eventi))) {
                     List<SuperAgenda> otherEvents = new ArrayList<>(organized.get(mContext.getString(R.string.altri_eventi)));
                     otherEvents.add(e);
@@ -126,7 +124,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 } else {
                     organized.put(mContext.getString(R.string.altri_eventi), Collections.singletonList(e));
                 }
-            }
+            //}
         }
 
         List<Entry> convert = new LinkedList<>();
