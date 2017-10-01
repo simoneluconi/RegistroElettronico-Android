@@ -20,10 +20,13 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
+import com.sharpdroid.registroelettronico.Info.API_URL
 
 class APIClient {
 
     companion object {
+
+
         fun with(context: Context): SpaggiariREST {
             val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
             val profile = Profile.getProfile(context)!!
@@ -39,11 +42,11 @@ class APIClient {
                 val original = chain.request()
                 //EXPIRED TOKEN && NOT LOGGIN IN
                 //TODO: use token & expireDate of each profile
-                if (original.url().toString() != "https://web.spaggiari.eu/rest/v1/auth/login" && profile.expire < System.currentTimeMillis()) {
+                if (original.url().toString() != API_URL + "/auth/login" && profile.expire < System.currentTimeMillis()) {
                     Log.d("LOGIN INTERCEPTOR", "TOKEN EXPIRED, REQUESTING NEW TOKEN")
 
                     val loginRes = chain.proceed(original.newBuilder()
-                            .url("https://web.spaggiari.eu/rest/v1/auth/login")
+                            .url(API_URL + "/auth/login")
                             .method("POST",
                                     RequestBody.create(
                                             MediaType.parse("application/json"),
@@ -111,7 +114,7 @@ class APIClient {
                                     .registerTypeAdapter(Date::class.java, DateDeserializer())
                                     .create()))
 
-                    .baseUrl("https://web.spaggiari.eu/rest/v1/")
+                    .baseUrl(API_URL)
                     .client(okHttp)
                     .build()
             return retrofit.create(SpaggiariREST::class.java)
