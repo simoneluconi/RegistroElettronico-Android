@@ -103,7 +103,11 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
     }
 
     private fun fetch(currentDate: Boolean?): List<SuperAgenda> {
-        return if (currentDate == true) RemoteAgenda.getAgenda(Profile.getProfile(activity)!!.id, mDate) else RemoteAgenda.getSuperAgenda(Profile.getProfile(activity)!!.id)
+        val profile = Profile.getProfile(activity)
+        if (profile != null) {
+            return if (currentDate == true) RemoteAgenda.getAgenda(profile.id, mDate) else RemoteAgenda.getSuperAgenda(profile.id)
+        }
+        return listOf()
     }
 
     private fun load() {
@@ -132,21 +136,12 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
     }
 
     private fun download() {
-        val from: String
-        val to: String
-        val cal = Calendar.getInstance()
-        if (cal.get(Calendar.MONTH) + 1 >= 9) { // Prima di gennaio
-            from = cal.get(Calendar.YEAR).toString() + "0901"
-            to = (cal.get(Calendar.YEAR) + 1).toString() + "0831"
-        } else {
-            from = (cal.get(Calendar.YEAR) - 1).toString() + "0901"
-            to = cal.get(Calendar.YEAR).toString() + "0831"
-        }
 
+        val dates = getStartEnd("yyyyMMdd")
 
         val p = Profile.getProfile(activity)
         if (p != null)
-            APIClient.with(activity).getAgenda(from, to)
+            APIClient.with(activity).getAgenda(dates[0], dates[1])
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ events ->
                         Log.d(TAG, "Scaricati " + events.agenda.size + " eventi")

@@ -7,8 +7,11 @@ import android.widget.TextView;
 
 import com.sharpdroid.registroelettronico.R;
 
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.annotations.Nullable;
 
 public class OverallView extends CardView {
     Context mContext;
@@ -56,15 +59,18 @@ public class OverallView extends CardView {
         ButterKnife.bind(this);
     }
 
-    public void setScritto(String scritto) {
-        mScritto.setText(scritto);
+    public void setScritto(@Nullable Float scritto) {
+        if (scritto == null) mOrale.setText("-");
+        mScritto.setText(String.format(Locale.getDefault(), "%.2f", scritto));
     }
 
-    public void setOrale(String orale) {
-        mOrale.setText(orale);
+    public void setOrale(@Nullable Float orale) {
+        if (orale == null) mOrale.setText("-");
+        mOrale.setText(String.format(Locale.getDefault(), "%.2f", orale));
     }
 
-    public void setPratico(String pratico) {
-        mPratico.setText(pratico);
+    public void setPratico(@Nullable Float pratico) {
+        if (pratico == null) mOrale.setText("-");
+        mPratico.setText(String.format(Locale.getDefault(), "%.2f", pratico));
     }
 }

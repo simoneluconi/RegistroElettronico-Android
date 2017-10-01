@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.sharpdroid.registroelettronico.Databases.Entities.Grade;
-import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.R;
 
 import java.text.SimpleDateFormat;
@@ -31,12 +30,10 @@ public class MarkAdapter extends RecyclerView.Adapter<MarkAdapter.MarkHolder> {
     private Context mContext;
     private SimpleDateFormat format = new SimpleDateFormat("d MMMM yyyy", Locale.ITALIAN);
     private List<Grade> CVDataList;
-    private Subject subject;
 
-    public MarkAdapter(Context mContext, Subject subject) {
+    public MarkAdapter(Context mContext) {
         this.mContext = mContext;
         CVDataList = new ArrayList<>();
-        this.subject = subject;
     }
 
     public void addAll(List<Grade> list) {

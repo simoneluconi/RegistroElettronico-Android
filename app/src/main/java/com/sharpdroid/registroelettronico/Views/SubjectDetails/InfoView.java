@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
@@ -69,7 +68,7 @@ public class InfoView extends CardView {
         mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).colorResId(R.color.divider).size(dpToPx(1)).marginResId(R.dimen.padding_left_divider1, R.dimen.nav_header_vertical_spacing).build());
     }
 
-    public void setSubjectDetails(Subject data) {
+    public void setSubjectDetails(com.sharpdroid.registroelettronico.Databases.Entities.Subject data) {
         adapter.setData(data);
     }
 
@@ -111,22 +110,22 @@ public class InfoView extends CardView {
             notifyDataSetChanged();
         }
 
-        public void setData(Subject data) {
+        public void setData(com.sharpdroid.registroelettronico.Databases.Entities.Subject data) {
             this.data = convertToList(data);
             notifyDataSetChanged();
         }
 
-        private List<Pair<Integer, String>> convertToList(Subject data) {
+        private List<Pair<Integer, String>> convertToList(com.sharpdroid.registroelettronico.Databases.Entities.Subject data) {
             List<Pair<Integer, String>> list = new ArrayList<>();
 
             if (data != null) {
-                list.add(new Pair<>(R.drawable.ic_title, data.getName()));
-                if (!TextUtils.isEmpty(data.getProfessor()))
-                    list.add(new Pair<>(R.drawable.ic_person, WordUtils.capitalizeFully(TextUtils.join(" - ", data.getProfessors()), Delimeters)));
+                list.add(new Pair<>(R.drawable.ic_title, data.getDescription()));
+                if (!data.getTeachers().isEmpty())
+                    list.add(new Pair<>(R.drawable.ic_person, WordUtils.capitalizeFully(TextUtils.join(" - ", data.getTeachers()), Delimeters)));
                 if (!TextUtils.isEmpty(data.getClassroom()))
                     list.add(new Pair<>(R.drawable.ic_room, data.getClassroom()));
-                if (!TextUtils.isEmpty(data.getNotes()))
-                    list.add(new Pair<>(R.drawable.ic_description, data.getNotes()));
+                if (!TextUtils.isEmpty(data.getDetails()))
+                    list.add(new Pair<>(R.drawable.ic_description, data.getDetails()));
             }
 
             return list;

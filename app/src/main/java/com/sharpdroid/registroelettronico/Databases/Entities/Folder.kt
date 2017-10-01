@@ -27,9 +27,12 @@ import java.util.*
 }
  */
 data class Folder(
-        @Expose @SerializedName("folderId") val folderId: Int,
-        @Expose @SerializedName("folderName") var name: String = "",
-        @Expose @SerializedName("lastShareDT") var lastUpdate: Date = Date(),
+        @Expose @SerializedName("folderId") var folderId: Int,
+        @Expose @SerializedName("folderName") var name: String,
+        @Expose @SerializedName("lastShareDT") var lastUpdate: Date,
         @Expose @SerializedName("contents") @Ignore var files: List<File>,
-        var teacher: Teacher
-) : SugarRecord()
+        var teacher: Long,
+        var profile: Profile
+) : SugarRecord() {
+    constructor() : this(0, "", Date(), emptyList(), 0, Profile())
+}

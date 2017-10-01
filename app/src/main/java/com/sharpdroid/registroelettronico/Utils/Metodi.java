@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.orm.SugarRecord;
 import com.sharpdroid.registroelettronico.API.V1.SpiaggiariAPI;
 import com.sharpdroid.registroelettronico.API.V2.APIClient;
+import com.sharpdroid.registroelettronico.Databases.Entities.Folder;
 import com.sharpdroid.registroelettronico.Databases.Entities.Grade;
 import com.sharpdroid.registroelettronico.Databases.Entities.Profile;
 import com.sharpdroid.registroelettronico.Databases.Entities.SubjectTeacher;
@@ -52,6 +53,7 @@ import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -453,6 +455,75 @@ public class Metodi {
             SugarRecord.saveInTx(subjectAPI.getSubjects());
 
         }, Throwable::printStackTrace);
+    }
+
+    public static void fetchDataOfUser(Context c) {
+        updateSubjects(c);
+        updateLessons(c);
+        updateFolders(c);
+        updateAgenda(c);
+    }
+
+    public static void updateLessons(Context c) {
+        String[] dates = getStartEnd("yyyyMMdd");
+        APIClient.Companion.with(c).getLessons(dates[0], dates[1])
+                .subscribe(l -> SugarRecord.updateInTx(l.getLessons(Profile.Companion.getProfile(c))), Throwable::printStackTrace);
+    }
+
+    public static void updateFolders(Context c) {
+        Profile p = Profile.Companion.getProfile(c);
+        APIClient.Companion.with(c).getDidactics()
+                .subscribe(didacticAPI -> {
+                    List<com.sharpdroid.registroelettronico.Databases.Entities.File> files = new LinkedList<>();
+                    List<com.sharpdroid.registroelettronico.Databases.Entities.Folder> folders = new LinkedList<>();
+                    for (Teacher teacher : didacticAPI.getDidactics()) {
+                        if (teacher != null) {
+                            for (Folder folder : teacher.getFolders()) {
+                                folder.setTeacher(teacher.getId());
+                                for (com.sharpdroid.registroelettronico.Databases.Entities.File file : folder.getFiles()) {
+                                    file.setFolder(folder.getFolderId());
+                                    file.setTeacher(teacher.getId());
+                                    files.add(file);
+                                }
+                                folder.setFiles(Collections.emptyList());
+                                folder.setProfile(p);
+                                folders.add(folder);
+                            }
+                            teacher.setFolders(Collections.emptyList());
+                        }
+                    }
+                    SugarRecord.deleteAll(Folder.class, "PROFILE=?", p != null ? String.valueOf(p.getId()) : "0");
+                    SugarRecord.saveInTx(didacticAPI.getDidactics());
+                    SugarRecord.saveInTx(folders);
+                    SugarRecord.saveInTx(files);
+                }, Throwable::printStackTrace);
+
+    }
+
+    public static void updateAgenda(Context c) {
+        String[] dates = getStartEnd("yyyyMMdd");
+        APIClient.Companion.with(c).getAgenda(dates[0], dates[1])
+                .subscribe(agendaAPI -> SugarRecord.saveInTx(agendaAPI.getAgenda(Profile.Companion.getProfile(c))), Throwable::printStackTrace);
+    }
+
+    public static String[] getStartEnd(String format) {
+        Calendar from, to;
+        from = Calendar.getInstance();
+        to = Calendar.getInstance();
+
+        if (from.get(Calendar.MONTH) >= Calendar.SEPTEMBER) { // Prima di gennaio
+            to.add(Calendar.YEAR, 1);
+        } else {
+            from.add(Calendar.YEAR, -1);
+        }
+        from.set(Calendar.DAY_OF_MONTH, 1);
+        from.set(Calendar.MONTH, Calendar.SEPTEMBER);
+
+        to.set(Calendar.DAY_OF_MONTH, 31);
+        to.set(Calendar.MONTH, Calendar.AUGUST);
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.getDefault());
+        return new String[]{simpleDateFormat.format(from.getTime()), simpleDateFormat.format(to.getTime())};
     }
 
     public static void addEventToCalendar(Context c, SuperAgenda event) {

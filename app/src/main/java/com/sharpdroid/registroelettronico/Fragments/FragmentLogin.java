@@ -27,6 +27,7 @@ import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import retrofit2.HttpException;
 
+import static com.sharpdroid.registroelettronico.Utils.Metodi.fetchDataOfUser;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.loginFeedback;
 
 public class FragmentLogin extends SlideFragment {
@@ -99,6 +100,7 @@ public class FragmentLogin extends SlideFragment {
                     SugarRecord.save(new Profile(mEmail, login.getFirstName() + " " + login.getLastName(), mPassword, "", Long.valueOf(login.getIdent().substring(1, 8)), login.getToken(), login.getExpire().getTime()));
 
                     Account.Companion.with(getActivity()).setUser(Long.valueOf(login.getIdent().substring(1, 8)));
+                    fetchDataOfUser(getActivity());
                     PreferenceManager.getDefaultSharedPreferences(mContext).edit()
                             .putBoolean("first_run", false)
                             .apply();
