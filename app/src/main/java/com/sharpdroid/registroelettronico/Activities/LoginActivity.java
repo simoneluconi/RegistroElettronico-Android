@@ -12,14 +12,12 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
-import com.sharpdroid.registroelettronico.API.V1.SpiaggiariApiClient;
-import com.sharpdroid.registroelettronico.Databases.RegistroDB;
+import com.orm.SugarRecord;
+import com.sharpdroid.registroelettronico.API.V2.APIClient;
+import com.sharpdroid.registroelettronico.Databases.Entities.LoginRequest;
+import com.sharpdroid.registroelettronico.Databases.Entities.Profile;
 import com.sharpdroid.registroelettronico.Info;
 import com.sharpdroid.registroelettronico.R;
-import com.sharpdroid.registroelettronico.Utils.DeviceUuidFactory;
-
-import org.apache.commons.lang3.text.WordUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,7 +32,6 @@ public class LoginActivity extends AppCompatActivity {
     TextInputEditText mEditTextPassword;
     @BindView(R.id.login_btn)
     Button mButtonLogin;
-    RegistroDB db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +39,6 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_login);
         ButterKnife.bind(this);
 
-        db = RegistroDB.getInstance(this);
         Drawable p = AppCompatResources.getDrawable(this, R.drawable.ic_person);
         Drawable l = AppCompatResources.getDrawable(this, R.drawable.ic_password);
 
@@ -79,12 +75,12 @@ public class LoginActivity extends AppCompatActivity {
         PreferenceManager.getDefaultSharedPreferences(this).edit().putString(Info.ACCOUNT, mEmail).apply();
 
         //INSERT IN DB BEFORE REQUEST TO AVOID CONSTRAINT ERRORS
-        db.addProfile(new ProfileDrawerItem().withEmail(mEmail));
 
-        new SpiaggiariApiClient(this).postLogin(mEmail, mPassword, new DeviceUuidFactory(this).getDeviceUuid().toString())
+        APIClient.Companion.with(this).postLogin(new LoginRequest(mPassword, mEmail))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(login -> {
-                    db.updateProfile(new ProfileDrawerItem().withName(WordUtils.capitalizeFully(login.getName())).withEmail(mEmail));
+
+                    SugarRecord.save(new Profile(mEmail, login.getFirstName() + " " + login.getLastName(), mPassword, "", Long.valueOf(login.getIdent().substring(1, 8))));
 
                     PreferenceManager.getDefaultSharedPreferences(this).edit().putString(Info.ACCOUNT, mEmail).putBoolean("first_run", false).apply();
                     mButtonLogin.setText(R.string.login_riuscito);
@@ -94,8 +90,6 @@ public class LoginActivity extends AppCompatActivity {
                     loginFeedback(error, this);
 
                     PreferenceManager.getDefaultSharedPreferences(this).edit().putString(Info.ACCOUNT, oldProfile).apply();
-                    db.removeProfile(mEmail);
-
                     mButtonLogin.setText(R.string.login);
                     mEditTextMail.setEnabled(true);
                     mEditTextPassword.setEnabled(true);
