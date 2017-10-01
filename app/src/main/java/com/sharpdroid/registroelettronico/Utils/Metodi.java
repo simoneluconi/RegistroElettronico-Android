@@ -21,6 +21,7 @@ import com.sharpdroid.registroelettronico.API.V1.SpiaggiariAPI;
 import com.sharpdroid.registroelettronico.API.V2.APIClient;
 import com.sharpdroid.registroelettronico.Databases.Entities.Folder;
 import com.sharpdroid.registroelettronico.Databases.Entities.Grade;
+import com.sharpdroid.registroelettronico.Databases.Entities.Period;
 import com.sharpdroid.registroelettronico.Databases.Entities.Profile;
 import com.sharpdroid.registroelettronico.Databases.Entities.SubjectTeacher;
 import com.sharpdroid.registroelettronico.Databases.Entities.SuperAgenda;
@@ -462,16 +463,23 @@ public class Metodi {
         updateLessons(c);
         updateFolders(c);
         updateAgenda(c);
+        updateAbsence(c);
+        updateBacheca(c);
+        updateNote(c);
+        updatePeriods(c);
     }
 
     public static void updateLessons(Context c) {
         String[] dates = getStartEnd("yyyyMMdd");
+        Profile p = Profile.Companion.getProfile(c);
+        if (p == null) return;
         APIClient.Companion.with(c).getLessons(dates[0], dates[1])
-                .subscribe(l -> SugarRecord.updateInTx(l.getLessons(Profile.Companion.getProfile(c))), Throwable::printStackTrace);
+                .subscribe(l -> SugarRecord.updateInTx(l.getLessons(p)), Throwable::printStackTrace);
     }
 
     public static void updateFolders(Context c) {
         Profile p = Profile.Companion.getProfile(c);
+        if (p == null) return;
         APIClient.Companion.with(c).getDidactics()
                 .subscribe(didacticAPI -> {
                     List<com.sharpdroid.registroelettronico.Databases.Entities.File> files = new LinkedList<>();
@@ -502,8 +510,39 @@ public class Metodi {
 
     public static void updateAgenda(Context c) {
         String[] dates = getStartEnd("yyyyMMdd");
+        Profile p = Profile.Companion.getProfile(c);
+        if (p == null) return;
         APIClient.Companion.with(c).getAgenda(dates[0], dates[1])
-                .subscribe(agendaAPI -> SugarRecord.saveInTx(agendaAPI.getAgenda(Profile.Companion.getProfile(c))), Throwable::printStackTrace);
+                .subscribe(agendaAPI -> SugarRecord.saveInTx(agendaAPI.getAgenda(p)), Throwable::printStackTrace);
+    }
+
+    public static void updateAbsence(Context c) {
+        Profile p = Profile.Companion.getProfile(c);
+        if (p == null) return;
+        APIClient.Companion.with(c).getAbsences()
+                .subscribe(absenceAPI -> SugarRecord.saveInTx(absenceAPI.getEvents(p)), Throwable::printStackTrace);
+    }
+
+    public static void updateBacheca(Context c) {
+        Profile p = Profile.Companion.getProfile(c);
+        if (p == null) return;
+        APIClient.Companion.with(c).getBacheca()
+                .subscribe(communicationAPI -> SugarRecord.saveInTx(communicationAPI.getCommunications(p)), Throwable::printStackTrace);
+    }
+
+    public static void updateNote(Context c) {
+        Profile p = Profile.Companion.getProfile(c);
+        if (p == null) return;
+        APIClient.Companion.with(c).getNotes()
+                .subscribe(notes -> SugarRecord.saveInTx(notes.getNotes(p)), Throwable::printStackTrace);
+    }
+
+    public static void updatePeriods(Context c) {
+        Profile p = Profile.Companion.getProfile(c);
+        if (p == null) return;
+        SugarRecord.deleteAll(Period.class, "PROFILE=?", String.valueOf(p.getId()));
+        APIClient.Companion.with(c).getNotes()
+                .subscribe(notes -> SugarRecord.saveInTx(notes.getNotes(p)), Throwable::printStackTrace);
     }
 
     public static String[] getStartEnd(String format) {

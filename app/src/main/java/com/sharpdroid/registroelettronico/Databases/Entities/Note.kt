@@ -2,19 +2,20 @@ package com.sharpdroid.registroelettronico.Databases.Entities
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.orm.SugarRecord
+import com.orm.dsl.Table
 import java.util.*
 
+@Table
 data class Note(
         @Expose @SerializedName("authorName") val mAuthor: String,
         @Expose @SerializedName("evtDate") val mDate: Date,
-        @Expose @SerializedName("evtId") val mId: Int,
+        @Expose @SerializedName("evtId") val id: Long,
         @Expose @SerializedName("readStatus") val mStatus: Boolean,
         @Expose @SerializedName("evtText") val mText: String,
         @Expose @SerializedName("warningType") val mWarning: String,
         var mType: String?,
         var profile: Profile?
-) : SugarRecord() {
+) {
     constructor() : this("", Date(), 0, false, "", "", "", null)
 }
 
