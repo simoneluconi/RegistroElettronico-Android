@@ -11,6 +11,7 @@ import com.sharpdroid.registroelettronico.API.V2.Deserializer.DateDeserializer
 import com.sharpdroid.registroelettronico.Databases.Entities.LoginRequest
 import com.sharpdroid.registroelettronico.Databases.Entities.LoginResponse
 import com.sharpdroid.registroelettronico.Databases.Entities.Profile
+import com.sharpdroid.registroelettronico.Info.API_URL
 import io.reactivex.schedulers.Schedulers
 import okhttp3.Interceptor
 import okhttp3.MediaType
@@ -20,7 +21,6 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
-import com.sharpdroid.registroelettronico.Info.API_URL
 
 class APIClient {
 
@@ -29,7 +29,7 @@ class APIClient {
 
         fun with(context: Context): SpaggiariREST {
             val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
-            val profile = Profile.getProfile(context)!!
+            val profile = Profile.getProfile(context)
 
             try {
                 //Installa il supporto al TSL se non è presente
@@ -42,7 +42,7 @@ class APIClient {
                 val original = chain.request()
                 //EXPIRED TOKEN && NOT LOGGIN IN
                 //TODO: use token & expireDate of each profile
-                if (original.url().toString() != API_URL + "/auth/login" && profile.expire < System.currentTimeMillis()) {
+                if (original.url().toString() != API_URL + "/auth/login" && profile?.expire!! < System.currentTimeMillis()) {
                     Log.d("LOGIN INTERCEPTOR", "TOKEN EXPIRED, REQUESTING NEW TOKEN")
 
                     val loginRes = chain.proceed(original.newBuilder()
@@ -87,9 +87,9 @@ class APIClient {
                 val request = original.newBuilder()
                         .header("User-Agent", "zorro/1.0")
                         .header("Z-Dev-Apikey", "+zorro+")
-                        .header("Z-Auth-Token", profile.token)
+                        .header("Z-Auth-Token", profile?.token.orEmpty())
                         .method(original.method(), original.body())
-                        .url(original.url().toString().replace("%7BstudentId%7D", profile.id.toString()))
+                        .url(original.url().toString().replace("%7BstudentId%7D", profile?.id.toString()))
                         .build()
                 val res = chain.proceed(request)
 
