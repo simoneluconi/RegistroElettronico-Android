@@ -32,7 +32,7 @@ import java.util.*
  */
 @Table
 data class Communication(
-        @Expose @SerializedName("pubId") @Unique val id: Int,
+        @Expose @SerializedName("pubId") @Unique val id: Long,
         @Expose @SerializedName("pubDT") val date: Date,
         @Expose @SerializedName("readStatus") val isRead: Boolean,
         @Expose @SerializedName("evtCode") val evtCode: String,
