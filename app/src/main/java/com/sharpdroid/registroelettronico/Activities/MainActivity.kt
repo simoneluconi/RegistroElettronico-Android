@@ -33,6 +33,7 @@ import com.sharpdroid.registroelettronico.Fragments.*
 import com.sharpdroid.registroelettronico.Info
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Account
+import com.sharpdroid.registroelettronico.Utils.Metodi.fetchDataOfUser
 import com.sharpdroid.registroelettronico.Utils.Metodi.updateSubjects
 import com.transitionseverywhere.ChangeText
 import com.transitionseverywhere.TransitionManager
@@ -61,6 +62,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             // first time task
             startActivityForResult(Intent(this, Intro::class.java), 1)
         } else {
+            fetchDataOfUser(this)
             init(savedInstanceState)
         }
     }

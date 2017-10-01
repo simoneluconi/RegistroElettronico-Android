@@ -2,7 +2,8 @@ package com.sharpdroid.registroelettronico.Databases.Entities
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.orm.SugarRecord
+import com.orm.dsl.Table
+import com.orm.dsl.Unique
 import java.util.*
 
 /*
@@ -19,14 +20,14 @@ import java.util.*
             "justifReasonDesc": null
         },
         {
-            "evtId": 396866,
+            "evtId": 443115,
             "evtCode": "ABA0",
             "evtDate": "2017-09-27",
             "evtHPos": null,
             "evtValue": null,
-            "isJustified": false,
-            "justifReasonCode": null,
-            "justifReasonDesc": null
+            "isJustified": true,
+            "justifReasonCode": "A",
+            "justifReasonDesc": "Motivi di salute"
         }
     ]
 }
@@ -37,16 +38,17 @@ evtCode:
     ABR1 ritardo breve
 
  */
+@Table
 data class Absence(
-        @Expose @SerializedName("evtId") val evtId: Int,
+        @Expose @SerializedName("evtId") @Unique val id: Long,
         @Expose @SerializedName("evtCode") val type: String,
         @Expose @SerializedName("evtDate") val date: Date,
         @Expose @SerializedName("isJustified") val justified: Boolean,
-        @Expose @SerializedName("justifReasonCode") val reasonCode: Int?,
+        @Expose @SerializedName("justifReasonCode") val reasonCode: String?,
         @Expose @SerializedName("justifReasonDesc") val reasonDesc: String?,
         var profile: Profile?
-) : SugarRecord() {
-    constructor() : this(0, "", Date(), false, 0, "", null)
+) {
+    constructor() : this(0, "", Date(), false, null, null, null)
 }
 
 data class AbsenceAPI(@Expose @SerializedName("events") val events: List<Absence>) {
