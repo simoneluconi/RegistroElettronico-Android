@@ -36,23 +36,23 @@ data class RemoteAgenda(
 
     constructor() : this(0, Date(), Date(), false, "", "", null)
 
-    fun getInfo(): EventInfo {
-        return SugarRecord.find(EventInfo::class.java, "remote=? AND eventId=?", "1", id.toString())[0]
+    fun getInfo(): RemoteAgendaInfo {
+        return SugarRecord.findById(RemoteAgendaInfo::class.java, id)
     }
 
     companion object {
-        fun getSuperAgenda(user: String): List<SuperAgenda> {
-            val completed: MutableList<EventInfo> = SugarRecord.find(EventInfo::class.java, "REMOTE=1 AND ARCHIVED=0 AND COMPLETED=1") ?: mutableListOf()
-            val events = SugarRecord.find(RemoteAgenda::class.java, "PROFILE='$user'")
+        fun getSuperAgenda(id: Long): List<SuperAgenda> {
+            val completed: MutableList<RemoteAgendaInfo> = SugarRecord.find(RemoteAgendaInfo::class.java, "ARCHIVED=0 AND COMPLETED=1") ?: mutableListOf()
+            val events = SugarRecord.find(RemoteAgenda::class.java, "PROFILE=?", id.toString())
 
-            return events.map { agenda -> SuperAgenda(agenda, completed.any { it.id == agenda.id }) }
+            return events.filter { !it.getInfo().archived }.map { agenda -> SuperAgenda(agenda, completed.any { it.id == agenda.id }) }
         }
 
-        fun getAgenda(user: String, date: Calendar): List<SuperAgenda> {
-            val completed: MutableList<EventInfo> = SugarRecord.find(EventInfo::class.java, "REMOTE=1 AND ARCHIVED=0 AND COMPLETED=1") ?: mutableListOf()
-            val events = SugarRecord.find(RemoteAgenda::class.java, "PROFILE='$user' AND M_BEGIN<=${date.timeInMillis} AND ${date.timeInMillis}<=M_END")
+        fun getAgenda(id: Long, date: Date): List<SuperAgenda> {
+            val completed: MutableList<RemoteAgendaInfo> = SugarRecord.find(RemoteAgendaInfo::class.java, "ARCHIVED=0 AND COMPLETED=1") ?: mutableListOf()
+            val events = SugarRecord.find(RemoteAgenda::class.java, "PROFILE=? AND START<=? AND ?<=END", id.toString(), date.time.toString(), date.time.toString())
 
-            return events.map { agenda -> SuperAgenda(agenda, completed.any { it.id == agenda.id }) }
+            return events.filter { !it.getInfo().archived }.map { agenda -> SuperAgenda(agenda, completed.any { it.id == agenda.id }) }
         }
     }
 }

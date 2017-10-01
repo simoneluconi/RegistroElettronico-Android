@@ -27,12 +27,11 @@ import com.sharpdroid.registroelettronico.API.V2.APIClient;
 import com.sharpdroid.registroelettronico.Activities.AddEventActivity;
 import com.sharpdroid.registroelettronico.Adapters.AgendaAdapter;
 import com.sharpdroid.registroelettronico.BottomSheet.AgendaBS;
-import com.sharpdroid.registroelettronico.Databases.Entities.EventInfo;
 import com.sharpdroid.registroelettronico.Databases.Entities.Profile;
 import com.sharpdroid.registroelettronico.Databases.Entities.RemoteAgenda;
+import com.sharpdroid.registroelettronico.Databases.Entities.RemoteAgendaInfo;
 import com.sharpdroid.registroelettronico.Databases.Entities.SuperAgenda;
 import com.sharpdroid.registroelettronico.R;
-import com.sharpdroid.registroelettronico.Utils.Account;
 import com.transitionseverywhere.ChangeText;
 import com.transitionseverywhere.TransitionManager;
 
@@ -151,19 +150,21 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         mDate = cal.getTime();
     }
 
-    private List<SuperAgenda> fetch() {
-        return RemoteAgenda.Companion.getSuperAgenda(Account.Companion.with(getActivity()).getUser());
+    private List<SuperAgenda> fetch(Boolean currentDate) {
+        if (currentDate)
+            return RemoteAgenda.Companion.getAgenda(Profile.Companion.getProfile(getActivity()).getId(), mDate);
+        return RemoteAgenda.Companion.getSuperAgenda(Profile.Companion.getProfile(getActivity()).getId());
     }
 
     private void load() {
         events.clear();
-        events.addAll(fetch());
+        events.addAll(fetch(false));
         // TODO: 30/09/2017 ADD LOCAL EVENTS
         //events.addAll(Agenda.Companion.getSuperAgenda(getActivity()));
     }
 
     private void updateAdapter() {
-        setAdapterEvents(fetch());
+        setAdapterEvents(fetch(true));
     }
 
     private void updateCalendar() {
@@ -251,7 +252,7 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
             setTitleSubtitle(mDate);
 
             // TODO: 30/09/2017 Get today's agenda
-            //setAdapterEvents(mRegistroDB.getAllEvents(mDate.getTime()));
+            setAdapterEvents(RemoteAgenda.Companion.getAgenda(Profile.Companion.getProfile(getActivity()).getId(), mDate));
         }
         return super.onOptionsItemSelected(item);
     }
@@ -284,10 +285,16 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
         //String head = getSubjectNameOrProfessorName(event, mRegistroDB);
         switch (position) {
             case 0:
-                EventInfo found = EventInfo.find(EventInfo.class, "ID=" + event.getAgenda().getId()).get(0);
-                if (found != null)
-                    found.delete();
-                else new EventInfo(true, event.getAgenda().getId(), true, false).save();
+                RemoteAgendaInfo found;
+                try {
+                    found = SugarRecord.findById(RemoteAgendaInfo.class, event.getAgenda().getId());
+                    found.setCompleted(!found.getCompleted());
+                    SugarRecord.update(found);
+                } catch (Exception o) {
+                    SugarRecord.save(new RemoteAgendaInfo(event.getAgenda().getId(), true, false));
+                }
+
+                event.setCompleted(!event.getCompleted());
                 updateAdapter();
                 break;
             case 1:
@@ -309,12 +316,14 @@ public class FragmentAgenda extends Fragment implements CompactCalendarView.Comp
 
                 break;
             case 4:
-                EventInfo found_ = EventInfo.find(EventInfo.class, "ID=" + event.getAgenda().getId()).get(0);
-                if (found_ != null) {
+                RemoteAgendaInfo found_;
+                try {
+                    found_ = SugarRecord.findById(RemoteAgendaInfo.class, event.getAgenda().getId());
                     found_.setArchived(true);
-                    found_.save();
-                } else
-                    new EventInfo(true, event.getAgenda().getId(), false, true).save();
+                    SugarRecord.update(found_);
+                } catch (Exception e) {
+                    SugarRecord.save(new RemoteAgendaInfo(event.getAgenda().getId(), false, true));
+                }
                 updateAdapter();
                 updateCalendar();
                 break;
