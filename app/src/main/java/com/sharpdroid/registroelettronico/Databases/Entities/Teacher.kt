@@ -10,13 +10,14 @@ import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
 import com.orm.dsl.Ignore
 import com.orm.dsl.Table
+import com.orm.dsl.Unique
 import java.lang.reflect.Type
 
 
 @JsonAdapter(TeacherAdapter::class)
 @Table
 data class Teacher(
-        @Expose var id: Long,
+        @Expose @Unique var id: Long,
         @Expose var teacherName: String,
         @Expose @Ignore var folders: List<Folder>? //not present in /subjects
 ) {

@@ -1,10 +1,11 @@
 package com.sharpdroid.registroelettronico.Databases.Entities
 
 import com.orm.dsl.Table
+import com.orm.dsl.Unique
 
 @Table
 data class RemoteAgendaInfo(
-        val id: Long,
+        @Unique val id: Long,
         var completed: Boolean,
         var archived: Boolean
 ) {

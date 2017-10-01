@@ -444,13 +444,13 @@ public class Metodi {
                 allTeachers.addAll(subject.getTeachers());
                 for (Teacher t : subject.getTeachers()) {
                     SubjectTeacher obj = new SubjectTeacher(subject, t, p);
-                    SugarRecord.deleteAll(SubjectTeacher.class, "PROFILE='" + p.getId() + "' AND SUBJECT='" + subject.getId() + "' AND TEACHER='" + t.getId() + "'");
+                    SugarRecord.deleteAll(SubjectTeacher.class, "PROFILE=? AND SUBJECT=? AND TEACHER=?", String.valueOf(p.getId()), String.valueOf(subject.getId()), String.valueOf(t.getId()));
                     SugarRecord.save(obj);
                 }
             }
 
-            SugarRecord.saveInTx(allTeachers);
-            SugarRecord.saveInTx(subjectAPI.getSubjects());
+            SugarRecord.updateInTx(allTeachers);
+            SugarRecord.updateInTx(subjectAPI.getSubjects());
 
         }, Throwable::printStackTrace);
     }
