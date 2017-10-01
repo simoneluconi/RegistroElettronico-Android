@@ -15,11 +15,13 @@ data class Profile(
         var name: String,
         var password: String,
         var classe: String,
-        var id: Long
+        var id: Long,
+        var token: String,
+        var expire: Long
 
 ) {
 
-    constructor() : this("", "", "", "", 0)
+    constructor() : this("", "", "", "", 0, "", 0)
 
     fun asIProfile(): IProfile<ProfileDrawerItem> {
         return ProfileDrawerItem()
@@ -51,21 +53,5 @@ data class Profile(
 
     fun getSubjects(): List<Subject> {
         return SugarRecord.find(SubjectTeacher::class.java, "USERNAME = ?", username)?.map { it?.subject!! } ?: emptyList()
-    }
-
-    fun getEvents() {
-
-    }
-
-    fun getAbsences() {
-
-    }
-
-    fun getNotes() {
-
-    }
-
-    fun getFolders() {
-
     }
 }

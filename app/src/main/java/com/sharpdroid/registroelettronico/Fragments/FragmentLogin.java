@@ -104,7 +104,7 @@ public class FragmentLogin extends SlideFragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(login -> {
                     //db.updateProfile(new ProfileDrawerItem().withName(WordUtils.capitalizeFully(login.getName())).withEmail(mEmail));
-                    SugarRecord.save(new Profile(mEmail, login.getFirstName() + " " + login.getLastName(), mPassword, "", Long.valueOf(login.getIdent().substring(1, 8))));
+                    SugarRecord.save(new Profile(mEmail, login.getFirstName() + " " + login.getLastName(), mPassword, "", Long.valueOf(login.getIdent().substring(1, 8)), login.getToken(), login.getExpire().getTime()));
 
                     PreferenceManager.getDefaultSharedPreferences(mContext).edit()
                             .putString(Info.ACCOUNT, mEmail)
