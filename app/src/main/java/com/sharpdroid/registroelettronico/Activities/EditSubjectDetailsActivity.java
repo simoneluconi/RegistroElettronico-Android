@@ -1,6 +1,5 @@
 package com.sharpdroid.registroelettronico.Activities;
 
-import android.content.ContentValues;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.ContextCompat;
@@ -10,11 +9,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
 
+import com.orm.SugarRecord;
+import com.sharpdroid.registroelettronico.Databases.Entities.Subject;
+import com.sharpdroid.registroelettronico.Databases.Entities.Teacher;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
-import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.R;
 
 import org.apache.commons.lang3.text.WordUtils;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,7 +48,7 @@ public class EditSubjectDetailsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         // toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -73,37 +76,32 @@ public class EditSubjectDetailsActivity extends AppCompatActivity {
 
     void init(int code) {
         if (code != -1) {
-            subject = db.getSubject(code);
+            subject = SugarRecord.findById(Subject.class, code);
 
             name.setText(getSubjectName(subject));
-            if (subject.getProfessor() != null) {
-                String[] p = subject.getProfessors();
-                if (p.length > 0)
-                    prof.setText(WordUtils.capitalizeFully(p[0].trim(), Delimeters));
-                if (p.length > 1)
-                    prof2.setText(WordUtils.capitalizeFully(p[1].trim(), Delimeters));
+            if (!subject.getTeachers().isEmpty()) {
+                List<Teacher> p = subject.getTeachers();
+                if (p.size() > 0)
+                    prof.setText(WordUtils.capitalizeFully(p.get(0).getTeacherName(), Delimeters));
+                if (p.size() > 1)
+                    prof2.setText(WordUtils.capitalizeFully(p.get(1).getTeacherName(), Delimeters));
             }
-            if (subject.getClassroom() != null)
-                classroom.setText(subject.getClassroom());
-            if (subject.getNotes() != null)
-                notes.setText(subject.getNotes());
+            classroom.setText(subject.getClassroom());
+            notes.setText(subject.getDetails());
         }
     }
 
     void apply() {
-        ContentValues values = new ContentValues();
-
         String name, classroom, notes;
 
         name = this.name.getText().toString().trim();
         classroom = this.classroom.getText().toString().trim();
         notes = this.notes.getText().toString().trim();
 
-        values.put("name", name);
-        values.put("classroom", classroom);
-        values.put("notes", notes);
-
-        db.editSubject(subject.getId(), values);
+        subject.setDescription(name);
+        subject.setClassroom(classroom);
+        subject.setDetails(notes);
+        SugarRecord.update(subject);
 
         finish();
     }

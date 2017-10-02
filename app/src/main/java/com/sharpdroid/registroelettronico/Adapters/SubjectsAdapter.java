@@ -1,5 +1,6 @@
 package com.sharpdroid.registroelettronico.Adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -7,11 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
+import com.sharpdroid.registroelettronico.Databases.Entities.Subject;
+import com.sharpdroid.registroelettronico.Fragments.FragmentSubjects;
 import com.sharpdroid.registroelettronico.R;
 
 import org.apache.commons.lang3.text.WordUtils;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,10 +28,14 @@ import static com.sharpdroid.registroelettronico.Utils.Metodi.getSubjectName;
 public class SubjectsAdapter extends RecyclerView.Adapter<SubjectsAdapter.SubjectHolder> {
     private List<Subject> CVDataList;
     private SubjectListener subjectListener = null;
+    private Context c;
 
-    public SubjectsAdapter(SubjectListener subjectListener) {
+    public SubjectsAdapter(FragmentSubjects fragmentAgenda) {
         CVDataList = new LinkedList<>();
-        this.subjectListener = subjectListener;
+        if (fragmentAgenda != null) {
+            this.subjectListener = fragmentAgenda;
+            c = fragmentAgenda.getActivity();
+        }
     }
 
     @Override
@@ -41,12 +48,10 @@ public class SubjectsAdapter extends RecyclerView.Adapter<SubjectsAdapter.Subjec
         Subject item = CVDataList.get(position);
 
         holder.subject.setText(getSubjectName(item));
-        if (TextUtils.isEmpty(item.getProfessor())) {   //non visualizzare la textview se non serve
-            holder.prof.setVisibility(View.GONE);
-        } else {
-            holder.prof.setVisibility(View.VISIBLE);
-            holder.prof.setText(WordUtils.capitalizeFully(TextUtils.join(" - ", item.getProfessors()), Delimeters));
-        }
+
+        holder.prof.setVisibility(View.VISIBLE);
+        holder.prof.setText(WordUtils.capitalizeFully(TextUtils.join(", ", Arrays.asList("Ragone", "Loregian")), Delimeters));
+
         holder.layout.setOnClickListener(view -> {
             if (subjectListener != null) subjectListener.onSubjectClick(item);
         });
@@ -59,7 +64,11 @@ public class SubjectsAdapter extends RecyclerView.Adapter<SubjectsAdapter.Subjec
 
     public void addAll(List<Subject> subjects) {
         CVDataList = subjects;
-        Collections.sort(CVDataList, (subject, t1) -> getSubjectName(subject).compareToIgnoreCase(getSubjectName(t1)));
+        Collections.sort(CVDataList, (subject, t1) -> subject.getDescription().compareToIgnoreCase(t1.getDescription()));
+        for (Subject s :
+                subjects) {
+            System.out.println(s.getTeachers());
+        }
         notifyDataSetChanged();
     }
 

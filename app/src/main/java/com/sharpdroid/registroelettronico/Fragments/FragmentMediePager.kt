@@ -20,6 +20,7 @@ import com.sharpdroid.registroelettronico.Databases.Entities.Profile
 import com.sharpdroid.registroelettronico.Databases.RegistroDB
 import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
+import com.sharpdroid.registroelettronico.Utils.EventType
 import com.sharpdroid.registroelettronico.Utils.Metodi.CalculateScholasticCredits
 import com.sharpdroid.registroelettronico.Utils.Metodi.isNetworkAvailable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -31,17 +32,15 @@ import java.util.*
  * A simple [Fragment] subclass.
  */
 class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, OrderMedieBS.OrderListener, NotificationManager.NotificationReceiver {
-    override fun didReceiveNotification(code: Int) {
+    override fun didReceiveNotification(code: Int, vararg args: Array<out Any>) {
         when (code) {
-            NotificationManager.UPDATE_MARKS -> load()
+            EventType.UPDATE_MARKS_OK -> load()
         }
     }
 
-    private val TAG = FragmentMedie::class.java.simpleName
-
     private lateinit var pagerAdapter: PagerAdapter
 
-    private var pager_selected: Boolean = false
+    private var pagerSelected: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -51,6 +50,7 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ButterKnife.bind(this, view!!)
+        NotificationManager.instance.addObserver(this, EventType.UPDATE_MARKS_OK)
 
         setHasOptionsMenu(true)
         activity.title = getString(R.string.medie)
@@ -69,15 +69,9 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
         download()
     }
 
-    override fun onResume() {
-        super.onResume()
-        load()
-        NotificationManager.istance.addObserver(this, NotificationManager.UPDATE_MARKS)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        NotificationManager.istance.removeObserver(this, NotificationManager.UPDATE_MARKS)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        NotificationManager.instance.removeObserver(this, EventType.UPDATE_MARKS_OK)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -151,9 +145,9 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
             }
         }
 
-        if (!pager_selected && Grade.hasMarksSecondPeriod(activity)) {
+        if (!pagerSelected && Grade.hasMarksSecondPeriod(activity)) {
             view_pager!!.setCurrentItem(1, false)
-            pager_selected = true
+            pagerSelected = true
         }
     }
 

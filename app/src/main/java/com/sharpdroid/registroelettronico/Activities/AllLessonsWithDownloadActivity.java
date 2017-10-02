@@ -10,10 +10,12 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.orm.SugarRecord;
 import com.sharpdroid.registroelettronico.API.V1.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Adapters.AllLessonsAdapter;
+import com.sharpdroid.registroelettronico.Databases.Entities.Lesson;
+import com.sharpdroid.registroelettronico.Databases.Entities.Subject;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
-import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
 import com.sharpdroid.registroelettronico.R;
 
 import java.util.List;
@@ -23,7 +25,6 @@ import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getProfessorOfThisSubject;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.getSubjectName;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.isNetworkAvailable;
 
 public class AllLessonsWithDownloadActivity extends AppCompatActivity
@@ -56,7 +57,7 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        setTitle(getSubjectName(db.getSubject(code)));
+        setTitle(SugarRecord.findById(Subject.class, code).getDescription());
 
         mRVAdapter = new AllLessonsAdapter(this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -88,7 +89,7 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
     }
 
     private void bindLessonsCache() {
-        addLessons(db.getLessons(code));
+        addLessons(SugarRecord.findWithQuery(Lesson.class, "select * from LESSONS where M_SUBJECT_ID=?", String.valueOf(code)));
     }
 
     public void onRefresh() {
