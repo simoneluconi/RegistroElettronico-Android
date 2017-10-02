@@ -58,6 +58,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -259,9 +260,9 @@ public class Metodi {
         return (s != null) ? s.toLowerCase() : null;
     }
 
-    public static String getSubjectName(Subject subject) {
-        boolean hasUppercase = !subject.getName().equals(subject.getName().toLowerCase());
-        return (hasUppercase) ? subject.getName() : WordUtils.capitalizeFully(subject.getName());
+    public static String getSubjectName(com.sharpdroid.registroelettronico.Databases.Entities.Subject subject) {
+        boolean hasUppercase = !subject.getDescription().equals(subject.getDescription().toLowerCase());
+        return (hasUppercase) ? subject.getDescription() : WordUtils.capitalizeFully(subject.getDescription());
     }
 
     public static Media getHypotheticalAverage(MarkSubject markSubject, Mark mark) {
@@ -451,11 +452,33 @@ public class Metodi {
         updateBacheca(c);
         updateNote(c);
         updatePeriods(c);
+        updateMarks(c);
+    }
+
+    public static void updateMarks(Context c) {
+        Profile p = Profile.Companion.getProfile(c);
+        if (p == null) return;
+
+        APIClient.Companion.with(c).getGrades().subscribe(gradeAPI -> {
+            Collection<Grade> grades = Collections.emptyList();
+            grades.addAll(gradeAPI.getGrades(p));
+
+            SugarRecord.saveInTx(grades);
+            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_MARKS_OK, grades));
+        }, throwable -> {
+            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_MARKS_KO));
+            throwable.printStackTrace();
+        });
     }
 
     public static void updateSubjects(Context c) {
+        Profile p = Profile.Companion.getProfile(c);
+        if (p == null) return;
+        handler.post(() -> {
+            NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_SUBJECTS_START);
+            NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_TEACHERS_START);
+        });
         APIClient.Companion.with(c).getSubjects().subscribeOn(AndroidSchedulers.mainThread()).subscribe(subjectAPI -> {
-            Profile p = Profile.Companion.getProfile(c);
             ArrayList<Teacher> allTeachers = new ArrayList<>();
 
             for (com.sharpdroid.registroelettronico.Databases.Entities.Subject subject : subjectAPI.getSubjects()) {
@@ -468,26 +491,38 @@ public class Metodi {
             }
 
             SugarRecord.saveInTx(allTeachers);
-            SugarRecord.saveInTx(subjectAPI.getSubjects());
+            SugarRecord.updateInTx(subjectAPI.getSubjects());
 
-            handler.post(() -> NotificationManager.Companion.getIstance().postNotificationName(NotificationManager.UPDATE_SUBJECTS, NotificationManager.UPDATE_MARKS));
-        }, Throwable::printStackTrace);
+            handler.post(() -> {
+                NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_SUBJECTS_OK, subjectAPI.getSubjects());
+                NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_TEACHERS_OK, subjectAPI.getSubjects());
+            });
+        }, throwable -> {
+            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_TEACHERS_KO));
+            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_SUBJECTS_KO));
+            throwable.printStackTrace();
+        });
     }
 
     public static void updateLessons(Context c) {
         String[] dates = getStartEnd("yyyyMMdd");
         Profile p = Profile.Companion.getProfile(c);
         if (p == null) return;
+        handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_LESSONS_START));
         APIClient.Companion.with(c).getLessons(dates[0], dates[1])
                 .subscribe(l -> {
                     SugarRecord.updateInTx(l.getLessons(p));
-                    handler.post(() -> NotificationManager.Companion.getIstance().postNotificationName(NotificationManager.UPDATE_LESSONS));
-                }, Throwable::printStackTrace);
+                    handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_LESSONS_OK));
+                }, throwable -> {
+                    handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_LESSONS_KO));
+                    throwable.printStackTrace();
+                });
     }
 
     public static void updateFolders(Context c) {
         Profile p = Profile.Companion.getProfile(c);
         if (p == null) return;
+        handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_FOLDERS_START));
         APIClient.Companion.with(c).getDidactics()
                 .subscribe(didacticAPI -> {
                     List<com.sharpdroid.registroelettronico.Databases.Entities.File> files = new LinkedList<>();
@@ -512,8 +547,11 @@ public class Metodi {
                     SugarRecord.saveInTx(didacticAPI.getDidactics());
                     SugarRecord.saveInTx(folders);
                     SugarRecord.saveInTx(files);
-                    handler.post(() -> NotificationManager.Companion.getIstance().postNotificationName(NotificationManager.UPDATE_FOLDERS));
-                }, Throwable::printStackTrace);
+                    handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_FOLDERS_OK));
+                }, throwable -> {
+                    handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_FOLDERS_KO));
+                    throwable.printStackTrace();
+                });
 
     }
 
@@ -521,52 +559,72 @@ public class Metodi {
         String[] dates = getStartEnd("yyyyMMdd");
         Profile p = Profile.Companion.getProfile(c);
         if (p == null) return;
+        handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_AGENDA_START));
         APIClient.Companion.with(c).getAgenda(dates[0], dates[1])
                 .subscribe(agendaAPI -> {
                     SugarRecord.saveInTx(agendaAPI.getAgenda(p));
-                    handler.post(() -> NotificationManager.Companion.getIstance().postNotificationName(NotificationManager.UPDATE_AGENDA));
-                }, Throwable::printStackTrace);
+                    handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_AGENDA_OK));
+                }, throwable -> {
+                    handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_AGENDA_KO));
+                    throwable.printStackTrace();
+                });
     }
 
     public static void updateAbsence(Context c) {
         Profile p = Profile.Companion.getProfile(c);
         if (p == null) return;
+        handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_ABSENCES_START));
         APIClient.Companion.with(c).getAbsences()
                 .subscribe(absenceAPI -> {
                     SugarRecord.saveInTx(absenceAPI.getEvents(p));
-                    handler.post(() -> NotificationManager.Companion.getIstance().postNotificationName(NotificationManager.UPDATE_ABSENCES));
-                }, Throwable::printStackTrace);
+                    handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_ABSENCES_OK));
+                }, throwable -> {
+                    handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_ABSENCES_KO));
+                    throwable.printStackTrace();
+                });
     }
 
     public static void updateBacheca(Context c) {
         Profile p = Profile.Companion.getProfile(c);
         if (p == null) return;
+        handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_BACHECA_START));
         APIClient.Companion.with(c).getBacheca()
                 .subscribe(communicationAPI -> {
                     SugarRecord.saveInTx(communicationAPI.getCommunications(p));
-                    handler.post(() -> NotificationManager.Companion.getIstance().postNotificationName(NotificationManager.UPDATE_BACHECA));
-                }, Throwable::printStackTrace);
+                    handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_BACHECA_OK));
+                }, throwable -> {
+                    handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_BACHECA_KO));
+                    throwable.printStackTrace();
+                });
     }
 
     public static void updateNote(Context c) {
         Profile p = Profile.Companion.getProfile(c);
         if (p == null) return;
+        handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_NOTES_START));
         APIClient.Companion.with(c).getNotes()
                 .subscribe(notes -> {
                     SugarRecord.saveInTx(notes.getNotes(p));
-                    handler.post(() -> NotificationManager.Companion.getIstance().postNotificationName(NotificationManager.UPDATE_NOTES));
-                }, Throwable::printStackTrace);
+                    handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_NOTES_OK));
+                }, throwable -> {
+                    handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_NOTES_KO));
+                    throwable.printStackTrace();
+                });
     }
 
     public static void updatePeriods(Context c) {
         Profile p = Profile.Companion.getProfile(c);
         if (p == null) return;
+        handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_PERIODS_START));
         SugarRecord.deleteAll(Period.class, "PROFILE=?", String.valueOf(p.getId()));
         APIClient.Companion.with(c).getNotes()
                 .subscribe(notes -> {
                     SugarRecord.saveInTx(notes.getNotes(p));
-                    handler.post(() -> NotificationManager.Companion.getIstance().postNotificationName(NotificationManager.UPDATE_PERIODS));
-                }, Throwable::printStackTrace);
+                    handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_PERIODS_OK));
+                }, throwable -> {
+                    handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_PERIODS_KO));
+                    throwable.printStackTrace();
+                });
     }
 
     public static String[] getStartEnd(String format) {
@@ -616,7 +674,8 @@ public class Metodi {
     public static List<String> getNamesFromSubjects(List<Subject> subjects) {
         List<String> names = new ArrayList<>();
         for (Subject s : subjects) {
-            names.add(getSubjectName(s));
+            throw new UnsupportedOperationException("Not yet supported");
+            //names.add(getSubjectName(s));
         }
         return names;
     }

@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import com.sharpdroid.registroelettronico.Adapters.Holders.HeaderHolder;
 import com.sharpdroid.registroelettronico.Adapters.Holders.LessonHolder;
-import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
+import com.sharpdroid.registroelettronico.Databases.Entities.Lesson;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Entry;
 import com.sharpdroid.registroelettronico.R;
 
@@ -60,8 +60,8 @@ public class AllLessonsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             LessonEntry entry = (LessonEntry) types.get(position);
 
-            lessonHolder.content.setText(entry.getLesson().getContent());
-            lessonHolder.date.setText(WordUtils.capitalizeFully(dateFormat.format(entry.getLesson().getDate())));
+            lessonHolder.content.setText(entry.getLesson().getMArgument());
+            lessonHolder.date.setText(WordUtils.capitalizeFully(dateFormat.format(entry.getLesson().getMDate())));
         }
     }
 
@@ -74,7 +74,7 @@ public class AllLessonsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         HashMap<String, List<Lesson>> organizedLessons = new HashMap<>();
 
         for (Lesson lesson : lessons) {
-            String date = month_year.format(lesson.getDate());
+            String date = month_year.format(lesson.getMDate());
 
             //organizza nella stessa lista se sono dello stesso mese
             if (organizedLessons.containsKey(date)) {

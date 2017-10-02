@@ -20,6 +20,7 @@ import com.sharpdroid.registroelettronico.Databases.Entities.RemoteAgendaInfo
 import com.sharpdroid.registroelettronico.Databases.Entities.SuperAgenda
 import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
+import com.sharpdroid.registroelettronico.Utils.EventType
 import com.sharpdroid.registroelettronico.Utils.Metodi.*
 import com.transitionseverywhere.ChangeText
 import com.transitionseverywhere.TransitionManager
@@ -35,13 +36,20 @@ import java.util.*
 // DONE: 19/01/2017 Aggiungere eventi dell'agenda nel calendario del telefono
 
 class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListener, AgendaAdapter.AgendaClickListener, AgendaBS.Listener, NotificationManager.NotificationReceiver {
-    override fun didReceiveNotification(code: Int) {
+
+    override fun didReceiveNotification(code: Int, vararg args: Array<out Any>) {
         when (code) {
-            NotificationManager.UPDATE_AGENDA -> {
-                updateCalendar();updateAdapter()
+            EventType.UPDATE_AGENDA_START -> {
+                //started
+            }
+            EventType.UPDATE_AGENDA_OK -> {
+                updateCalendar()
+                updateAdapter()
+            }
+            EventType.UPDATE_AGENDA_KO -> {
+                //failed
             }
         }
-        Log.d("NOTIFICATION", "RECEIVE")
     }
 
     private val TAG = FragmentAgenda::class.java.simpleName
@@ -67,7 +75,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        NotificationManager.istance.addObserver(this, NotificationManager.UPDATE_AGENDA)
+        NotificationManager.instance.addObserver(this, EventType.UPDATE_AGENDA_OK, EventType.UPDATE_AGENDA_KO, EventType.UPDATE_AGENDA_START)
 
         with(activity.calendar) {
             setLocale(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALIAN)
@@ -93,8 +101,9 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
 
     override fun onDestroyView() {
         super.onDestroyView()
-        NotificationManager.istance.removeObserver(this, NotificationManager.UPDATE_AGENDA)
+        NotificationManager.instance.removeObserver(this, EventType.UPDATE_AGENDA_OK, EventType.UPDATE_AGENDA_KO, EventType.UPDATE_AGENDA_START)
     }
+
     private fun prepareDate(predictNextDay: Boolean) {
         mDate = Date()
 

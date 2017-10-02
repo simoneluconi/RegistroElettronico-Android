@@ -26,7 +26,7 @@ import com.orm.dsl.Unique
 @Table
 data class Subject(
         @Expose @SerializedName("id") @Unique val id: Long,
-        @Expose @SerializedName("description") val description: String,
+        @Expose @SerializedName("description") var description: String,
         @Expose @SerializedName("teachers") @Ignore var teachers: List<Teacher>,
         var target: Float,
         var classroom: String,
