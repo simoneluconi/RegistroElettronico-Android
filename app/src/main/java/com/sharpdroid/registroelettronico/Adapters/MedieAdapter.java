@@ -1,6 +1,5 @@
 package com.sharpdroid.registroelettronico.Adapters;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.preference.PreferenceManager;
@@ -12,14 +11,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.orm.SugarRecord;
 import com.sharpdroid.registroelettronico.Activities.MarkSubjectDetailActivity;
-import com.sharpdroid.registroelettronico.Databases.RegistroDB;
+import com.sharpdroid.registroelettronico.Databases.Entities.Subject;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Average;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.Views.CircleProgressBar;
 
 import org.apache.commons.lang3.text.WordUtils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -34,16 +35,13 @@ import static com.sharpdroid.registroelettronico.Utils.Metodi.getPossibileSubjec
 public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder> {
     final private String TAG = MedieAdapter.class.getSimpleName();
 
-    private final List<Average> CVDataList;
+    private final List<Average> CVDataList = new ArrayList<>();
     private final Context mContext;
 
-    private final RegistroDB db;
     private int period;
 
-    public MedieAdapter(Context context, List<Average> CVDataList, RegistroDB db) {
+    public MedieAdapter(Context context) {
         this.mContext = context;
-        this.CVDataList = CVDataList;
-        this.db = db;
     }
 
     public void addAll(Collection<Average> list, int p) {
@@ -88,9 +86,7 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
 
                 if (t.equals("Auto")) {
                     int tar = getPossibileSubjectTarget(avg.avg);
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put("target", tar);
-                    db.editSubject(avg.code, contentValues);
+                    SugarRecord.findById(Subject.class, avg.code);
                     target = tar;
 
                 } else target = Float.parseFloat(t);

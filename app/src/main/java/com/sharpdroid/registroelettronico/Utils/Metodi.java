@@ -1,5 +1,6 @@
 package com.sharpdroid.registroelettronico.Utils;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -9,11 +10,13 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.CalendarContract;
+import android.support.v4.content.FileProvider;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
 import android.util.TypedValue;
@@ -22,6 +25,7 @@ import android.widget.Toast;
 import com.orm.SugarRecord;
 import com.sharpdroid.registroelettronico.API.V1.SpiaggiariAPI;
 import com.sharpdroid.registroelettronico.API.V2.APIClient;
+import com.sharpdroid.registroelettronico.Databases.Entities.Communication;
 import com.sharpdroid.registroelettronico.Databases.Entities.Folder;
 import com.sharpdroid.registroelettronico.Databases.Entities.Grade;
 import com.sharpdroid.registroelettronico.Databases.Entities.Period;
@@ -49,12 +53,14 @@ import com.sharpdroid.registroelettronico.NotificationManager;
 import com.sharpdroid.registroelettronico.R;
 
 import org.apache.commons.lang3.text.WordUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -447,7 +453,7 @@ public class Metodi {
         return list;
     }
 
-    public static void fetchDataOfUser(Context c) {
+    public static void fetchDataOfUser(@NotNull Context c) {
         updateSubjects(c);
         updateLessons(c);
         updateFolders(c);
@@ -459,7 +465,7 @@ public class Metodi {
         updateMarks(c);
     }
 
-    public static void updateMarks(Context c) {
+    public static void updateMarks(@NotNull Context c) {
         Profile p = Profile.Companion.getProfile(c);
         if (p == null) return;
 
@@ -475,7 +481,7 @@ public class Metodi {
         });
     }
 
-    public static void updateSubjects(Context c) {
+    public static void updateSubjects(@NotNull Context c) {
         Profile p = Profile.Companion.getProfile(c);
         if (p == null) return;
         handler.post(() -> {
@@ -508,7 +514,7 @@ public class Metodi {
         });
     }
 
-    public static void updateLessons(Context c) {
+    public static void updateLessons(@NotNull Context c) {
         String[] dates = getStartEnd("yyyyMMdd");
         Profile p = Profile.Companion.getProfile(c);
         if (p == null) return;
@@ -523,7 +529,7 @@ public class Metodi {
                 });
     }
 
-    public static void updateFolders(Context c) {
+    public static void updateFolders(@NotNull Context c) {
         Profile p = Profile.Companion.getProfile(c);
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_FOLDERS_START, null));
@@ -591,7 +597,7 @@ public class Metodi {
 
     }
 
-    public static void updateAgenda(Context c) {
+    public static void updateAgenda(@NotNull Context c) {
         String[] dates = getStartEnd("yyyyMMdd");
         Profile p = Profile.Companion.getProfile(c);
         if (p == null) return;
@@ -606,7 +612,7 @@ public class Metodi {
                 });
     }
 
-    public static void updateAbsence(Context c) {
+    public static void updateAbsence(@NotNull Context c) {
         Profile p = Profile.Companion.getProfile(c);
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_ABSENCES_START, null));
@@ -620,7 +626,7 @@ public class Metodi {
                 });
     }
 
-    public static void updateBacheca(Context c) {
+    public static void updateBacheca(@NotNull Context c) {
         Profile p = Profile.Companion.getProfile(c);
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_BACHECA_START, null));
@@ -634,7 +640,7 @@ public class Metodi {
                 });
     }
 
-    public static void updateNote(Context c) {
+    public static void updateNote(@NotNull Context c) {
         Profile p = Profile.Companion.getProfile(c);
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_NOTES_START, null));
@@ -648,7 +654,7 @@ public class Metodi {
                 });
     }
 
-    public static void updatePeriods(Context c) {
+    public static void updatePeriods(@NotNull Context c) {
         Profile p = Profile.Companion.getProfile(c);
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_PERIODS_START, null));
@@ -660,6 +666,80 @@ public class Metodi {
                 }, throwable -> {
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_PERIODS_KO, null));
                     throwable.printStackTrace();
+                });
+    }
+
+    public static void downloadAttachment(@NotNull Context c, Communication communication) {
+        File dir = new File(
+                Environment.getExternalStorageDirectory() +
+                        File.separator +
+                        "Registro Elettronico" + File.separator + "Circolari");
+
+        handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_START, new Long[]{communication.getId()}));
+        APIClient.Companion.with(c).getBachecaAttachment(communication.getEvtCode(), communication.getId())
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        String filename = getFileNamefromHeaders(response.headers());
+                        if (!dir.exists()) dir.mkdirs();
+                        File fileDir = new File(dir, filename);
+
+                        if (fileDir.exists()) {      //File esistente ma non salvato nel db
+                            communication.setPath(fileDir.getAbsolutePath());
+                            SugarRecord.update(communication);
+                            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_OK, new Long[]{communication.getId()}));
+                        } else if (writeResponseBodyToDisk(response.body(), fileDir)) {
+                            communication.setPath(fileDir.getAbsolutePath());
+                            SugarRecord.update(communication);
+                            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_OK, new Long[]{communication.getId()}));
+                        } else {
+                            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_KO, new Long[]{communication.getId()}));
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        t.printStackTrace();
+                        handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_KO, new Long[]{communication.getId()}));
+                    }
+                });
+    }
+
+    public static void downloadFile(@NotNull Context c, com.sharpdroid.registroelettronico.Databases.Entities.File f) {
+        File dir = new File(
+                Environment.getExternalStorageDirectory() +
+                        File.separator +
+                        "Registro Elettronico" + File.separator + "Didattica");
+
+        handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_START, new Long[]{f.getId()}));
+        APIClient.Companion.with(c).getAttachmentFile((int) f.getId())
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        String filename = getFileNamefromHeaders(response.headers());
+                        if (!dir.exists()) dir.mkdirs();
+                        File fileDir = new File(dir, filename);
+
+                        if (fileDir.exists()) {      //File esistente ma non salvato nel db
+                            f.setPath(fileDir.getAbsolutePath());
+                            SugarRecord.update(f);
+                            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_OK, new Long[]{f.getId()}));
+                        } else if (writeResponseBodyToDisk(response.body(), fileDir)) {
+                            f.setPath(fileDir.getAbsolutePath());
+                            SugarRecord.update(f);
+                            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_OK, new Long[]{f.getId()}));
+                        } else {
+                            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_KO, new Long[]{f.getId()}));
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        t.printStackTrace();
+                        handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_KO, new Long[]{f.getId()}));
+                    }
                 });
     }
 
@@ -692,39 +772,6 @@ public class Metodi {
         if (!event.getAgenda().isFullDay())
             calIntent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, event.getAgenda().getEnd().getTime());
         c.startActivity(calIntent);
-    }
-
-    public static void downloadFile(Context c, com.sharpdroid.registroelettronico.Databases.Entities.File f) {
-        File dir = new File(
-                Environment.getExternalStorageDirectory() +
-                        File.separator +
-                        "Registro Elettronico" + File.separator + "Didattica");
-
-        handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_START, new Long[]{f.getId()}));
-        APIClient.Companion.with(c).getAttachmentFile((int) f.getId())
-                .enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        String filename = getFileNamefromHeaders(response.headers());
-                        if (!dir.exists()) dir.mkdirs();
-
-                        File fileDir = new File(dir, filename);
-                        if (writeResponseBodyToDisk(response.body(), fileDir)) {
-                            f.setPath(fileDir.getAbsoluteFile().toString());
-                            SugarRecord.update(f);
-                            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_OK, new Long[]{f.getId()}));
-                        } else {
-                            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_KO, new Long[]{f.getId()}));
-                        }
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        t.printStackTrace();
-                        handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_KO, new Long[]{f.getId()}));
-                    }
-                });
     }
 
     public static String capitalizeFirst(String a) {
@@ -842,5 +889,21 @@ public class Metodi {
             Toast.makeText(c, c.getString(R.string.login_msg_failer, error.getLocalizedMessage()), Toast.LENGTH_LONG).show();
         }
     }
+
+    public static void openFile(Context context, java.io.File file) throws ActivityNotFoundException {
+        String mime = URLConnection.guessContentTypeFromName(file.toString());
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(FileProvider.getUriForFile(context, context.getPackageName() + ".fileprovider", file), mime);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        context.startActivity(intent);
+
+    }
+
+    public static void openLink(Context context, String url) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        context.startActivity(browserIntent);
+    }
+
 }
 

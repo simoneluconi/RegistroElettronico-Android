@@ -12,13 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sharpdroid.registroelettronico.Adapters.MedieAdapter;
-import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Average;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.Utils.ItemOffsetDecoration;
 
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import butterknife.ButterKnife;
 
@@ -30,7 +28,6 @@ public class FragmentMedie extends Fragment {
     final private String TAG = FragmentMedie.class.getSimpleName();
 
     Context mContext;
-    RegistroDB subjectsDB;
     int periodo;
     private MedieAdapter mRVAdapter;
 
@@ -51,10 +48,8 @@ public class FragmentMedie extends Fragment {
         ButterKnife.bind(this, view);
 
         periodo = getArguments().getInt("q");
-        if (subjectsDB == null)
-            subjectsDB = RegistroDB.getInstance(mContext);
 
-        RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);
+        RecyclerView mRecyclerView = view.findViewById(R.id.recycler);
         mRecyclerView.setBackgroundColor(Color.parseColor("#F1F1F1"));
         mRecyclerView.setHasFixedSize(true);
         if (getResources().getBoolean(R.bool.isTablet) || getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
@@ -65,20 +60,16 @@ public class FragmentMedie extends Fragment {
         mRecyclerView.addItemDecoration(new ItemOffsetDecoration(mContext, R.dimen.cards_margin));
 
         if (mRVAdapter == null)
-            mRVAdapter = new MedieAdapter(mContext, new CopyOnWriteArrayList<>(), subjectsDB);
+            mRVAdapter = new MedieAdapter(mContext);
         mRecyclerView.setAdapter(mRVAdapter);
     }
 
     public void addSubjects(List<Average> markSubjects, int p) {
-        if (subjectsDB == null)
-            subjectsDB = RegistroDB.getInstance(getContext());
-
         if (mRVAdapter == null)
-            mRVAdapter = new MedieAdapter(getContext(), new CopyOnWriteArrayList<>(), subjectsDB);
+            mRVAdapter = new MedieAdapter(getContext());
 
-        if (!markSubjects.isEmpty() && mRVAdapter != null) {
-            mRVAdapter.clear();
-            mRVAdapter.addAll(markSubjects, p);
-        }
+        mRVAdapter.clear();
+        mRVAdapter.addAll(markSubjects, p);
+
     }
 }

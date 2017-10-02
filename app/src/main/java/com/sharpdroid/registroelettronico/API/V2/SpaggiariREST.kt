@@ -3,6 +3,7 @@ package com.sharpdroid.registroelettronico.API.V2
 import com.sharpdroid.registroelettronico.Databases.Entities.*
 import io.reactivex.Observable
 import okhttp3.ResponseBody
+import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -30,7 +31,7 @@ interface SpaggiariREST {
         fun getAgenda( @Path("eventCode") eventCode: String, @Path("begin") begin: String, @Path("end") end: String): Observable<List<Agenda>>
     */
     @GET("students/{studentId}/didactics/item/{fileId}")
-    fun getAttachmentFile(@Path("fileId") fileId: Long): retrofit2.Call<ResponseBody>
+    fun getAttachmentFile(@Path("fileId") fileId: Long): Call<ResponseBody>
 
     @GET("students/{studentId}/didactics/item/{fileId}")
     fun getAttachmentUrl(@Path("fileId") fileId: Long): Observable<DownloadUrlAPI>
@@ -42,7 +43,10 @@ interface SpaggiariREST {
     fun getBacheca(): Observable<CommunicationAPI>
 
     @GET("students/{studentId}/noticeboard/attach/{eventCode}/{pubId}/101")
-    fun getBachecaAttachment(@Path("eventCode") eventCode: String, @Path("pubId") pubId: Int): Observable<ResponseBody>
+    fun getBachecaAttachment(@Path("eventCode") eventCode: String, @Path("pubId") pubId: Long): Call<ResponseBody>
+
+    @POST("students/{studentId}/noticeboard/read/{eventCode}/{pubId}/101")
+    fun readBacheca(@Path("eventCode") eventCode: String, @Path("pubId") pubId: Long): Observable<ReadResponse>
 /*
     @GET("students/{studentId}/schoolbooks")
     fun getBooks(): Observable<List<Course>>

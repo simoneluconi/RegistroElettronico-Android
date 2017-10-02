@@ -2,14 +2,10 @@ package com.sharpdroid.registroelettronico.Fragments
 
 
 import android.content.ActivityNotFoundException
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
-import android.support.v4.content.FileProvider
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -23,10 +19,8 @@ import com.sharpdroid.registroelettronico.Databases.Entities.Folder
 import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.EventType
-import com.sharpdroid.registroelettronico.Utils.Metodi.downloadFile
-import com.sharpdroid.registroelettronico.Utils.Metodi.dpToPx
+import com.sharpdroid.registroelettronico.Utils.Metodi.*
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
-import java.net.URLConnection
 
 class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, FileAdapter.DownloadListener {
     lateinit var layout: CoordinatorLayout
@@ -35,14 +29,14 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
     override fun didReceiveNotification(code: Int, args: Array<in Any>) {
         when (code) {
             EventType.DOWNLOAD_FILE_START -> {
-                snackbar = Snackbar.make(layout, "Download in corso...", Snackbar.LENGTH_INDEFINITE)
+                snackbar = Snackbar.make(layout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE)
                 snackbar?.show()
             }
             EventType.DOWNLOAD_FILE_OK -> {
                 with(snackbar ?: return) {
                     val file: java.io.File = java.io.File(SugarRecord.findById(File::class.java, args[0] as Long).path)
                     setText(activity.getString(R.string.file_downloaded, file.name))
-                    setAction(R.string.open) { openFile(file) }
+                    setAction(R.string.open) { openFile(activity, file) }
                     show()
                 }
             }
@@ -97,11 +91,15 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
                 if (file.path.isEmpty()) {
                     downloadFile(activity, file)
                 } else {
-                    openFile(java.io.File(file.path))
+                    try {
+                        openFile(activity, java.io.File(file.path))
+                    } catch (e: ActivityNotFoundException) {
+                        Snackbar.make(layout, activity.resources.getString(R.string.missing_app, java.io.File(file.path).name), Snackbar.LENGTH_SHORT).show()
+                    }
                 }
             }
             "link" -> {
-                openlink(file.path, activity)
+                openLink(activity, file.path)
             }
             "text" -> {
                 MaterialDialog.Builder(activity).title(file.contentName).content(file.path).positiveText("OK").autoDismiss(true).show()
@@ -110,24 +108,7 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
 
     }
 
-    private fun openFile(file: java.io.File) {
-        val mime = URLConnection.guessContentTypeFromName(file.toString())
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.setDataAndType(FileProvider.getUriForFile(activity, activity.packageName + ".fileprovider", file), mime)
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        try {
-            activity.startActivity(intent)
-        } catch (e: ActivityNotFoundException) {
-            Snackbar.make(layout, activity.resources.getString(R.string.missing_app, file.name), Snackbar.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun openlink(url: String, context: Context) {
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        context.startActivity(browserIntent)
-    }
-
-    fun setTitle(title: CharSequence) {
+    private fun setTitle(title: CharSequence) {
         activity.title = title
     }
 
