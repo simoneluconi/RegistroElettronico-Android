@@ -3,27 +3,21 @@ package com.sharpdroid.registroelettronico.Fragments
 
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.PagerAdapter
 import android.support.v4.widget.SwipeRefreshLayout
-import android.util.Log
 import android.view.*
 import butterknife.ButterKnife
-import com.orm.SugarRecord
-import com.sharpdroid.registroelettronico.API.V2.APIClient
 import com.sharpdroid.registroelettronico.BottomSheet.OrderMedieBS
 import com.sharpdroid.registroelettronico.Databases.Entities.Grade
-import com.sharpdroid.registroelettronico.Databases.Entities.Profile
 import com.sharpdroid.registroelettronico.Databases.RegistroDB
 import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.EventType
 import com.sharpdroid.registroelettronico.Utils.Metodi.CalculateScholasticCredits
-import com.sharpdroid.registroelettronico.Utils.Metodi.isNetworkAvailable
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.sharpdroid.registroelettronico.Utils.Metodi.updateMarks
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.fragment_medie_pager.*
 import java.util.*
@@ -34,7 +28,14 @@ import java.util.*
 class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, OrderMedieBS.OrderListener, NotificationManager.NotificationReceiver {
     override fun didReceiveNotification(code: Int, args: Array<in Any>) {
         when (code) {
-            EventType.UPDATE_MARKS_OK -> load()
+            EventType.UPDATE_MARKS_START -> if (!swiperefresh.isRefreshing) swiperefresh.isRefreshing = true
+            EventType.UPDATE_MARKS_OK -> {
+                load()
+                if (swiperefresh.isRefreshing) swiperefresh.isRefreshing = false
+            }
+            EventType.UPDATE_LESSONS_KO -> {
+                if (swiperefresh.isRefreshing) swiperefresh.isRefreshing = false
+            }
         }
     }
 
@@ -50,7 +51,7 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ButterKnife.bind(this, view!!)
-        NotificationManager.instance.addObserver(this, EventType.UPDATE_MARKS_OK)
+        NotificationManager.instance.addObserver(this, EventType.UPDATE_MARKS_OK, EventType.UPDATE_MARKS_START, EventType.UPDATE_MARKS_KO)
 
         setHasOptionsMenu(true)
         activity.title = getString(R.string.medie)
@@ -66,12 +67,13 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
                 R.color.redmaterial,
                 R.color.greenmaterial,
                 R.color.orangematerial)
+        load()
         download()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        NotificationManager.instance.removeObserver(this, EventType.UPDATE_MARKS_OK)
+        NotificationManager.instance.removeObserver(this, EventType.UPDATE_MARKS_OK, EventType.UPDATE_MARKS_START, EventType.UPDATE_MARKS_KO)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -91,23 +93,10 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
             1 -> PreferenceManager.getDefaultSharedPreferences(context).edit().putString("order", "ORDER BY _avg DESC").apply()
             2 -> PreferenceManager.getDefaultSharedPreferences(context).edit().putString("order", "ORDER BY _avg ASC").apply()
         }
-        load()
     }
 
     private fun download() {
-        if (isNetworkAvailable(activity)) {
-            swiperefresh!!.isRefreshing = true
-            val mContext = activity
-            APIClient.with(activity)
-                    .getGrades()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ marks ->
-                        Log.d("MARKS", marks.grades.size.toString())
-                        SugarRecord.saveInTx(marks.getGrades(Profile.getProfile(mContext)!!))
-                        load()
-                        Snackbar.make(activity.tab_layout, getSnackBarMessage(view_pager!!.currentItem), Snackbar.LENGTH_LONG).show()
-                    }, { it.printStackTrace() }) { swiperefresh!!.isRefreshing = false }
-        }
+        updateMarks(activity)
     }
 
     private fun getSnackBarMessage(pos: Int): String {
