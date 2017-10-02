@@ -293,7 +293,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             updateSubjects(this)
 
             //Update fragment
-            drawer?.setSelectionAtPosition(1, true)
+            drawer?.setSelectionAtPosition(drawer?.currentSelectedPosition!!, true)
         }
         return false
     }

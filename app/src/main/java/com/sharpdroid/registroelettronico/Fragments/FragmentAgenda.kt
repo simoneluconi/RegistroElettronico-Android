@@ -96,6 +96,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         recycler.layoutManager = LinearLayoutManager(mContext)
         recycler.adapter = adapter
 
+        load()
         download()
     }
 

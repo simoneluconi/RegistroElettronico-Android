@@ -39,10 +39,12 @@ data class Communication(
         @Expose @SerializedName("cntId") val myId: Int,
         @Expose @SerializedName("cntTitle") val title: String,
         @Expose @SerializedName("cntCategory") val category: String,
-        @Expose @SerializedName("cntHasAttach") val hasAttachment: String,
-        var profile: Profile?
+        @Expose @SerializedName("cntHasAttach") val hasAttachment: Boolean,
+        var profile: Profile?,
+        var content: String,
+        var path: String
 ) {
-    constructor() : this(0, Date(), false, "", 0, "", "", "", null)
+    constructor() : this(0, Date(), false, "", 0, "", "", false, null, "", "")
 }
 
 data class CommunicationAPI(@Expose @SerializedName("items") val communications: List<Communication>) {
@@ -51,3 +53,20 @@ data class CommunicationAPI(@Expose @SerializedName("items") val communications:
         return communications
     }
 }
+
+/*
+ *{
+    "item": {
+        "title": "CIR. N. 22  LIBRI IN COMODATO D’USO.",
+        "text": "Restituzione alla Sig.ra Maria Rosa presso la segreteria didattica dal prossimo Mercoledì 4 Ottobre a Sabato 7 Ottobre.\r\nRichiesta libri comodato d'uso anno corrente: consegnare nello stesso periodo la relativa richiesta.(VEDEI CIRCOLARE NEL SITO)"
+    },
+    "reply": {
+        "replJoin": false,
+        "replText": null,
+        "replFile": null
+    }
+}
+ */
+data class CommItem(@Expose @SerializedName("title") val title: String, @Expose @SerializedName("text") val text: String)
+
+data class ReadResponse(@Expose @SerializedName("item") val item: CommItem)
