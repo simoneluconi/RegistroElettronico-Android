@@ -8,10 +8,10 @@ import java.util.*
 
 class NotificationManager {
     interface NotificationReceiver {
-        fun didReceiveNotification(code: Int, vararg args: Array<out Any>)
+        fun didReceiveNotification(code: Int, args: Array<in Any>)
     }
 
-    private val observers: SparseArray<ArrayList<Any>> = SparseArray()
+    private val observers: SparseArray<ArrayList<NotificationReceiver>> = SparseArray()
 
     fun addObserver(receiver: NotificationReceiver, vararg events: Int) {
         checkLooper()
@@ -19,7 +19,8 @@ class NotificationManager {
             val rec = observers[it] ?: arrayListOf()
             rec.add(receiver)
             observers.put(it, rec)
-            Log.d("NOTIFICATION", "REGISTER $receiver FOR EVENT ${Companion.events[it]}")
+            if (BuildConfig.DEBUG)
+                Log.d("NOTIFICATION", "REGISTER $receiver FOR EVENT ${Companion.events[it]}")
         }
     }
 
@@ -27,14 +28,16 @@ class NotificationManager {
         checkLooper()
         events.forEach {
             observers[it].remove(receiver)
-            Log.d("NOTIFICATION", "UNREGISTER $receiver FOR EVENT ${Companion.events[it]}")
+            if (BuildConfig.DEBUG)
+                Log.d("NOTIFICATION", "UNREGISTER $receiver FOR EVENT ${Companion.events[it]}")
         }
     }
 
-    fun postNotificationName(event: Int, vararg args: Any) {
+    fun postNotificationName(event: Int, args: Array<in Any>?) {
         checkLooper()
-        observers[event]?.forEach { i -> (i as NotificationReceiver).didReceiveNotification(event, args) }
-        Log.d("NOTIFICATION", events[event])
+        observers[event]?.forEach { it.didReceiveNotification(event, args ?: emptyArray()) }
+        if (BuildConfig.DEBUG)
+            Log.d("NOTIFICATION", events[event])
     }
 
     private fun checkLooper() {
@@ -75,7 +78,11 @@ class NotificationManager {
                 "UPDATE_PERIODS_KO",
                 "UPDATE_TEACHERS_OK",
                 "UPDATE_TEACHERS_START",
-                "UPDATE_TEACHERS_KO")
+                "UPDATE_TEACHERS_KO",
+                "DOWNLOAD_FILE_START",
+                "DOWNLOAD_FILE_OK",
+                "DOWNLOAD_FILE_KO"
+        )
 
         val instance = NotificationManager()
     }

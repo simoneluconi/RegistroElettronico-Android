@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.fragment_lessons.*
 class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, NotificationManager.NotificationReceiver {
     lateinit var adapter: SubjectsAdapter
 
-    override fun didReceiveNotification(code: Int, vararg args: Array<out Any>) {
+    override fun didReceiveNotification(code: Int, args: Array<in Any>) {
         when (code) {
             EventType.UPDATE_SUBJECTS_START -> {
 
