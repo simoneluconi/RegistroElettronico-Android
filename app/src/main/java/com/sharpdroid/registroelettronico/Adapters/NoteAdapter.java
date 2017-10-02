@@ -9,10 +9,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.sharpdroid.registroelettronico.Interfaces.API.Note;
+import com.sharpdroid.registroelettronico.Databases.Entities.Note;
 import com.sharpdroid.registroelettronico.R;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -26,12 +27,11 @@ import butterknife.ButterKnife;
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
     private final SimpleDateFormat formatter = new SimpleDateFormat("d MMM", Locale.ITALIAN);
 
-    private final List<Note> CVDataList;
+    private final List<Note> CVDataList = new ArrayList<>();
     private final Context mContext;
 
-    public NoteAdapter(Context context, List<Note> CVDataList) {
+    public NoteAdapter(Context context) {
         this.mContext = context;
-        this.CVDataList = CVDataList;
     }
 
     public void addAll(Collection<Note> note) {
@@ -55,11 +55,11 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
     public void onBindViewHolder(NoteHolder h, int position) {
         final Note nota = CVDataList.get(position);
 
-        h.teacher.setText(nota.getTeacher());
-        h.date.setText(formatter.format(nota.getDate()));
-        h.content.setText(nota.getContent());
+        h.teacher.setText(nota.getMAuthor());
+        h.date.setText(formatter.format(nota.getMDate()));
+        h.content.setText(nota.getMText());
 
-        if (nota.getType().toLowerCase(Locale.getDefault()).contains("disciplinare")) {
+        if (nota.getMType().toLowerCase(Locale.getDefault()).contains("NTST")) {
             h.teacher.setTextColor(ContextCompat.getColor(mContext, R.color.deep_orange));
             h.icon.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_warning_orange));
         } else {
