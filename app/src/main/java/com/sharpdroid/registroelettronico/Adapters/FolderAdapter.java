@@ -6,14 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.sharpdroid.registroelettronico.Interfaces.API.FileTeacher;
-import com.sharpdroid.registroelettronico.Interfaces.API.Folder;
-import com.sharpdroid.registroelettronico.Interfaces.Client.FileElement;
+import com.sharpdroid.registroelettronico.Databases.Entities.Folder;
+import com.sharpdroid.registroelettronico.Databases.Entities.Teacher;
 import com.sharpdroid.registroelettronico.R;
 
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -22,13 +22,9 @@ import butterknife.ButterKnife;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.Delimeters;
 
-// DONE: 19/01/2017 Risolvere crash quando si chiude una cartella e poi si scorre verso il basso
-
 public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    final static String TAG = FolderAdapter.class.getSimpleName();
-
     private final SimpleDateFormat formatter = new SimpleDateFormat("MMM d, yyyy", Locale.ITALIAN);
-    private FileElement fileElements = new FileElement();
+    private List<Object> list = new ArrayList<>();
     private Listener listener;
 
     public FolderAdapter(Listener listener) {
@@ -40,8 +36,10 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         switch (viewType) {
             case R.layout.adapter_folder:
                 return new FileTeacherHolder(LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false));
-            default:
+            case R.layout.adapter_header:
                 return new SubheaderHolder(LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false));
+            default:
+                return null;
         }
     }
 
@@ -49,13 +47,11 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         int layout = getItemViewType(position);
 
-        FileElement fe = fileElements.get(position);
+        Object fe = list.get(position);
 
         switch (layout) {
             case R.layout.adapter_folder:
-
                 Folder f = (Folder) fe;
-
                 FileTeacherHolder folderHolder = (FileTeacherHolder) holder;
 
                 folderHolder.layout.setOnClickListener(view -> {
@@ -64,15 +60,17 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 });
 
                 folderHolder.title.setText(f.getName().trim());
-                folderHolder.date.setText(formatter.format(f.getLast()));
+                folderHolder.date.setText(formatter.format(f.getLastUpdate()));
                 break;
-            default:
+            case R.layout.adapter_header:
                 SubheaderHolder subHolder = (SubheaderHolder) holder;
+                Teacher teacher = (Teacher) fe;
 
-                FileTeacher ft = (FileTeacher) fe;
-                String profHeader = ft.getName();
+                String profHeader = teacher.getTeacherName();
                 subHolder.teacher.setText(WordUtils.capitalizeFully(profHeader, Delimeters));
 
+                break;
+            default:
                 break;
         }
 
@@ -80,19 +78,24 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemViewType(int position) {
-        if (fileElements.get(position) instanceof FileTeacher)
+        if (list.get(position) instanceof Teacher)
             return R.layout.adapter_header;
-        else return R.layout.adapter_folder;
+        if (list.get(position) instanceof Folder)
+            return R.layout.adapter_folder;
+        return 0;
     }
 
     @Override
     public int getItemCount() {
-        return fileElements.size();
+        return list.size();
     }
 
-    public void setFileTeachers(List<FileTeacher> fileteachers) {
-        fileElements.clear();
-        fileElements.ConvertFileTeachertoFileElement(fileteachers);
+    public void setTeacherFolder(List<Teacher> teachers) {
+        list.clear();
+        for (Teacher teacher : teachers) {
+            list.add(teacher);
+            list.addAll(teacher.getFolders());
+        }
         notifyDataSetChanged();
     }
 

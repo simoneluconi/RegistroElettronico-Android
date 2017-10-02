@@ -32,7 +32,7 @@ import java.util.*
  * A simple [Fragment] subclass.
  */
 class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, OrderMedieBS.OrderListener, NotificationManager.NotificationReceiver {
-    override fun didReceiveNotification(code: Int, vararg args: Array<out Any>) {
+    override fun didReceiveNotification(code: Int, args: Array<in Any>) {
         when (code) {
             EventType.UPDATE_MARKS_OK -> load()
         }

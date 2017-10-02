@@ -249,11 +249,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             R.id.notes -> fragment = FragmentNote()
             R.id.absences -> fragment = FragmentAllAbsences()
             R.id.settings -> fragment = FragmentSettings()
-            R.id.files -> {
-                val fragmentFolders = FragmentFolders()
-                fragmentFolders.getInstance(supportActionBar)
-                fragment = fragmentFolders
-            }
+            R.id.files -> fragment = FragmentFolders()
             R.id.lessons -> fragment = FragmentSubjects()
             R.id.nav_share -> {
                 val intent = Intent(Intent.ACTION_SEND)

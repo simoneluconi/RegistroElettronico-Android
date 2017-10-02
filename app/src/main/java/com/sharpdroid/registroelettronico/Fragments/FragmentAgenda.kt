@@ -37,7 +37,7 @@ import java.util.*
 
 class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListener, AgendaAdapter.AgendaClickListener, AgendaBS.Listener, NotificationManager.NotificationReceiver {
 
-    override fun didReceiveNotification(code: Int, vararg args: Array<out Any>) {
+    override fun didReceiveNotification(code: Int, args: Array<in Any>) {
         when (code) {
             EventType.UPDATE_AGENDA_START -> {
                 //started

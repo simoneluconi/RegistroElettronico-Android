@@ -29,8 +29,14 @@ interface SpaggiariREST {
         @GET("students/{studentId}/agenda/{eventCode}/{begin}/{end}")
         fun getAgenda( @Path("eventCode") eventCode: String, @Path("begin") begin: String, @Path("end") end: String): Observable<List<Agenda>>
     */
-    @GET("students/{studentId}/didactics/item/{contentId}")
-    fun getAttachmentFile(@Path("contentId") contentId: Int): Observable<ResponseBody>
+    @GET("students/{studentId}/didactics/item/{fileId}")
+    fun getAttachmentFile(@Path("fileId") fileId: Long): retrofit2.Call<ResponseBody>
+
+    @GET("students/{studentId}/didactics/item/{fileId}")
+    fun getAttachmentUrl(@Path("fileId") fileId: Long): Observable<DownloadUrlAPI>
+
+    @GET("students/{studentId}/didactics/item/{fileId}")
+    fun getAttachmentTxt(@Path("fileId") fileId: Long): Observable<DownloadTxtAPI>
 
     @GET("students/{studentId}/noticeboard")
     fun getBacheca(): Observable<CommunicationAPI>

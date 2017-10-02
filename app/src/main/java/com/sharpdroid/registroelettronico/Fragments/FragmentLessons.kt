@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.fragment_recycler_refresh_scrollbar.*
 
 
 class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, NotificationManager.NotificationReceiver {
-    override fun didReceiveNotification(code: Int, vararg args: Array<out Any>) {
+    override fun didReceiveNotification(code: Int, args: Array<in Any>) {
         when (code) {
             EventType.UPDATE_LESSONS_START -> {
                 swiperefresh.isRefreshing = true

@@ -1,13 +1,6 @@
 package com.sharpdroid.registroelettronico.Adapters;
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Environment;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -16,12 +9,12 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.sharpdroid.registroelettronico.API.V1.SpiaggiariApiClient;
-import com.sharpdroid.registroelettronico.Databases.RegistroDB;
-import com.sharpdroid.registroelettronico.Interfaces.API.File;
+import com.sharpdroid.registroelettronico.Databases.Entities.File;
+import com.sharpdroid.registroelettronico.Fragments.FragmentFiles;
 import com.sharpdroid.registroelettronico.R;
 
-import java.net.URLConnection;
+import org.jetbrains.annotations.NotNull;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,35 +23,25 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import okhttp3.Headers;
-
-import static com.sharpdroid.registroelettronico.Utils.Metodi.getFileNamefromHeaders;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.writeResponseBodyToDisk;
 
 public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
-    final static String TAG = FileAdapter.class.getSimpleName();
-
     private final SimpleDateFormat formatter = new SimpleDateFormat("MMM d, yyyy", Locale.ITALIAN);
-    private RegistroDB db;
+    private DownloadListener listener;
     private Context mContext;
-    private CoordinatorLayout mCoordinatorLayout;
-    private List<File> CVDataList;
+    private List<File> CVDataList = new ArrayList<>();
 
-    public FileAdapter(Context mContext, CoordinatorLayout mCoordinatorLayout) {
-        this.mContext = mContext;
-        this.mCoordinatorLayout = mCoordinatorLayout;
-        CVDataList = new ArrayList<>();
-        this.db = RegistroDB.getInstance(mContext);
+    public FileAdapter(FragmentFiles fragmentFiles) {
+        this.mContext = fragmentFiles.getActivity();
+        listener = fragmentFiles;
     }
 
-    public void addAll(List<File> CVDataList) {
-        this.CVDataList = CVDataList;
+    public void addAll(List<File> data) {
+        CVDataList.addAll(data);
         notifyDataSetChanged();
     }
 
     public void clear() {
-        CVDataList = null;
+        CVDataList.clear();
         notifyDataSetChanged();
     }
 
@@ -72,87 +55,25 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
     public void onBindViewHolder(FileHolder holder, int position) {
         File file = CVDataList.get(position);
 
-        holder.title.setText(!TextUtils.isEmpty(file.getName().trim()) ? file.getName().trim() : String.format("[%1$s]", mContext.getString(R.string.senza_nome)));
+        holder.title.setText(!TextUtils.isEmpty(file.getContentName().trim()) ? file.getContentName().trim() : String.format("[%1$s]", mContext.getString(R.string.senza_nome)));
         holder.date.setText(formatter.format(file.getDate()));
 
-        if (file.isLink()) {
+        if (file.getType().equals("link")) {
             holder.image.setImageResource(R.drawable.link);
         } else {
             holder.image.setImageResource(R.drawable.file);
         }
 
-        holder.mRelativeLayout.setOnClickListener(v -> {
-
-            if (!file.isLink()) {
-                Snackbar DownloadProgressSnak = Snackbar.make(mCoordinatorLayout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE);
-
-                java.io.File dir = new java.io.File(
-                        Environment.getExternalStorageDirectory() +
-                                java.io.File.separator +
-                                "Registro Elettronico" + java.io.File.separator + "Didattica");
-
-                if (!dir.exists()) dir.mkdirs();
-
-                if (!db.isFileDownloaded(file.getId(), file.getCksum())) {
-                    DownloadFile(file, dir, db, DownloadProgressSnak, true);
-                } else {
-                    String filename = db.getFileName(file.getId(), file.getCksum());
-                    java.io.File f = new java.io.File(dir + java.io.File.separator + filename);
-                    if (f.exists())
-                        openfile(f);
-                    else DownloadFile(file, dir, db, DownloadProgressSnak, false);
-                }
-            } else openlink(file.getLink(), mContext);
-        });
-    }
-
-    private void DownloadFile(File file, java.io.File dir, RegistroDB db, Snackbar DownloadProgressSnak, boolean addRecord) {
-        DownloadProgressSnak.show();
-        new SpiaggiariApiClient(mContext).getDownload(file.getId(), file.getCksum())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(files_file -> {
-                    Headers headers = files_file.headers();
-                    String filename = getFileNamefromHeaders(headers);
-                    java.io.File f = new java.io.File(dir + java.io.File.separator + filename);
-                    writeResponseBodyToDisk(files_file.body(), f);
-                    if (addRecord)
-                        db.setFileDownloaded(file.getCksum(), file.getId(), filename);
-                    askfileopen(f, DownloadProgressSnak);
-
-                }, error -> {
-                    error.printStackTrace();
-                    DownloadProgressSnak.setText(mContext.getResources().getString(R.string.download_fallito, error.getLocalizedMessage()));
-                    DownloadProgressSnak.setDuration(Snackbar.LENGTH_SHORT).show();
-                });
-    }
-
-    private void askfileopen(java.io.File file, Snackbar DownloadProgressSnak) {
-        DownloadProgressSnak.setText(mContext.getString(R.string.file_downloaded, file.getName()));
-        DownloadProgressSnak.setAction(R.string.open, v -> openfile(file));
-        DownloadProgressSnak.show();
-    }
-
-    private void openfile(java.io.File file) {
-        String mime = URLConnection.guessContentTypeFromName(file.toString());
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(FileProvider.getUriForFile(mContext, mContext.getPackageName() + ".fileprovider", file), mime);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        try {
-            mContext.startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            Snackbar.make(mCoordinatorLayout, mContext.getResources().getString(R.string.missing_app, file.getName()), Snackbar.LENGTH_SHORT).show();
-        }
-
-    }
-
-    private void openlink(String url, Context context) {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        context.startActivity(browserIntent);
+        holder.mRelativeLayout.setOnClickListener(v -> listener.onFileClick(file));
     }
 
     @Override
     public int getItemCount() {
         return CVDataList.size();
+    }
+
+    public interface DownloadListener {
+        void onFileClick(@NotNull File file);
     }
 
     class FileHolder extends RecyclerView.ViewHolder {

@@ -18,6 +18,13 @@ import java.util.*
         }
     ]
 }
+
+{
+    "item": {
+        "link": "http://www.youtube.com/watch?v=dmpYfs5X0AE"
+    }
+}
+
  */
 @Table
 data class File(
@@ -27,7 +34,14 @@ data class File(
         @Expose @SerializedName("objectType") val type: String,
         @Expose @SerializedName("shareDT") val date: Date,
         var folder: Long,
-        var teacher: Long
+        var teacher: Long,
+        var path: String,
+        var profile: Long
 ) {
-    constructor() : this(0, "", 0, "", Date(), 0, 0)
+    constructor() : this(0, "", 0, "", Date(), 0, 0, "", 0)
 }
+
+data class DownloadURL(@Expose @SerializedName("link") val link: String)
+data class DownloadUrlAPI(@Expose @SerializedName("item") val item: DownloadURL)
+data class DownloadTXT(@Expose @SerializedName("text") val text: String)
+data class DownloadTxtAPI(@Expose @SerializedName("item") val item: DownloadTXT)
