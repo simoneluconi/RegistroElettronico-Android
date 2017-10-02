@@ -8,13 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.orm.SugarRecord;
 import com.sharpdroid.registroelettronico.Databases.Entities.Subject;
+import com.sharpdroid.registroelettronico.Databases.Entities.Teacher;
 import com.sharpdroid.registroelettronico.Fragments.FragmentSubjects;
 import com.sharpdroid.registroelettronico.R;
 
 import org.apache.commons.lang3.text.WordUtils;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,11 +48,14 @@ public class SubjectsAdapter extends RecyclerView.Adapter<SubjectsAdapter.Subjec
     @Override
     public void onBindViewHolder(SubjectHolder holder, int position) {
         Subject item = CVDataList.get(position);
-
+        List<String> teachers = new ArrayList<>();
+        for (Teacher t : item.getTeachers()) {
+            teachers.add(t.getTeacherName());
+        }
         holder.subject.setText(getSubjectName(item));
 
         holder.prof.setVisibility(View.VISIBLE);
-        holder.prof.setText(WordUtils.capitalizeFully(TextUtils.join(", ", Arrays.asList("Ragone", "Loregian")), Delimeters));
+        holder.prof.setText(WordUtils.capitalizeFully(TextUtils.join(", ", teachers), Delimeters));
 
         holder.layout.setOnClickListener(view -> {
             if (subjectListener != null) subjectListener.onSubjectClick(item);
@@ -65,9 +70,8 @@ public class SubjectsAdapter extends RecyclerView.Adapter<SubjectsAdapter.Subjec
     public void addAll(List<Subject> subjects) {
         CVDataList = subjects;
         Collections.sort(CVDataList, (subject, t1) -> subject.getDescription().compareToIgnoreCase(t1.getDescription()));
-        for (Subject s :
-                subjects) {
-            System.out.println(s.getTeachers());
+        for (Subject s : subjects) {
+            s.setTeachers(SugarRecord.findWithQuery(Teacher.class, "select * from TEACHER where TEACHER.ID IN (select SUBJECT_TEACHER.TEACHER from SUBJECT_TEACHER where SUBJECT_TEACHER.SUBJECT=?)", String.valueOf(s.getId())));
         }
         notifyDataSetChanged();
     }
