@@ -79,7 +79,7 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
             itemAnimator = null
             isVerticalScrollBarEnabled = true
 
-            mRVAdapter = CommunicationAdapter(this@FragmentCommunications, coordinator_layout)
+            mRVAdapter = CommunicationAdapter(this@FragmentCommunications)
             adapter = mRVAdapter
         }
 
