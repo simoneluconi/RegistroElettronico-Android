@@ -35,18 +35,12 @@ import com.sharpdroid.registroelettronico.Databases.Entities.SuperAgenda;
 import com.sharpdroid.registroelettronico.Databases.Entities.Teacher;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absence;
-import com.sharpdroid.registroelettronico.Interfaces.API.Absences;
-import com.sharpdroid.registroelettronico.Interfaces.API.Delay;
 import com.sharpdroid.registroelettronico.Interfaces.API.Event;
-import com.sharpdroid.registroelettronico.Interfaces.API.Exit;
 import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
 import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
 import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
-import com.sharpdroid.registroelettronico.Interfaces.Client.AbsenceEntry;
 import com.sharpdroid.registroelettronico.Interfaces.Client.AbsencesEntry;
-import com.sharpdroid.registroelettronico.Interfaces.Client.DelayEntry;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Entry;
-import com.sharpdroid.registroelettronico.Interfaces.Client.ExitEntry;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Media;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.NotificationManager;
@@ -334,9 +328,9 @@ public class Metodi {
         return marks;
     }
 
-    public static Map<String, List<Entry>> convertAbsencesToHashmap(Absences absences) {
-        Map<String, List<Entry>> hashMap = new HashMap<>();
-
+    public static Map<String, List<Absence>> convertAbsencesToHashmap(List<com.sharpdroid.registroelettronico.Databases.Entities.Absence> absences) {
+        Map<String, List<Absence>> hashMap = new HashMap<>();
+/*
         //assenze
         for (Absence absence : absences.getAbsences()) {
             String month = month_year.format(absence.getFrom());
@@ -347,29 +341,7 @@ public class Metodi {
             } else {
                 hashMap.put(month, Collections.singletonList(new AbsenceEntry(absence)));
             }
-        }
-        //uscite
-        for (Exit exit : absences.getExits()) {
-            String month = month_year.format(exit.getDay());
-            if (hashMap.containsKey(month)) {
-                List<Entry> entries = new ArrayList<>(hashMap.get(month));
-                entries.add(new ExitEntry(exit));
-                hashMap.put(month, entries);
-            } else {
-                hashMap.put(month, Collections.singletonList(new ExitEntry(exit)));
-            }
-        }
-        //ritardi
-        for (Delay delay : absences.getDelays()) {
-            String month = month_year.format(delay.getDay());
-            if (hashMap.containsKey(month)) {
-                List<Entry> entries = new ArrayList<>(hashMap.get(month));
-                entries.add(new DelayEntry(delay));
-                hashMap.put(month, entries);
-            } else {
-                hashMap.put(month, Collections.singletonList(new DelayEntry(delay)));
-            }
-        }
+        }*/
         return hashMap;
     }
 
@@ -650,6 +622,10 @@ public class Metodi {
                     toRemove.clear();
 
                     for (Communication communication : list) {
+                        if (communication.getCntStatus().equals("deleted")) {
+                            toRemove.add(communication);
+                            break;
+                        }
                         if (!communication.isRead() || communication.getContent().isEmpty()) {
                             APIClient.Companion.with(c).readBacheca(communication.getEvtCode(), communication.getId()).subscribe(readResponse -> {
                                 communication.setRead(true);

@@ -2,6 +2,7 @@ package com.sharpdroid.registroelettronico.Databases.Entities
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.orm.dsl.Ignore
 import com.orm.dsl.Table
 import com.orm.dsl.Unique
 import java.util.*
@@ -38,13 +39,14 @@ data class Communication(
         @Expose @SerializedName("evtCode") val evtCode: String,
         @Expose @SerializedName("cntId") val myId: Int,
         @Expose @SerializedName("cntTitle") val title: String,
+        @Expose @SerializedName("cntTitle") @Ignore val cntStatus: String,
         @Expose @SerializedName("cntCategory") val category: String,
         @Expose @SerializedName("cntHasAttach") val hasAttachment: Boolean,
         var profile: Profile?,
         var content: String,
         var path: String
 ) {
-    constructor() : this(0, Date(), false, "", 0, "", "", false, null, "", "")
+    constructor() : this(0, Date(), false, "", 0, "", "", "", false, null, "", "")
 }
 
 data class CommunicationAPI(@Expose @SerializedName("items") val communications: List<Communication>) {
