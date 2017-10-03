@@ -39,7 +39,7 @@ data class Communication(
         @Expose @SerializedName("evtCode") val evtCode: String,
         @Expose @SerializedName("cntId") val myId: Int,
         @Expose @SerializedName("cntTitle") val title: String,
-        @Expose @SerializedName("cntTitle") @Ignore val cntStatus: String,
+        @Expose @SerializedName("cntStatus") @Ignore val cntStatus: String,
         @Expose @SerializedName("cntCategory") val category: String,
         @Expose @SerializedName("cntHasAttach") val hasAttachment: Boolean,
         var profile: Profile?,
