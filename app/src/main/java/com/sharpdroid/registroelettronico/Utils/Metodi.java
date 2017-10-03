@@ -632,7 +632,38 @@ public class Metodi {
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_BACHECA_START, null));
         APIClient.Companion.with(c).getBacheca()
                 .subscribe(communicationAPI -> {
-                    SugarRecord.saveInTx(communicationAPI.getCommunications(p));
+                    List<Communication> db = SugarRecord.find(Communication.class, "PROFILE=? AND (PATH IS NOT \"\" OR CONTENT IS NOT \"\")", String.valueOf(p.getId()));
+                    List<Communication> list = communicationAPI.getCommunications(p);
+                    List<Communication> toRemove = new ArrayList<>();
+
+                    for (Communication communication : list) {
+                        for (Communication rem : db) {
+                            if (rem.getId() == communication.getId()) {
+                                toRemove.add(communication);
+                                break;
+                            }
+                        }
+                    }
+
+                    //Delete items that are already downloaded
+                    list.removeAll(toRemove);
+                    toRemove.clear();
+
+                    for (Communication communication : list) {
+                        if (!communication.isRead() || communication.getContent().isEmpty()) {
+                            APIClient.Companion.with(c).readBacheca(communication.getEvtCode(), communication.getId()).subscribe(readResponse -> {
+                                communication.setRead(true);
+                                communication.setContent(readResponse.getItem().getText());
+                                SugarRecord.save(communication);
+                            });
+                            toRemove.add(communication);
+                        }
+                    }
+
+                    //Delete items that are going to be updated after they are downloaded
+                    list.removeAll(toRemove);
+
+                    SugarRecord.saveInTx(list);
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_BACHECA_OK, null));
                 }, throwable -> {
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_BACHECA_KO, null));
