@@ -10,12 +10,10 @@ import android.view.ViewGroup
 import com.sharpdroid.registroelettronico.Adapters.Holders.AbsencesHolder
 import com.sharpdroid.registroelettronico.Adapters.Holders.HeaderHolder
 import com.sharpdroid.registroelettronico.Databases.Entities.Absence
-import com.sharpdroid.registroelettronico.Interfaces.Client.AbsenceEntry
-import com.sharpdroid.registroelettronico.Interfaces.Client.DelayEntry
-import com.sharpdroid.registroelettronico.Interfaces.Client.ExitEntry
 import com.sharpdroid.registroelettronico.Interfaces.Client.HeaderEntry
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Metodi.capitalizeFirst
+import com.sharpdroid.registroelettronico.Utils.Metodi.month_year
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -34,36 +32,37 @@ class AllAbsencesAdapter(private val mContext: Context) : RecyclerView.Adapter<R
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val entry = CVDataList[position]
-        if (holder is HeaderHolder) {
-            holder.content.text = (entry as HeaderEntry).title
-        } else {
+        if (entry is HeaderEntry) {
+            (holder as HeaderHolder).content.text = entry.title
+        } else if (entry is Absence) {
             val absencesHolder = holder as AbsencesHolder
 
-            if (entry is DelayEntry) {
-                val delay = entry.delay
+            when (entry.type) {
+                "ABR0" -> {
+                    absencesHolder.hour.text = mContext.resources.getString(R.string.hours, "entrato", entry.hPos)
+                    absencesHolder.type_color.setImageDrawable(ColorDrawable(ContextCompat.getColor(mContext, R.color.orangematerial)))
+                    absencesHolder.type_text.text = "R"
 
-                absencesHolder.date.text = capitalizeFirst(long_date_format.format(delay.day))
-                absencesHolder.hour.text = if (delay.hour === 0) mContext.resources.getString(R.string.short_delay) else mContext.resources.getString(R.string.hours, "entrato", delay.hour)
-                absencesHolder.done.visibility = if (delay.isDone) View.VISIBLE else View.INVISIBLE
-                absencesHolder.type_color.setImageDrawable(ColorDrawable(ContextCompat.getColor(mContext, R.color.orangematerial)))
-                absencesHolder.type_text.text = if (delay.hour === 0) "RB" else "R"
-            } else if (entry is AbsenceEntry) {
-                val absence = entry.absence
-
-                absencesHolder.date.text = capitalizeFirst(long_date_format.format(absence.from))
-                absencesHolder.hour.text = mContext.resources.getQuantityString(R.plurals.days, absence.days, absence.days)
-                absencesHolder.done.visibility = if (absence.isDone) View.VISIBLE else View.INVISIBLE
-                absencesHolder.type_color.setImageDrawable(ColorDrawable(ContextCompat.getColor(mContext, R.color.redmaterial)))
-                absencesHolder.type_text.text = "A"
-            } else {
-                val exit = (entry as ExitEntry).exit
-
-                absencesHolder.date.text = capitalizeFirst(long_date_format.format(exit.day))
-                absencesHolder.hour.text = mContext.resources.getString(R.string.hours, "uscito", exit.hour)
-                absencesHolder.done.visibility = if (exit.isDone) View.VISIBLE else View.INVISIBLE
-                absencesHolder.type_color.setImageDrawable(ColorDrawable(ContextCompat.getColor(mContext, R.color.bluematerial)))
-                absencesHolder.type_text.text = "U"
+                }
+                "ABR1" -> {
+                    absencesHolder.hour.text = mContext.resources.getString(R.string.short_delay)
+                    absencesHolder.type_color.setImageDrawable(ColorDrawable(ContextCompat.getColor(mContext, R.color.orangematerial)))
+                    absencesHolder.type_text.text = "RB"
+                }
+                "ABA0" -> {
+                    //absencesHolder.hour.text = mContext.resources.getQuantityString(R.plurals.days, entry.days, absence.days)
+                    absencesHolder.type_color.setImageDrawable(ColorDrawable(ContextCompat.getColor(mContext, R.color.redmaterial)))
+                    absencesHolder.type_text.text = "A"
+                }
+                "ABU0" -> {
+                    absencesHolder.hour.text = mContext.resources.getString(R.string.hours, "entrato", entry.hPos)
+                    absencesHolder.type_color.setImageDrawable(ColorDrawable(ContextCompat.getColor(mContext, R.color.bluematerial)))
+                    absencesHolder.type_text.text = "U"
+                }
             }
+
+            absencesHolder.date.text = capitalizeFirst(long_date_format.format(entry.date))
+            absencesHolder.done.visibility = if (entry.justified) View.VISIBLE else View.INVISIBLE
         }
     }
 
@@ -77,15 +76,34 @@ class AllAbsencesAdapter(private val mContext: Context) : RecyclerView.Adapter<R
 
     fun addAll(absences: List<Absence>) {
         if (absences.isEmpty()) return
-        val list = absences.sortedWith(kotlin.Comparator { t: Absence, t1: Absence -> t.date.compareTo(t1.date) })
+        val list = absences.sortedWith(kotlin.Comparator { t: Absence, t1: Absence -> t.date.compareTo(t1.date) }).reversed() //ASC
 
-        list.map {
+        val beginOfNextMonth = Calendar.getInstance()
+        setDateAddMonth(list[0].date, beginOfNextMonth)
 
+        list.forEach {
+            if (it.date.time >= beginOfNextMonth.timeInMillis) {
+                CVDataList.add(it)
+                CVDataList.add(HeaderEntry(month_year.format(beginOfNextMonth.time)))
+                setDateAddMonth(it.date, beginOfNextMonth)
+            } else {
+                CVDataList.add(it)
+            }
         }
 
-
-
+        CVDataList.reverse()
         notifyDataSetChanged()
+    }
+
+    private fun setDateAddMonth(date: Date, calendar: Calendar) {
+        with(calendar) {
+            time = date
+            add(Calendar.MONTH, 1)
+            set(Calendar.DAY_OF_MONTH, 1)
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
     }
 
     fun clear() {

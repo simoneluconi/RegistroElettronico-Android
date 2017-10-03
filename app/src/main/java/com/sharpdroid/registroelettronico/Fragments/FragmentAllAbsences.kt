@@ -22,11 +22,14 @@ class FragmentAllAbsences : Fragment(), SwipeRefreshLayout.OnRefreshListener, No
 
         when (code) {
             EventType.UPDATE_ABSENCES_START -> {
-
+                if (!swiperefresh.isRefreshing) swiperefresh.isRefreshing = true
             }
             EventType.UPDATE_ABSENCES_OK -> {
+                load()
+                if (swiperefresh.isRefreshing) swiperefresh.isRefreshing = false
             }
             EventType.UPDATE_ABSENCES_KO -> {
+                if (swiperefresh.isRefreshing) swiperefresh.isRefreshing = false
 
             }
         }
