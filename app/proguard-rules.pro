@@ -26,17 +26,21 @@
 -keepattributes Exceptions
 -keepattributes Annotations
 
+-keep class okhttp3.* { *; }
+-keep interface okhttp3.* { *; }
+
 -keepclasseswithmembers class * {
     @retrofit2.http.* <methods>;
 }
 
 -dontwarn okio.**
 
+-dontwarn okhttp3.**
+
 -dontwarn com.akexorcist.roundcornerprogressbar.**
 
 -keepclassmembers class android.support.v7.graphics.drawable.DrawerArrowDrawable { public *; }
 
 -keep class android.support.v7.widget.SearchView { *; }
-
 
 -keep class com.sharpdroid.registroelettronico.Database.Entities** { *; }
