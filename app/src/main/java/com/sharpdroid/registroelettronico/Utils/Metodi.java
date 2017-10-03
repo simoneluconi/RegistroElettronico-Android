@@ -666,9 +666,9 @@ public class Metodi {
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_PERIODS_START, null));
         SugarRecord.deleteAll(Period.class, "PROFILE=?", String.valueOf(p.getId()));
-        APIClient.Companion.with(c).getNotes()
+        APIClient.Companion.with(c).getPeriods()
                 .subscribe(notes -> {
-                    SugarRecord.saveInTx(notes.getNotes(p));
+                    SugarRecord.saveInTx(notes.getPeriods(p));
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_PERIODS_OK, null));
                 }, throwable -> {
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_PERIODS_KO, null));
