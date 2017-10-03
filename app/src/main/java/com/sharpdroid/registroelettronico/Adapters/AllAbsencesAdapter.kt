@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import com.sharpdroid.registroelettronico.Adapters.Holders.AbsencesHolder
 import com.sharpdroid.registroelettronico.Adapters.Holders.HeaderHolder
 import com.sharpdroid.registroelettronico.Databases.Entities.Absence
+import com.sharpdroid.registroelettronico.Databases.Entities.MyAbsence
 import com.sharpdroid.registroelettronico.Interfaces.Client.HeaderEntry
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Metodi.capitalizeFirst
@@ -49,11 +50,6 @@ class AllAbsencesAdapter(private val mContext: Context) : RecyclerView.Adapter<R
                     absencesHolder.type_color.setImageDrawable(ColorDrawable(ContextCompat.getColor(mContext, R.color.orangematerial)))
                     absencesHolder.type_text.text = "RB"
                 }
-                "ABA0" -> {
-                    //absencesHolder.hour.text = mContext.resources.getQuantityString(R.plurals.days, entry.days, absence.days)
-                    absencesHolder.type_color.setImageDrawable(ColorDrawable(ContextCompat.getColor(mContext, R.color.redmaterial)))
-                    absencesHolder.type_text.text = "A"
-                }
                 "ABU0" -> {
                     absencesHolder.hour.text = mContext.resources.getString(R.string.hours, "entrato", entry.hPos)
                     absencesHolder.type_color.setImageDrawable(ColorDrawable(ContextCompat.getColor(mContext, R.color.bluematerial)))
@@ -63,6 +59,13 @@ class AllAbsencesAdapter(private val mContext: Context) : RecyclerView.Adapter<R
 
             absencesHolder.date.text = capitalizeFirst(long_date_format.format(entry.date))
             absencesHolder.done.visibility = if (entry.justified) View.VISIBLE else View.INVISIBLE
+        } else if (entry is MyAbsence) {
+            val absencesHolder = holder as AbsencesHolder
+
+            absencesHolder.date.text = capitalizeFirst(long_date_format.format(entry.absence.date))
+            absencesHolder.hour.text = mContext.resources.getQuantityString(R.plurals.days, entry.days, entry.days)
+            absencesHolder.type_color.setImageDrawable(ColorDrawable(ContextCompat.getColor(mContext, R.color.redmaterial)))
+            absencesHolder.type_text.text = "A"
         }
     }
 
@@ -74,36 +77,45 @@ class AllAbsencesAdapter(private val mContext: Context) : RecyclerView.Adapter<R
         return CVDataList.size
     }
 
-    fun addAll(absences: List<Absence>) {
+    fun addAll(absences: Array<in Any>) {
         if (absences.isEmpty()) return
-        val list = absences.sortedWith(kotlin.Comparator { t: Absence, t1: Absence -> t.date.compareTo(t1.date) }).reversed() //ASC
+        val list = absences.sortedWith(kotlin.Comparator { t: Any?, t1: Any? ->
+            var val1: Date? = null
+            var val2: Date? = null
+            if (t is Absence)
+                val1 = t.date
+            else if (t is MyAbsence)
+                val1 = t.absence.date
 
-        val beginOfNextMonth = Calendar.getInstance()
-        setDateAddMonth(list[0].date, beginOfNextMonth)
+            if (t1 is Absence)
+                val2 = t1.date
+            else if (t1 is MyAbsence)
+                val2 = t1.absence.date
+            val1?.compareTo(val2!!) ?: 0
+
+        }) //ASC
+        val hashmap = hashMapOf<String, MutableCollection<Any>>()
 
         list.forEach {
-            if (it.date.time >= beginOfNextMonth.timeInMillis) {
-                CVDataList.add(it)
-                CVDataList.add(HeaderEntry(month_year.format(beginOfNextMonth.time)))
-                setDateAddMonth(it.date, beginOfNextMonth)
-            } else {
-                CVDataList.add(it)
-            }
+            val date = (it as? Absence)?.date ?: ((it as? MyAbsence)?.absence?.date ?: Date())
+            val l = (hashmap[month_year.format(date)] ?: emptyList<Any>()).toMutableList()
+            l.add(it!!)
+            hashmap.put(month_year.format(date), l)
         }
 
-        CVDataList.reverse()
+        hashmap.toSortedMap(kotlin.Comparator { t: String, t1: String ->
+            month_year.parse(t).compareTo(month_year.parse(t1))
+        })
+
+        val finalList = mutableListOf<Any>()
+
+        hashmap.keys.forEach {
+            finalList.add(HeaderEntry(it))
+            hashmap[it]?.toCollection(finalList)
+        }
+
+        CVDataList.addAll(finalList)
         notifyDataSetChanged()
-    }
-
-    private fun setDateAddMonth(date: Date, calendar: Calendar) {
-        with(calendar) {
-            time = date
-            add(Calendar.MONTH, 1)
-            set(Calendar.DAY_OF_MONTH, 1)
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }
     }
 
     fun clear() {

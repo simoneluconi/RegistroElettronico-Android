@@ -10,6 +10,8 @@ import android.view.ViewGroup
 import com.orm.SugarRecord
 import com.sharpdroid.registroelettronico.Adapters.AllAbsencesAdapter
 import com.sharpdroid.registroelettronico.Databases.Entities.Absence
+import com.sharpdroid.registroelettronico.Databases.Entities.MyAbsence
+import com.sharpdroid.registroelettronico.Databases.Entities.Profile
 import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Account
@@ -64,13 +66,16 @@ class FragmentAllAbsences : Fragment(), SwipeRefreshLayout.OnRefreshListener, No
 
     }
 
-    private fun addAbsence(absence: List<Absence>) {
+    private fun addAbsence(absence: Array<in Any>) {
         adapter?.clear()
         adapter?.addAll(absence)
     }
 
     private fun load() {
-        addAbsence(SugarRecord.find(Absence::class.java, "PROFILE=?", Account.with(activity).user.toString()))
+        val absencesAndDurations = Absence.getAbsences(Profile.getProfile(activity)!!)
+        val list: MutableList<in Any> = SugarRecord.find(Absence::class.java, "PROFILE=? AND TYPE!='ABA0'", Account.with(activity).user.toString()).toMutableList()
+        list.addAll(absencesAndDurations.map { MyAbsence(it.key, it.value) })
+        addAbsence(list.toTypedArray())
     }
 
     override fun onRefresh() {

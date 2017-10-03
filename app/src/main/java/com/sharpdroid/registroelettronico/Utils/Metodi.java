@@ -26,6 +26,7 @@ import com.orm.SugarRecord;
 import com.sharpdroid.registroelettronico.API.V1.SpiaggiariAPI;
 import com.sharpdroid.registroelettronico.API.V2.APIClient;
 import com.sharpdroid.registroelettronico.Databases.Entities.Communication;
+import com.sharpdroid.registroelettronico.Databases.Entities.Day;
 import com.sharpdroid.registroelettronico.Databases.Entities.Folder;
 import com.sharpdroid.registroelettronico.Databases.Entities.Grade;
 import com.sharpdroid.registroelettronico.Databases.Entities.Period;
@@ -435,6 +436,7 @@ public class Metodi {
         updateNote(c);
         updatePeriods(c);
         updateMarks(c);
+        updateCalendar(c);
     }
 
     public static void updateMarks(@NotNull Context c) {
@@ -665,15 +667,29 @@ public class Metodi {
         Profile p = Profile.Companion.getProfile(c);
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_PERIODS_START, null));
-        SugarRecord.deleteAll(Period.class, "PROFILE=?", String.valueOf(p.getId()));
         APIClient.Companion.with(c).getPeriods()
                 .subscribe(notes -> {
+                    SugarRecord.deleteAll(Period.class, "PROFILE=?", String.valueOf(p.getId()));
                     SugarRecord.saveInTx(notes.getPeriods(p));
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_PERIODS_OK, null));
                 }, throwable -> {
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_PERIODS_KO, null));
                     throwable.printStackTrace();
                 });
+    }
+
+    public static void updateCalendar(@NotNull Context c) {
+        Profile p = Profile.Companion.getProfile(c);
+        if (p == null) return;
+        handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_CALENDAR_START, null));
+        APIClient.Companion.with(c).getCalendar().subscribe(calendar -> {
+            Day.deleteAll(Day.class, "PROFILE=?", String.valueOf(p.getId()));
+            Day.saveInTx(calendar.getCalendar(p));
+            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_CALENDAR_OK, null));
+        }, throwable -> {
+            throwable.printStackTrace();
+            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_CALENDAR_KO, null));
+        });
     }
 
     public static void downloadAttachment(@NotNull Context c, Communication communication) {

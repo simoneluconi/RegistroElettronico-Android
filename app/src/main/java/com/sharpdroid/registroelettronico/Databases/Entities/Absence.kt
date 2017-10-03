@@ -2,9 +2,12 @@ package com.sharpdroid.registroelettronico.Databases.Entities
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.orm.SugarRecord
 import com.orm.dsl.Table
 import com.orm.dsl.Unique
 import java.util.*
+import java.util.Calendar
+import kotlin.collections.HashMap
 
 /*
 {
@@ -50,7 +53,67 @@ data class Absence(
         @Expose @SerializedName("evtHPos") val hPos: Int,
         @Expose @SerializedName("evtValue") val value: Int
 ) {
-    constructor() : this(0, "", Date(), false, null, null, null, 0, 0)
+    constructor() : this(0, "", Date(0), false, null, null, null, 0, 0)
+
+    companion object {
+        fun getAbsences(p: Profile): HashMap<Absence, Int> /*<ABSENCE, N_DAYS>*/ {
+            val map = HashMap<Absence, Int>()
+
+            val absencesInSchoolDays = SugarRecord.find(Absence::class.java, "PROFILE=? AND TYPE='ABA0' ORDER BY DATE DESC ", p.id.toString())
+            var startAbsence: Absence? = null
+            var days = 0
+
+            for (i in 0 until absencesInSchoolDays.size - 1) {
+                val timeDifference = (absencesInSchoolDays[i].date.time - absencesInSchoolDays[i + 1].date.time) / 3600000
+                if (startAbsence == null) {
+                    startAbsence = absencesInSchoolDays[i]
+                    days = 1
+                }
+                val current = Calendar.getInstance()
+                val next = Calendar.getInstance() //previous in time (e.g. current=monday; next=saturday)
+
+                current.time = absencesInSchoolDays[i].date
+                next.time = absencesInSchoolDays[i + 1].date
+
+                when {
+                    timeDifference > 72 -> {
+                        //SPLIT absences
+                        map.put(startAbsence!!, days)
+                        startAbsence = null
+                    }
+                    timeDifference == 72L -> {
+                        //is friday->monday CONTINUE else SPLIT
+                        if (current.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY && next.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
+                            days++
+                        } else {
+                            map.put(startAbsence!!, days)
+                            startAbsence = null
+                        }
+                    }
+                    timeDifference == 48L -> {
+                        //is saturday->monday CONTINUE else SPLIT
+                        if (current.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY && next.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
+                            days++
+                        } else {
+                            map.put(startAbsence!!, days)
+                            startAbsence = null
+                        }
+                    }
+                    timeDifference == 24L -> {
+                        //CONTINUE
+                        days++
+                    }
+                }
+                if (i == absencesInSchoolDays.size - 2) {
+                    map.put(startAbsence!!, days)
+                    startAbsence = null
+                }
+            }
+
+            return map
+        }
+
+    }
 }
 
 data class AbsenceAPI(@Expose @SerializedName("events") val events: List<Absence>) {
@@ -59,3 +122,5 @@ data class AbsenceAPI(@Expose @SerializedName("events") val events: List<Absence
         return events
     }
 }
+
+data class MyAbsence(val absence: Absence, val days: Int)

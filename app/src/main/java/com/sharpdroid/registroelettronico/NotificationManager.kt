@@ -79,6 +79,9 @@ class NotificationManager {
                 "UPDATE_TEACHERS_OK",
                 "UPDATE_TEACHERS_START",
                 "UPDATE_TEACHERS_KO",
+                "UPDATE_CALENDAR_START",
+                "UPDATE_CALENDAR_OK",
+                "UPDATE_CALENDAR_KO",
                 "DOWNLOAD_FILE_START",
                 "DOWNLOAD_FILE_OK",
                 "DOWNLOAD_FILE_KO"
