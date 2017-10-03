@@ -47,13 +47,14 @@ interface SpaggiariREST {
 
     @POST("students/{studentId}/noticeboard/read/{eventCode}/{pubId}/101")
     fun readBacheca(@Path("eventCode") eventCode: String, @Path("pubId") pubId: Long): Observable<ReadResponse>
-/*
-    @GET("students/{studentId}/schoolbooks")
-    fun getBooks(): Observable<List<Course>>
 
+    /*
+        @GET("students/{studentId}/schoolbooks")
+        fun getBooks(): Observable<List<Course>>
+    */
     @GET("students/{studentId}/calendar/all")
-    fun getCalendar(): Observable<List<Day>>
-
+    fun getCalendar(): Observable<Calendar>
+/*
     @GET("students/{studentId}/card")
     fun getCard(): Observable<Card>
 

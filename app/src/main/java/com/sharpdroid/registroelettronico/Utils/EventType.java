@@ -33,6 +33,9 @@ public final class EventType {
     public static final int UPDATE_TEACHERS_OK = total++;
     public static final int UPDATE_TEACHERS_START = total++;
     public static final int UPDATE_TEACHERS_KO = total++;
+    public static final int UPDATE_CALENDAR_START = total++;
+    public static final int UPDATE_CALENDAR_OK = total++;
+    public static final int UPDATE_CALENDAR_KO = total++;
     public static final int DOWNLOAD_FILE_START = total++;
     public static final int DOWNLOAD_FILE_OK = total++;
     public static final int DOWNLOAD_FILE_KO = total++;
