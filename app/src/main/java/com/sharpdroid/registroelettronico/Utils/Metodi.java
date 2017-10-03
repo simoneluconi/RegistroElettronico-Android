@@ -442,7 +442,7 @@ public class Metodi {
         if (p == null) return;
 
         APIClient.Companion.with(c).getGrades().subscribe(gradeAPI -> {
-            Collection<Grade> grades = Collections.emptyList();
+            List<Grade> grades = new ArrayList<>();
             grades.addAll(gradeAPI.getGrades(p));
 
             SugarRecord.saveInTx(grades);
