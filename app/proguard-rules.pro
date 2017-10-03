@@ -24,6 +24,7 @@
 -keep class retrofit2.** { *; }
 -keepattributes Signature
 -keepattributes Exceptions
+-keepattributes Annotations
 
 -keepclasseswithmembers class * {
     @retrofit2.http.* <methods>;
