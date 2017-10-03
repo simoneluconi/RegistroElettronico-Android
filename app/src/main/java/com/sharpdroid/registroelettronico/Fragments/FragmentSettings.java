@@ -44,6 +44,7 @@ public class FragmentSettings extends PreferenceFragmentCompat implements Shared
     public void onResume() {
         super.onResume();
         //unregister the preferenceChange listener
+        getActivity().setTitle(R.string.settings);
         getPreferenceScreen().getSharedPreferences()
                 .registerOnSharedPreferenceChangeListener(this);
     }
