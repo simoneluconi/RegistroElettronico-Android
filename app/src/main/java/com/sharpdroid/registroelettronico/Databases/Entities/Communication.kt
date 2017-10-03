@@ -34,7 +34,7 @@ import java.util.*
 data class Communication(
         @Expose @SerializedName("pubId") @Unique val id: Long,
         @Expose @SerializedName("pubDT") val date: Date,
-        @Expose @SerializedName("readStatus") val isRead: Boolean,
+        @Expose @SerializedName("readStatus") var isRead: Boolean,
         @Expose @SerializedName("evtCode") val evtCode: String,
         @Expose @SerializedName("cntId") val myId: Int,
         @Expose @SerializedName("cntTitle") val title: String,

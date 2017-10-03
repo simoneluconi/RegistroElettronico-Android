@@ -21,10 +21,11 @@ import kotlinx.android.synthetic.main.coordinator_swipe_recycler.*
 import java.io.File
 
 class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener, NotificationManager.NotificationReceiver, CommunicationAdapter.DownloadListener {
-    val snackbar = Snackbar.make(coordinator_layout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE)
+    var snackbar: Snackbar? = null
     override fun didReceiveNotification(code: Int, args: Array<in Any>) {
         when (code) {
             EventType.UPDATE_BACHECA_START -> {
+                snackbar = Snackbar.make(coordinator_layout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE)
                 if (!swiperefresh.isRefreshing) swiperefresh.isRefreshing = true
             }
             EventType.UPDATE_BACHECA_OK -> {
@@ -35,11 +36,11 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
                 if (swiperefresh.isRefreshing) swiperefresh.isRefreshing = false
             }
             EventType.DOWNLOAD_FILE_START -> {
-                snackbar.show()
+                snackbar?.show()
             }
             EventType.DOWNLOAD_FILE_OK -> {
                 val file = File(SugarRecord.findById(Communication::class.java, args[0] as Long).path)
-                with(snackbar) {
+                with(snackbar!!) {
                     setText(activity.getString(R.string.file_downloaded, file.name))
                     setAction(R.string.open) { openFile(activity, file) }
                     show()
@@ -104,6 +105,8 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
                 }
             }
 
+            builder.positiveText("OK")
+
             builder.show()
         }
     }
@@ -130,7 +133,7 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
     }
 
     private fun load() {
-        addCommunications(SugarRecord.find(Communication::class.java, "PROFILE=?", Account.with(activity).user.toString()))
+        addCommunications(SugarRecord.find(Communication::class.java, "PROFILE=? order by DATE desc", Account.with(activity).user.toString()))
     }
 
     private fun save(list: List<Communication>) {
@@ -138,7 +141,7 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
     }
 
     private fun download() {
-        updateNote(activity)
+        updateBacheca(activity)
     }
 
     override fun onDestroyView() {

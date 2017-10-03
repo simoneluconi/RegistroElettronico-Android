@@ -11,6 +11,7 @@ import android.widget.Filterable;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.orm.SugarRecord;
 import com.sharpdroid.registroelettronico.API.V2.APIClient;
 import com.sharpdroid.registroelettronico.Databases.Entities.Communication;
 import com.sharpdroid.registroelettronico.Fragments.FragmentCommunications;
@@ -73,10 +74,13 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
             listener.onCommunicationClick(communication);
         });
 
-
-        if (!communication.isRead()) {
+        ViewHolder.attachment.setVisibility((communication.getHasAttachment()) ? View.VISIBLE : View.GONE);
+        if (!communication.isRead() || communication.getContent().isEmpty()) {
             APIClient.Companion.with(mContext).readBacheca(communication.getEvtCode(), communication.getId()).subscribe(readResponse -> {
                 communication.setContent(readResponse.getItem().getText());
+                communication.setRead(true);
+                SugarRecord.save(communication);
+
             }, Throwable::printStackTrace);
         }
     }
@@ -104,6 +108,8 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
         TextView Date;
         @BindView(R.id.type)
         TextView Type;
+        @BindView(R.id.attachment)
+        View attachment;
 
         CommunicationHolder(View itemView) {
             super(itemView);
