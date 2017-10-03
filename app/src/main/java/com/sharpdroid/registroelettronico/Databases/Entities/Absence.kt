@@ -46,9 +46,11 @@ data class Absence(
         @Expose @SerializedName("isJustified") val justified: Boolean,
         @Expose @SerializedName("justifReasonCode") val reasonCode: String?,
         @Expose @SerializedName("justifReasonDesc") val reasonDesc: String?,
-        var profile: Profile?
+        var profile: Profile?,
+        @Expose @SerializedName("evtHPos") val hPos: Int,
+        @Expose @SerializedName("evtValue") val value: Int
 ) {
-    constructor() : this(0, "", Date(), false, null, null, null)
+    constructor() : this(0, "", Date(), false, null, null, null, 0, 0)
 }
 
 data class AbsenceAPI(@Expose @SerializedName("events") val events: List<Absence>) {
