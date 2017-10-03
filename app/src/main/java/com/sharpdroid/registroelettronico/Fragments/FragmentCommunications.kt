@@ -90,7 +90,7 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
 
     override fun onCommunicationClick(communication: Communication) {
         with(communication) {
-            if (content.isEmpty() || content.equals(title, true)) return
+            if (!hasAttachment && (content.isEmpty() || content.equals(title, true))) return
 
             val builder = MaterialDialog.Builder(activity).title(title).content(content)
 
