@@ -594,18 +594,19 @@ public class Metodi {
                     List<Communication> list = communicationAPI.getCommunications(p);
 
                     for (Communication communication : list) {
-                        final CommunicationInfo info = SugarRecord.findById(CommunicationInfo.class, communication.getId());
+                        CommunicationInfo info = SugarRecord.findById(CommunicationInfo.class, communication.getId());
                         if (communication.getCntStatus().equals("deleted")) {
                             list.remove(communication);
                             break;
                         }
-                        if (!communication.isRead() || info == null || info.getContent().isEmpty()) {
+                        if (info == null) info = new CommunicationInfo();
+                        if ((!communication.isRead() || info.getContent().isEmpty()) && !info.getPath().isEmpty()) {
                             APIClient.Companion.with(c).readBacheca(communication.getEvtCode(), communication.getId()).subscribe(readResponse -> {
                                 communication.setRead(true);
                                 SugarRecord.save(communication);
 
                                 CommunicationInfo downloadedInfo = readResponse.getItem();
-                                downloadedInfo.setId(communication.getId());
+                                downloadedInfo.setId(communication.getMyId());
                                 SugarRecord.save(downloadedInfo);
                             });
                         }
@@ -655,7 +656,7 @@ public class Metodi {
                         File.separator +
                         "Registro Elettronico" + File.separator + "Circolari");
 
-        handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_START, new Long[]{communication.getId()}));
+        handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_START, new Long[]{communication.getMyId()}));
         APIClient.Companion.with(c).getBachecaAttachment(communication.getEvtCode(), communication.getId())
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
@@ -664,20 +665,20 @@ public class Metodi {
                         if (!dir.exists()) dir.mkdirs();
                         File fileDir = new File(dir, filename);
 
-                        CommunicationInfo communicationInfo = SugarRecord.findById(CommunicationInfo.class, communication.getId());
+                        CommunicationInfo communicationInfo = SugarRecord.findById(CommunicationInfo.class, communication.getMyId());
                         if (communicationInfo == null) communicationInfo = new CommunicationInfo();
-                        communicationInfo.setId(communication.getId());
+                        communicationInfo.setId(communication.getMyId());
 
                         if (fileDir.exists()) {      //File esistente ma non salvato nel db
                             communicationInfo.setPath(fileDir.getAbsolutePath());
                             SugarRecord.update(communicationInfo);
-                            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_OK, new Long[]{communication.getId()}));
+                            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_OK, new Long[]{communication.getMyId()}));
                         } else if (writeResponseBodyToDisk(response.body(), fileDir)) {
                             communicationInfo.setPath(fileDir.getAbsolutePath());
                             SugarRecord.update(communicationInfo);
-                            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_OK, new Long[]{communication.getId()}));
+                            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_OK, new Long[]{communication.getMyId()}));
                         } else {
-                            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_KO, new Long[]{communication.getId()}));
+                            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_KO, new Long[]{communication.getMyId()}));
                         }
 
                     }
@@ -685,7 +686,7 @@ public class Metodi {
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                         t.printStackTrace();
-                        handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_KO, new Long[]{communication.getId()}));
+                        handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_KO, new Long[]{communication.getMyId()}));
                     }
                 });
     }

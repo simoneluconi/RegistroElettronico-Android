@@ -90,7 +90,7 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
     }
 
     override fun onCommunicationClick(communication: Communication) {
-        with(SugarRecord.findById(CommunicationInfo::class.java, communication.id)) {
+        with(SugarRecord.findById(CommunicationInfo::class.java, communication.myId)) {
             if (!communication.hasAttachment && (content.isEmpty() || content.equals(title, true))) return
 
             val builder = MaterialDialog.Builder(activity).title(title).content(content)

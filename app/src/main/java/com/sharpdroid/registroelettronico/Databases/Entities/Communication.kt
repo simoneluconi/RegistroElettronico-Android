@@ -37,7 +37,7 @@ data class Communication(
         @Expose @SerializedName("pubDT") val date: Date,
         @Expose @SerializedName("readStatus") var isRead: Boolean,
         @Expose @SerializedName("evtCode") val evtCode: String,
-        @Expose @SerializedName("cntId") val myId: Int,
+        @Expose @SerializedName("cntId") val myId: Long,
         @Expose @SerializedName("cntTitle") val title: String,
         @Expose @SerializedName("cntStatus") @Ignore val cntStatus: String,
         @Expose @SerializedName("cntCategory") val category: String,
