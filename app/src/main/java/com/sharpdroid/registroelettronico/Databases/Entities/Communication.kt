@@ -42,11 +42,9 @@ data class Communication(
         @Expose @SerializedName("cntStatus") @Ignore val cntStatus: String,
         @Expose @SerializedName("cntCategory") val category: String,
         @Expose @SerializedName("cntHasAttach") val hasAttachment: Boolean,
-        var profile: Profile?,
-        var content: String,
-        var path: String
+        var profile: Profile?
 ) {
-    constructor() : this(0, Date(), false, "", 0, "", "", "", false, null, "", "")
+    constructor() : this(0, Date(), false, "", 0, "", "", "", false, null)
 }
 
 data class CommunicationAPI(@Expose @SerializedName("items") val communications: List<Communication>) {
@@ -69,6 +67,12 @@ data class CommunicationAPI(@Expose @SerializedName("items") val communications:
     }
 }
  */
-data class CommItem(@Expose @SerializedName("title") val title: String, @Expose @SerializedName("text") val text: String)
+@Table
+data class CommunicationInfo(@Unique var id: Long,
+                             @Expose @SerializedName("title") var title: String,
+                             @Expose @SerializedName("text") val content: String,
+                             var path: String) {
+    constructor() : this(0L, "", "", "")
+}
 
-data class ReadResponse(@Expose @SerializedName("item") val item: CommItem)
+data class ReadResponse(@Expose @SerializedName("item") val item: CommunicationInfo)

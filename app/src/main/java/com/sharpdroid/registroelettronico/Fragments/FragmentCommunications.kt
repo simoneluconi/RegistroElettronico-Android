@@ -11,6 +11,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.orm.SugarRecord
 import com.sharpdroid.registroelettronico.Adapters.CommunicationAdapter
 import com.sharpdroid.registroelettronico.Databases.Entities.Communication
+import com.sharpdroid.registroelettronico.Databases.Entities.CommunicationInfo
 import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Account
@@ -39,7 +40,7 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
                 snackbar?.show()
             }
             EventType.DOWNLOAD_FILE_OK -> {
-                val file = File(SugarRecord.findById(Communication::class.java, args[0] as Long).path)
+                val file = File(SugarRecord.findById(CommunicationInfo::class.java, args[0] as Long).path)
                 with(snackbar!!) {
                     setText(activity.getString(R.string.file_downloaded, file.name))
                     setAction(R.string.open) { openFile(activity, file) }
@@ -89,12 +90,12 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
     }
 
     override fun onCommunicationClick(communication: Communication) {
-        with(communication) {
-            if (!hasAttachment && (content.isEmpty() || content.equals(title, true))) return
+        with(SugarRecord.findById(CommunicationInfo::class.java, communication.id)) {
+            if (!communication.hasAttachment && (content.isEmpty() || content.equals(title, true))) return
 
             val builder = MaterialDialog.Builder(activity).title(title).content(content)
 
-            if (hasAttachment) {
+            if (communication.hasAttachment) {
                 builder.neutralText(if (path.isEmpty()) "SCARICA" else "APRI")
                 builder.onNeutral { _, _ ->
                     if (path.isNotEmpty()) {
@@ -134,10 +135,6 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
 
     private fun load() {
         addCommunications(SugarRecord.find(Communication::class.java, "PROFILE=? order by DATE desc", Account.with(activity).user.toString()))
-    }
-
-    private fun save(list: List<Communication>) {
-        SugarRecord.saveInTx(list)
     }
 
     private fun download() {

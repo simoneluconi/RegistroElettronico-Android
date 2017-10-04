@@ -15,6 +15,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.orm.SugarRecord
 import com.sharpdroid.registroelettronico.Adapters.FileAdapter
 import com.sharpdroid.registroelettronico.Databases.Entities.File
+import com.sharpdroid.registroelettronico.Databases.Entities.FileInfo
 import com.sharpdroid.registroelettronico.Databases.Entities.Folder
 import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
@@ -34,7 +35,7 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
             }
             EventType.DOWNLOAD_FILE_OK -> {
                 with(snackbar ?: return) {
-                    val file: java.io.File = java.io.File(SugarRecord.findById(File::class.java, args[0] as Long).path)
+                    val file: java.io.File = java.io.File(SugarRecord.findById(FileInfo::class.java, args[0] as Long).path)
                     setText(activity.getString(R.string.file_downloaded, file.name))
                     setAction(R.string.open) { openFile(activity, file) }
                     show()
@@ -86,23 +87,24 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
     }
 
     override fun onFileClick(file: File) {
+        val info = SugarRecord.findById(FileInfo::class.java, file.id)
         when (file.type) {
             "file" -> {
-                if (file.path.isEmpty()) {
-                    downloadFile(activity, file)
+                if (info.path.isEmpty()) {
+                    downloadFile(activity, info)
                 } else {
                     try {
-                        openFile(activity, java.io.File(file.path))
+                        openFile(activity, java.io.File(info.path))
                     } catch (e: ActivityNotFoundException) {
-                        Snackbar.make(layout, activity.resources.getString(R.string.missing_app, java.io.File(file.path).name), Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(layout, activity.resources.getString(R.string.missing_app, java.io.File(info.path).name), Snackbar.LENGTH_SHORT).show()
                     }
                 }
             }
             "link" -> {
-                openLink(activity, file.path)
+                openLink(activity, info.path)
             }
             "text" -> {
-                MaterialDialog.Builder(activity).title(file.contentName).content(file.path).positiveText("OK").autoDismiss(true).show()
+                MaterialDialog.Builder(activity).title(file.contentName).content(info.path).positiveText("OK").autoDismiss(true).show()
             }
         }
 

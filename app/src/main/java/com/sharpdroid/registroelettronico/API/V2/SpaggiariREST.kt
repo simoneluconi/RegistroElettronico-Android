@@ -51,10 +51,10 @@ interface SpaggiariREST {
     /*
         @GET("students/{studentId}/schoolbooks")
         fun getBooks(): Observable<List<Course>>
-    */
+
     @GET("students/{studentId}/calendar/all")
     fun getCalendar(): Observable<Calendar>
-/*
+
     @GET("students/{studentId}/card")
     fun getCard(): Observable<Card>
 
