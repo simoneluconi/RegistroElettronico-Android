@@ -21,7 +21,7 @@ repositories {
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "com.sharpdroid.registroelettronico"
@@ -80,7 +80,7 @@ android {
             zipAlignEnabled true
             shrinkResources false
             minifyEnabled true
-            useProguard true
+            useProguard false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
             if (rootProject.file("keystore.properties").exists()) {
