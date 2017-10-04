@@ -49,7 +49,7 @@ public class SubjectsAdapter extends RecyclerView.Adapter<SubjectsAdapter.Subjec
         for (Teacher t : item.getTeachers()) {
             teachers.add(t.getTeacherName());
         }
-        holder.subject.setText(item.getDescription());
+        holder.subject.setText(capitalizeEach(item.getDescription()));
 
         holder.prof.setVisibility(View.VISIBLE);
         holder.prof.setText(capitalizeEach(TextUtils.join(", ", teachers), true));
