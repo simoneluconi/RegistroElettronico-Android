@@ -10,8 +10,6 @@ import com.sharpdroid.registroelettronico.Databases.Entities.Folder;
 import com.sharpdroid.registroelettronico.Databases.Entities.Teacher;
 import com.sharpdroid.registroelettronico.R;
 
-import org.apache.commons.lang3.text.WordUtils;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +18,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.sharpdroid.registroelettronico.Utils.Metodi.Delimeters;
+import static com.sharpdroid.registroelettronico.Utils.Metodi.capitalizeEach;
 
 public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final SimpleDateFormat formatter = new SimpleDateFormat("MMM d, yyyy", Locale.ITALIAN);
@@ -67,7 +65,7 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 Teacher teacher = (Teacher) fe;
 
                 String profHeader = teacher.getTeacherName();
-                subHolder.teacher.setText(WordUtils.capitalizeFully(profHeader, Delimeters));
+                subHolder.teacher.setText(capitalizeEach(profHeader, true));
 
                 break;
             default:

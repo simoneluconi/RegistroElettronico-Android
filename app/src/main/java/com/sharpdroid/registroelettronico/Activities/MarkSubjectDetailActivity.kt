@@ -18,6 +18,7 @@ import com.sharpdroid.registroelettronico.Databases.Entities.Grade
 import com.sharpdroid.registroelettronico.Databases.Entities.Subject
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Metodi.MessaggioVoto
+import com.sharpdroid.registroelettronico.Utils.Metodi.capitalizeEach
 import kotlinx.android.synthetic.main.activity_mark_subject_detail.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import java.util.*
@@ -62,7 +63,7 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        title = subject.description
+        title = capitalizeEach(subject.description)
 
         setInfo(subject)
         setOverall()

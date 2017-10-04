@@ -18,7 +18,6 @@ import android.os.Looper;
 import android.provider.CalendarContract;
 import android.support.v4.content.FileProvider;
 import android.support.v4.util.Pair;
-import android.text.TextUtils;
 import android.util.TypedValue;
 import android.widget.Toast;
 
@@ -36,9 +35,7 @@ import com.sharpdroid.registroelettronico.Databases.Entities.RemoteAgenda;
 import com.sharpdroid.registroelettronico.Databases.Entities.SubjectTeacher;
 import com.sharpdroid.registroelettronico.Databases.Entities.SuperAgenda;
 import com.sharpdroid.registroelettronico.Databases.Entities.Teacher;
-import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absence;
-import com.sharpdroid.registroelettronico.Interfaces.API.Event;
 import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
 import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
 import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
@@ -49,7 +46,6 @@ import com.sharpdroid.registroelettronico.Interfaces.Client.Subject;
 import com.sharpdroid.registroelettronico.NotificationManager;
 import com.sharpdroid.registroelettronico.R;
 
-import org.apache.commons.lang3.text.WordUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,8 +66,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import kotlin.text.Regex;
 import okhttp3.Cookie;
 import okhttp3.Headers;
 import okhttp3.ResponseBody;
@@ -177,6 +175,15 @@ public class Metodi {
         return sortedMap;
     }
 
+    public static String capitalizeEach(String input, boolean doSingleLetters) {
+        Regex reg1 = new Regex(Pattern.compile(doSingleLetters ? "([a-z])\\w*" : "([a-z])\\w+"));
+        return reg1.replace(input.toLowerCase(), matchResult -> matchResult.getValue().substring(0, 1).toUpperCase() + matchResult.getValue().substring(1).toLowerCase());
+    }
+
+    public static String capitalizeEach(String input) {
+        return capitalizeEach(input, false);
+    }
+
     public static int getMarkColor(float voto, float voto_obiettivo) {
         if (voto >= voto_obiettivo)
             return R.color.greenmaterial;
@@ -261,22 +268,6 @@ public class Metodi {
             days += a.getDays();
         }
         return days;
-    }
-
-    public static String toLowerCase(String s) {
-        return (s != null) ? s.toLowerCase() : null;
-    }
-
-    public static String getSubjectName(com.sharpdroid.registroelettronico.Databases.Entities.Subject subject) {
-        boolean hasUppercase = !subject.getDescription().equals(subject.getDescription().toLowerCase());
-        return (hasUppercase) ? subject.getDescription() : WordUtils.capitalizeFully(subject.getDescription());
-    }
-
-    public static Media getHypotheticalAverage(MarkSubject markSubject, Mark mark) {
-        Media m = new Media();
-        m.addMarks(markSubject.getMarks());
-        m.addMark(mark);
-        return m;
     }
 
     public static int getPossibileSubjectTarget(double media) {
@@ -770,10 +761,6 @@ public class Metodi {
         return a.substring(0, 1).toUpperCase() + a.substring(1);
     }
 
-    public static String getSubjectNameOrProfessorName(Event event, RegistroDB db) {
-        String subjectOrProf = TextUtils.isEmpty(event.getMateria_desc()) ? db.getSubjectOrProfessorName(event.getAutore_id()) : event.getMateria_desc();
-        return WordUtils.capitalizeFully(TextUtils.isEmpty(subjectOrProf) ? event.getAutore_desc() : subjectOrProf, Delimeters);
-    }
 
     public static String eventToString(SuperAgenda e, String head) {
         return capitalizeFirst(complex.format(e.getAgenda().getStart())) + "\n---" + head + "---\n" + capitalizeFirst(e.getAgenda().getNotes());
@@ -825,7 +812,7 @@ public class Metodi {
     public static <S extends CharSequence> List<String> capitalizeList(List<S> list) {
         List<String> capitalized = new ArrayList<>();
         for (S s : list) {
-            capitalized.add(WordUtils.capitalizeFully(s.toString(), Delimeters));
+            capitalized.add(capitalizeEach(s.toString(), true));
         }
         return capitalized;
     }

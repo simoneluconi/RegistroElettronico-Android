@@ -27,7 +27,6 @@ import com.transitionseverywhere.TransitionManager
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.fragment_agenda.*
-import org.apache.commons.lang3.text.WordUtils
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -204,8 +203,8 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
 
     private fun setTitleSubtitle(d: Date?) {
         TransitionManager.beginDelayedTransition(activity.toolbar, ChangeText().setChangeBehavior(ChangeText.CHANGE_BEHAVIOR_IN))
-        activity.toolbar.title = WordUtils.capitalizeFully(month.format(d))
-        activity.toolbar.subtitle = WordUtils.capitalizeFully(year.format(d))
+        activity.toolbar.title = capitalizeEach(month.format(d))
+        activity.toolbar.subtitle = capitalizeEach(year.format(d))
     }
 
     private fun setAdapterEvents(events: List<SuperAgenda>) {

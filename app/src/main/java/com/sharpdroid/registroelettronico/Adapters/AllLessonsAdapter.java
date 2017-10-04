@@ -12,8 +12,6 @@ import com.sharpdroid.registroelettronico.Databases.Entities.Lesson;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Entry;
 import com.sharpdroid.registroelettronico.R;
 
-import org.apache.commons.lang3.text.WordUtils;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import static com.sharpdroid.registroelettronico.Utils.Metodi.capitalizeEach;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.month_year;
 
 public class AllLessonsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -61,7 +60,7 @@ public class AllLessonsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             LessonEntry entry = (LessonEntry) types.get(position);
 
             lessonHolder.content.setText(entry.getLesson().getMArgument());
-            lessonHolder.date.setText(WordUtils.capitalizeFully(dateFormat.format(entry.getLesson().getMDate())));
+            lessonHolder.date.setText(capitalizeEach(dateFormat.format(entry.getLesson().getMDate())));
         }
     }
 
