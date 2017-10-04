@@ -35,10 +35,14 @@ data class File(
         @Expose @SerializedName("shareDT") val date: Date,
         var folder: Long,
         var teacher: Long,
-        var path: String,
         var profile: Long
 ) {
-    constructor() : this(0, "", 0, "", Date(), 0, 0, "", 0)
+    constructor() : this(0, "", 0, "", Date(), 0, 0, 0)
+}
+
+@Table
+data class FileInfo(@Unique val id: Long, var path: String) {
+    constructor() : this(0L, "")
 }
 
 data class DownloadURL(@Expose @SerializedName("link") val link: String)

@@ -53,10 +53,15 @@ data class RemoteAgenda(
         fun getAgenda(id: Long, date: Date): List<SuperAgenda> {
             val completed: MutableList<RemoteAgendaInfo> = SugarRecord.find(RemoteAgendaInfo::class.java, "ARCHIVED=0 AND COMPLETED=1") ?: mutableListOf()
             val archived: MutableList<RemoteAgendaInfo> = SugarRecord.find(RemoteAgendaInfo::class.java, "ARCHIVED=1") ?: mutableListOf()
-            val events = SugarRecord.find(RemoteAgenda::class.java, "PROFILE=? AND START<=? AND ?<=END", id.toString(), date.time.toString(), date.time.toString())
+            val events = SugarRecord.find(RemoteAgenda::class.java, "PROFILE=? AND START BETWEEN ? AND ? AND END BETWEEN ? AND ?", id.toString(), date.time.toString(), (date.time + 24 * 3600 * 1000).toString(), date.time.toString(), (date.time + 24 * 3600 * 1000).toString())
 
             return events.filter { a -> !archived.any { it.id == a.id } }.map { agenda -> SuperAgenda(agenda, completed.any { it.id == agenda.id }) }
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is RemoteAgenda) return false
+        return notes == other.notes && author == other.author
     }
 }
 
@@ -65,4 +70,13 @@ data class AgendaAPI(@Expose @SerializedName("agenda") val agenda: List<RemoteAg
         agenda.forEach { it.profile = profile }
         return agenda
     }
+}
+
+@Table
+data class RemoteAgendaInfo(
+        @Unique val id: Long,
+        var completed: Boolean,
+        var archived: Boolean
+) {
+    constructor() : this(0, false, false)
 }
