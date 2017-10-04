@@ -44,6 +44,7 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
                 with(snackbar!!) {
                     setText(activity.getString(R.string.file_downloaded, file.name))
                     setAction(R.string.open) { openFile(activity, file) }
+                    duration = Snackbar.LENGTH_LONG
                     show()
                 }
             }
