@@ -128,9 +128,9 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
         for (i in 0..pagerAdapter.count) {
             fragment = pagerAdapter.instantiateItem(view_pager, i) as FragmentMedie
             when (i) {
-                0 -> fragment.addSubjects(Grade.getAverages(activity, "M_PERIOD=1 AND"), i)
-                1 -> fragment.addSubjects(Grade.getAverages(activity, "M_PERIOD!=1 AND"), i)
-                2 -> fragment.addSubjects(Grade.getAverages(activity, ""), i)
+                0 -> fragment.addSubjects(Grade.getAverages(activity, "M_PERIOD=1 AND"), 1)
+                1 -> fragment.addSubjects(Grade.getAverages(activity, "M_PERIOD!=1 AND"), 3)
+                2 -> fragment.addSubjects(Grade.getAverages(activity, ""), -1)
             }
         }
 

@@ -67,11 +67,6 @@ public class TargetView extends CardView {
 
     public void setProgress(Float media) {
         setMedia(media);
-
-        //bar
-        TransitionManager.beginDelayedTransition(this, new TransitionSet().addTransition(new Recolor()).addTransition(new AutoTransition()));
-        progressBar.setProgress(media);
-        progressBar.setProgressColor(getColor(getMarkColor(media, target)));
     }
 
     public float getMedia() {
@@ -79,8 +74,20 @@ public class TargetView extends CardView {
     }
 
     private void setMedia(float media) {
-        this.media = media;
-        this.mediaView.setText(String.format(Locale.getDefault(), "%.2f", media));
+        if (media == -1) {
+            this.media = -1;
+            progressBar.setProgressColor(getColor(R.color.intro_blue));
+            progressBar.setMax(10);
+            progressBar.setProgress(11);
+            mediaView.setText("-");
+        } else {
+            this.media = media;
+            this.mediaView.setText(String.format(Locale.getDefault(), "%.2f", media));
+
+            TransitionManager.beginDelayedTransition(this, new TransitionSet().addTransition(new Recolor()).addTransition(new AutoTransition()));
+            progressBar.setProgress(media);
+            progressBar.setProgressColor(getColor(getMarkColor(media, target)));
+        }
     }
 
     public float getTarget() {
@@ -94,6 +101,8 @@ public class TargetView extends CardView {
         progressBar.setMax(target);
         progressBar.setProgress(media);
         progressBar.setProgressColor(getColor(getMarkColor(media, target)));
+
+        setMedia(media);
         this.target = target;
     }
 
