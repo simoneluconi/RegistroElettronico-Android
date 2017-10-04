@@ -7,15 +7,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 
 import com.orm.SugarRecord;
 import com.sharpdroid.registroelettronico.Databases.Entities.Subject;
 import com.sharpdroid.registroelettronico.Databases.Entities.Teacher;
-import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.R;
-
-import java.util.List;
+import com.sharpdroid.registroelettronico.Utils.Account;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,7 +35,6 @@ public class EditSubjectDetailsActivity extends AppCompatActivity {
     TextInputEditText notes;
 
     Subject subject;
-    RegistroDB db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +50,6 @@ public class EditSubjectDetailsActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        db = RegistroDB.getInstance(this);
-
         name.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_title), null, null, null);
         classroom.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_room), null, null, null);
         notes.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_description), null, null, null);
@@ -68,20 +64,22 @@ public class EditSubjectDetailsActivity extends AppCompatActivity {
             return false;
         });
 
-        init(getIntent().getIntExtra("code", -1));
+        init(getIntent().getLongExtra("code", -1));
     }
 
-    void init(int code) {
+    void init(long code) {
         if (code != -1) {
             subject = SugarRecord.findById(Subject.class, code);
 
-            name.setText(subject.getDescription());
+            name.setText(capitalizeEach(subject.getDescription()));
+            subject.setTeachers(SugarRecord.find(Teacher.class, "ID IN (select TEACHER from SUBJECT_TEACHER where PROFILE=? and SUBJECT=?)", String.valueOf(Account.Companion.with(this).getUser()), String.valueOf(code)));
             if (!subject.getTeachers().isEmpty()) {
-                List<Teacher> p = subject.getTeachers();
-                if (p.size() > 0)
-                    prof.setText(capitalizeEach(p.get(0).getTeacherName(), true));
-                if (p.size() > 1)
-                    prof2.setText(capitalizeEach(p.get(1).getTeacherName(), true));
+                if (subject.getTeachers().size() > 0)
+                    prof.setText(capitalizeEach(subject.getTeachers().get(0).getTeacherName(), true));
+                if (subject.getTeachers().size() > 1)
+                    prof2.setText(capitalizeEach(subject.getTeachers().get(1).getTeacherName(), true));
+                else
+                    prof2.setVisibility(View.GONE);
             }
             classroom.setText(subject.getClassroom());
             notes.setText(subject.getDetails());
