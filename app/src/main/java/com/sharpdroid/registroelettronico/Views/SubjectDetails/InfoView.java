@@ -17,15 +17,13 @@ import android.widget.TextView;
 import com.sharpdroid.registroelettronico.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
-import org.apache.commons.lang3.text.WordUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.sharpdroid.registroelettronico.Utils.Metodi.Delimeters;
+import static com.sharpdroid.registroelettronico.Utils.Metodi.capitalizeEach;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.dpToPx;
 
 
@@ -119,9 +117,9 @@ public class InfoView extends CardView {
             List<Pair<Integer, String>> list = new ArrayList<>();
 
             if (data != null) {
-                list.add(new Pair<>(R.drawable.ic_title, data.getDescription()));
+                list.add(new Pair<>(R.drawable.ic_title, capitalizeEach(data.getDescription())));
                 if (!data.getTeachers().isEmpty())
-                    list.add(new Pair<>(R.drawable.ic_person, WordUtils.capitalizeFully(TextUtils.join(" - ", data.getTeachers()), Delimeters)));
+                    list.add(new Pair<>(R.drawable.ic_person, capitalizeEach(TextUtils.join(" - ", data.getTeachers()), true)));
                 if (!TextUtils.isEmpty(data.getClassroom()))
                     list.add(new Pair<>(R.drawable.ic_room, data.getClassroom()));
                 if (!TextUtils.isEmpty(data.getDetails()))

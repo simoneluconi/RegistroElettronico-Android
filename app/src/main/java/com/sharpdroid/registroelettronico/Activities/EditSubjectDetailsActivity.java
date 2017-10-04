@@ -15,15 +15,12 @@ import com.sharpdroid.registroelettronico.Databases.Entities.Teacher;
 import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.R;
 
-import org.apache.commons.lang3.text.WordUtils;
-
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.sharpdroid.registroelettronico.Utils.Metodi.Delimeters;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.getSubjectName;
+import static com.sharpdroid.registroelettronico.Utils.Metodi.capitalizeEach;
 
 public class EditSubjectDetailsActivity extends AppCompatActivity {
 
@@ -78,13 +75,13 @@ public class EditSubjectDetailsActivity extends AppCompatActivity {
         if (code != -1) {
             subject = SugarRecord.findById(Subject.class, code);
 
-            name.setText(getSubjectName(subject));
+            name.setText(subject.getDescription());
             if (!subject.getTeachers().isEmpty()) {
                 List<Teacher> p = subject.getTeachers();
                 if (p.size() > 0)
-                    prof.setText(WordUtils.capitalizeFully(p.get(0).getTeacherName(), Delimeters));
+                    prof.setText(capitalizeEach(p.get(0).getTeacherName(), true));
                 if (p.size() > 1)
-                    prof2.setText(WordUtils.capitalizeFully(p.get(1).getTeacherName(), Delimeters));
+                    prof2.setText(capitalizeEach(p.get(1).getTeacherName(), true));
             }
             classroom.setText(subject.getClassroom());
             notes.setText(subject.getDetails());

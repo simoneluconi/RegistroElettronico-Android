@@ -14,8 +14,6 @@ import com.sharpdroid.registroelettronico.Databases.Entities.Teacher;
 import com.sharpdroid.registroelettronico.Fragments.FragmentSubjects;
 import com.sharpdroid.registroelettronico.R;
 
-import org.apache.commons.lang3.text.WordUtils;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -24,8 +22,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.sharpdroid.registroelettronico.Utils.Metodi.Delimeters;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.getSubjectName;
+import static com.sharpdroid.registroelettronico.Utils.Metodi.capitalizeEach;
 
 public class SubjectsAdapter extends RecyclerView.Adapter<SubjectsAdapter.SubjectHolder> {
     private List<Subject> CVDataList;
@@ -52,10 +49,10 @@ public class SubjectsAdapter extends RecyclerView.Adapter<SubjectsAdapter.Subjec
         for (Teacher t : item.getTeachers()) {
             teachers.add(t.getTeacherName());
         }
-        holder.subject.setText(getSubjectName(item));
+        holder.subject.setText(item.getDescription());
 
         holder.prof.setVisibility(View.VISIBLE);
-        holder.prof.setText(WordUtils.capitalizeFully(TextUtils.join(", ", teachers), Delimeters));
+        holder.prof.setText(capitalizeEach(TextUtils.join(", ", teachers), true));
 
         holder.layout.setOnClickListener(view -> {
             if (subjectListener != null) subjectListener.onSubjectClick(item);

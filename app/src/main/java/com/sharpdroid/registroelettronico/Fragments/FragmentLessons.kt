@@ -83,7 +83,7 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
     }
 
     private fun load() {
-        addLessons(SugarRecord.findWithQuery(Lesson::class.java, "select * from LESSON where M_SUBJECT_ID=?", subject?.id.toString()))
+        addLessons(SugarRecord.findWithQuery(Lesson::class.java, "select * from LESSON where M_SUBJECT_ID=? ORDER BY M_DATE DESC", subject?.id.toString()))
     }
 
     override fun onDestroyView() {

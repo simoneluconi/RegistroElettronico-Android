@@ -18,8 +18,6 @@ import com.sharpdroid.registroelettronico.Interfaces.Client.Average;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.Views.CircleProgressBar;
 
-import org.apache.commons.lang3.text.WordUtils;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -29,6 +27,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.MessaggioVoto;
+import static com.sharpdroid.registroelettronico.Utils.Metodi.capitalizeEach;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getMediaColor;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.getPossibileSubjectTarget;
 
@@ -67,7 +66,7 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
     public void onBindViewHolder(MedieHolder ViewHolder, int position) {
         final Average avg = CVDataList.get(position);
 
-        ViewHolder.mTextViewMateria.setText(WordUtils.capitalizeFully(avg.name));
+        ViewHolder.mTextViewMateria.setText(capitalizeEach(avg.name));
 
         ViewHolder.mCardViewMedia.setOnClickListener(v ->
                 mContext.startActivity(new Intent(mContext, MarkSubjectDetailActivity.class)

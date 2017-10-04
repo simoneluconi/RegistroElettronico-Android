@@ -63,7 +63,7 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
     }
 
     private fun fetch(): List<Subject> {
-        return SugarRecord.findWithQuery(Subject::class.java, "select * from SUBJECT where SUBJECT.ID IN (SELECT  SUBJECT_TEACHER.SUBJECT from SUBJECT_TEACHER WHERE SUBJECT_TEACHER.PROFILE=?)", Account.with(activity).user.toString())
+        return SugarRecord.findWithQuery(Subject::class.java, "select * from SUBJECT where SUBJECT.ID IN (SELECT  SUBJECT_TEACHER.SUBJECT from SUBJECT_TEACHER WHERE SUBJECT_TEACHER.PROFILE=?) ORDER BY DESCRIPTION ASC", Account.with(activity).user.toString())
     }
 
     override fun onSubjectClick(subject: Subject) {

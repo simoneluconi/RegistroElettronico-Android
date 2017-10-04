@@ -27,6 +27,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.sharpdroid.registroelettronico.Utils.Metodi.capitalizeEach;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.isEventTest;
 
 public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -62,7 +63,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             }
 
             eventHolder.date.setText(dateFormat.format(event.getAgenda().getStart()));
-            eventHolder.subject.setText(event.getAgenda().getAuthor());
+            eventHolder.subject.setText(capitalizeEach(event.getAgenda().getAuthor(), true));
             eventHolder.title.setText(title);
 
             eventHolder.notes.setVisibility(View.GONE);
