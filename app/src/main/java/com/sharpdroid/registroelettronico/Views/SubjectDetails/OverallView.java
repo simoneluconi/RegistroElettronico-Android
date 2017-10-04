@@ -61,16 +61,16 @@ public class OverallView extends CardView {
 
     public void setScritto(@Nullable Float scritto) {
         if (scritto == null) mOrale.setText("-");
-        mScritto.setText(String.format(Locale.getDefault(), "%.2f", scritto));
+        else mScritto.setText(String.format(Locale.getDefault(), "%.2f", scritto));
     }
 
     public void setOrale(@Nullable Float orale) {
         if (orale == null) mOrale.setText("-");
-        mOrale.setText(String.format(Locale.getDefault(), "%.2f", orale));
+        else mOrale.setText(String.format(Locale.getDefault(), "%.2f", orale));
     }
 
     public void setPratico(@Nullable Float pratico) {
         if (pratico == null) mOrale.setText("-");
-        mPratico.setText(String.format(Locale.getDefault(), "%.2f", pratico));
+        else mPratico.setText(String.format(Locale.getDefault(), "%.2f", pratico));
     }
 }

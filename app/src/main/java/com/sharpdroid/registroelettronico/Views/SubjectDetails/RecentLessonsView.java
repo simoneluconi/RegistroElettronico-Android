@@ -60,7 +60,7 @@ public class RecentLessonsView extends CardView {
 
     public void update(int code) {
         adapter.clear();
-        adapter.addAll(SugarRecord.find(Lesson.class, "M_SUBJECT_CODE=?", String.valueOf(code)));
+        adapter.addAll(SugarRecord.find(Lesson.class, "M_SUBJECT_ID=? ORDER BY M_DATE DESC LIMIT 5", String.valueOf(code)));
         showAllButton.setOnClickListener(view -> mContext.startActivity(new Intent(mContext, AllLessonsWithDownloadActivity.class).putExtra("code", code)));
     }
 

@@ -35,24 +35,20 @@ import java.util.*
 
 class MarkSubjectDetailActivity : AppCompatActivity() {
 
-    data class AverageType(@Column(name = "AVG") val avg: Float, @Column(name = "TYPE") val type: String, @Column(name = "COUNT") val count: Int) {
-        constructor() : this(0f, "", 0)
+    data class AverageType(@Column(name = "ID") val ignore: Long, @Column(name = "AVG") val avg: Float, @Column(name = "TYPE") val type: String, @Column(name = "COUNT") val count: Int) {
+        constructor() : this(-1L, -1f, "", 0)
     }
 
     lateinit var subject: Subject
-    //lateinit var media: Media
     var p: Int = 0
     lateinit var avg: AverageType
-    //var period: Int
-    //var name: String
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mark_subject_detail)
 
         subject = SugarRecord.findById(Subject::class.java, intent.getIntExtra("subject_id", -1))
         p = intent.getIntExtra("period", 0)
-        avg = SugarRecord.findWithQuery(AverageType::class.java, "SELECT 0 as ID, AVG(M_VALUE) as AVG , 'Generale' as TYPE, COUNT(M_VALUE) as COUNT  FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=?", subject.id.toString())[0]
+        avg = SugarRecord.findWithQuery(AverageType::class.java, "SELECT ID, AVG(M_VALUE) as AVG , 'Generale' as TYPE, COUNT(M_VALUE) as COUNT  FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=?", subject.id.toString())[0]
 
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -160,19 +156,7 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
     }
 
     private fun setLessons(code: Long) {
-        lessons!!.update(code.toInt())
-/*
-        for (prof in db.getProfessorCodes(code)) {
-            SpiaggiariApiClient(this)
-                    .getLessons(code, prof.toString())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ lessons ->
-                        //db.removeLessons(code);
-                        db.addLessons(code, prof, lessons)
-                        this.lessons!!.update(code)
-                        db.addProfessor(code, prof, getProfessorOfThisSubject(lessons))
-                    }, { it.printStackTrace() })
-        }*/
+        lessons.update(code.toInt())
     }
 
     private fun setMarks(marks: List<Grade>) {
