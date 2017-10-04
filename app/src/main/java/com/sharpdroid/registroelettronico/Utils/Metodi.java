@@ -51,6 +51,7 @@ import com.sharpdroid.registroelettronico.R;
 
 import org.apache.commons.lang3.text.WordUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -594,19 +595,25 @@ public class Metodi {
                     List<Communication> list = communicationAPI.getCommunications(p);
 
                     for (Communication communication : list) {
-                        CommunicationInfo info = SugarRecord.findById(CommunicationInfo.class, communication.getId());
                         if (communication.getCntStatus().equals("deleted")) {
                             list.remove(communication);
                             break;
                         }
-                        if (info == null) info = new CommunicationInfo();
-                        if ((!communication.isRead() || info.getContent().isEmpty()) && !info.getPath().isEmpty()) {
+
+                        @Nullable CommunicationInfo info = SugarRecord.findById(CommunicationInfo.class, communication.getMyId());
+
+                        if (!communication.isRead() || (info != null && info.getContent().isEmpty()) || info == null) {
                             APIClient.Companion.with(c).readBacheca(communication.getEvtCode(), communication.getId()).subscribe(readResponse -> {
                                 communication.setRead(true);
                                 SugarRecord.save(communication);
+                                list.remove(communication);
 
                                 CommunicationInfo downloadedInfo = readResponse.getItem();
                                 downloadedInfo.setId(communication.getMyId());
+                                downloadedInfo.setContent(
+                                        downloadedInfo.getContent().isEmpty() ?
+                                                ((info != null) ? info.getContent() : "") :
+                                                downloadedInfo.getContent());
                                 SugarRecord.save(downloadedInfo);
                             });
                         }

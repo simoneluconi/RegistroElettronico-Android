@@ -70,7 +70,7 @@ data class CommunicationAPI(@Expose @SerializedName("items") val communications:
 @Table
 data class CommunicationInfo(@Unique var id: Long,
                              @Expose @SerializedName("title") var title: String,
-                             @Expose @SerializedName("text") val content: String,
+                             @Expose @SerializedName("text") var content: String,
                              var path: String) {
     constructor() : this(0L, "", "", "")
 }
