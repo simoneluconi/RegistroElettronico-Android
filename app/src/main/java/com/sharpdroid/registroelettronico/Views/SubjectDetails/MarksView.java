@@ -216,4 +216,8 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
         }
         return true;
     }
+
+    public int getItemCount() {
+        return adapter.getItemCount();
+    }
 }

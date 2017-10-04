@@ -60,7 +60,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -185,6 +184,7 @@ public class Metodi {
     }
 
     public static int getMarkColor(float voto, float voto_obiettivo) {
+        if (voto == 0) return R.color.intro_blue;
         if (voto >= voto_obiettivo)
             return R.color.greenmaterial;
         else if (voto < 5)
@@ -320,23 +320,6 @@ public class Metodi {
     public static List<Grade> sortMarksByDate(List<Grade> marks) {
         Collections.sort(marks, (o1, o2) -> o1.getMDate().compareTo(o2.getMDate()));
         return marks;
-    }
-
-    public static Map<String, List<Absence>> convertAbsencesToHashmap(List<com.sharpdroid.registroelettronico.Databases.Entities.Absence> absences) {
-        Map<String, List<Absence>> hashMap = new HashMap<>();
-/*
-        //assenze
-        for (Absence absence : absences.getAbsences()) {
-            String month = month_year.format(absence.getFrom());
-            if (hashMap.containsKey(month)) {
-                List<Entry> entries = new ArrayList<>(hashMap.get(month));
-                entries.add(new AbsenceEntry(absence));
-                hashMap.put(month, entries);
-            } else {
-                hashMap.put(month, Collections.singletonList(new AbsenceEntry(absence)));
-            }
-        }*/
-        return hashMap;
     }
 
     public static LinkedHashMap<String, List<Entry>> sortByDate(Map<String, List<Entry>> unsort) {

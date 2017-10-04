@@ -17,6 +17,7 @@ import com.sharpdroid.registroelettronico.API.V1.SpiaggiariAPI
 import com.sharpdroid.registroelettronico.Databases.Entities.Grade
 import com.sharpdroid.registroelettronico.Databases.Entities.Subject
 import com.sharpdroid.registroelettronico.R
+import com.sharpdroid.registroelettronico.Utils.Account
 import com.sharpdroid.registroelettronico.Utils.Metodi.MessaggioVoto
 import com.sharpdroid.registroelettronico.Utils.Metodi.capitalizeEach
 import kotlinx.android.synthetic.main.activity_mark_subject_detail.*
@@ -65,7 +66,7 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
         setOverall()
         setTarget()
         setLessons(subject.id)
-        //setMarks(data.getMarks())
+        setMarks()
     }
 
     private fun setInfo(subject: Subject) {
@@ -159,11 +160,11 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
         lessons.update(code.toInt())
     }
 
-    private fun setMarks(marks: List<Grade>) {
-        this.marks!!.setSubject(subject, avg.avg)
-        this.marks!!.addAll(marks)
-        this.marks!!.setChart(SugarRecord.findWithQuery(Entry::class.java, "SELECT 0 as ID, M_DATE as X, M_VALUE as Y FROM GRADE WHERE M_SUBJECT_ID=? AND M_VALUE!=0", subject.id.toString()))
-        this.marks!!.setShowChart(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("show_chart", true) && marks.size > 1)
+    private fun setMarks() {
+        marks.setSubject(subject, avg.avg)
+        marks.addAll(SugarRecord.find(Grade::class.java, (if (p != -1) "M_PERIOD='$p' AND" else "") + " PROFILE=? AND M_SUBJECT_ID=? ORDER BY M_DATE DESC", Account.with(this).user.toString(), subject.id.toString()))
+        marks.setChart(SugarRecord.findWithQuery(Entry::class.java, "SELECT ID, M_DATE as X, M_VALUE as Y FROM GRADE WHERE M_SUBJECT_ID=? AND M_VALUE!=0", subject.id.toString()))
+        marks.setShowChart(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("show_chart", true) && marks.itemCount > 1)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
