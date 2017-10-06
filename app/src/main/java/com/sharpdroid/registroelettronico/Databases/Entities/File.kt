@@ -30,7 +30,7 @@ import java.util.*
 data class File(
         @Expose @SerializedName("contentId") @Unique val id: Long,
         @Expose @SerializedName("contentName") val contentName: String,
-        @Expose @SerializedName("objectId") val objectId: Int,
+        @Expose @SerializedName("objectId") val objectId: Long,
         @Expose @SerializedName("objectType") val type: String,
         @Expose @SerializedName("shareDT") val date: Date,
         var folder: Long,

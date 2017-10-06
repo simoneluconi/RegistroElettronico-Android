@@ -38,11 +38,16 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
                     val file: java.io.File = java.io.File(SugarRecord.findById(FileInfo::class.java, args[0] as Long).path)
                     setText(activity.getString(R.string.file_downloaded, file.name))
                     setAction(R.string.open) { openFile(activity, file) }
+                    duration = Snackbar.LENGTH_SHORT
                     show()
                 }
             }
             EventType.DOWNLOAD_FILE_KO -> {
-
+                with(snackbar ?: return) {
+                    setText("File non scaricato")
+                    duration = Snackbar.LENGTH_SHORT
+                    show()
+                }
             }
         }
     }
@@ -87,11 +92,11 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
     }
 
     override fun onFileClick(file: File) {
-        val info = SugarRecord.findById(FileInfo::class.java, file.id) ?: FileInfo()
+        val info = SugarRecord.findById(FileInfo::class.java, file.objectId) ?: FileInfo()
         when (file.type) {
             "file" -> {
                 if (info.path.isEmpty()) {
-                    downloadFile(activity, info)
+                    downloadFile(activity, file)
                 } else {
                     try {
                         openFile(activity, java.io.File(info.path))

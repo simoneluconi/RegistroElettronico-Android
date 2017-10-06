@@ -515,9 +515,9 @@ public class Metodi {
                     //Download informations if not file
                     for (com.sharpdroid.registroelettronico.Databases.Entities.File f : SugarRecord.find(com.sharpdroid.registroelettronico.Databases.Entities.File.class, "PROFILE=? AND TYPE!='file' AND ID NOT IN (SELECT ID FROM FILE_INFO)", new String[]{String.valueOf(p.getId())})) {
                         if (f.getType().equals("link"))
-                            APIClient.Companion.with(c).getAttachmentUrl(f.getId()).subscribe(downloadURL -> SugarRecord.save(new FileInfo(f.getId(), downloadURL.getItem().getLink())), Throwable::printStackTrace);
+                            APIClient.Companion.with(c).getAttachmentUrl(f.getId()).subscribe(downloadURL -> SugarRecord.save(new FileInfo(f.getObjectId(), downloadURL.getItem().getLink())), Throwable::printStackTrace);
                         else
-                            APIClient.Companion.with(c).getAttachmentTxt(f.getId()).subscribe(downloadTXT -> SugarRecord.save(new FileInfo(f.getId(), downloadTXT.getItem().getText())));
+                            APIClient.Companion.with(c).getAttachmentTxt(f.getId()).subscribe(downloadTXT -> SugarRecord.save(new FileInfo(f.getObjectId(), downloadTXT.getItem().getText())));
                     }
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_FOLDERS_OK, null));
                 }, throwable -> {
@@ -559,7 +559,6 @@ public class Metodi {
                 });
     }
 
-    //communicationInfo
     public static void updateBacheca(@NotNull Context c) {
         Profile p = Profile.Companion.getProfile(c);
         if (p == null) return;
@@ -672,13 +671,13 @@ public class Metodi {
                 });
     }
 
-    public static void downloadFile(@NotNull Context c, com.sharpdroid.registroelettronico.Databases.Entities.FileInfo f) {
+    public static void downloadFile(@NotNull Context c, com.sharpdroid.registroelettronico.Databases.Entities.File f) {
         File dir = new File(
                 Environment.getExternalStorageDirectory() +
                         File.separator +
                         "Registro Elettronico" + File.separator + "Didattica");
 
-        handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_START, new Long[]{f.getId()}));
+        handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_START, new Long[]{f.getObjectId()}));
         APIClient.Companion.with(c).getAttachmentFile((int) f.getId())
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
@@ -687,24 +686,18 @@ public class Metodi {
                         if (!dir.exists()) dir.mkdirs();
                         File fileDir = new File(dir, filename);
 
-                        if (fileDir.exists()) {      //File esistente ma non salvato nel db
-                            f.setPath(fileDir.getAbsolutePath());
-                            SugarRecord.update(f);
-                            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_OK, new Long[]{f.getId()}));
-                        } else if (writeResponseBodyToDisk(response.body(), fileDir)) {
-                            f.setPath(fileDir.getAbsolutePath());
-                            SugarRecord.update(f);
-                            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_OK, new Long[]{f.getId()}));
-                        } else {
-                            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_KO, new Long[]{f.getId()}));
-                        }
+                        FileInfo info = new FileInfo(f.getObjectId(), fileDir.getAbsolutePath());
+                        if (SugarRecord.update(info) > 0)
+                            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_OK, new Long[]{f.getObjectId()}));
+                        else
+                            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_KO, new Long[]{f.getObjectId()}));
 
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                         t.printStackTrace();
-                        handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_KO, new Long[]{f.getId()}));
+                        handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_KO, new Long[]{f.getObjectId()}));
                     }
                 });
     }
