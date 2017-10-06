@@ -42,7 +42,7 @@ data class File(
 
 @Table
 data class FileInfo(@Unique val id: Long, var path: String) {
-    constructor() : this(0L, "")
+    constructor() : this(-1L, "")
 }
 
 data class DownloadURL(@Expose @SerializedName("link") val link: String)
