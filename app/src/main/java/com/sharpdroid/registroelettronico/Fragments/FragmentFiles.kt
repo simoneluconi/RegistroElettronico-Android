@@ -87,10 +87,10 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
     }
 
     override fun onFileClick(file: File) {
-        val info = SugarRecord.findById(FileInfo::class.java, file.id)
+        val info = SugarRecord.findById(FileInfo::class.java, file.id) ?: FileInfo()
         when (file.type) {
             "file" -> {
-                if (info == null || info.path.isEmpty()) {
+                if (info.path.isEmpty()) {
                     downloadFile(activity, info)
                 } else {
                     try {
