@@ -42,14 +42,15 @@ data class Communication(
         @Expose @SerializedName("cntStatus") @Ignore val cntStatus: String,
         @Expose @SerializedName("cntCategory") val category: String,
         @Expose @SerializedName("cntHasAttach") val hasAttachment: Boolean,
-        var profile: Profile?
+        var profile: Long
 ) {
-    constructor() : this(0, Date(), false, "", 0, "", "", "", false, null)
+    constructor() : this(0, Date(), false, "", 0, "", "", "", false, -1)
 }
 
 data class CommunicationAPI(@Expose @SerializedName("items") val communications: List<Communication>) {
     fun getCommunications(profile: Profile): List<Communication> {
-        communications.forEach { it.profile = profile }
+        val id = profile.id
+        communications.forEach { it.profile = id }
         return communications
     }
 }

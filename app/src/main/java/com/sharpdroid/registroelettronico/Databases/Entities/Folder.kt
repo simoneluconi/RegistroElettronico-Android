@@ -32,7 +32,7 @@ data class Folder(
         @Expose @SerializedName("lastShareDT") var lastUpdate: Date,
         @Expose @SerializedName("contents") @Ignore var files: List<File>,
         var teacher: Long,
-        var profile: Profile
+        var profile: Long
 ) : SugarRecord() {
-    constructor() : this(0, "", Date(), emptyList(), 0, Profile())
+    constructor() : this(0, "", Date(), emptyList(), 0, -1)
 }

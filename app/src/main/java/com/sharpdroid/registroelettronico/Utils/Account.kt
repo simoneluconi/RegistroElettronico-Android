@@ -9,7 +9,7 @@ class Account(context: Context) {
     var preference: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
     var user: Long
-        get() = preference.getLong(Info.ACCOUNT, 0)
+        get() = preference.getLong(Info.ACCOUNT, -1)
         set(value) = preference.edit().putLong(Info.ACCOUNT, value).apply()
 
 

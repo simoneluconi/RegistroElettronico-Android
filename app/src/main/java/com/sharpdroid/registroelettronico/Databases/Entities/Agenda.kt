@@ -17,7 +17,7 @@ data class Agenda(
         @Expose @SerializedName("evtId") val mId: Int,
         @Expose @SerializedName("notes") val mNotes: String,
         @Expose @SerializedName("subjectDesc") val mSubjectDescription: String,
-        var profile: Profile?
+        var profile: Long
 ) : SugarRecord() {
-    constructor() : this("", Date(), "", Date(), "", false, 0, "", "", null)
+    constructor() : this("", Date(), "", Date(), "", false, 0, "", "", -1)
 }
