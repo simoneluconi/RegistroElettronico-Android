@@ -96,6 +96,7 @@
             style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="?selectableItemBackgroundBorderless"
             android:text="@string/imposta" />
 
         <Button
@@ -103,6 +104,7 @@
             style="@style/Base.Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="?selectableItemBackgroundBorderless"
             android:text="@string/dettagli"
             android:textColor="@color/textcolorgrey" />
     </LinearLayout>
