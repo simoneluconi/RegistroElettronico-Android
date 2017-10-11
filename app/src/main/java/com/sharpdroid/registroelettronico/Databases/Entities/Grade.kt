@@ -25,9 +25,9 @@ data class Grade(@Expose @SerializedName("evtCode") val mCode: String,
                  @Expose @SerializedName("underlined") val mUnderlined: Boolean,
                  @Expose @SerializedName("decimalValue") val mValue: Float,
                  @Expose @SerializedName("weightFactor") val mWeightFactor: Double,
-                 var profile: Profile?
+                 var profile: Long
 ) {
-    constructor() : this("", 0, Date(), "", 0, "", 0, "", "", 0, "", false, 0f, 0.0, null)
+    constructor() : this("", 0, Date(), "", 0, "", 0, "", "", 0, "", false, 0f, 0.0, -1L)
 
     companion object {
         fun getAverages(context: Context, where: String): List<Average> {
@@ -51,7 +51,8 @@ data class Grade(@Expose @SerializedName("evtCode") val mCode: String,
 
 data class GradeAPI(@Expose @SerializedName("grades") val grades: List<Grade>) {
     fun getGrades(profile: Profile): List<Grade> {
-        grades.forEach { it.profile = profile }
+        val id = profile.id
+        grades.forEach { it.profile = id }
         return grades
     }
 }

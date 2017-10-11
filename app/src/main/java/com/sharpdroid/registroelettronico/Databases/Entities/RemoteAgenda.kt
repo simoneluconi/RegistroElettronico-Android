@@ -32,10 +32,10 @@ data class RemoteAgenda(
         @Expose @SerializedName("isFullDay") val isFullDay: Boolean,
         @Expose @SerializedName("notes") val notes: String,
         @Expose @SerializedName("authorName") val author: String,
-        var profile: Profile?
+        var profile: Long
 ) {
 
-    constructor() : this(0, Date(), Date(), false, "", "", null)
+    constructor() : this(0, Date(), Date(), false, "", "", -1L)
 
     fun getInfo(): RemoteAgendaInfo? {
         return SugarRecord.findById(RemoteAgendaInfo::class.java, id)
@@ -67,7 +67,8 @@ data class RemoteAgenda(
 
 data class AgendaAPI(@Expose @SerializedName("agenda") val agenda: List<RemoteAgenda>) {
     fun getAgenda(profile: Profile): List<RemoteAgenda> {
-        agenda.forEach { it.profile = profile }
+        val id = profile.id
+        agenda.forEach { it.profile = id }
         return agenda
     }
 }

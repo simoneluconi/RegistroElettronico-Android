@@ -36,14 +36,15 @@ data class Period(
         @Expose @SerializedName("isFinal") val mFinal: Boolean,
         @Expose @SerializedName("periodPos") val mPosition: Int,
         @Expose @SerializedName("dateStart") val mStart: Date,
-        var profile: Profile
+        var profile: Long
 ) : SugarRecord() {
-    constructor() : this("", "", Date(), false, 0, Date(), Profile())
+    constructor() : this("", "", Date(), false, 0, Date(), -1L)
 }
 
 data class PeriodAPI(@Expose @SerializedName("periods") val periods: List<Period>) {
     fun getPeriods(profile: Profile): List<Period> {
-        periods.forEach { it.profile = profile }
+        val id = profile.id
+        periods.forEach { it.profile = id }
         return periods
     }
 }

@@ -478,8 +478,8 @@ public class Metodi {
     }
 
     public static void updateFolders(@NotNull Context c) {
-        Profile p = Profile.Companion.getProfile(c);
-        if (p == null) return;
+        Long user = Account.Companion.with(c).getUser();
+        if (user == -1) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_FOLDERS_START, null));
         APIClient.Companion.with(c).getDidactics()
                 .subscribe(didacticAPI -> {
@@ -494,26 +494,26 @@ public class Metodi {
                                 for (com.sharpdroid.registroelettronico.Databases.Entities.File file : folder.getFiles()) {
                                     file.setFolder(folder.getFolderId());
                                     file.setTeacher(teacher.getId());
-                                    file.setProfile(p.getId());
+                                    file.setProfile(user);
                                     files.add(file);
                                 }
                                 folder.setFiles(Collections.emptyList());
-                                folder.setProfile(p);
+                                folder.setProfile(user);
                                 folders.add(folder);
                             }
                             teacher.setFolders(Collections.emptyList());
                         }
                     }
 
-                    SugarRecord.deleteAll(Folder.class, "PROFILE=?", String.valueOf(p.getId()));
-                    SugarRecord.deleteAll(File.class, "PROFILE=?", String.valueOf(p.getId()));
+                    SugarRecord.deleteAll(Folder.class, "PROFILE=?", String.valueOf(user));
+                    SugarRecord.deleteAll(File.class, "PROFILE=?", String.valueOf(user));
                     SugarRecord.saveInTx(didacticAPI.getDidactics());
                     SugarRecord.saveInTx(folders);
                     SugarRecord.saveInTx(files); //update otherwise will clean any additional info (path...)
 
 
                     //Download informations if not file
-                    for (com.sharpdroid.registroelettronico.Databases.Entities.File f : SugarRecord.find(com.sharpdroid.registroelettronico.Databases.Entities.File.class, "PROFILE=? AND TYPE!='file' AND ID NOT IN (SELECT ID FROM FILE_INFO)", new String[]{String.valueOf(p.getId())})) {
+                    for (com.sharpdroid.registroelettronico.Databases.Entities.File f : SugarRecord.find(com.sharpdroid.registroelettronico.Databases.Entities.File.class, "PROFILE=? AND TYPE!='file' AND ID NOT IN (SELECT ID FROM FILE_INFO)", new String[]{String.valueOf(user)})) {
                         if (f.getType().equals("link"))
                             APIClient.Companion.with(c).getAttachmentUrl(f.getId()).subscribe(downloadURL -> SugarRecord.save(new FileInfo(f.getObjectId(), downloadURL.getItem().getLink())), Throwable::printStackTrace);
                         else

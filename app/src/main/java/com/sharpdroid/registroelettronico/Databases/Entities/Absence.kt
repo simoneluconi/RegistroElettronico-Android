@@ -6,7 +6,6 @@ import com.orm.SugarRecord
 import com.orm.dsl.Table
 import com.orm.dsl.Unique
 import java.util.*
-import java.util.Calendar
 import kotlin.collections.HashMap
 
 /*
@@ -47,13 +46,14 @@ data class Absence(
         @Expose @SerializedName("evtCode") val type: String,
         @Expose @SerializedName("evtDate") val date: Date,
         @Expose @SerializedName("isJustified") val justified: Boolean,
-        @Expose @SerializedName("justifReasonCode") val reasonCode: String?,
-        @Expose @SerializedName("justifReasonDesc") val reasonDesc: String?,
-        var profile: Profile?,
+        @Expose @SerializedName("justifReasonCode") val reasonCode: String,
+        @Expose @SerializedName("justifReasonDesc") val reasonDesc: String,
+        var profile: Long,
         @Expose @SerializedName("evtHPos") val hPos: Int,
         @Expose @SerializedName("evtValue") val value: Int
 ) {
-    constructor() : this(0, "", Date(0), false, null, null, null, 0, 0)
+    constructor() : this(0, "", Date(0), false, "", "", -1, 0, 0)
+
 
     companion object {
         fun getAbsences(p: Profile): HashMap<Absence, Int> /*<ABSENCE, N_DAYS>*/ {
@@ -62,6 +62,11 @@ data class Absence(
             val absencesInSchoolDays = SugarRecord.find(Absence::class.java, "PROFILE=? AND TYPE='ABA0' ORDER BY DATE DESC ", p.id.toString())
             var startAbsence: Absence? = null
             var days = 0
+
+            if (absencesInSchoolDays.size == 1) {
+                map.put(absencesInSchoolDays[0], 1)
+                return map
+            }
 
             for (i in 0 until absencesInSchoolDays.size - 1) {
                 val timeDifference = (absencesInSchoolDays[i].date.time - absencesInSchoolDays[i + 1].date.time) / 3600000
@@ -118,7 +123,8 @@ data class Absence(
 
 data class AbsenceAPI(@Expose @SerializedName("events") val events: List<Absence>) {
     fun getEvents(profile: Profile): List<Absence> {
-        events.forEach { it.profile = profile }
+        val id = profile.id
+        events.forEach { it.profile = id }
         return events
     }
 }

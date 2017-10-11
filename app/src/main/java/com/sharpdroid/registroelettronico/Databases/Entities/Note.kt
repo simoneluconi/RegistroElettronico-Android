@@ -13,10 +13,10 @@ data class Note(
         @Expose @SerializedName("readStatus") val mStatus: Boolean,
         @Expose @SerializedName("evtText") val mText: String,
         @Expose @SerializedName("warningType") val mWarning: String,
-        var mType: String?,
-        var profile: Profile?
+        var mType: String,
+        var profile: Long
 ) {
-    constructor() : this("", Date(), 0, false, "", "", "", null)
+    constructor() : this("", Date(), 0, false, "", "", "", -1L)
 }
 
 data class NoteAPI(
@@ -27,22 +27,22 @@ data class NoteAPI(
 ) {
     fun getNotes(profile: Profile): List<Note> {
         val newList = ArrayList<Note>()
-
+        val id = profile.id
         ntte.forEach {
             it.mType = "NTTE"
-            it.profile = profile
+            it.profile = id
         }
         ntcl.forEach {
             it.mType = "NTCL"
-            it.profile = profile
+            it.profile = id
         }
         ntwn.forEach {
             it.mType = "NTWN"
-            it.profile = profile
+            it.profile = id
         }
         ntst.forEach {
             it.mType = "NTST"
-            it.profile = profile
+            it.profile = id
         }
         newList.addAll(ntte)
         newList.addAll(ntcl)

@@ -40,14 +40,15 @@ data class Lesson(
         @Expose @SerializedName("subjectDesc") val mSubjectDescription: String,
         @Expose @SerializedName("subjectId") val mSubjectId: Int,
         @Expose @SerializedName("lessonType") val mType: String,
-        var profile: Profile?
+        var profile: Long
 ) {
-    constructor() : this("", "", "", "", Date(), 0, 0, 0, "", "", 0, "", null)
+    constructor() : this("", "", "", "", Date(), 0, 0, 0, "", "", 0, "", -1)
 }
 
 data class LessonAPI(@Expose @SerializedName("lessons") val lessons: List<Lesson>) {
     fun getLessons(profile: Profile): List<Lesson> {
-        lessons.forEach { it.profile = profile }
+        val id = profile.id
+        lessons.forEach { it.profile = id }
         return lessons
     }
 }
