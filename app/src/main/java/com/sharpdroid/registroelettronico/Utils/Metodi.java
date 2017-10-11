@@ -389,7 +389,11 @@ public class Metodi {
     }
 
     public static boolean isEventTest(SuperAgenda event) {
-        String title = event.getAgenda().getNotes().toLowerCase();
+        return isEventTest(event.getAgenda());
+    }
+
+    public static boolean isEventTest(RemoteAgenda event) {
+        String title = event.getNotes().toLowerCase();
         return title.contains("compito") || title.endsWith("compito") || title.endsWith("verifica") || title.contains("verifica ")
                 || title.contains("interrogazione scritta") || title.contains("prova ") || title.contains("test ") || title.endsWith("test") || title.contains("verifiche orali");
     }
@@ -397,7 +401,7 @@ public class Metodi {
     public static List<com.github.sundeepk.compactcalendarview.domain.Event> convertEvents(List<SuperAgenda> events) {
         List<com.github.sundeepk.compactcalendarview.domain.Event> list = new ArrayList<>();
         for (SuperAgenda event : events) {
-            list.add(new com.github.sundeepk.compactcalendarview.domain.Event(isEventTest(event) ? Color.parseColor("#FF9800") : Color.WHITE, event.getAgenda().getStart().getTime(), null));
+            list.add(new com.github.sundeepk.compactcalendarview.domain.Event(event.getTest() ? Color.parseColor("#FF9800") : Color.WHITE, event.getAgenda().getStart().getTime(), null));
         }
         return list;
     }

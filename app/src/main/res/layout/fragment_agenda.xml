@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/coordinator_layout"
+    android:id="@+id/coordinator_layout_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center_horizontal">
@@ -15,48 +14,5 @@
         android:id="@+id/place_holder"
         layout="@layout/placeholder_calendar_day"
         android:visibility="gone" />
-
-    <com.github.clans.fab.FloatingActionMenu
-        android:id="@+id/fab_big_add"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom|end"
-        android:paddingBottom="8dp"
-        android:paddingEnd="8dp"
-        android:paddingRight="8dp"
-        app:menu_animationDelayPerItem="20"
-        app:menu_backgroundColor="#ccffffff"
-        app:menu_colorNormal="?colorPrimary"
-        app:menu_colorPressed="?colorPrimary"
-        app:menu_colorRipple="#4fff"
-        app:menu_labels_ellipsize="end"
-        app:menu_labels_singleLine="true"
-        app:menu_showShadow="true">
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_mini_verifica"
-            style="@style/MenuButtonsStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/agenda_fab_verifiche"
-            app:fab_label="Verifica" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_mini_esercizi"
-            style="@style/MenuButtonsStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/agenda_fab_compiti"
-            app:fab_label="Compiti" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_mini_altro"
-            style="@style/MenuButtonsStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/agenda_fab_altro"
-            app:fab_label="Altro" />
-
-    </com.github.clans.fab.FloatingActionMenu>
 
 </android.support.design.widget.CoordinatorLayout>

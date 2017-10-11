@@ -87,9 +87,6 @@
     <string name="today">Oggi</string>
     <string name="not_set">Selezionare un\'opzione</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-
-
     <!-- Settings -->
     <string name="obiettivo_summary">Seleziona il voto da usare come obiettivo</string>
     <string name="obiettivo_title">Obiettivo</string>
@@ -107,6 +104,7 @@
     <string name="inserisci_calendario_bs">Inserisci nel calendario</string>
     <string name="copia_bs">Copia</string>
     <string name="archivia_bs">Archivia</string>
+    <string name="compito_bs">Contrassegna come compito</string>
     <string name="cerca">Cerca</string>
     <string name="credenziali">Credenziali errate</string>
 

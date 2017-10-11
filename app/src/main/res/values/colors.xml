@@ -6,6 +6,7 @@
 
     <color name="bluematerial">#2196F3</color>
     <color name="greenmaterial">#4CAF50</color>
+    <color name="greenmaterial_800">#2E7D32</color>
     <color name="lightgreenmaterial">#8BC34A</color>
     <color name="redmaterial">#F44336</color>
     <color name="orangematerial">#FDD835</color>
