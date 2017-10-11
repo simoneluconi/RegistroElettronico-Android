@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.orm.SugarRecord
 import com.orm.dsl.Table
 import com.orm.dsl.Unique
+import com.sharpdroid.registroelettronico.Utils.Metodi
 import java.util.*
 
 /*
@@ -41,13 +42,22 @@ data class RemoteAgenda(
         return SugarRecord.findById(RemoteAgendaInfo::class.java, id)
     }
 
+    fun isTest(): Boolean {
+        val info = getInfo()
+        return if (info != null) {
+            info.test
+        } else {
+            Metodi.isEventTest(this)
+        }
+    }
+
     companion object {
         fun getSuperAgenda(id: Long): List<SuperAgenda> {
             val completed: MutableList<RemoteAgendaInfo> = SugarRecord.find(RemoteAgendaInfo::class.java, "ARCHIVED=0 AND COMPLETED=1") ?: mutableListOf()
             val archived: MutableList<RemoteAgendaInfo> = SugarRecord.find(RemoteAgendaInfo::class.java, "ARCHIVED=1") ?: mutableListOf()
-            val events = SugarRecord.find(RemoteAgenda::class.java, "PROFILE=?", id.toString())
+            val events = SugarRecord.find(RemoteAgenda::class.java, "PROFILE=? ", id.toString())
 
-            return events.filter { a -> !archived.any { it.id == a.id } }.map { agenda -> SuperAgenda(agenda, completed.any { it.id == agenda.id }) }
+            return events.filter { a -> !archived.any { it.id == a.id } }.map { agenda -> SuperAgenda(agenda, completed.any { it.id == agenda.id }, agenda.isTest()) }
         }
 
         fun getAgenda(id: Long, date: Date): List<SuperAgenda> {
@@ -55,13 +65,29 @@ data class RemoteAgenda(
             val archived: MutableList<RemoteAgendaInfo> = SugarRecord.find(RemoteAgendaInfo::class.java, "ARCHIVED=1") ?: mutableListOf()
             val events = SugarRecord.find(RemoteAgenda::class.java, "PROFILE=? AND START BETWEEN ? AND ? AND END BETWEEN ? AND ?", id.toString(), date.time.toString(), (date.time + 24 * 3600 * 1000).toString(), date.time.toString(), (date.time + 24 * 3600 * 1000).toString())
 
-            return events.filter { a -> !archived.any { it.id == a.id } }.map { agenda -> SuperAgenda(agenda, completed.any { it.id == agenda.id }) }
+            return events.filter { a -> !archived.any { it.id == a.id } }.map { agenda ->
+                SuperAgenda(
+                        agenda,
+                        completed.any { it.id == agenda.id },
+                        agenda.isTest())
+            }
         }
     }
 
     override fun equals(other: Any?): Boolean {
         if (other !is RemoteAgenda) return false
         return notes == other.notes && author == other.author
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + start.hashCode()
+        result = 31 * result + end.hashCode()
+        result = 31 * result + isFullDay.hashCode()
+        result = 31 * result + notes.hashCode()
+        result = 31 * result + author.hashCode()
+        result = 31 * result + profile.hashCode()
+        return result
     }
 }
 
@@ -77,7 +103,8 @@ data class AgendaAPI(@Expose @SerializedName("agenda") val agenda: List<RemoteAg
 data class RemoteAgendaInfo(
         @Unique val id: Long,
         var completed: Boolean,
-        var archived: Boolean
+        var archived: Boolean,
+        var test: Boolean
 ) {
-    constructor() : this(0, false, false)
+    constructor() : this(0, false, false, false)
 }

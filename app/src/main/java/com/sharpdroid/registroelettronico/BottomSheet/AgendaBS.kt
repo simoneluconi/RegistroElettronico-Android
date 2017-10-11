@@ -14,20 +14,9 @@ import com.sharpdroid.registroelettronico.Databases.Entities.SuperAgenda
 import com.sharpdroid.registroelettronico.R
 import kotlinx.android.synthetic.main.fragment_item_agenda_options.view.*
 
-/**
- *
- * A fragment that shows a list of items as a modal bottom sheet.
- *
- * You can show this modal bottom sheet from your activity like this:
- * <pre>
- * AgendaBS.newInstance(30).show(getSupportFragmentManager(), "dialog");
-</pre> *
- *
- * You activity (or fragment) needs to implement [AgendaBS.Listener].
- */
 class AgendaBS : BottomSheetDialogFragment() {
-    private val texts = intArrayOf(R.string.condividi_bs, R.string.inserisci_calendario_bs, R.string.copia_bs, R.string.archivia_bs)
-    private val icons = intArrayOf(R.drawable.agenda_bsheet_share, R.drawable.agenda_bsheet_calendar, R.drawable.agenda_bsheet_copy, R.drawable.agenda_bsheet_archive)
+    private val texts = intArrayOf(R.string.condividi_bs, R.string.archivia_bs)
+    private val icons = intArrayOf(R.drawable.agenda_bsheet_share, R.drawable.agenda_bsheet_archive)
     private var mListener: Listener? = null
     private var event: SuperAgenda? = null
 
@@ -42,8 +31,8 @@ class AgendaBS : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         val recyclerView = view as RecyclerView?
-        recyclerView!!.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = ItemAdapter(mListener!!)
+        recyclerView?.layoutManager = LinearLayoutManager(context)
+        recyclerView?.adapter = ItemAdapter(mListener!!)
     }
 
     override fun onAttach(context: Context?) {
@@ -67,10 +56,11 @@ class AgendaBS : BottomSheetDialogFragment() {
 
     private inner class ItemAdapter(val clickListener: Listener) : RecyclerView.Adapter<ItemAdapter.ViewHolder>() {
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            fun bindData(text: String, color: Int, image: Int) {
+            fun bindData(text: String, color: Int, image: Int, tint: Int?) {
                 itemView.text.text = text
                 itemView.text.setTextColor(color)
                 itemView.image.setImageResource(image)
+                itemView.image.setColorFilter(tint ?: ContextCompat.getColor(activity.applicationContext, R.color.icon_on_white))
                 itemView.setOnClickListener {
                     clickListener.onBottomSheetItemClicked(adapterPosition, event!!)
                     dismiss()
@@ -83,12 +73,15 @@ class AgendaBS : BottomSheetDialogFragment() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            if (position != 0) {
-                holder.bindData(getString(texts[position - 1]), Color.BLACK, icons[position - 1])
-            } else {
-                holder.bindData(if (event!!.completed) "Non completato" else "Completato",
-                        ContextCompat.getColor(context, R.color.intro_blue_dark),
-                        if (event!!.completed) R.drawable.agenda_uncomplete else R.drawable.agenda_complete)
+            when (position) {
+                0 -> holder.bindData(if (event!!.completed) "Non completato" else "Completato",
+                        ContextCompat.getColor(context, R.color.greenmaterial_800),
+                        if (event!!.completed) R.drawable.agenda_uncomplete else R.drawable.agenda_complete, ContextCompat.getColor(context, R.color.greenmaterial_800))
+                1 -> holder.bindData(if (event!!.test) "Rimuovi contrassegno" else "Contrassegna come compito",
+                        ContextCompat.getColor(context, R.color.redmaterial),
+                        if (event!!.test) R.drawable.agenda_uncomplete else R.drawable.agenda_complete, ContextCompat.getColor(context, R.color.redmaterial))
+                else -> holder.bindData(getString(texts[position - 2]), Color.BLACK, icons[position - 2], null)
+
             }
         }
 
@@ -99,6 +92,6 @@ class AgendaBS : BottomSheetDialogFragment() {
     }
 
     companion object {
-        private val mItemCount = 5
+        private val mItemCount = 4
     }
 }

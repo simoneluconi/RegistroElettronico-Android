@@ -28,7 +28,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.sharpdroid.registroelettronico.Utils.Metodi.capitalizeEach;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.isEventTest;
 
 public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Entry> CVDataList;
@@ -108,7 +107,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private List<Entry> convert(List<SuperAgenda> events) {
         LinkedHashMap<String, List<SuperAgenda>> organized = new LinkedHashMap<>();
         for (SuperAgenda e : events) {
-            if (isEventTest(e)) {
+            if (e.getTest()) {
                 if (organized.containsKey("Verifiche")) {
                     List<SuperAgenda> verifiche = new ArrayList<>(organized.get("Verifiche"));
                     verifiche.add(e);

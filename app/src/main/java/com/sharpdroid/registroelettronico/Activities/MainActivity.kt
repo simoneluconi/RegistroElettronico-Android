@@ -37,6 +37,7 @@ import com.sharpdroid.registroelettronico.Utils.Metodi.fetchDataOfUser
 import com.sharpdroid.registroelettronico.Utils.Metodi.updateSubjects
 import com.transitionseverywhere.ChangeText
 import com.transitionseverywhere.TransitionManager
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
 class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, AccountHeader.OnAccountHeaderListener, AccountHeader.OnAccountHeaderItemLongClickListener {
@@ -44,7 +45,6 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
     private var params: AppBarLayout.LayoutParams? = null
     private var fragmentManager: FragmentManager? = null
     private var toggle: ActionBarDrawerToggle? = null
-    private var needUpdate = true
     private var canOpenDrawer = true
     private var anim: ObjectAnimator? = null
     private lateinit var headerResult: AccountHeader
@@ -78,6 +78,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                 headerResult.profiles = Profile.getIProfiles()
                 headerResult.addProfiles(ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true))
                 headerResult.setActiveProfile(profile?.id!!, false)
+                drawer?.setSelectionAtPosition(drawer!!.currentSelectedPosition, true)
             } catch (err: Exception) {
                 err.printStackTrace()
             }
@@ -186,12 +187,6 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             }
         }
 
-        if (needUpdate) {
-            //TODO: try delete
-            updateSubjects(this)
-            needUpdate = false
-        }
-
         // Programmatically start a fragment
         if (savedInstanceState == null) {
             var drawerToOpen = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getString("drawer_to_open", "0"))!!
@@ -234,6 +229,8 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         val id = drawerItem.identifier.toInt()
         calendar?.visibility = View.GONE
         tab_layout?.visibility = View.GONE
+        fab_big_add.visibility = View.GONE
+
         params?.scrollFlags = 0
         when (id) {
             R.id.agenda -> {

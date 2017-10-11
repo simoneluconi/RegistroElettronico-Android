@@ -25,6 +25,7 @@ import com.sharpdroid.registroelettronico.Utils.Metodi.*
 import com.transitionseverywhere.ChangeText
 import com.transitionseverywhere.TransitionManager
 import io.reactivex.android.schedulers.AndroidSchedulers
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.fragment_agenda.*
 import java.text.SimpleDateFormat
@@ -57,7 +58,6 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
     internal var agenda = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
 
     private var mContext: Context? = null
-    //private RegistroDB mRegistroDB;
     private lateinit var adapter: AgendaAdapter
     private var mDate: Date = Date()
     private val events = ArrayList<SuperAgenda>()
@@ -85,14 +85,18 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
             setCurrentDate(mDate)
         }
 
-        fab_big_add.setClosedOnTouchOutside(true)
-        fab_mini_verifica.setOnClickListener { _ -> startActivity(Intent(mContext, AddEventActivity::class.java).putExtra("type", "Verifica").putExtra("time", mDate.time)) }
-        fab_mini_esercizi.setOnClickListener { _ -> startActivity(Intent(mContext, AddEventActivity::class.java).putExtra("type", "Compiti").putExtra("time", mDate.time)) }
-        fab_mini_altro.setOnClickListener { _ -> startActivity(Intent(mContext, AddEventActivity::class.java).putExtra("type", "Altro").putExtra("time", mDate.time)) }
+        with(activity) {
+            fab_big_add.visibility = View.VISIBLE
+
+            fab_big_add.setClosedOnTouchOutside(true)
+            fab_mini_verifica.setOnClickListener { _ -> startActivity(Intent(context, AddEventActivity::class.java).putExtra("type", "Verifica").putExtra("time", mDate.time)) }
+            fab_mini_esercizi.setOnClickListener { _ -> startActivity(Intent(context, AddEventActivity::class.java).putExtra("type", "Compiti").putExtra("time", mDate.time)) }
+            fab_mini_altro.setOnClickListener { _ -> startActivity(Intent(context, AddEventActivity::class.java).putExtra("type", "Altro").putExtra("time", mDate.time)) }
+        }
 
         adapter = AgendaAdapter(place_holder)
         adapter.setItemClickListener(this)
-        recycler.layoutManager = LinearLayoutManager(mContext)
+        recycler.layoutManager = LinearLayoutManager(context)
         recycler.adapter = adapter
 
         updateAdapter()
@@ -129,7 +133,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
     }
 
     private fun fetch(currentDate: Boolean?): List<SuperAgenda> {
-        val profile = Profile.getProfile(activity)
+        val profile = Profile.getProfile(context)
         if (profile != null) {
             return if (currentDate == true) RemoteAgenda.getAgenda(profile.id, mDate) else RemoteAgenda.getSuperAgenda(profile.id)
         }
@@ -183,7 +187,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                     }) { error ->
                         error.printStackTrace()
                         if (active)
-                            Snackbar.make(coordinator_layout, error.localizedMessage, Snackbar.LENGTH_LONG).show()
+                            Snackbar.make(activity.coordinator_layout, error.localizedMessage, Snackbar.LENGTH_LONG).show()
                     }
     }
 
@@ -249,8 +253,6 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
     }
 
     override fun onBottomSheetItemClicked(position: Int, e: SuperAgenda) {
-        // TODO: 30/09/2017 Head?
-        //String head = getSubjectNameOrProfessorName(event, mRegistroDB);
         when (position) {
             0 -> {
                 val found: RemoteAgendaInfo? = e.agenda.getInfo()
@@ -258,33 +260,38 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                     found.completed = !found.completed
                     SugarRecord.update(found)
                 } else {
-                    SugarRecord.save(RemoteAgendaInfo(e.agenda.id, true, false))
+                    SugarRecord.save(RemoteAgendaInfo(e.agenda.id, true, false, isEventTest(e)))
                 }
 
                 e.completed = !e.completed
                 updateAdapter()
             }
             1 -> {
+                val found = e.agenda.getInfo()
+                if (found != null) {
+                    found.test = !found.test
+                    SugarRecord.update(found)
+                } else {
+                    SugarRecord.save(RemoteAgendaInfo(e.agenda.id, false, false, !isEventTest(e)))
+                }
+
+                updateAdapter()
+                updateCalendar()
+            }
+            2 -> {
                 val sendIntent = Intent()
                 sendIntent.action = Intent.ACTION_SEND
                 sendIntent.putExtra(Intent.EXTRA_TEXT, eventToString(e, ""))
                 sendIntent.type = "text/plain"
                 startActivity(Intent.createChooser(sendIntent, getString(R.string.share_with)))
             }
-            2 -> addEventToCalendar(mContext, e)
             3 -> {
-                val clipboard = mContext!!.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager?
-                val clip = android.content.ClipData.newPlainText("Evento copiato", eventToString(e, ""))
-                clipboard?.primaryClip = clip
-
-            }
-            4 -> {
                 val found: RemoteAgendaInfo? = e.agenda.getInfo()
                 if (found != null) {
                     found.archived = true
                     SugarRecord.update(found)
                 } else {
-                    SugarRecord.save(RemoteAgendaInfo(e.agenda.id, false, true))
+                    SugarRecord.save(RemoteAgendaInfo(e.agenda.id, false, true, isEventTest(e)))
                 }
 
                 updateAdapter()

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.orm.SugarRecord
 import java.util.*
 
-data class SuperAgenda(val agenda: RemoteAgenda, var completed: Boolean)
+data class SuperAgenda(val agenda: RemoteAgenda, var completed: Boolean, var test: Boolean)
 
 data class Agenda(
         @Expose @SerializedName("authorName") val mAuthor: String,
