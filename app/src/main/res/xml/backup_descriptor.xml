@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <!-- Shared preferences -->
+    <include
+        domain="sharedpref"
+        path="com.sharpdroid.registroelettronico_preferences.xml" />
+
+    <!-- Databases -->
+    <include
+        domain="database"
+        path="registro.db" />
+</full-backup-content>
