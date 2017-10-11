@@ -46,10 +46,12 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
         super.onViewCreated(view, savedInstanceState)
         NotificationManager.instance.addObserver(this, EventType.UPDATE_SUBJECTS_START, EventType.UPDATE_SUBJECTS_OK, EventType.UPDATE_SUBJECTS_KO)
 
-        updateSubjects(activity) //This will fire didReceiveNotification(...)
+        if (arguments != null && arguments.getInt("lessons", -1) != -1) {
+            onSubjectClick(SugarRecord.findById(Subject::class.java, arguments?.getInt("lessons")))
+        }
 
+        updateSubjects(activity) //This will fire didReceiveNotification(...)
         activity.title = getString(R.string.lessons)
-        updateSubjects(context)
         adapter = SubjectsAdapter(this)
         recycler.layoutManager = LinearLayoutManager(context)
         recycler.addItemDecoration(HorizontalDividerItemDecoration.Builder(context).colorResId(R.color.divider).size(dpToPx(1)).build())

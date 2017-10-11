@@ -76,7 +76,7 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
     }
 
     private fun setOverall() {
-        val avgTypes = SugarRecord.findWithQuery(AverageType::class.java, "SELECT 0 as ID, AVG(M_VALUE) as AVG, M_TYPE as TYPE FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=? GROUP BY TYPE", subject.id.toString())
+        val avgTypes: List<AverageType> = SugarRecord.findWithQuery(AverageType::class.java, "SELECT 0 as ID, AVG(M_VALUE) as AVG, M_TYPE as TYPE FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=? GROUP BY TYPE", subject.id.toString())
         overall.setOrale(avgTypes.filter { it.type.equals(SpiaggiariAPI.ORALE, false) }.getOrNull(0)?.avg)
         overall.setScritto(avgTypes.filter { it.type.equals(SpiaggiariAPI.SCRITTO, false) }.getOrNull(0)?.avg)
         overall.setPratico(avgTypes.filter { it.type.equals(SpiaggiariAPI.PRATICO, false) }.getOrNull(0)?.avg)

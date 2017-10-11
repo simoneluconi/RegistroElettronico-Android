@@ -21,7 +21,7 @@ import butterknife.ButterKnife;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.capitalizeEach;
 
 public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private final SimpleDateFormat formatter = new SimpleDateFormat("MMM d, yyyy", Locale.ITALIAN);
+    private final SimpleDateFormat formatter = new SimpleDateFormat("d MMMM yyyy", Locale.ITALIAN);
     private List<Object> list = new ArrayList<>();
     private Listener listener;
 
