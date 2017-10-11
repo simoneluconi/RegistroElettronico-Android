@@ -14,6 +14,7 @@ import com.sharpdroid.registroelettronico.Databases.Entities.Subject
 import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.EventType
+import com.sharpdroid.registroelettronico.Utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.Utils.Metodi.updateLessons
 import kotlinx.android.synthetic.main.fragment_recycler_refresh_scrollbar.*
 
@@ -53,7 +54,7 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
         super.onViewCreated(view, savedInstanceState)
         NotificationManager.instance.addObserver(this, EventType.UPDATE_LESSONS_KO, EventType.UPDATE_LESSONS_OK, EventType.UPDATE_LESSONS_START)
 
-        activity.title = subject?.description
+        activity.title = capitalizeEach(subject?.description)
 
         mRVAdapter = AllLessonsAdapter(context)
         recycler.layoutManager = LinearLayoutManager(context)
