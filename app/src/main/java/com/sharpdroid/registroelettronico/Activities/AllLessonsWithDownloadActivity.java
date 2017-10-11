@@ -2,33 +2,27 @@ package com.sharpdroid.registroelettronico.Activities;
 
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.orm.SugarRecord;
-import com.sharpdroid.registroelettronico.API.V1.SpiaggiariApiClient;
 import com.sharpdroid.registroelettronico.Adapters.AllLessonsAdapter;
 import com.sharpdroid.registroelettronico.Databases.Entities.Lesson;
 import com.sharpdroid.registroelettronico.Databases.Entities.Subject;
-import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.R;
+import com.sharpdroid.registroelettronico.Utils.Metodi;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 
-import static com.sharpdroid.registroelettronico.Utils.Metodi.getProfessorOfThisSubject;
-import static com.sharpdroid.registroelettronico.Utils.Metodi.isNetworkAvailable;
-
-public class AllLessonsWithDownloadActivity extends AppCompatActivity
-        implements SwipeRefreshLayout.OnRefreshListener {
+public class AllLessonsWithDownloadActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
     private final static String TAG = "Lessons";
     static int code;
     @BindView(R.id.recycler)
@@ -39,7 +33,6 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
     SwipeRefreshLayout mSwipeRefreshLayout;
     AllLessonsAdapter mRVAdapter;
 
-    RegistroDB db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +41,6 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
         code = getIntent().getIntExtra("code", -1);
-        db = RegistroDB.getInstance(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -57,22 +49,28 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        setTitle(SugarRecord.findById(Subject.class, code).getDescription());
+        setTitle(Metodi.capitalizeEach(SugarRecord.findById(Subject.class, code).getDescription()));
 
         mRVAdapter = new AllLessonsAdapter(this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mRVAdapter);
 
-        mSwipeRefreshLayout.setRefreshing(true);
+        mSwipeRefreshLayout.setVisibility(View.VISIBLE);//setRefreshing(true);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(
                 R.color.bluematerial,
                 R.color.redmaterial,
                 R.color.greenmaterial,
                 R.color.orangematerial);
+        //UpdateLessons();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
         bindLessonsCache();
 
-        UpdateLessons();
     }
 
     @Override
@@ -89,41 +87,18 @@ public class AllLessonsWithDownloadActivity extends AppCompatActivity
     }
 
     private void bindLessonsCache() {
-        addLessons(SugarRecord.findWithQuery(Lesson.class, "select * from LESSONS where M_SUBJECT_ID=?", String.valueOf(code)));
+        addLessons(SugarRecord.findWithQuery(Lesson.class, "select * from LESSON where M_SUBJECT_ID=? ORDER BY M_DATE DESC", String.valueOf(code)));
     }
 
-    public void onRefresh() {
-        UpdateLessons();
-    }
-
-    private void UpdateLessons() {
-        if (!isNetworkAvailable(this)) {
-            Snackbar.make(mCoordinatorLayout, R.string.nointernet, Snackbar.LENGTH_LONG).show();
-            mSwipeRefreshLayout.setRefreshing(false);
-        } else {
-            for (Integer prof : db.getProfessorCodes(code)) {
-                new SpiaggiariApiClient(this)
-                        .getLessons(code, String.valueOf(prof))
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(lessons -> {
-                            //update db
-                            //db.removeLessons(code);
-                            db.addLessons(code, prof, lessons);
-                            db.addProfessor(code, prof, getProfessorOfThisSubject(lessons));
-                            bindLessonsCache();
-
-                            mSwipeRefreshLayout.setRefreshing(false);
-                        }, error -> {
-                            error.printStackTrace();
-                            mSwipeRefreshLayout.setRefreshing(false);
-                        });
-            }
-        }
-    }
 
     @Override
     protected void onDestroy() {
 
         super.onDestroy();
+    }
+
+    @Override
+    public void onRefresh() {
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 }
