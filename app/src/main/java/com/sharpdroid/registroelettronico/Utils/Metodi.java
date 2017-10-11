@@ -38,7 +38,6 @@ import com.sharpdroid.registroelettronico.Databases.Entities.Teacher;
 import com.sharpdroid.registroelettronico.Interfaces.API.Absence;
 import com.sharpdroid.registroelettronico.Interfaces.API.Lesson;
 import com.sharpdroid.registroelettronico.Interfaces.API.Mark;
-import com.sharpdroid.registroelettronico.Interfaces.API.MarkSubject;
 import com.sharpdroid.registroelettronico.Interfaces.Client.AbsencesEntry;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Entry;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Media;
@@ -355,32 +354,6 @@ public class Metodi {
         return sort;
     }
 
-    public static List<MarkSubject> getMarksOfThisPeriod(List<MarkSubject> markssubject, String p) {
-        if (p == null) return markssubject;
-        List<MarkSubject> marksSub = new ArrayList<>();
-        for (MarkSubject s : markssubject) {
-            List<Mark> marks = new ArrayList<>();
-            for (Mark m : s.getMarks())
-                if (m.getQ().equals(p))
-                    marks.add(m);
-
-            if (!marks.isEmpty())
-                marksSub.add(new MarkSubject(s.getName(), marks));
-        }
-
-        return marksSub;
-    }
-
-    public static int[] splitTeachersCodes(String teacherCodes) {
-        String[] s = teacherCodes.split(",");
-        int[] c = new int[s.length];
-
-        for (int i = 0; i < c.length; i++)
-            c[i] = Integer.parseInt(s[i]);
-
-        return c;
-    }
-
     public static String getProfessorOfThisSubject(List<Lesson> lessons) {
         if (!lessons.isEmpty()) {
             return lessons.get(0).getTeacher();
@@ -503,6 +476,8 @@ public class Metodi {
                                 }
                                 folder.setFiles(Collections.emptyList());
                                 folder.setProfile(user);
+                                if (folder.getName().equals("Uncategorized"))
+                                    folder.setName("Senza nome");
                                 folders.add(folder);
                             }
                             teacher.setFolders(Collections.emptyList());
