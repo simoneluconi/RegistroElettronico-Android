@@ -1,40 +1,42 @@
 package com.sharpdroid.registroelettronico.Activities;
 
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.TextInputEditText;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
+import android.view.ViewGroup;
 
 import com.orm.SugarRecord;
+import com.sharpdroid.registroelettronico.Adapters.Holders.Holder;
 import com.sharpdroid.registroelettronico.Databases.Entities.Subject;
 import com.sharpdroid.registroelettronico.Databases.Entities.Teacher;
 import com.sharpdroid.registroelettronico.R;
-import com.sharpdroid.registroelettronico.Utils.Account;
+import com.sharpdroid.registroelettronico.Utils.Metodi;
+import com.sharpdroid.registroelettronico.Views.Cells.HeaderCell;
+import com.sharpdroid.registroelettronico.Views.Cells.ShadowCell;
+import com.sharpdroid.registroelettronico.Views.Cells.ValueDetailsCell;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.sharpdroid.registroelettronico.Utils.Metodi.capitalizeEach;
-
 public class EditSubjectDetailsActivity extends AppCompatActivity {
 
-    @BindView(R.id.name)
-    TextInputEditText name;
-    @BindView(R.id.professor)
-    TextInputEditText prof;
-    @BindView(R.id.professor2)
-    TextInputEditText prof2;
-    @BindView(R.id.classroom)
-    TextInputEditText classroom;
-    @BindView(R.id.notes)
-    TextInputEditText notes;
-
+    @BindView(R.id.recycler)
+    RecyclerView recycler;
     Subject subject;
+    EditSubjectAdapter adapter;
+    private int rowCount;
+    private int rowInfo;
+    private int rowTitle;
+    private int rowNotes;
+    private int rowSeparator;
+    private int rowTeachers;
+    private int rowTeachers1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,60 +52,41 @@ public class EditSubjectDetailsActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        name.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_title), null, null, null);
-        classroom.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_room), null, null, null);
-        notes.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_description), null, null, null);
-        prof.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_person_black), null, null, null);
-        prof2.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_person_black), null, null, null);
-
-        notes.setOnEditorActionListener((textView, i, keyEvent) -> {
-            if (i == EditorInfo.IME_ACTION_DONE) {
-                apply();
-                return true;
-            }
-            return false;
-        });
 
         init(getIntent().getLongExtra("code", -1));
+
     }
 
     void init(long code) {
-        if (code != -1) {
-            subject = SugarRecord.findById(Subject.class, code);
+        if (code == -1) return;
 
-            name.setText(capitalizeEach(subject.getDescription()));
-            subject.setTeachers(SugarRecord.find(Teacher.class, "ID IN (select TEACHER from SUBJECT_TEACHER where PROFILE=? and SUBJECT=?)", String.valueOf(Account.Companion.with(this).getUser()), String.valueOf(code)));
-            if (!subject.getTeachers().isEmpty()) {
-                if (subject.getTeachers().size() > 0)
-                    prof.setText(capitalizeEach(subject.getTeachers().get(0).getTeacherName(), true));
-                if (subject.getTeachers().size() > 1)
-                    prof2.setText(capitalizeEach(subject.getTeachers().get(1).getTeacherName(), true));
-                else
-                    prof2.setVisibility(View.GONE);
-            }
-            classroom.setText(subject.getClassroom());
-            notes.setText(subject.getDetails());
-        }
+        subject = SugarRecord.findById(Subject.class, code);
+        subject.setTeachers(SugarRecord.findWithQuery(Teacher.class, "select * from TEACHER where TEACHER.ID IN (select SUBJECT_TEACHER.TEACHER from SUBJECT_TEACHER where SUBJECT_TEACHER.SUBJECT=?)", String.valueOf(subject.getId())));
+        setTitle(Metodi.capitalizeEach(subject.getDescription()));
+
+        rowCount = 0;
+        rowInfo = rowCount++;
+        rowTitle = rowCount++;
+        rowNotes = rowCount++;
+        rowSeparator = rowCount++;
+        rowTeachers = rowCount++;
+
+        rowCount += subject.getTeachers().size();
+
+        adapter = new EditSubjectAdapter();
+        recycler.setAdapter(adapter);
+        recycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+
     }
 
     void apply() {
-        String name, classroom, notes;
-
-        name = this.name.getText().toString().trim();
-        classroom = this.classroom.getText().toString().trim();
-        notes = this.notes.getText().toString().trim();
-
-        subject.setDescription(name);
-        subject.setClassroom(classroom);
-        subject.setDetails(notes);
         SugarRecord.update(subject);
-
-        finish();
+        super.onBackPressed();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) finish();
+        if (item.getItemId() == android.R.id.home) super.onBackPressed();
         if (item.getItemId() == R.id.apply) apply();
         return super.onOptionsItemSelected(item);
     }
@@ -114,9 +97,58 @@ public class EditSubjectDetailsActivity extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    protected void onStop() {
+    private class EditSubjectAdapter extends RecyclerView.Adapter {
+        View v = null;
 
-        super.onStop();
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            switch (viewType) {
+                case 0:
+                    v = new HeaderCell(parent.getContext());
+                    v.setBackgroundColor(Color.WHITE);
+                    break;
+                case 1:
+                    v = new ValueDetailsCell(parent.getContext());
+                    v.setBackgroundColor(Color.WHITE);
+                    break;
+                case 2:
+                    v = new ShadowCell(parent.getContext());
+                    break;
+            }
+            return new Holder(v);
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            switch (getItemViewType(position)) {
+                case 0:
+                    ((HeaderCell) holder.itemView).setText((position == rowInfo) ? "Informazioni" : "Professori");
+                    break;
+                case 1:
+                    if (position == rowTitle)
+                        ((ValueDetailsCell) holder.itemView).setTextAndValue(Metodi.capitalizeEach(subject.getDescription()), "Nome", true);
+                    else if (position == rowNotes)
+                        ((ValueDetailsCell) holder.itemView).setTextAndValue(Metodi.capitalizeEach(subject.getDetails()), "Dettagli", true);
+                    else if (subject != null) {
+                        ((ValueDetailsCell) holder.itemView).setText(Metodi.capitalizeEach(subject.getTeachers().get(position - rowTeachers - 1).getTeacherName()), true);
+                    }
+
+                    break;
+            }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if (position == rowInfo || position == rowTeachers)
+                return 0;
+            else if (position == rowSeparator)
+                return 2;
+            else return 1;
+        }
+
+        @Override
+        public int getItemCount() {
+            return rowCount;
+        }
     }
 }

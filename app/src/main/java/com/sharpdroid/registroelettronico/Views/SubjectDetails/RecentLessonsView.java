@@ -13,12 +13,11 @@ import com.sharpdroid.registroelettronico.Activities.AllLessonsWithDownloadActiv
 import com.sharpdroid.registroelettronico.Adapters.LessonsAdapter;
 import com.sharpdroid.registroelettronico.Databases.Entities.Lesson;
 import com.sharpdroid.registroelettronico.R;
+import com.sharpdroid.registroelettronico.Utils.Metodi;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.sharpdroid.registroelettronico.Utils.Metodi.dpToPx;
 
 public class RecentLessonsView extends CardView {
     Context mContext;
@@ -54,7 +53,7 @@ public class RecentLessonsView extends CardView {
 
         adapter = new LessonsAdapter(mContext);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).colorResId(R.color.divider).marginResId(R.dimen.activity_vertical_margin, R.dimen.activity_vertical_margin).size(dpToPx(1)).build());
+        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).colorResId(R.color.divider).marginResId(R.dimen.activity_vertical_margin, R.dimen.activity_vertical_margin).size(Metodi.dp(1)).build());
         mRecyclerView.setAdapter(adapter);
     }
 

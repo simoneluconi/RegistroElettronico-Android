@@ -84,7 +84,7 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
         with(mRecyclerView) {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
-            addItemDecoration(HorizontalDividerItemDecoration.Builder(context).margin(dpToPx(72), dpToPx(16)).colorResId(R.color.divider).size(dpToPx(1)).build())
+            addItemDecoration(HorizontalDividerItemDecoration.Builder(context).margin(dp(72), dp(16)).colorResId(R.color.divider).size(dp(1)).build())
             itemAnimator = null
             adapter = mRVAdapter
         }

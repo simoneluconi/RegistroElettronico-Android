@@ -14,7 +14,7 @@ import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Account
 import com.sharpdroid.registroelettronico.Utils.EventType
-import com.sharpdroid.registroelettronico.Utils.Metodi.dpToPx
+import com.sharpdroid.registroelettronico.Utils.Metodi.dp
 import com.sharpdroid.registroelettronico.Utils.Metodi.updateNote
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import kotlinx.android.synthetic.main.coordinator_swipe_recycler.*
@@ -59,7 +59,7 @@ class FragmentNote : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notificat
         with(recycler) {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
-            addItemDecoration(HorizontalDividerItemDecoration.Builder(context).colorResId(R.color.divider).size(dpToPx(1)).build())
+            addItemDecoration(HorizontalDividerItemDecoration.Builder(context).colorResId(R.color.divider).size(dp(1)).build())
             itemAnimator = null
 
             mRVAdapter = NoteAdapter(context)

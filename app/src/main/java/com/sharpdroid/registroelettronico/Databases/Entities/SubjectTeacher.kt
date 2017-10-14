@@ -8,6 +8,6 @@ data class SubjectTeacher(
         var profile: Profile
 ) : SugarRecord() {
     fun exists(): Boolean {
-        return SugarRecord.find(SubjectTeacher::class.java, "PROFILE='" + profile.username + "' AND SUBJECT='" + subject.id + "' AND TEACHER='" + teacher.id + "'").size > 0
+        return SugarRecord.count<SubjectTeacher>(SubjectTeacher::class.java, "PROFILE='" + profile.username + "' AND SUBJECT='" + subject.id + "' AND TEACHER='" + teacher.id + "'", arrayOf()) > 0
     }
 }
