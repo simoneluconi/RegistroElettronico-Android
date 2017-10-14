@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -64,7 +65,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
             holder.image.setImageResource(R.drawable.file);
         }
 
-        holder.mRelativeLayout.setOnClickListener(v -> listener.onFileClick(file));
+        holder.mRelativeLayout.setOnClickListener(v -> holder.mRelativeLayout.postDelayed(() -> listener.onFileClick(file), ViewConfiguration.getTapTimeout()));
     }
 
     @Override

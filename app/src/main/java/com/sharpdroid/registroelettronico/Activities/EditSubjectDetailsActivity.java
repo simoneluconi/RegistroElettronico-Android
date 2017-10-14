@@ -1,6 +1,10 @@
 package com.sharpdroid.registroelettronico.Activities;
 
+import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -129,11 +133,22 @@ public class EditSubjectDetailsActivity extends AppCompatActivity {
                         ((ValueDetailsCell) holder.itemView).setTextAndValue(Metodi.capitalizeEach(subject.getDescription()), "Nome", true);
                     else if (position == rowNotes)
                         ((ValueDetailsCell) holder.itemView).setTextAndValue(Metodi.capitalizeEach(subject.getDetails()), "Dettagli", true);
-                    else if (subject != null) {
+                    else
                         ((ValueDetailsCell) holder.itemView).setText(Metodi.capitalizeEach(subject.getTeachers().get(position - rowTeachers - 1).getTeacherName()), true);
-                    }
+
 
                     break;
+            }
+            if (getItemViewType(position) == 1) {
+                int[] attrs = new int[]{android.R.attr.selectableItemBackground};
+                TypedArray ta = obtainStyledAttributes(attrs);
+                Drawable drawableFromTheme = ta.getDrawable(0);
+                LayerDrawable wrapper = new LayerDrawable(new Drawable[]{new ColorDrawable(Color.WHITE), drawableFromTheme});
+                ta.recycle();
+                holder.itemView.setBackgroundDrawable(wrapper);
+                holder.itemView.setOnClickListener(view -> {
+
+                });
             }
         }
 

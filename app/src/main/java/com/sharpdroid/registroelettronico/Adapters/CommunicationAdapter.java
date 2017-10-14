@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -69,7 +70,7 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
         ViewHolder.Type.setText(communication.getCategory());
 
         ViewHolder.mRelativeLayout.setOnClickListener(v -> {
-            listener.onCommunicationClick(communication);
+            ViewHolder.mRelativeLayout.postDelayed(() -> listener.onCommunicationClick(communication), ViewConfiguration.getTapTimeout());
         });
 
         ViewHolder.attachment.setVisibility((communication.getHasAttachment()) ? View.VISIBLE : View.GONE);
