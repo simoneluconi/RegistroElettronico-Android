@@ -98,6 +98,8 @@
     <string name="restore_archived_title">Ripristina dati archiviati</string>
     <string name="ordina">Ordina</string>
     <string name="nome_bs">Nome</string>
+    <string name="media_bs">Media</string>
+    <string name="nvoti_bs">Numero di voti</string>
     <string name="media_dec_bs">Media - Decrescente</string>
     <string name="media_cre_bs">Media - Crescente</string>
     <string name="condividi_bs">Condividi</string>

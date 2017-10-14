@@ -210,7 +210,11 @@ public class Metodi {
         }
     }
 
-    public static int dpToPx(int dp) {
+    public static int dp(int dp) {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+    }
+
+    public static int dp(float dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 

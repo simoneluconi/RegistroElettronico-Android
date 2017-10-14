@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.bottom_sheet_order_medie.view.*
  * You activity (or fragment) needs to implement [OrderListener].
  */
 class OrderMedieBS : BottomSheetDialogFragment() {
-    private val texts = intArrayOf(R.string.nome_bs, R.string.media_dec_bs, R.string.media_cre_bs)
+    private val texts = intArrayOf(R.string.nome_bs, R.string.media_bs, R.string.nvoti_bs)
     private val images = intArrayOf(R.drawable.ic_title, R.drawable.ic_timeline, R.drawable.ic_timeline)
     private var mListener: OrderListener? = null
 
@@ -42,10 +42,10 @@ class OrderMedieBS : BottomSheetDialogFragment() {
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         val parent = parentFragment
-        if (parent != null) {
-            mListener = parent as OrderListener
+        mListener = if (parent != null) {
+            parent as OrderListener
         } else {
-            mListener = context as OrderListener?
+            context as OrderListener?
         }
     }
 

@@ -15,7 +15,7 @@ import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Account
 import com.sharpdroid.registroelettronico.Utils.EventType
-import com.sharpdroid.registroelettronico.Utils.Metodi.dpToPx
+import com.sharpdroid.registroelettronico.Utils.Metodi.dp
 import com.sharpdroid.registroelettronico.Utils.Metodi.updateSubjects
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import kotlinx.android.synthetic.main.fragment_lessons.*
@@ -54,7 +54,7 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
         activity.title = getString(R.string.lessons)
         adapter = SubjectsAdapter(this)
         recycler.layoutManager = LinearLayoutManager(context)
-        recycler.addItemDecoration(HorizontalDividerItemDecoration.Builder(context).colorResId(R.color.divider).size(dpToPx(1)).build())
+        recycler.addItemDecoration(HorizontalDividerItemDecoration.Builder(context).colorResId(R.color.divider).size(dp(1)).build())
         recycler.adapter = adapter
         setAdapterData(fetch())
     }

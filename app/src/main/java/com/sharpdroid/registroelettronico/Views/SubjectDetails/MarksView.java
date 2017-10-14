@@ -29,6 +29,7 @@ import com.sharpdroid.registroelettronico.Adapters.MarkAdapter;
 import com.sharpdroid.registroelettronico.Databases.Entities.Grade;
 import com.sharpdroid.registroelettronico.Databases.Entities.Subject;
 import com.sharpdroid.registroelettronico.R;
+import com.sharpdroid.registroelettronico.Utils.Metodi;
 import com.transitionseverywhere.AutoTransition;
 import com.transitionseverywhere.TransitionManager;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -41,8 +42,6 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.sharpdroid.registroelettronico.Utils.Metodi.dpToPx;
 
 public class MarksView extends CardView implements PopupMenu.OnMenuItemClickListener {
     Context mContext;
@@ -83,7 +82,7 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).colorResId(R.color.divider).marginResId(R.dimen.padding_left_divider2, R.dimen.activity_vertical_margin).size(dpToPx(1)).build());
+        mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).colorResId(R.color.divider).marginResId(R.dimen.padding_left_divider2, R.dimen.activity_vertical_margin).size(Metodi.dp(1)).build());
         mRecyclerView.setNestedScrollingEnabled(false);
 
         menu = new PopupMenu(mContext, optionButton);

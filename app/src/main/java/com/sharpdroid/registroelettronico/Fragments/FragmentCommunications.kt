@@ -78,7 +78,7 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
         with(recycler) {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
-            addItemDecoration(HorizontalDividerItemDecoration.Builder(context).colorResId(R.color.divider).size(dpToPx(1)).build())
+            addItemDecoration(HorizontalDividerItemDecoration.Builder(context).colorResId(R.color.divider).size(dp(1)).build())
             itemAnimator = null
             isVerticalScrollBarEnabled = true
 
