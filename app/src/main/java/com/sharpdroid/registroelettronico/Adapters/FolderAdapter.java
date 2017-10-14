@@ -3,6 +3,7 @@ package com.sharpdroid.registroelettronico.Adapters;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -54,7 +55,7 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 folderHolder.layout.setOnClickListener(view -> {
                     if (listener != null)
-                        listener.onFolderClick(f);
+                        folderHolder.layout.postDelayed(() -> listener.onFolderClick(f), ViewConfiguration.getTapTimeout());
                 });
 
                 folderHolder.title.setText(f.getName().trim());

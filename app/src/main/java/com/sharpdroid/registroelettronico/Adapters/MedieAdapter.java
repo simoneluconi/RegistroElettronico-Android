@@ -8,6 +8,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -69,10 +70,9 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
         ViewHolder.mTextViewMateria.setText(capitalizeEach(avg.name));
 
         ViewHolder.mCardViewMedia.setOnClickListener(v ->
-                mContext.startActivity(new Intent(mContext, MarkSubjectDetailActivity.class)
+                ViewHolder.mCardViewMedia.postDelayed(() -> mContext.startActivity(new Intent(mContext, MarkSubjectDetailActivity.class)
                         .putExtra("subject_id", avg.code)
-                        .putExtra("period", period))
-        );
+                        .putExtra("period", period)), ViewConfiguration.getTapTimeout()));
 
         if (avg.avg != 0f) {
             ViewHolder.mTextViewMedia.setText(String.format(Locale.getDefault(), "%.2f", avg.avg));
