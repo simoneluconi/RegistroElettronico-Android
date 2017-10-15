@@ -9,7 +9,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.*
-import butterknife.ButterKnife
 import com.afollestad.materialdialogs.MaterialDialog
 import com.orm.SugarRecord
 import com.sharpdroid.registroelettronico.Adapters.Holders.Holder
@@ -38,7 +37,6 @@ class EditSubjectDetailsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_subject_details)
-        ButterKnife.bind(this)
 
         // toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -144,7 +142,7 @@ class EditSubjectDetailsActivity : AppCompatActivity() {
                 1 -> when (position) {
                     rowTitle -> (holder.itemView as ValueDetailsCell).setTextAndValue(Metodi.capitalizeEach(subjectInfo!!.description.or(subjectInfo!!.subject.description)).or("Senza nome"), "Nome", true)
                     rowNotes -> (holder.itemView as ValueDetailsCell).setTextAndValue(Metodi.capitalizeEach(subjectInfo!!.details).or("Aggiungi dettagli"), "Dettagli", true)
-                    rowClassroom -> (holder.itemView as ValueDetailsCell).setTextAndValue(Metodi.capitalizeEach(subjectInfo!!.classroom).or("Aggiungi classe"), "Dettagli", true)
+                    rowClassroom -> (holder.itemView as ValueDetailsCell).setTextAndValue(Metodi.capitalizeEach(subjectInfo!!.classroom).or("Aggiungi aula"), "Aula", true)
                     else -> (holder.itemView as ValueDetailsCell).setText(Metodi.capitalizeEach(subjectInfo!!.subject.teachers[position - rowTeachers - 1].teacherName), true)
                 }
             }
