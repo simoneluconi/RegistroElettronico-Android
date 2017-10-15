@@ -17,7 +17,6 @@ import com.sharpdroid.registroelettronico.Databases.Entities.Subject
 import com.sharpdroid.registroelettronico.Databases.Entities.SubjectInfo
 import com.sharpdroid.registroelettronico.Databases.Entities.Teacher
 import com.sharpdroid.registroelettronico.R
-import com.sharpdroid.registroelettronico.Utils.Account
 import com.sharpdroid.registroelettronico.Utils.Metodi
 import com.sharpdroid.registroelettronico.Views.Cells.HeaderCell
 import com.sharpdroid.registroelettronico.Views.Cells.ShadowCell
@@ -57,7 +56,7 @@ class EditSubjectDetailsActivity : AppCompatActivity() {
     internal fun init(code: Long) {
         if (code == -1L) return
         val temp = SugarRecord.findById(Subject::class.java, code)
-        subjectInfo = temp.getInfo(this) ?: SubjectInfo((Account.with(this).user.toString() + "" + code.toString()).toLong(), 0f, "", "", "", temp, Account.with(this).user)
+        subjectInfo = temp.getInfo(this)
         subjectInfo?.subject?.teachers = SugarRecord.findWithQuery(Teacher::class.java, "select * from TEACHER where TEACHER.ID IN (select SUBJECT_TEACHER.TEACHER from SUBJECT_TEACHER where SUBJECT_TEACHER.SUBJECT=?)", code.toString())
         title = Metodi.capitalizeEach(subjectInfo?.description.or(subjectInfo?.subject?.description!!))
 
@@ -174,4 +173,4 @@ class EditSubjectDetailsActivity : AppCompatActivity() {
     }
 }
 
-private fun String?.or(s: String): String = if (isNullOrEmpty()) s else this!!
+fun String?.or(s: String): String = if (isNullOrEmpty()) s else this!!

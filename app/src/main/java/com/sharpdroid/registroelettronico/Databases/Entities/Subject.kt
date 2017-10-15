@@ -34,8 +34,9 @@ data class Subject(
 ) {
     constructor() : this(0, "", emptyList())
 
-    fun getInfo(c: Context): SubjectInfo? {
-        return SugarRecord.find(SubjectInfo::class.java, "ID=? LIMIT 1", Account.with(c).user.toString() + id.toString()).getOrNull(0)
+    fun getInfo(c: Context): SubjectInfo {
+        return SugarRecord.find(SubjectInfo::class.java, "ID=? LIMIT 1", Account.with(c).user.toString() + id.toString()).getOrNull(0) ?:
+                SubjectInfo((com.sharpdroid.registroelettronico.Utils.Account.with(c).user.toString() + "" + id.toString()).toLong(), 0f, "", "", "", this, Account.with(c).user)
     }
 }
 
