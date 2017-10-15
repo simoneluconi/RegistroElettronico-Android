@@ -22,7 +22,7 @@ import android.util.TypedValue;
 import android.widget.Toast;
 
 import com.orm.SugarRecord;
-import com.sharpdroid.registroelettronico.API.V1.SpiaggiariAPI;
+import com.sharpdroid.registroelettronico.API.SpiaggiariAPI;
 import com.sharpdroid.registroelettronico.API.V2.APIClient;
 import com.sharpdroid.registroelettronico.Databases.Entities.Communication;
 import com.sharpdroid.registroelettronico.Databases.Entities.CommunicationInfo;

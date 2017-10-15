@@ -33,8 +33,7 @@ import com.sharpdroid.registroelettronico.Fragments.*
 import com.sharpdroid.registroelettronico.Info
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Account
-import com.sharpdroid.registroelettronico.Utils.Metodi.fetchDataOfUser
-import com.sharpdroid.registroelettronico.Utils.Metodi.updateSubjects
+import com.sharpdroid.registroelettronico.Utils.Metodi.*
 import com.transitionseverywhere.ChangeText
 import com.transitionseverywhere.TransitionManager
 import kotlinx.android.synthetic.main.activity_main.*
@@ -62,7 +61,6 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             // first time task
             startActivityForResult(Intent(this, Intro::class.java), 1)
         } else {
-            fetchDataOfUser(this)
             init(savedInstanceState)
         }
     }
@@ -236,18 +234,38 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             R.id.agenda -> {
                 calendar?.visibility = View.VISIBLE
                 fragment = FragmentAgenda()
+                updateAgenda(this)
+                updatePeriods(this)
             }
             R.id.medie -> {
                 tab_layout?.visibility = View.VISIBLE
                 params?.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS or AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP
                 fragment = FragmentMediePager()
+                updateSubjects(this)
+                updateMarks(this)
             }
-            R.id.communications -> fragment = FragmentCommunications()
-            R.id.notes -> fragment = FragmentNote()
-            R.id.absences -> fragment = FragmentAllAbsences()
+            R.id.communications -> {
+                fragment = FragmentCommunications()
+                updateBacheca(this)
+            }
+            R.id.notes -> {
+                fragment = FragmentNote()
+                updateNote(this)
+            }
+            R.id.absences -> {
+                fragment = FragmentAllAbsences()
+                updateAbsence(this)
+            }
             R.id.settings -> fragment = FragmentSettings()
-            R.id.files -> fragment = FragmentFolders()
-            R.id.lessons -> fragment = FragmentSubjects()
+            R.id.files -> {
+                fragment = FragmentFolders()
+                updateFolders(this)
+            }
+            R.id.lessons -> {
+                fragment = FragmentSubjects()
+                updateSubjects(this)
+                updateLessons(this)
+            }
             R.id.nav_share -> {
                 val intent = Intent(Intent.ACTION_SEND)
                 intent.type = "text/plain"

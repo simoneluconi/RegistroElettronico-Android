@@ -62,7 +62,7 @@ class FragmentAllAbsences : Fragment(), SwipeRefreshLayout.OnRefreshListener, No
         recycler.adapter = adapter
 
         load()
-        download()
+        //download()
 
     }
 

@@ -67,7 +67,7 @@ class FragmentNote : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notificat
         }
 
         load()
-        download()
+        //download()
     }
 
     private fun addNotes(notes: List<Note>) {

@@ -60,7 +60,7 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
         recycler.layoutManager = LinearLayoutManager(context)
         recycler.adapter = mRVAdapter
 
-        swiperefresh.isRefreshing = true
+
         swiperefresh.setOnRefreshListener(this)
         swiperefresh.setColorSchemeResources(
                 R.color.bluematerial,
@@ -69,10 +69,11 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
                 R.color.orangematerial)
         load()
 
-        onRefresh()
+        //onRefresh()
     }
 
     override fun onRefresh() {
+        swiperefresh.isRefreshing = true
         updateLessons(activity)
     }
 

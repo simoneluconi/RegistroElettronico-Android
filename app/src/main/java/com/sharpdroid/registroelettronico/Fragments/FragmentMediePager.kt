@@ -10,11 +10,14 @@ import android.support.v4.view.PagerAdapter
 import android.support.v4.widget.SwipeRefreshLayout
 import android.view.*
 import butterknife.ButterKnife
+import com.orm.SugarRecord
 import com.sharpdroid.registroelettronico.BottomSheet.OrderMedieBS
 import com.sharpdroid.registroelettronico.Databases.Entities.Grade
-import com.sharpdroid.registroelettronico.Databases.RegistroDB
+import com.sharpdroid.registroelettronico.Databases.Entities.Lesson
+import com.sharpdroid.registroelettronico.Interfaces.Client.Average
 import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
+import com.sharpdroid.registroelettronico.Utils.Account
 import com.sharpdroid.registroelettronico.Utils.EventType
 import com.sharpdroid.registroelettronico.Utils.Metodi.CalculateScholasticCredits
 import com.sharpdroid.registroelettronico.Utils.Metodi.updateMarks
@@ -68,7 +71,7 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
                 R.color.greenmaterial,
                 R.color.orangematerial)
         load()
-        download()
+        //download()
     }
 
     override fun onDestroyView() {
@@ -89,10 +92,11 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
 
     override fun onItemClicked(position: Int) {
         when (position) {
-            0 -> PreferenceManager.getDefaultSharedPreferences(context).edit().putString("order", "ORDER BY lower(_name) ASC").apply()
-            1 -> PreferenceManager.getDefaultSharedPreferences(context).edit().putString("order", "ORDER BY _avg DESC").apply()
-            2 -> PreferenceManager.getDefaultSharedPreferences(context).edit().putString("order", "ORDER BY _avg ASC").apply()
+            0 -> PreferenceManager.getDefaultSharedPreferences(context).edit().putString("order", "ORDER BY lower(`NAME`) ASC").apply()
+            1 -> PreferenceManager.getDefaultSharedPreferences(context).edit().putString("order", "ORDER BY `AVG` DESC").apply()
+            2 -> PreferenceManager.getDefaultSharedPreferences(context).edit().putString("order", "ORDER BY `COUNT` DESC").apply()
         }
+        load()
     }
 
     private fun download() {
@@ -100,10 +104,9 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
     }
 
     private fun getSnackBarMessage(pos: Int): String {
-        val p = if (pos == 0) RegistroDB.Period.FIRST else if (pos == 1) RegistroDB.Period.SECOND else RegistroDB.Period.ALL
-        //TODO: update references
-        val average = 6.2
-        var className: String? = "4FSA"
+        val p = if (pos == 0) 3 else if (pos == 1) 1 else 0
+        val average = SugarRecord.findWithQuery(Average::class.java, "SELECT 0 as ID, AVG(M_VALUE) as AVG FROM GRADE WHERE PROFILE=? AND M_VALUE!=0 AND M_PERIOD!=?", Account.with(activity).user.toString(), p.toString())[0].avg.toDouble()
+        var className: String? = SugarRecord.find(Lesson::class.java, "PROFILE=?", arrayOf(Account.with(activity).user.toString()), "M_CLASS_DESCRIPTION", null, "1")?.getOrNull(0)?.mClassDescription
         if (className != null) {
             className = className.split("\\s+".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0]
             val classyear: Int
@@ -128,9 +131,9 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
         for (i in 0..pagerAdapter.count) {
             fragment = pagerAdapter.instantiateItem(view_pager, i) as FragmentMedie
             when (i) {
-                0 -> fragment.addSubjects(Grade.getAverages(activity, "M_PERIOD=1 AND"), 1)
-                1 -> fragment.addSubjects(Grade.getAverages(activity, "M_PERIOD!=1 AND"), 3)
-                2 -> fragment.addSubjects(Grade.getAverages(activity, ""), -1)
+                0 -> fragment.addSubjects(Grade.getAverages(activity, "M_PERIOD=1 AND", order), 1)
+                1 -> fragment.addSubjects(Grade.getAverages(activity, "M_PERIOD!=1 AND", order), 3)
+                2 -> fragment.addSubjects(Grade.getAverages(activity, "", order), -1)
             }
         }
 

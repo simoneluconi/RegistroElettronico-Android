@@ -63,7 +63,7 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
         recycler.adapter = mRVAdapter
 
         load()
-        update()
+        //update()
 
     }
 

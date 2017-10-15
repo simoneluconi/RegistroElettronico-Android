@@ -102,7 +102,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         updateAdapter()
         updateCalendar()
 
-        download()
+        //download()
     }
 
     override fun onDestroyView() {

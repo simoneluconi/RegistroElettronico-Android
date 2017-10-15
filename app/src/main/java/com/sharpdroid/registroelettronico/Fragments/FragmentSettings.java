@@ -9,7 +9,6 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 
 import com.orm.SugarRecord;
 import com.sharpdroid.registroelettronico.Databases.Entities.RemoteAgendaInfo;
-import com.sharpdroid.registroelettronico.Databases.RegistroDB;
 import com.sharpdroid.registroelettronico.R;
 
 /**
@@ -19,13 +18,11 @@ public class FragmentSettings extends PreferenceFragmentCompat implements Shared
     private static final String TAG = FragmentSettings.class.getSimpleName();
 
     SharedPreferences sharedPreferences;
-    RegistroDB db;
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
         //add xml
         addPreferencesFromResource(R.xml.preferences);
-        db = RegistroDB.getInstance(getContext());
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         onSharedPreferenceChanged(sharedPreferences, "voto_obiettivo");
