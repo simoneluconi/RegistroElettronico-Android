@@ -87,14 +87,12 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
         }
 
         load()
-        download()
+        //download()
     }
 
     override fun onCommunicationClick(communication: Communication) {
         with(SugarRecord.findById(CommunicationInfo::class.java, communication.myId) ?: return) {
-            if (!communication.hasAttachment && (content.isEmpty() || content.equals(title, true))) return
-
-            val builder = MaterialDialog.Builder(activity).title(title).content(content)
+            val builder = MaterialDialog.Builder(activity).title(title.trim()).content(content.trim())
 
             if (communication.hasAttachment) {
                 builder.neutralText(if (path.isEmpty()) "SCARICA" else "APRI")

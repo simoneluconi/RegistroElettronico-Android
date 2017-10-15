@@ -13,7 +13,7 @@ import android.widget.TextView
 import com.github.mikephil.charting.data.Entry
 import com.orm.SugarRecord
 import com.orm.dsl.Column
-import com.sharpdroid.registroelettronico.API.V1.SpiaggiariAPI
+import com.sharpdroid.registroelettronico.API.SpiaggiariAPI
 import com.sharpdroid.registroelettronico.Databases.Entities.Grade
 import com.sharpdroid.registroelettronico.Databases.Entities.Subject
 import com.sharpdroid.registroelettronico.R

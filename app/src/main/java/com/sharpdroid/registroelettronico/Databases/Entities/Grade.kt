@@ -30,7 +30,7 @@ data class Grade(@Expose @SerializedName("evtCode") val mCode: String,
     constructor() : this("", 0, Date(), "", 0, "", 0, "", "", 0, "", false, 0f, 0.0, -1L)
 
     companion object {
-        fun getAverages(context: Context, where: String): List<Average> {
+        fun getAverages(context: Context, where: String, order: String): List<Average> {
             return SugarRecord.findWithQuery(Average::class.java, "SELECT " +
                     "0 as ID, " +
                     "M_DESCRIPTION as `NAME`, " +
@@ -40,7 +40,7 @@ data class Grade(@Expose @SerializedName("evtCode") val mCode: String,
                     "COUNT(M_VALUE) as `COUNT` " +
                     "FROM GRADE " +
                     "WHERE $where PROFILE=? " +
-                    "GROUP BY code", Account.with(context).user.toString())
+                    "GROUP BY code $order", Account.with(context).user.toString())
         }
 
         fun hasMarksSecondPeriod(context: Context): Boolean {

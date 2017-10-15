@@ -16,7 +16,6 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Account
 import com.sharpdroid.registroelettronico.Utils.EventType
 import com.sharpdroid.registroelettronico.Utils.Metodi.dp
-import com.sharpdroid.registroelettronico.Utils.Metodi.updateSubjects
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import kotlinx.android.synthetic.main.fragment_lessons.*
 
@@ -50,7 +49,7 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
             onSubjectClick(SugarRecord.findById(Subject::class.java, arguments?.getInt("lessons")))
         }
 
-        updateSubjects(activity) //This will fire didReceiveNotification(...)
+        //updateSubjects(activity) //This will fire didReceiveNotification(...)
         activity.title = getString(R.string.lessons)
         adapter = SubjectsAdapter(this)
         recycler.layoutManager = LinearLayoutManager(context)
