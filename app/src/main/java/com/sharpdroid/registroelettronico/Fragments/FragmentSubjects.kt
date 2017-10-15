@@ -1,6 +1,7 @@
 package com.sharpdroid.registroelettronico.Fragments
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
@@ -9,8 +10,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.orm.SugarRecord
+import com.sharpdroid.registroelettronico.Activities.EditSubjectDetailsActivity
 import com.sharpdroid.registroelettronico.Adapters.SubjectsAdapter
 import com.sharpdroid.registroelettronico.Databases.Entities.Subject
+import com.sharpdroid.registroelettronico.Databases.Entities.SubjectInfo
 import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Account
@@ -58,19 +61,24 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
         setAdapterData(fetch())
     }
 
-    private fun setAdapterData(data: List<Subject>) {
+    private fun setAdapterData(data: List<SubjectInfo>) {
         adapter.clear()
         adapter.addAll(data)
     }
 
-    private fun fetch(): List<Subject> {
-        return SugarRecord.findWithQuery(Subject::class.java, "select * from SUBJECT where SUBJECT.ID IN (SELECT  SUBJECT_TEACHER.SUBJECT from SUBJECT_TEACHER WHERE SUBJECT_TEACHER.PROFILE=?) ORDER BY DESCRIPTION ASC", Account.with(activity).user.toString())
+    private fun fetch(): List<SubjectInfo> {
+        return SugarRecord.findWithQuery(Subject::class.java, "select * from SUBJECT where SUBJECT.ID IN (SELECT  SUBJECT_TEACHER.SUBJECT from SUBJECT_TEACHER WHERE SUBJECT_TEACHER.PROFILE=?) ORDER BY DESCRIPTION ASC", Account.with(activity).user.toString()).map { it.getInfo(activity) }
     }
 
     override fun onSubjectClick(subject: Subject) {
         val transaction = activity.supportFragmentManager.beginTransaction()
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)/*setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)*/.replace(R.id.fragment_container, FragmentLessons.newInstance(subject.id.toInt())).addToBackStack(null)
         transaction.commit()
+    }
+
+    override fun onSubjectLongClick(subject: Subject) {
+        startActivity(Intent(activity, EditSubjectDetailsActivity::class.java).putExtra("code", subject.id))
+
     }
 
     override fun onDestroyView() {

@@ -8,9 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.orm.SugarRecord
+import com.sharpdroid.registroelettronico.Activities.or
 import com.sharpdroid.registroelettronico.Adapters.AllLessonsAdapter
 import com.sharpdroid.registroelettronico.Databases.Entities.Lesson
 import com.sharpdroid.registroelettronico.Databases.Entities.Subject
+import com.sharpdroid.registroelettronico.Databases.Entities.SubjectInfo
 import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.EventType
@@ -36,12 +38,12 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
     }
 
     lateinit var mRVAdapter: AllLessonsAdapter
-    var subject: Subject? = null
+    var subject: SubjectInfo? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
-            subject = SugarRecord.findById(Subject::class.java, arguments.getInt("code"))
+            subject = SugarRecord.findById(Subject::class.java, arguments.getInt("code")).getInfo(activity)
         }
     }
 
@@ -54,7 +56,7 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
         super.onViewCreated(view, savedInstanceState)
         NotificationManager.instance.addObserver(this, EventType.UPDATE_LESSONS_KO, EventType.UPDATE_LESSONS_OK, EventType.UPDATE_LESSONS_START)
 
-        activity.title = capitalizeEach(subject?.description)
+        activity.title = capitalizeEach(subject!!.description.or(subject!!.subject.description))
 
         mRVAdapter = AllLessonsAdapter(context)
         recycler.layoutManager = LinearLayoutManager(context)
@@ -85,7 +87,7 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
     }
 
     private fun load() {
-        addLessons(SugarRecord.findWithQuery(Lesson::class.java, "select * from LESSON where M_SUBJECT_ID=? ORDER BY M_DATE DESC", subject?.id.toString()))
+        addLessons(SugarRecord.findWithQuery(Lesson::class.java, "select * from LESSON where M_SUBJECT_ID=? ORDER BY M_DATE DESC", subject?.subject?.id.toString()))
     }
 
     override fun onDestroyView() {

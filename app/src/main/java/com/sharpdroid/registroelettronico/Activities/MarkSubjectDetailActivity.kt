@@ -57,12 +57,12 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         val temp = SugarRecord.findById(Subject::class.java, intent.getIntExtra("subject_id", -1))
-        subject = temp.getInfo(this) ?: SubjectInfo((Account.with(this).user.toString() + "" + temp.id.toString()).toLong(), 0f, "", "", "", temp, Account.with(this).user)
+        subject = temp.getInfo(this)
         p = intent.getIntExtra("period", 0)
         avg = SugarRecord.findWithQuery(AverageType::class.java, "SELECT ID, AVG(M_VALUE) as AVG , 'Generale' as TYPE, COUNT(M_VALUE) as COUNT  FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=?", subject.id.toString())[0]
 
 
-        title = capitalizeEach(subject.subject.description)
+        title = capitalizeEach(subject.description.or(subject.subject.description))
 
         setInfo(subject)
         setOverall(subject.subject)
