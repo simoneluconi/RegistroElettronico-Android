@@ -16,6 +16,7 @@ import com.orm.dsl.Column
 import com.sharpdroid.registroelettronico.API.SpiaggiariAPI
 import com.sharpdroid.registroelettronico.Databases.Entities.Grade
 import com.sharpdroid.registroelettronico.Databases.Entities.Subject
+import com.sharpdroid.registroelettronico.Databases.Entities.SubjectInfo
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Account
 import com.sharpdroid.registroelettronico.Utils.Metodi.MessaggioVoto
@@ -40,7 +41,7 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
         constructor() : this(-1L, -1f, "", 0)
     }
 
-    lateinit var subject: Subject
+    lateinit var subject: SubjectInfo
     var p: Int = 0
     lateinit var avg: AverageType
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,27 +56,27 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
-        subject = SugarRecord.findById(Subject::class.java, intent.getIntExtra("subject_id", -1))
+        val temp = SugarRecord.findById(Subject::class.java, intent.getIntExtra("subject_id", -1))
+        subject = temp.getInfo(this) ?: SubjectInfo((Account.with(this).user.toString() + "" + temp.id.toString()).toLong(), 0f, "", "", "", temp, Account.with(this).user)
         p = intent.getIntExtra("period", 0)
         avg = SugarRecord.findWithQuery(AverageType::class.java, "SELECT ID, AVG(M_VALUE) as AVG , 'Generale' as TYPE, COUNT(M_VALUE) as COUNT  FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=?", subject.id.toString())[0]
 
 
-        title = capitalizeEach(subject.description)
+        title = capitalizeEach(subject.subject.description)
 
         setInfo(subject)
-        setOverall()
+        setOverall(subject.subject)
         setTarget()
-        setLessons(subject.id)
-        setMarks()
+        setLessons(subject.subject.id)
+        setMarks(subject)
     }
 
-    private fun setInfo(subject: Subject) {
+    private fun setInfo(subject: SubjectInfo) {
         info.setSubjectDetails(subject)
-        info.setEditListener { _ -> startActivity(Intent(this, EditSubjectDetailsActivity::class.java).putExtra("code", subject.id)) }
+        info.setEditListener { _ -> startActivity(Intent(this, EditSubjectDetailsActivity::class.java).putExtra("code", subject.subject.id)) }
     }
 
-    private fun setOverall() {
+    private fun setOverall(subject: Subject) {
         val avgTypes: List<AverageType> = SugarRecord.findWithQuery(AverageType::class.java, "SELECT 0 as ID, AVG(M_VALUE) as AVG, M_TYPE as TYPE FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=? GROUP BY TYPE", subject.id.toString())
         overall.setOrale(avgTypes.filter { it.type.equals(SpiaggiariAPI.ORALE, false) }.getOrNull(0)?.avg)
         overall.setScritto(avgTypes.filter { it.type.equals(SpiaggiariAPI.SCRITTO, false) }.getOrNull(0)?.avg)
@@ -84,7 +85,7 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
         overall.visibility = if (avgTypes.isNotEmpty()) View.VISIBLE else View.GONE
     }
 
-    private fun getTarget(): Float {
+    private fun getTarget(subject: SubjectInfo): Float {
         var target = subject.target
         if (target <= 0) {
             target = java.lang.Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(this)
@@ -95,7 +96,7 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
 
     private fun setTarget() {
 
-        target.target = getTarget()
+        target.target = getTarget(subject)
 
         //set progress
         if (avg.avg != 0f) {
@@ -114,8 +115,8 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
             val v = layoutInflater.inflate(R.layout.fragment_imposta_obiettivo, null)
             val mSeekBar = v.findViewById<SeekBar>(R.id.seekbar)
             val mValueText = v.findViewById<TextView>(R.id.value)
-            mSeekBar.progress = getTarget().toInt()
-            mValueText.text = String.format(Locale.getDefault(), "%.0f", getTarget())
+            mSeekBar.progress = getTarget(subject).toInt()
+            mValueText.text = String.format(Locale.getDefault(), "%.0f", getTarget(subject))
 
             alert.setView(v)
 
@@ -161,8 +162,9 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
         lessons.update(code.toInt())
     }
 
-    private fun setMarks() {
-        marks.setSubject(subject, avg.avg)
+    private fun setMarks(subject_info: SubjectInfo) {
+        val subject = subject_info.subject
+        marks.setSubject(subject_info, avg.avg)
         marks.addAll(SugarRecord.find(Grade::class.java, (if (p != -1) "M_PERIOD='$p' AND" else "") + " PROFILE=? AND M_SUBJECT_ID=? ORDER BY M_DATE DESC", Account.with(this).user.toString(), subject.id.toString()))
         marks.setChart(SugarRecord.findWithQuery(Entry::class.java, "SELECT ID, M_DATE as X, M_VALUE as Y FROM GRADE WHERE M_SUBJECT_ID=? AND M_VALUE!=0", subject.id.toString()))
         marks.setShowChart(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("show_chart", true) && marks.itemCount > 1)
@@ -171,7 +173,7 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // handle arrow click here
         if (item.itemId == android.R.id.home) {
-            finish() // close this activity and return to preview activity (if there is any)
+            super.onBackPressed() // close this activity and return to preview activity (if there is any)
         }
 
         return super.onOptionsItemSelected(item)

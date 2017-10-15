@@ -67,8 +67,8 @@ interface SpaggiariREST {
     @GET("students/{studentId}/grades")
     fun getGrades(): Observable<GradeAPI>
 
-    @GET("students/{studentId}/grades/subjects/{subject}")
-    fun getGrades(@Path("subject") subject: Int): Observable<GradeAPI>
+    @GET("students/{studentId}/grades/subjects/{subjectInfo}")
+    fun getGrades(@Path("subjectInfo") subject: Int): Observable<GradeAPI>
 
     @GET("students/{studentId}/lessons/today")
     fun getLessons(): Observable<LessonAPI>

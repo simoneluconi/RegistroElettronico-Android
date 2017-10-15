@@ -18,6 +18,7 @@ import android.os.Looper;
 import android.provider.CalendarContract;
 import android.support.v4.content.FileProvider;
 import android.support.v4.util.Pair;
+import android.util.Log;
 import android.util.TypedValue;
 import android.widget.Toast;
 
@@ -173,12 +174,14 @@ public class Metodi {
         return sortedMap;
     }
 
-    public static String capitalizeEach(String input, boolean doSingleLetters) {
+    public static @NotNull
+    String capitalizeEach(String input, boolean doSingleLetters) {
         Regex reg1 = new Regex(Pattern.compile(doSingleLetters ? "([a-z])\\w*" : "([a-z])\\w+"));
         return reg1.replace(input.toLowerCase(), matchResult -> matchResult.getValue().substring(0, 1).toUpperCase() + matchResult.getValue().substring(1).toLowerCase());
     }
 
-    public static String capitalizeEach(String input) {
+    public static @NotNull
+    String capitalizeEach(String input) {
         return capitalizeEach(input, false);
     }
 
@@ -417,7 +420,10 @@ public class Metodi {
             NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_TEACHERS_START, null);
         });
         APIClient.Companion.with(c).getSubjects().subscribeOn(AndroidSchedulers.mainThread()).subscribe(subjectAPI -> {
-            ArrayList<Teacher> allTeachers = new ArrayList<>();
+            List<Teacher> allTeachers = new ArrayList<>();
+
+            Log.d("SugarOrm", "DELETING SUBJECTS");
+            SugarRecord.deleteAll(com.sharpdroid.registroelettronico.Databases.Entities.Subject.class, "ID IN (SELECT SUBJECT FROM SUBJECT_TEACHER WHERE PROFILE=?)", String.valueOf(p.getId()));
 
             for (com.sharpdroid.registroelettronico.Databases.Entities.Subject subject : subjectAPI.getSubjects()) {
                 allTeachers.addAll(subject.getTeachers());
@@ -429,7 +435,7 @@ public class Metodi {
             }
 
             SugarRecord.saveInTx(allTeachers);
-            SugarRecord.updateInTx(subjectAPI.getSubjects());
+            SugarRecord.saveInTx(subjectAPI.getSubjects());
 
             handler.post(() -> {
                 NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_SUBJECTS_OK, new Object[]{subjectAPI.getSubjects()});
@@ -549,20 +555,19 @@ public class Metodi {
         APIClient.Companion.with(c).getBacheca()
                 .subscribe(communicationAPI -> {
                     List<Communication> list = communicationAPI.getCommunications(p);
+                    List<Communication> toRemove = new ArrayList<>();
 
                     for (Communication communication : list) {
                         if (communication.getCntStatus().equals("deleted")) {
-                            list.remove(communication);
-                            break;
+                            toRemove.add(communication);
+                            continue;
                         }
 
                         @Nullable CommunicationInfo info = SugarRecord.findById(CommunicationInfo.class, communication.getMyId());
-
                         if (!communication.isRead() || (info != null && info.getContent().isEmpty()) || info == null) {
                             APIClient.Companion.with(c).readBacheca(communication.getEvtCode(), communication.getId()).subscribe(readResponse -> {
                                 communication.setRead(true);
                                 SugarRecord.save(communication);
-                                list.remove(communication);
 
                                 CommunicationInfo downloadedInfo = readResponse.getItem();
                                 downloadedInfo.setId(communication.getMyId());
@@ -574,6 +579,7 @@ public class Metodi {
                             });
                         }
                     }
+                    list.removeAll(toRemove);
 
                     SugarRecord.deleteAll(Communication.class, "PROFILE=?", String.valueOf(p.getId()));
                     SugarRecord.saveInTx(list);

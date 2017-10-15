@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                 headerResult.setActiveProfile(profile?.id!!, false)
                 drawer?.setSelectionAtPosition(drawer!!.currentSelectedPosition, true)
             } catch (err: Exception) {
-                err.printStackTrace()
+                Log.w("LOGIN", "USER NOT YET LOGGED IN")
             }
         }
 
