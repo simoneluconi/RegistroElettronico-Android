@@ -166,8 +166,9 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
     private fun setMarks(subject_info: SubjectInfo) {
         val subject = subject_info.subject
         marks.setSubject(subject_info, avg.avg)
-        marks.addAll(SugarRecord.find(Grade::class.java, (if (p != -1) "M_PERIOD='$p' AND" else "") + " PROFILE=? AND M_SUBJECT_ID=? ORDER BY M_DATE DESC", Account.with(this).user.toString(), subject.id.toString()))
-        marks.setChart(SugarRecord.findWithQuery(Entry::class.java, "SELECT ID, M_DATE as X, M_VALUE as Y FROM GRADE WHERE M_SUBJECT_ID=? AND M_VALUE!=0", subject.id.toString()))
+        val data = SugarRecord.find(Grade::class.java, (if (p != -1) "M_PERIOD='$p' AND" else "") + " PROFILE=? AND M_SUBJECT_ID=? ORDER BY M_DATE DESC", Account.with(this).user.toString(), subject.id.toString())
+        marks.addAll(data)
+        marks.setChart(data.filter { it.mValue != 0f }.map { Entry(it.mDate.time.toFloat(), it.mValue) })
         marks.setShowChart(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("show_chart", true) && marks.itemCount > 1)
     }
 
