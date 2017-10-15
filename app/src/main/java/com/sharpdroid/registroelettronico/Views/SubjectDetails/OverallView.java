@@ -60,7 +60,7 @@ public class OverallView extends CardView {
     }
 
     public void setScritto(@Nullable Float scritto) {
-        if (scritto == null) mOrale.setText("-");
+        if (scritto == null) mScritto.setText("-");
         else mScritto.setText(String.format(Locale.getDefault(), "%.2f", scritto));
     }
 
@@ -70,7 +70,7 @@ public class OverallView extends CardView {
     }
 
     public void setPratico(@Nullable Float pratico) {
-        if (pratico == null) mOrale.setText("-");
+        if (pratico == null) mPratico.setText("-");
         else mPratico.setText(String.format(Locale.getDefault(), "%.2f", pratico));
     }
 }
