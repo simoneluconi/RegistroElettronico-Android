@@ -27,7 +27,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.Utils;
 import com.sharpdroid.registroelettronico.Adapters.MarkAdapter;
 import com.sharpdroid.registroelettronico.Databases.Entities.Grade;
-import com.sharpdroid.registroelettronico.Databases.Entities.Subject;
+import com.sharpdroid.registroelettronico.Databases.Entities.SubjectInfo;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.Utils.Metodi;
 import com.transitionseverywhere.AutoTransition;
@@ -115,7 +115,7 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
         lineChartView.getLegend().setEnabled(false);
     }
 
-    public void setSubject(Subject subject, float media) {
+    public void setSubject(SubjectInfo subject, float media) {
         setLimitLines(subject.getTarget(), media);
 
         adapter = new MarkAdapter(mContext);
@@ -128,7 +128,7 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
         adapter.setTarget(target.equals(0f) ? Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(mContext).getString("voto_obiettivo", "8")) : target);
     }
 
-    public void setTarget(Subject subject) {
+    public void setTarget(SubjectInfo subject) {
         float target = ((Float) subject.getTarget()).equals(0f) ? Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(mContext).getString("voto_obiettivo", "8")) : subject.getTarget();
         adapter.setTarget(target);
     }

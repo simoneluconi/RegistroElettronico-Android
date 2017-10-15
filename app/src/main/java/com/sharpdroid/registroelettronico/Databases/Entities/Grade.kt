@@ -36,11 +36,11 @@ data class Grade(@Expose @SerializedName("evtCode") val mCode: String,
                     "M_DESCRIPTION as `NAME`, " +
                     "M_SUBJECT_ID as `CODE`, " +
                     "AVG(M_VALUE) as `AVG`, " +
-                    "(SELECT SUBJECT.TARGET FROM SUBJECT WHERE SUBJECT.ID=GRADE.M_SUBJECT_ID LIMIT 1) as `TARGET`, " +
+                    "(SELECT SUBJECT_INFO.TARGET FROM SUBJECT_INFO WHERE SUBJECT_INFO.SUBJECT=GRADE.M_SUBJECT_ID AND SUBJECT_INFO.PROFILE='${Account.with(context).user}' LIMIT 1) as `TARGET`, " +
                     "COUNT(M_VALUE) as `COUNT` " +
                     "FROM GRADE " +
-                    "WHERE $where PROFILE=? " +
-                    "GROUP BY code $order", Account.with(context).user.toString())
+                    "WHERE $where PROFILE='${Account.with(context).user}' " +
+                    "GROUP BY code $order")
         }
 
         fun hasMarksSecondPeriod(context: Context): Boolean {
