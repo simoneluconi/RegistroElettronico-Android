@@ -2,9 +2,9 @@ package com.sharpdroid.registroelettronico.Views.SubjectDetails;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -84,7 +84,7 @@ public class TargetView extends CardView {
             this.media = media;
             this.mediaView.setText(String.format(Locale.getDefault(), "%.2f", media));
 
-            TransitionManager.beginDelayedTransition(this, new TransitionSet().addTransition(new Recolor()).addTransition(new AutoTransition()));
+            TransitionManager.beginDelayedTransition((ViewGroup) progressBar.getRootView(), new TransitionSet().addTransition(new Recolor()).addTransition(new AutoTransition()).excludeTarget(TextView.class, true));
             progressBar.setProgress(media);
             progressBar.setProgressColor(getColor(getMarkColor(media, target)));
         }
@@ -97,7 +97,7 @@ public class TargetView extends CardView {
     public void setTarget(float target) {
         targetView.setText(String.format(Locale.getDefault(), "%.2f", target));
 
-        TransitionManager.beginDelayedTransition(progressBar, new TransitionSet().addTransition(new AutoTransition()).setStartDelay(150).setDuration(500).setInterpolator(new FastOutSlowInInterpolator()));
+        TransitionManager.beginDelayedTransition((ViewGroup) progressBar.getRootView(), new TransitionSet().addTransition(new Recolor()).addTransition(new AutoTransition()).excludeTarget(TextView.class, true));
         progressBar.setMax(target);
         progressBar.setProgress(media);
         progressBar.setProgressColor(getColor(getMarkColor(media, target)));
