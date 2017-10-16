@@ -131,7 +131,7 @@ dependencies {
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     implementation 'com.github.sundeepk:compact-calendar-view:2.0.1'
-    implementation 'com.google.android.gms:play-services-safetynet:11.4.0'
+    implementation 'com.google.android.gms:play-services-safetynet:11.4.2'
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.heinrichreimersoftware:material-intro:1.6.2'
     implementation 'com.jakewharton:butterknife:8.6.0'
