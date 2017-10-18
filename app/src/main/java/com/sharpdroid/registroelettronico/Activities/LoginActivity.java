@@ -83,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
         mButtonLogin.setEnabled(false);
         mButtonLogin.setText(R.string.caricamento);
 
-        APIClient.Companion.with(this).postLogin(new LoginRequest(mPassword, mEmail, ""))
+        APIClient.Companion.with(this, null).postLogin(new LoginRequest(mPassword, mEmail, ""))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(login -> {
                     if (login.getChoices() != null) {
@@ -141,7 +141,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void loginWithIdent(String email, String password, String ident) {
         Activity c = this;
-        APIClient.Companion.with(c).postLogin(new LoginRequest(password, email, ident))
+        APIClient.Companion.with(c, null).postLogin(new LoginRequest(password, email, ident))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(login_nested -> {
                     SugarRecord.save(new Profile(email, login_nested.getFirstName() + " " + login_nested.getLastName(), password, "", Long.valueOf(login_nested.getIdent().substring(1, 8)), login_nested.getToken(), login_nested.getExpire().getTime()));

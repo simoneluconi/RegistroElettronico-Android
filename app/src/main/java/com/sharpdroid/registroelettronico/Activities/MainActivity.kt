@@ -305,12 +305,12 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             Account.with(this).user = profile.identifier
 
             //TODO: try delete
-            updateSubjects(this)
+            fetchDataOfUser(this)
 
             //Update fragment
             drawer?.setSelectionAtPosition(drawer?.currentSelectedPosition!!, true)
         }
-        return false
+        return true
     }
 
     override fun onProfileLongClick(view: View?, profile: IProfile<*>, current: Boolean): Boolean {

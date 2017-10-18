@@ -28,9 +28,8 @@ class APIClient {
     companion object {
 
 
-        fun with(context: Context): SpaggiariREST {
+        fun with(context: Context, profile: Profile?): SpaggiariREST {
             val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
-            val profile = Profile.getProfile(context)
 
             try {
                 //Installa il supporto al TSL se non è presente
@@ -41,7 +40,7 @@ class APIClient {
 
             val loginInterceptor = Interceptor { chain: Interceptor.Chain ->
                 val original = chain.request()
-                if (original.url().toString() != API_URL + "/auth/login" && profile?.expire ?: 0 < System.currentTimeMillis()) {
+                if (profile != null && original.url().toString() != API_URL + "/auth/login" && profile.expire < System.currentTimeMillis()) {
                     Log.d("LOGIN INTERCEPTOR", "TOKEN EXPIRED, REQUESTING NEW TOKEN")
 
                     val loginRes = chain.proceed(original.newBuilder()
@@ -49,7 +48,7 @@ class APIClient {
                             .method("POST",
                                     RequestBody.create(
                                             MediaType.parse("application/json"),
-                                            LoginRequest(profile?.password.orEmpty(), profile?.username.orEmpty(), "").toString() //properly override to provide a json-like string
+                                            LoginRequest(profile.password, profile.username, "").toString() //properly override to provide a json-like string
                                     )
                             )
                             .header("User-Agent", "zorro/1.0")
@@ -62,8 +61,8 @@ class APIClient {
                         Log.d("LOGIN INTERCEPTOR", "UPDATE TOKEN: " + loginResponse.token)
 
 
-                        profile?.expire = loginResponse.expire!!.time
-                        profile?.token = loginResponse.token!!
+                        profile.expire = loginResponse.expire!!.time
+                        profile.token = loginResponse.token!!
                         SugarRecord.update(profile)
 
                         sharedPref.edit()
