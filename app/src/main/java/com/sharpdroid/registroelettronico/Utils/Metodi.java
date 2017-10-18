@@ -675,6 +675,8 @@ public class Metodi {
                         if (!dir.exists()) dir.mkdirs();
                         File fileDir = new File(dir, filename);
 
+                        writeResponseBodyToDisk(response.body(), fileDir);
+
                         FileInfo info = new FileInfo(f.getObjectId(), fileDir.getAbsolutePath());
                         if (SugarRecord.update(info) > 0)
                             handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_OK, new Long[]{f.getObjectId()}));
