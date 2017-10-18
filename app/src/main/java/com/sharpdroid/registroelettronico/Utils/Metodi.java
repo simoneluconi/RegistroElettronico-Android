@@ -389,19 +389,23 @@ public class Metodi {
     }
 
     public static void fetchDataOfUser(@NotNull Context c) {
-        updateSubjects(c);
-        updateLessons(c);
-        updateFolders(c);
-        updateAgenda(c);
-        updateAbsence(c);
-        updateBacheca(c);
-        updateNote(c);
-        updatePeriods(c);
-        updateMarks(c);
+        Profile p = Profile.Companion.getProfile(c);
+        updateSubjects(c, p);
+        updateLessons(c, p);
+        updateFolders(c, p);
+        updateAgenda(c, p);
+        updateAbsence(c, p);
+        updateBacheca(c, p);
+        updateNote(c, p);
+        updatePeriods(c, p);
+        updateMarks(c, p);
     }
 
     public static void updateMarks(@NotNull Context c) {
-        Profile p = Profile.Companion.getProfile(c);
+        updateMarks(c, Profile.Companion.getProfile(c));
+    }
+
+    public static void updateMarks(@NotNull Context c, Profile p) {
         if (p == null) return;
 
         APIClient.Companion.with(c, p).getGrades().subscribe(gradeAPI -> {
@@ -415,7 +419,10 @@ public class Metodi {
     }
 
     public static void updateSubjects(@NotNull Context c) {
-        Profile p = Profile.Companion.getProfile(c);
+        updateSubjects(c, Profile.Companion.getProfile(c));
+    }
+
+    public static void updateSubjects(@NotNull Context c, Profile p) {
         if (p == null) return;
         handler.post(() -> {
             NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_SUBJECTS_START, null);
@@ -451,8 +458,11 @@ public class Metodi {
     }
 
     public static void updateLessons(@NotNull Context c) {
+        updateLessons(c, Profile.Companion.getProfile(c));
+    }
+
+    public static void updateLessons(@NotNull Context c, Profile p) {
         String[] dates = getStartEnd("yyyyMMdd");
-        Profile p = Profile.Companion.getProfile(c);
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_LESSONS_START, null));
         APIClient.Companion.with(c, p).getLessons(dates[0], dates[1])
@@ -467,7 +477,10 @@ public class Metodi {
     }
 
     public static void updateFolders(@NotNull Context c) {
-        Profile p = Profile.Companion.getProfile(c);
+        updateFolders(c, Profile.Companion.getProfile(c));
+    }
+
+    public static void updateFolders(@NotNull Context c, Profile p) {
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_FOLDERS_START, null));
         APIClient.Companion.with(c, p).getDidactics()
@@ -519,8 +532,11 @@ public class Metodi {
     }
 
     public static void updateAgenda(@NotNull Context c) {
+        updateAgenda(c, Profile.Companion.getProfile(c));
+    }
+
+    public static void updateAgenda(@NotNull Context c, Profile p) {
         String[] dates = getStartEnd("yyyyMMdd");
-        Profile p = Profile.Companion.getProfile(c);
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_AGENDA_START, null));
         APIClient.Companion.with(c, p).getAgenda(dates[0], dates[1])
@@ -536,7 +552,10 @@ public class Metodi {
     }
 
     public static void updateAbsence(@NotNull Context c) {
-        Profile p = Profile.Companion.getProfile(c);
+        updateAbsence(c, Profile.Companion.getProfile(c));
+    }
+
+    public static void updateAbsence(@NotNull Context c, Profile p) {
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_ABSENCES_START, null));
         APIClient.Companion.with(c, p).getAbsences()
@@ -551,7 +570,10 @@ public class Metodi {
     }
 
     public static void updateBacheca(@NotNull Context c) {
-        Profile p = Profile.Companion.getProfile(c);
+        updateBacheca(c, Profile.Companion.getProfile(c));
+    }
+
+    public static void updateBacheca(@NotNull Context c, Profile p) {
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_BACHECA_START, null));
         APIClient.Companion.with(c, p).getBacheca()
@@ -593,7 +615,10 @@ public class Metodi {
     }
 
     public static void updateNote(@NotNull Context c) {
-        Profile p = Profile.Companion.getProfile(c);
+        updateNote(c, Profile.Companion.getProfile(c));
+    }
+
+    public static void updateNote(@NotNull Context c, Profile p) {
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_NOTES_START, null));
         APIClient.Companion.with(c, p).getNotes()
@@ -607,7 +632,10 @@ public class Metodi {
     }
 
     public static void updatePeriods(@NotNull Context c) {
-        Profile p = Profile.Companion.getProfile(c);
+        updatePeriods(c, Profile.Companion.getProfile(c));
+    }
+
+    public static void updatePeriods(@NotNull Context c, Profile p) {
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_PERIODS_START, null));
         APIClient.Companion.with(c, p).getPeriods()
@@ -622,7 +650,10 @@ public class Metodi {
     }
 
     public static void downloadAttachment(@NotNull Context c, Communication communication) {
-        Profile p = Profile.Companion.getProfile(c);
+        downloadAttachment(c, communication, Profile.Companion.getProfile(c));
+    }
+
+    public static void downloadAttachment(@NotNull Context c, Communication communication, Profile p) {
         if (p == null) return;
         File dir = new File(
                 Environment.getExternalStorageDirectory() +
@@ -665,7 +696,10 @@ public class Metodi {
     }
 
     public static void downloadFile(@NotNull Context c, com.sharpdroid.registroelettronico.Databases.Entities.File f) {
-        Profile p = Profile.Companion.getProfile(c);
+        downloadFile(c, f, Profile.Companion.getProfile(c));
+    }
+
+    public static void downloadFile(@NotNull Context c, com.sharpdroid.registroelettronico.Databases.Entities.File f, Profile p) {
         if (p == null) return;
 
         File dir = new File(
