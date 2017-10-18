@@ -95,7 +95,7 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
         val info = SugarRecord.findById(FileInfo::class.java, file.objectId) ?: FileInfo()
         when (file.type) {
             "file" -> {
-                if (info.path.isEmpty()) {
+                if (info.path.isEmpty() || !java.io.File(info.path).exists()) {
                     downloadFile(activity, file)
                 } else {
                     try {
