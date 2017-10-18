@@ -3,14 +3,11 @@ package com.sharpdroid.registroelettronico.Fragments
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.*
 import com.github.sundeepk.compactcalendarview.CompactCalendarView
 import com.orm.SugarRecord
-import com.sharpdroid.registroelettronico.API.V2.APIClient
 import com.sharpdroid.registroelettronico.Activities.AddEventActivity
 import com.sharpdroid.registroelettronico.Adapters.AgendaAdapter
 import com.sharpdroid.registroelettronico.BottomSheet.AgendaBS
@@ -24,7 +21,6 @@ import com.sharpdroid.registroelettronico.Utils.EventType
 import com.sharpdroid.registroelettronico.Utils.Metodi.*
 import com.transitionseverywhere.ChangeText
 import com.transitionseverywhere.TransitionManager
-import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.fragment_agenda.*
@@ -163,36 +159,6 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         val cal = Calendar.getInstance()
         cal.time = date
         return cal
-    }
-
-    private fun download() {
-
-        val dates = getStartEnd("yyyyMMdd")
-
-        val p = Profile.getProfile(activity)
-        if (p != null)
-            APIClient.with(activity).getAgenda(dates[0], dates[1])
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ events ->
-                        Log.d(TAG, "Scaricati " + events.agenda.size + " eventi")
-                        //mRegistroDB.addEvents(events);
-
-                        save(events.getAgenda(p))
-                        Log.d(TAG, "Salvati " + events.agenda.size + " eventi per " + p.name)
-
-                        if (active) {
-                            updateCalendar()
-                            updateAdapter()
-                        }
-                    }) { error ->
-                        error.printStackTrace()
-                        if (active)
-                            Snackbar.make(activity.coordinator_layout, error.localizedMessage, Snackbar.LENGTH_LONG).show()
-                    }
-    }
-
-    fun save(events: List<RemoteAgenda>) {
-        SugarRecord.saveInTx(events)
     }
 
     override fun onDayClick(dateClicked: Date) {

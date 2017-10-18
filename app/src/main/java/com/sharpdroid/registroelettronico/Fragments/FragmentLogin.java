@@ -102,7 +102,7 @@ public class FragmentLogin extends SlideFragment {
         mButtonLogin.setEnabled(false);
         mButtonLogin.setText(R.string.caricamento);
 
-        APIClient.Companion.with(mContext).postLogin(new LoginRequest(mPassword, mEmail, ""))
+        APIClient.Companion.with(mContext, null).postLogin(new LoginRequest(mPassword, mEmail, ""))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(login -> {
                     final List<String> checkedIdents = new ArrayList<>();
@@ -157,7 +157,7 @@ public class FragmentLogin extends SlideFragment {
 
     private void loginWithIdent(String email, String password, String ident) {
         Context c = getContext();
-        APIClient.Companion.with(c).postLogin(new LoginRequest(password, email, ident))
+        APIClient.Companion.with(c, null).postLogin(new LoginRequest(password, email, ident))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(login_nested -> {
                     SugarRecord.save(new Profile(email, login_nested.getFirstName() + " " + login_nested.getLastName(), password, "", Long.valueOf(login_nested.getIdent().substring(1, 8)), login_nested.getToken(), login_nested.getExpire().getTime()));
