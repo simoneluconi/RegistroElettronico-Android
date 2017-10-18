@@ -39,7 +39,7 @@ data class Grade(@Expose @SerializedName("evtCode") val mCode: String,
                     "(SELECT SUBJECT_INFO.TARGET FROM SUBJECT_INFO WHERE SUBJECT_INFO.SUBJECT=GRADE.M_SUBJECT_ID AND SUBJECT_INFO.PROFILE='${Account.with(context).user}' LIMIT 1) as `TARGET`, " +
                     "COUNT(M_VALUE) as `COUNT` " +
                     "FROM GRADE " +
-                    "WHERE $where PROFILE='${Account.with(context).user}' " +
+                    "WHERE $where PROFILE='${Account.with(context).user}' AND M_VALUE!=0 " +
                     "GROUP BY code $order")
         }
 
