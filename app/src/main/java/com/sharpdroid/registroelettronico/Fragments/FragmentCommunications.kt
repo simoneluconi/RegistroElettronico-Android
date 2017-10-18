@@ -95,9 +95,9 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
             val builder = MaterialDialog.Builder(activity).title(title.trim()).content(content.trim())
 
             if (communication.hasAttachment) {
-                builder.neutralText(if (path.isEmpty()) "SCARICA" else "APRI")
+                builder.neutralText(if (path.isEmpty() || !java.io.File(path).exists()) "SCARICA" else "APRI")
                 builder.onNeutral { _, _ ->
-                    if (path.isNotEmpty()) {
+                    if (path.isNotEmpty() && java.io.File(path).exists()) {
                         openFile(activity, File(path))
                     } else {
                         downloadAttachment(activity, communication)
