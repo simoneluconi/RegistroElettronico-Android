@@ -303,6 +303,7 @@ public class Metodi {
                 outputStream.flush();
                 return true;
             } catch (IOException e) {
+                e.printStackTrace();
                 return false;
             } finally {
                 if (inputStream != null)
@@ -311,6 +312,7 @@ public class Metodi {
                     outputStream.close();
             }
         } catch (IOException e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -675,10 +677,8 @@ public class Metodi {
                         if (!dir.exists()) dir.mkdirs();
                         File fileDir = new File(dir, filename);
 
-                        writeResponseBodyToDisk(response.body(), fileDir);
-
                         FileInfo info = new FileInfo(f.getObjectId(), fileDir.getAbsolutePath());
-                        if (SugarRecord.update(info) > 0)
+                        if (SugarRecord.update(info) > 0 && writeResponseBodyToDisk(response.body(), fileDir))
                             handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_OK, new Long[]{f.getObjectId()}));
                         else
                             handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_KO, new Long[]{f.getObjectId()}));
