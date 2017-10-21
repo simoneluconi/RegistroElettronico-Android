@@ -137,11 +137,11 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
 
         LimitLine ll2 = new LimitLine(t, "Il tuo obiettivo");
         ll2.setLineWidth(1f);
-        ll2.setLineColor(ContextCompat.getColor(mContext, R.color.md_light_blue_500));
+        ll2.setLineColor(ContextCompat.getColor(mContext, R.color.md_pink_400));
         ll2.enableDashedLine(15f, 0f, 0f);
         ll2.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
         ll2.setTextSize(10f);
-        ll2.setTextColor(ContextCompat.getColor(mContext, R.color.md_light_blue_500));
+        ll2.setTextColor(ContextCompat.getColor(mContext, R.color.md_pink_400));
 
 
         LimitLine ll1 = new LimitLine(media, "La tua media");
