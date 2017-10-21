@@ -121,6 +121,12 @@ public class FragmentLogin extends SlideFragment {
                                         loginWithIdent(mEmail, mPassword, ident);
                                     }
                                     postLogin();
+                                })
+                                .onNeutral((dialog, which) -> {
+                                    mButtonLogin.setText(R.string.login);
+                                    mEditTextMail.setEnabled(true);
+                                    mEditTextPassword.setEnabled(true);
+                                    mButtonLogin.setEnabled(true);
                                 });
                         builder.show();
                     } else {
