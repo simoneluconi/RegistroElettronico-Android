@@ -37,8 +37,8 @@ import java.util.*
 
 class MarkSubjectDetailActivity : AppCompatActivity() {
 
-    data class AverageType(@Column(name = "ID") val ignore: Long, @Column(name = "AVG") val avg: Float, @Column(name = "TYPE") val type: String, @Column(name = "COUNT") val count: Int) {
-        constructor() : this(-1L, -1f, "", 0)
+    data class AverageType(@Column(name = "AVG") val avg: Float, @Column(name = "TYPE") val type: String, @Column(name = "COUNT") val count: Int) {
+        constructor() : this(-1f, "", 0)
     }
 
     lateinit var subject: SubjectInfo
@@ -65,7 +65,7 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
 
         subject = temp.getInfo(this)
         p = intent.getIntExtra("period", 0)
-        avg = SugarRecord.findWithQuery(AverageType::class.java, "SELECT ID, AVG(M_VALUE) as AVG , 'Generale' as TYPE, COUNT(M_VALUE) as COUNT  FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=?", subject.subject.id.toString())[0]
+        avg = SugarRecord.findWithQuery(AverageType::class.java, "SELECT ID, AVG(M_VALUE) as `AVG` , 'Generale' as `TYPE`, COUNT(M_VALUE) as `COUNT`  FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=?", subject.subject.id.toString())[0]
 
         title = capitalizeEach(subject.description.or(subject.subject.description))
 
@@ -82,8 +82,7 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
     }
 
     private fun initOverall(subject: Subject) {
-        val avgTypes: List<AverageType> = SugarRecord.findWithQuery(AverageType::class.java, "SELECT 0 as ID, AVG(M_VALUE) as AVG, M_TYPE as TYPE FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=? GROUP BY TYPE", subject.id.toString())
-        println(avgTypes.toString())
+        val avgTypes: List<AverageType> = SugarRecord.findWithQuery(AverageType::class.java, "SELECT ID, AVG(M_VALUE) as `AVG` , 'Generale' as `TYPE`, COUNT(M_VALUE) as `COUNT`  FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=? GROUP BY TYPE", subject.id.toString())
         overall.setOrale(avgTypes.filter { it.type.equals(SpiaggiariAPI.ORALE, false) }.getOrNull(0)?.avg)
         overall.setScritto(avgTypes.filter { it.type.equals(SpiaggiariAPI.SCRITTO, false) }.getOrNull(0)?.avg)
         overall.setPratico(avgTypes.filter { it.type.equals(SpiaggiariAPI.PRATICO, false) }.getOrNull(0)?.avg)
@@ -167,7 +166,9 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
         marks.setSubject(subject_info, avg.avg)
 
         val data = SugarRecord.find(Grade::class.java, (if (p != -1) "M_PERIOD='$p' AND" else "") + " PROFILE=? AND M_SUBJECT_ID=? ORDER BY M_DATE DESC", Account.with(this).user.toString(), subject.id.toString())!!
-        val filter = data.filter { it.mValue != 0f }.map { Entry(it.mDate.time.toFloat(), it.mValue) }
+        val filter = data.filter { it.mValue != 0f }.map { Entry(it.mDate.time.toFloat(), it.mValue) }.sortedWith(kotlin.Comparator { n1, n2 ->
+            return@Comparator n1.x.compareTo(n2.x)
+        }).toMutableList()
 
         marks.addAll(data)
         marks.setShowChart(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("show_chart", true) && filter.size > 1)
