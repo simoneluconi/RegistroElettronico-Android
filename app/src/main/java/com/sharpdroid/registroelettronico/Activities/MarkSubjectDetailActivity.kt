@@ -1,6 +1,5 @@
 package com.sharpdroid.registroelettronico.Activities
 
-import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
@@ -8,6 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.preference.PreferenceManager
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewConfiguration
 import android.widget.SeekBar
 import android.widget.TextView
 import com.github.mikephil.charting.data.Entry
@@ -44,6 +44,7 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
     lateinit var subject: SubjectInfo
     var p: Int = 0
     lateinit var avg: AverageType
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mark_subject_detail)
@@ -57,25 +58,30 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         val temp = SugarRecord.findById(Subject::class.java, intent.getIntExtra("subject_id", -1))
+        if (temp == null) {
+            onBackPressed()
+            return
+        }
+
         subject = temp.getInfo(this)
         p = intent.getIntExtra("period", 0)
         avg = SugarRecord.findWithQuery(AverageType::class.java, "SELECT ID, AVG(M_VALUE) as AVG , 'Generale' as TYPE, COUNT(M_VALUE) as COUNT  FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=?", subject.subject.id.toString())[0]
 
         title = capitalizeEach(subject.description.or(subject.subject.description))
 
-        setInfo(subject)
-        setOverall(subject.subject)
-        setTarget()
-        setLessons(subject.subject.id)
-        setMarks(subject)
+        initInfo(subject)
+        initOverall(subject.subject)
+        initTarget()
+        initLessons(subject.subject.id)
+        initMarks(subject)
     }
 
-    private fun setInfo(subject: SubjectInfo) {
+    private fun initInfo(subject: SubjectInfo) {
         info.setSubjectDetails(subject)
         info.setEditListener { _ -> startActivity(Intent(this, EditSubjectDetailsActivity::class.java).putExtra("code", subject.subject.id)) }
     }
 
-    private fun setOverall(subject: Subject) {
+    private fun initOverall(subject: Subject) {
         val avgTypes: List<AverageType> = SugarRecord.findWithQuery(AverageType::class.java, "SELECT 0 as ID, AVG(M_VALUE) as AVG, M_TYPE as TYPE FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=? GROUP BY TYPE", subject.id.toString())
         println(avgTypes.toString())
         overall.setOrale(avgTypes.filter { it.type.equals(SpiaggiariAPI.ORALE, false) }.getOrNull(0)?.avg)
@@ -94,20 +100,17 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
         return target
     }
 
-    private fun setTarget() {
-
-        target.target = getTarget(subject)
-
-        //set progress
+    private fun initTarget() {
         if (avg.avg != 0f) {
             target.setProgress(avg.avg)
         } else {
             target.visibility = View.GONE
         }
+        target.setTarget(getTarget(subject), false)
 
         //set listener for button
 
-        target.setListener({ _ ->
+        target.setButtonsListener({ _ ->
             val alert = AlertDialog.Builder(this)
             alert.setTitle(getString(R.string.obiettivo_title))
             alert.setMessage(getString(R.string.obiettivo_summary))
@@ -121,7 +124,7 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
             alert.setView(v)
 
             alert.setPositiveButton(android.R.string.ok
-            ) { _, _ -> register(mSeekBar.progress.toFloat()) }
+            ) { _, _ -> updateTarget(mSeekBar.progress.toFloat()) }
 
 
             mSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -147,28 +150,27 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun register(new_target: Float) {
-        target.target = new_target
-        marks!!.setTarget(new_target)
-
-        val values = ContentValues()
-        values.put("target", new_target.toInt().toString())
+    private fun updateTarget(new_target: Float) {
         subject.target = new_target
         SugarRecord.save(subject)
-        marks!!.setLimitLines(new_target, avg.avg)
+
+        target.postDelayed({ target.setTarget(getTarget(subject), true) }, ViewConfiguration.getTapTimeout().toLong())
+        marks.setSubject(subject, avg.avg)
     }
 
-    private fun setLessons(code: Long) {
+    private fun initLessons(code: Long) {
         lessons.update(code.toInt())
     }
 
-    private fun setMarks(subject_info: SubjectInfo) {
+    private fun initMarks(subject_info: SubjectInfo) {
         val subject = subject_info.subject
         marks.setSubject(subject_info, avg.avg)
-        val data = SugarRecord.find(Grade::class.java, (if (p != -1) "M_PERIOD='$p' AND" else "") + " PROFILE=? AND M_SUBJECT_ID=? ORDER BY M_DATE DESC", Account.with(this).user.toString(), subject.id.toString())
+        val data = SugarRecord.find(Grade::class.java, (if (p != -1) "M_PERIOD='$p' AND" else "") + " PROFILE=? AND M_SUBJECT_ID=? ORDER BY M_DATE DESC", Account.with(this).user.toString(), subject.id.toString())!!
+        val filter = data.filter { it.mValue != 0f }.map { Entry(it.mDate.time.toFloat(), it.mValue) }
+
         marks.addAll(data)
-        marks.setChart(data.filter { it.mValue != 0f }.map { Entry(it.mDate.time.toFloat(), it.mValue) })
-        marks.setShowChart(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("show_chart", true) && marks.itemCount > 1)
+        marks.setChart(filter)
+        marks.setShowChart(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("show_chart", true) && filter.size > 1)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -23,7 +23,6 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.Utils;
 import com.sharpdroid.registroelettronico.Adapters.MarkAdapter;
 import com.sharpdroid.registroelettronico.Databases.Entities.Grade;
@@ -35,7 +34,6 @@ import com.transitionseverywhere.TransitionManager;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -74,12 +72,14 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
     }
 
     void init(Context context) {
-        mContext = context;
-
-
-        inflate(mContext, R.layout.view_marks, this);
+        inflate(context, R.layout.view_marks, this);
         ButterKnife.bind(this);
 
+        mContext = context;
+
+        adapter = new MarkAdapter(mContext);
+
+        mRecyclerView.setAdapter(adapter);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(mContext).colorResId(R.color.divider).marginResId(R.dimen.padding_left_divider2, R.dimen.activity_vertical_margin).size(Metodi.dp(1)).build());
@@ -94,7 +94,7 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
         xAxis.setDrawGridLines(false);
         xAxis.setValueFormatter((value, axis) -> format.format(new Date((long) value)));
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setGranularity(1314873000f);
+        xAxis.setGranularity(24 * 3600 * 1000);
 
         YAxis rightAxis = lineChartView.getAxisRight();
         rightAxis.setEnabled(false);
@@ -117,39 +117,31 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
 
     public void setSubject(SubjectInfo subject, float media) {
         setLimitLines(subject.getTarget(), media);
-
-        adapter = new MarkAdapter(mContext);
         setTarget(subject);
-        mRecyclerView.setAdapter(adapter);
-        mRecyclerView.invalidate();
     }
 
-    public void setTarget(Float target) {
-        adapter.setTarget(target.equals(0f) ? Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(mContext).getString("voto_obiettivo", "8")) : target);
-    }
-
-    public void setTarget(SubjectInfo subject) {
+    private void setTarget(SubjectInfo subject) {
         float target = ((Float) subject.getTarget()).equals(0f) ? Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(mContext).getString("voto_obiettivo", "8")) : subject.getTarget();
         adapter.setTarget(target);
+        invalidate();
     }
 
     public void addAll(List<Grade> marks) {
         adapter.addAll(marks);
-        showChart = marks.size() > 1;
     }
 
-    public void setLimitLines(float target, float media) {
+    private void setLimitLines(float target, float media) {
         Float t = target;
         if (t.equals(0f))
             t = Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(mContext).getString("voto_obiettivo", "8"));
 
         LimitLine ll2 = new LimitLine(t, "Il tuo obiettivo");
         ll2.setLineWidth(1f);
-        ll2.setLineColor(Color.parseColor("#22000000"));
+        ll2.setLineColor(ContextCompat.getColor(mContext, R.color.md_light_blue_500));
         ll2.enableDashedLine(15f, 0f, 0f);
         ll2.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
         ll2.setTextSize(10f);
-        ll2.setTextColor(Color.parseColor("#444444"));
+        ll2.setTextColor(ContextCompat.getColor(mContext, R.color.md_light_blue_500));
 
 
         LimitLine ll1 = new LimitLine(media, "La tua media");
@@ -163,7 +155,7 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
         lineChartView.getAxisLeft().getLimitLines().clear();
         lineChartView.getAxisLeft().addLimitLine(ll1);
         lineChartView.getAxisLeft().addLimitLine(ll2);
-        invalidate();
+        lineChartView.invalidate();
     }
 
     public void clear() {
@@ -171,14 +163,13 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
     }
 
     public void setShowChart(boolean show) {
+        showChart = show;
         menu.getMenu().findItem(R.id.show).setChecked(show);
         if (show) lineChartView.setVisibility(VISIBLE);
         else lineChartView.setVisibility(GONE);
     }
 
     public void setChart(List<Entry> marks) {
-        List<ILineDataSet> lines = new ArrayList<>();
-
         LineDataSet line = new LineDataSet(marks, "");
         line.setMode(LineDataSet.Mode.LINEAR);
         line.setColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
@@ -199,10 +190,9 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
             line.setFillColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
         }
 
-        lines.add(line);
-
-        LineData lineData = new LineData(lines);
+        LineData lineData = new LineData(line);
         lineChartView.setData(lineData);
+        invalidate();
     }
 
     @Override

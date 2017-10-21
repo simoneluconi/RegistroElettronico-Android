@@ -1,19 +1,16 @@
 package com.sharpdroid.registroelettronico.Views.SubjectDetails;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.sharpdroid.registroelettronico.R;
-import com.transitionseverywhere.AutoTransition;
-import com.transitionseverywhere.Recolor;
-import com.transitionseverywhere.TransitionManager;
-import com.transitionseverywhere.TransitionSet;
 
 import java.util.Locale;
 
@@ -66,14 +63,14 @@ public class TargetView extends CardView {
     }
 
     public void setProgress(Float media) {
-        setMedia(media);
+        setMedia(media, false);
     }
 
     public float getMedia() {
         return media;
     }
 
-    private void setMedia(float media) {
+    private void setMedia(float media, boolean animate) {
         if (media == -1) {
             this.media = -1;
             progressBar.setProgressColor(getColor(R.color.intro_blue));
@@ -84,9 +81,13 @@ public class TargetView extends CardView {
             this.media = media;
             this.mediaView.setText(String.format(Locale.getDefault(), "%.2f", media));
 
-            TransitionManager.beginDelayedTransition((ViewGroup) progressBar.getRootView(), new TransitionSet().addTransition(new Recolor()).addTransition(new AutoTransition()).excludeTarget(TextView.class, true));
-            progressBar.setProgress(media);
-            progressBar.setProgressColor(getColor(getMarkColor(media, target)));
+            if (animate) {
+                animateBar(target, media, getColor(getMarkColor(media, target)));
+            } else {
+                progressBar.setProgressColor(getColor(getMarkColor(media, target)));
+                progressBar.setMax(target);
+                progressBar.setProgress(media);
+            }
         }
     }
 
@@ -94,16 +95,28 @@ public class TargetView extends CardView {
         return target;
     }
 
-    public void setTarget(float target) {
+    public void setTarget(float target, boolean animate) {
+        this.target = target;
         targetView.setText(String.format(Locale.getDefault(), "%.2f", target));
 
-        TransitionManager.beginDelayedTransition((ViewGroup) progressBar.getRootView(), new TransitionSet().addTransition(new Recolor()).addTransition(new AutoTransition()).excludeTarget(TextView.class, true));
-        progressBar.setMax(target);
-        progressBar.setProgress(media);
-        progressBar.setProgressColor(getColor(getMarkColor(media, target)));
+        if (animate) {
+            animateBar(target, media, getColor(getMarkColor(media, target)));
+        } else {
+            progressBar.setProgressColor(getColor(getMarkColor(media, target)));
+            progressBar.setMax(target);
+            progressBar.setProgress(media);
+        }
+    }
 
-        setMedia(media);
-        this.target = target;
+    private void animateBar(float target, float media, int color) {
+        ObjectAnimator.ofFloat(progressBar, "max", target).start();
+        ObjectAnimator.ofFloat(progressBar, "progress", media).start();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ObjectAnimator.ofArgb(progressBar, "progressColor", color).start();
+        } else {
+            progressBar.setProgressColor(color);
+        }
     }
 
     public void clear() {
@@ -115,7 +128,7 @@ public class TargetView extends CardView {
         progressBar.setMax(0f);
     }
 
-    public void setListener(OnClickListener target, OnClickListener details) {
+    public void setButtonsListener(OnClickListener target, OnClickListener details) {
         set.setOnClickListener(target);
         this.details.setOnClickListener(details);
     }
