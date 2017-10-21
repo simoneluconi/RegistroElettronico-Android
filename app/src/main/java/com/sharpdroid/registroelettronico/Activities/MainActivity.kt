@@ -304,7 +304,6 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             Log.d(Info.ACCOUNT, profile.email.text)
             Account.with(this).user = profile.identifier
 
-            //TODO: try delete
             fetchDataOfUser(this)
 
             //Update fragment
@@ -323,6 +322,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                 headerResult.profiles = Profile.getIProfiles()
                 headerResult.addProfiles(ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true))
 
+
                 val p = SugarRecord.first(Profile::class.java)
                 if (p != null) {
                     Account.with(this).user = p.id
@@ -330,6 +330,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                 } else {
                     startActivity(Intent(this, LoginActivity::class.java))
                 }
+                drawer?.closeDrawer()
             }.show()
         }
         return false
