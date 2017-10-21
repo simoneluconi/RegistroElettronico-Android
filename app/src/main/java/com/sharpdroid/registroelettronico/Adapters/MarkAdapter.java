@@ -63,7 +63,7 @@ public class MarkAdapter extends RecyclerView.Adapter<MarkAdapter.MarkHolder> {
         holder.color.setImageDrawable(new ColorDrawable(ContextCompat.getColor(mContext, getMarkColor(mark.getMValue(), target))));
         holder.mark.setText(mark.getMStringValue());
 
-        holder.content.setText(mark.getMNotes());
+        holder.content.setText(mark.getMNotes().trim());
 
         holder.content.setVisibility((TextUtils.isEmpty(holder.content.getText()) ? View.GONE : View.VISIBLE));
 
