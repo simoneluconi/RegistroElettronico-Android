@@ -102,7 +102,7 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
         YAxis leftAxis = lineChartView.getAxisLeft();
         leftAxis.setDrawGridLines(false);
         leftAxis.setGridColor(Color.parseColor("#22000000"));
-        leftAxis.setAxisMinimum(0f);
+        leftAxis.setAxisMinimum(1f);
         leftAxis.setAxisMaximum(10f);
 
         //not zoomable nor draggable
@@ -190,6 +190,7 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
             line.setFillColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
         }
         lineChartView.setData(new LineData(line));
+        lineChartView.invalidate();
     }
 
     @Override
