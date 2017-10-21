@@ -189,10 +189,7 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
         } else {
             line.setFillColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
         }
-
-        LineData lineData = new LineData(line);
-        lineChartView.setData(lineData);
-        invalidate();
+        lineChartView.setData(new LineData(line));
     }
 
     @Override

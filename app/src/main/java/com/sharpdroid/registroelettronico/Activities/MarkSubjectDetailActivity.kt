@@ -165,12 +165,13 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
     private fun initMarks(subject_info: SubjectInfo) {
         val subject = subject_info.subject
         marks.setSubject(subject_info, avg.avg)
+
         val data = SugarRecord.find(Grade::class.java, (if (p != -1) "M_PERIOD='$p' AND" else "") + " PROFILE=? AND M_SUBJECT_ID=? ORDER BY M_DATE DESC", Account.with(this).user.toString(), subject.id.toString())!!
         val filter = data.filter { it.mValue != 0f }.map { Entry(it.mDate.time.toFloat(), it.mValue) }
 
         marks.addAll(data)
-        marks.setChart(filter)
         marks.setShowChart(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("show_chart", true) && filter.size > 1)
+        marks.setChart(filter)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
