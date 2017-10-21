@@ -30,7 +30,7 @@ class App : Application() {
         val notificationJob = dispatcher.newJobBuilder()
                 .setService(NotificationService::class.java)
                 .setTag("sharpdroid-notification-service")
-                .setTrigger(Trigger.executionWindow(periodicity, periodicity - toleranceInterval))
+                .setTrigger(Trigger.executionWindow(periodicity, periodicity + toleranceInterval))
                 .setRecurring(true)
                 .setReplaceCurrent(true)
                 .setLifetime(Lifetime.UNTIL_NEXT_BOOT)
