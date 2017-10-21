@@ -114,6 +114,12 @@ public class LoginActivity extends AppCompatActivity {
                                         for (String ident : checkedIdents) {
                                             loginWithIdent(mEmail, mPassword, ident);
                                         }
+                                    })
+                                    .onNeutral((dialog, which) -> {
+                                        mButtonLogin.setText(R.string.login);
+                                        mEditTextMail.setEnabled(true);
+                                        mEditTextPassword.setEnabled(true);
+                                        mButtonLogin.setEnabled(true);
                                     });
                             builder.show();
                         } else {
