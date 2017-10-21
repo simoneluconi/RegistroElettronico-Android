@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".App"
@@ -17,7 +18,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         tools:replace="android:icon">
-
         <meta-data
             android:name="DATABASE"
             android:value="registro.db" />
@@ -78,6 +78,14 @@
             android:launchMode="singleInstance"
             tools:ignore="InnerclassSeparator" />
 
+        <service
+            android:name=".Notification.NotificationService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+            </intent-filter>
+        </service>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.sharpdroid.registroelettronico.fileprovider"
@@ -92,6 +100,14 @@
             android:name="io.fabric.ApiKey"
             android:value="3124a44c739be03092b7db7c9c44a5052bd37fa5" />
 
+        <receiver
+            android:name=".Notification.OnBoot"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

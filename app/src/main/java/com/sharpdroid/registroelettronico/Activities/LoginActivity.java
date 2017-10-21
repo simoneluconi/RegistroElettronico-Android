@@ -21,6 +21,7 @@ import com.sharpdroid.registroelettronico.API.V2.APIClient;
 import com.sharpdroid.registroelettronico.Adapters.LoginAdapter;
 import com.sharpdroid.registroelettronico.Databases.Entities.Choice;
 import com.sharpdroid.registroelettronico.Databases.Entities.LoginRequest;
+import com.sharpdroid.registroelettronico.Databases.Entities.Option;
 import com.sharpdroid.registroelettronico.Databases.Entities.Profile;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.Utils.Account;
@@ -127,6 +128,7 @@ public class LoginActivity extends AppCompatActivity {
                             super.onBackPressed();
                         }
                     } else {
+                        SugarRecord.save(new Option(Long.valueOf(login.getIdent().substring(1, 8)), true, true, true, true, true));
                         SugarRecord.save(new Profile(mEmail, login.getFirstName() + " " + login.getLastName(), mPassword, "", Long.valueOf(login.getIdent().substring(1, 8)), login.getToken(), login.getExpire().getTime()));
                         Account.Companion.with(this).setUser(Long.valueOf(login.getIdent().substring(1, 8)));
                         fetchDataOfUser(this);
@@ -150,6 +152,7 @@ public class LoginActivity extends AppCompatActivity {
         APIClient.Companion.with(c, null).postLogin(new LoginRequest(password, email, ident))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(login_nested -> {
+                    SugarRecord.save(new Option(Long.valueOf(login_nested.getIdent().substring(1, 8)), true, true, true, true, true));
                     SugarRecord.save(new Profile(email, login_nested.getFirstName() + " " + login_nested.getLastName(), password, "", Long.valueOf(login_nested.getIdent().substring(1, 8)), login_nested.getToken(), login_nested.getExpire().getTime()));
                     Account.Companion.with(c).setUser(Long.valueOf(login_nested.getIdent().substring(1, 8)));
                     fetchDataOfUser(c);
