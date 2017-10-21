@@ -81,7 +81,7 @@ class EditSubjectDetailsActivity : AppCompatActivity() {
                 rowNotes -> {
                     builder.title("Dettagli")
                     builder.content("Modifica i dettagli della materia")
-                    builder.input("Inserisci un nuovo nome", subjectInfo!!.details, true, { _, _ -> })
+                    builder.input("Inserisci i dettagli", subjectInfo!!.details, true, { _, _ -> })
                     builder.onPositive { dialog, _ -> subjectInfo!!.details = dialog.inputEditText!!.text.toString(); adapter.notifyDataSetChanged() }
 
                 }
