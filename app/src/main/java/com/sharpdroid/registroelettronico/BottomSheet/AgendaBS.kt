@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.sharpdroid.registroelettronico.Databases.Entities.LocalAgenda
 import com.sharpdroid.registroelettronico.Databases.Entities.SuperAgenda
 import com.sharpdroid.registroelettronico.R
 import kotlinx.android.synthetic.main.fragment_item_agenda_options.view.*
@@ -18,9 +19,9 @@ class AgendaBS : BottomSheetDialogFragment() {
     private val texts = intArrayOf(R.string.condividi_bs, R.string.archivia_bs)
     private val icons = intArrayOf(R.drawable.agenda_bsheet_share, R.drawable.agenda_bsheet_archive)
     private var mListener: Listener? = null
-    private var event: SuperAgenda? = null
+    private var event: Any? = null
 
-    fun setEvent(event: SuperAgenda) {
+    fun setEvent(event: Any) {
         this.event = event
     }
 
@@ -38,10 +39,10 @@ class AgendaBS : BottomSheetDialogFragment() {
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         val parent = parentFragment
-        if (parent != null) {
-            mListener = parent as Listener
+        mListener = if (parent != null) {
+            parent as Listener
         } else {
-            mListener = context as Listener?
+            context as Listener?
         }
     }
 
@@ -51,7 +52,7 @@ class AgendaBS : BottomSheetDialogFragment() {
     }
 
     interface Listener {
-        fun onBottomSheetItemClicked(position: Int, e: SuperAgenda)
+        fun onBottomSheetItemClicked(position: Int, e: Any)
     }
 
     private inner class ItemAdapter(val clickListener: Listener) : RecyclerView.Adapter<ItemAdapter.ViewHolder>() {
@@ -73,15 +74,26 @@ class AgendaBS : BottomSheetDialogFragment() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            when (position) {
-                0 -> holder.bindData(if (event!!.completed) "Non completato" else "Completato",
-                        ContextCompat.getColor(context, R.color.greenmaterial_800),
-                        if (event!!.completed) R.drawable.agenda_uncomplete else R.drawable.agenda_complete, ContextCompat.getColor(context, R.color.greenmaterial_800))
-                1 -> holder.bindData(if (event!!.test) "Rimuovi contrassegno" else "Contrassegna come compito",
-                        ContextCompat.getColor(context, R.color.redmaterial),
-                        if (event!!.test) R.drawable.agenda_uncomplete else R.drawable.agenda_complete, ContextCompat.getColor(context, R.color.redmaterial))
-                else -> holder.bindData(getString(texts[position - 2]), Color.BLACK, icons[position - 2], null)
-
+            if (event is SuperAgenda) {
+                when (position) {
+                    0 -> holder.bindData(if ((event as SuperAgenda).completed) "Non completato" else "Completato",
+                            ContextCompat.getColor(context, R.color.greenmaterial_800),
+                            if ((event as SuperAgenda).completed) R.drawable.agenda_uncomplete else R.drawable.agenda_complete, ContextCompat.getColor(context, R.color.greenmaterial_800))
+                    1 -> holder.bindData(if ((event as SuperAgenda).test) "Rimuovi contrassegno" else "Contrassegna come compito",
+                            ContextCompat.getColor(context, R.color.redmaterial),
+                            if ((event as SuperAgenda).test) R.drawable.agenda_uncomplete else R.drawable.agenda_complete, ContextCompat.getColor(context, R.color.redmaterial))
+                    else -> holder.bindData(getString(texts[position - 2]), Color.BLACK, icons[position - 2], null)
+                }
+            } else if (event is LocalAgenda) {
+                when (position) {
+                    0 -> holder.bindData(if ((event as LocalAgenda).completed_date != null) "Non completato" else "Completato",
+                            ContextCompat.getColor(context, R.color.greenmaterial_800),
+                            if ((event as LocalAgenda).completed_date != null) R.drawable.agenda_uncomplete else R.drawable.agenda_complete, ContextCompat.getColor(context, R.color.greenmaterial_800))
+                    1 -> holder.bindData(if ((event as LocalAgenda).type == "verifica") "Rimuovi contrassegno" else "Contrassegna come compito",
+                            ContextCompat.getColor(context, R.color.redmaterial),
+                            if ((event as LocalAgenda).type == "verifica") R.drawable.agenda_uncomplete else R.drawable.agenda_complete, ContextCompat.getColor(context, R.color.redmaterial))
+                    else -> holder.bindData(getString(texts[position - 2]), Color.BLACK, icons[position - 2], null)
+                }
             }
         }
 

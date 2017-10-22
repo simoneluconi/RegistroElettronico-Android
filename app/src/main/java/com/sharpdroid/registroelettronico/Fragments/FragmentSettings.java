@@ -31,6 +31,7 @@ public class FragmentSettings extends PreferenceFragmentCompat implements Shared
         Preference button = findPreference("clear_archive");
         button.setOnPreferenceClickListener(preference -> {
             SugarRecord.deleteAll(RemoteAgendaInfo.class);
+            SugarRecord.executeQuery("UPDATE LOCAL_AGENDA SET ARCHIVED=0 WHERE ARCHIVED!=0");
             return true;
         });
 

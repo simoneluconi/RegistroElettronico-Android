@@ -58,21 +58,21 @@ class AddEventActivity : AppCompatActivity() {
         when (type.toLowerCase()) {
             "verifica" -> if (handleTitle() && handleSubject() && handleProfessor() && handleDate()) {
                 selectedDay = betterDate(selectedDay)
-                SugarRecord.save(LocalAgenda(layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay!!, selectedSubject!!.subject, selectedProfessor!!, null, Account.with(this).user))
+                SugarRecord.save(LocalAgenda(layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay!!, selectedSubject!!.subject, selectedProfessor!!, null, Account.with(this).user, false))
                 finish()
             } else {
                 (getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrate(40)
             }
             "compiti" -> if (handleTitle() && handleSubject() && handleProfessor() && handleDate()) {
                 selectedDay = betterDate(selectedDay)
-                SugarRecord.save(LocalAgenda(layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay!!, selectedSubject!!.subject, selectedProfessor!!, null, Account.with(this).user))
+                SugarRecord.save(LocalAgenda(layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay!!, selectedSubject!!.subject, selectedProfessor!!, null, Account.with(this).user, false))
                 finish()
             } else {
                 (getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrate(40)
             }
             else -> if (handleTitle() && handleDate()) {
                 selectedDay = betterDate(selectedDay)
-                SugarRecord.save(LocalAgenda(layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay!!, selectedSubject!!.subject, selectedProfessor!!, null, Account.with(this).user))
+                SugarRecord.save(LocalAgenda(layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay!!, selectedSubject!!.subject, selectedProfessor!!, null, Account.with(this).user, false))
                 finish()
             } else {
                 (getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrate(40)
