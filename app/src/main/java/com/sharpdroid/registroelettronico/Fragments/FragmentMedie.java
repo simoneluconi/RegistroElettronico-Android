@@ -22,8 +22,6 @@ import butterknife.ButterKnife;
 
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
-// TODO: 19/01/2017 Visualizzare media generale e crediti scolastici in modo decente
-
 public class FragmentMedie extends Fragment {
     final private String TAG = FragmentMedie.class.getSimpleName();
 

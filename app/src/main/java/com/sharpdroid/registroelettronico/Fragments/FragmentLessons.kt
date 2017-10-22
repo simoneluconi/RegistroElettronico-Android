@@ -42,7 +42,7 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        subject = SugarRecord.findById(Subject::class.java, arguments?.getInt("code") ?: savedInstanceState?.getInt("code") ?: -1).getInfo(activity)
+        subject = SugarRecord.findById(Subject::class.java, arguments?.getInt("code") ?: savedInstanceState?.getInt("code") ?: -1)?.getInfo(activity)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,

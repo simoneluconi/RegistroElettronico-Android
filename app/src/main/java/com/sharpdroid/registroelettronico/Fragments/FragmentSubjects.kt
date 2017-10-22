@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,13 +51,15 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
         super.onViewCreated(view, savedInstanceState)
         NotificationManager.instance.addObserver(this, EventType.UPDATE_SUBJECTS_START, EventType.UPDATE_SUBJECTS_OK, EventType.UPDATE_SUBJECTS_KO)
 
+        Log.d("FragmentSubjects", "onViewCreated")
+
         if (arguments != null && arguments.getInt("lessons", -1) != -1) {
             onSubjectClick(SugarRecord.findById(Subject::class.java, arguments?.getInt("lessons")))
         }
 
         if (savedInstanceState != null) {
             selectedSubject = savedInstanceState["subject"] as Subject?
-            if (selectedSubject != null) onSubjectClick(selectedSubject!!)
+            //if (selectedSubject != null) onSubjectClick(selectedSubject!!)
         }
 
         //updateSubjects(activity) //This will fire didReceiveNotification(...)
