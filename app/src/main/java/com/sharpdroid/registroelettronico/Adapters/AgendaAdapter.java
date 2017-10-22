@@ -89,13 +89,13 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             eventHolder.notes.setVisibility(event.getContent().isEmpty() ? View.GONE : View.VISIBLE);
             eventHolder.divider.setVisibility(getItemViewType(position - 1) == R.layout.adapter_header ? View.INVISIBLE : View.VISIBLE);
-/*
+
             eventHolder.itemView.setOnClickListener((View v) -> {
                 Log.d("CLICK", "CLICK");
                 if (mClickListener != null)
                     mClickListener.onAgendaItemClicked(event);
             });
-  */
+
         }
     }
 
@@ -152,7 +152,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     }
                 }
             } else if (e instanceof LocalAgenda) {
-                if (((LocalAgenda) e).getType().equalsIgnoreCase("test")) {
+                if (((LocalAgenda) e).getType().equalsIgnoreCase("verifica")) {
                     if (organized.containsKey("Verifiche")) {
                         List<Object> verifiche = new ArrayList<>(organized.get("Verifiche"));
                         verifiche.add(e);
@@ -190,7 +190,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     public interface AgendaClickListener {
-        void onAgendaItemClicked(SuperAgenda e);
+        void onAgendaItemClicked(Object e);
     }
 
     class EventHolder extends RecyclerView.ViewHolder {

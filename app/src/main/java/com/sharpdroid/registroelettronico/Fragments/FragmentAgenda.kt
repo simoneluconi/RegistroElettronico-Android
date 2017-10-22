@@ -16,6 +16,7 @@ import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Account
 import com.sharpdroid.registroelettronico.Utils.EventType
+import com.sharpdroid.registroelettronico.Utils.Metodi
 import com.sharpdroid.registroelettronico.Utils.Metodi.*
 import com.transitionseverywhere.ChangeText
 import com.transitionseverywhere.TransitionManager
@@ -150,7 +151,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
     private fun load() {
         events.clear()
         events.addAll(RemoteAgenda.getSuperAgenda(Account.with(activity).user))
-        events.addAll(SugarRecord.find(LocalAgenda::class.java, "PROFILE=?", Account.with(activity).user.toString()))
+        events.addAll(SugarRecord.find(LocalAgenda::class.java, "PROFILE=? AND ARCHIVED=0", Account.with(activity).user.toString()))
     }
 
     private fun updateAdapter() {
@@ -214,59 +215,94 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
     }
 
 
-    override fun onAgendaItemClicked(e: SuperAgenda) {
+    override fun onAgendaItemClicked(e: Any) {
         val bottomSheetAgenda = AgendaBS()
         bottomSheetAgenda.setEvent(e)
         bottomSheetAgenda.show(childFragmentManager, "dialog")
     }
 
-    override fun onBottomSheetItemClicked(position: Int, e: SuperAgenda) {
-        when (position) {
-            0 -> {
-                val found: RemoteAgendaInfo? = e.agenda.getInfo()
-                if (found != null) {
-                    found.completed = !found.completed
-                    SugarRecord.update(found)
-                } else {
-                    SugarRecord.save(RemoteAgendaInfo(e.agenda.id, true, false, isEventTest(e)))
-                }
+    override fun onBottomSheetItemClicked(position: Int, e: Any) {
+        if (e is SuperAgenda) {
+            when (position) {
+                0 -> {
+                    val found: RemoteAgendaInfo? = e.agenda.getInfo()
+                    if (found != null) {
+                        found.completed = !found.completed
+                        SugarRecord.update(found)
+                    } else {
+                        SugarRecord.save(RemoteAgendaInfo(e.agenda.id, true, false, isEventTest(e)))
+                    }
 
-                e.completed = !e.completed
-                load()
-                updateAdapter()
-            }
-            1 -> {
-                val found = e.agenda.getInfo()
-                if (found != null) {
-                    found.test = !found.test
-                    SugarRecord.update(found)
-                } else {
-                    SugarRecord.save(RemoteAgendaInfo(e.agenda.id, false, false, !isEventTest(e)))
+                    e.completed = !e.completed
+                    load()
+                    updateAdapter()
                 }
+                1 -> {
+                    val found = e.agenda.getInfo()
+                    if (found != null) {
+                        found.test = !found.test
+                        SugarRecord.update(found)
+                    } else {
+                        SugarRecord.save(RemoteAgendaInfo(e.agenda.id, false, false, !isEventTest(e)))
+                    }
 
-                load()
-                updateAdapter()
-                updateCalendar()
-            }
-            2 -> {
-                val sendIntent = Intent()
-                sendIntent.action = Intent.ACTION_SEND
-                sendIntent.putExtra(Intent.EXTRA_TEXT, eventToString(e, ""))
-                sendIntent.type = "text/plain"
-                startActivity(Intent.createChooser(sendIntent, getString(R.string.share_with)))
-            }
-            3 -> {
-                val found: RemoteAgendaInfo? = e.agenda.getInfo()
-                if (found != null) {
-                    found.archived = true
-                    SugarRecord.update(found)
-                } else {
-                    SugarRecord.save(RemoteAgendaInfo(e.agenda.id, false, true, isEventTest(e)))
+                    load()
+                    updateAdapter()
+                    updateCalendar()
                 }
+                2 -> {
+                    val sendIntent = Intent()
+                    sendIntent.action = Intent.ACTION_SEND
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, eventToString(e, ""))
+                    sendIntent.type = "text/plain"
+                    startActivity(Intent.createChooser(sendIntent, getString(R.string.share_with)))
+                }
+                3 -> {
+                    val found: RemoteAgendaInfo? = e.agenda.getInfo()
+                    if (found != null) {
+                        found.archived = true
+                        SugarRecord.update(found)
+                    } else {
+                        SugarRecord.save(RemoteAgendaInfo(e.agenda.id, false, true, isEventTest(e)))
+                    }
 
-                load()
-                updateAdapter()
-                updateCalendar()
+                    load()
+                    updateAdapter()
+                    updateCalendar()
+                }
+            }
+        } else if (e is LocalAgenda) {
+            when (position) {
+                0 -> {
+                    e.completed_date = if (e.completed_date != null) null else Date()
+                    SugarRecord.update(e)
+
+                    load()
+                    updateAdapter()
+                }
+                1 -> {
+                    e.type = if (e.type == "verifica") "altro" else "verifica"
+                    SugarRecord.update(e)
+
+                    load()
+                    updateAdapter()
+                    updateCalendar()
+                }
+                2 -> {
+                    val sendIntent = Intent()
+                    sendIntent.action = Intent.ACTION_SEND
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, Metodi.complex.format(e.day) + "\n" + e.title)
+                    sendIntent.type = "text/plain"
+                    startActivity(Intent.createChooser(sendIntent, getString(R.string.share_with)))
+                }
+                3 -> {
+                    e.archived = !e.archived
+                    SugarRecord.update(e)
+
+                    load()
+                    updateAdapter()
+                    updateCalendar()
+                }
             }
         }
     }
