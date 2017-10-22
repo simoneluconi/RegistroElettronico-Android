@@ -46,6 +46,7 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
     private lateinit var pagerAdapter: PagerAdapter
 
     private var pagerSelected: Boolean = false
+    private val grades = mutableListOf<Grade>()
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -75,7 +76,6 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
                 R.color.redmaterial,
                 R.color.greenmaterial,
                 R.color.orangematerial)
-        load()
 
         if (savedInstanceState != null) {
             view_pager.currentItem = savedInstanceState.getInt("position")
@@ -84,6 +84,8 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
             view_pager.setCurrentItem(1, false)
             pagerSelected = true
         }
+
+        load()
         //download()
     }
 
@@ -113,9 +115,9 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
      */
     override fun onItemClicked(position: Int) {
         when (position) {
-            0 -> PreferenceManager.getDefaultSharedPreferences(context).edit().putString("order", "ORDER BY lower(`NAME`) ASC").apply()
-            1 -> PreferenceManager.getDefaultSharedPreferences(context).edit().putString("order", "ORDER BY `AVG` DESC").apply()
-            2 -> PreferenceManager.getDefaultSharedPreferences(context).edit().putString("order", "ORDER BY `COUNT` DESC").apply()
+            0 -> PreferenceManager.getDefaultSharedPreferences(context).edit().putString("order", "name").apply()
+            1 -> PreferenceManager.getDefaultSharedPreferences(context).edit().putString("order", "avg").apply()
+            2 -> PreferenceManager.getDefaultSharedPreferences(context).edit().putString("order", "count").apply()
         }
         load()
     }
@@ -148,13 +150,17 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
 
     private fun load() {
         val order = PreferenceManager.getDefaultSharedPreferences(context).getString("order", "")
+
+        grades.clear()
+        grades.addAll(SugarRecord.find(Grade::class.java, "PROFILE = ?", Account.with(context).user.toString()))
+
         var fragment: FragmentMedie
         for (i in 0..pagerAdapter.count) {
             fragment = pagerAdapter.instantiateItem(view_pager, i) as FragmentMedie
             when (i) {
-                0 -> fragment.addSubjects(Grade.getAverages(activity, "M_PERIOD=1 AND", order), 1)
-                1 -> fragment.addSubjects(Grade.getAverages(activity, "M_PERIOD!=1 AND", order), 3)
-                2 -> fragment.addSubjects(Grade.getAverages(activity, "", order), -1)
+                0 -> fragment.addSubjects(Grade.getAverages(context, grades.filter { it.mPeriod == 1 }, order), 1)
+                1 -> fragment.addSubjects(Grade.getAverages(context, grades.filter { it.mPeriod != 1 }, order), 3)
+                2 -> fragment.addSubjects(Grade.getAverages(context, grades, order), -1)
             }
         }
     }
