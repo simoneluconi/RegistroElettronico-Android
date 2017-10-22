@@ -8,6 +8,7 @@ import com.orm.dsl.Ignore
 import com.orm.dsl.Table
 import com.orm.dsl.Unique
 import com.sharpdroid.registroelettronico.Utils.Account
+import java.io.Serializable
 
 /*
 {
@@ -31,7 +32,7 @@ data class Subject(
         @Expose @SerializedName("id") @Unique val id: Long,
         @Expose @SerializedName("description") var description: String,
         @Expose @SerializedName("teachers") @Ignore var teachers: List<Teacher>
-) {
+) : Serializable {
     constructor() : this(0, "", emptyList())
 
     fun getInfo(c: Context): SubjectInfo {

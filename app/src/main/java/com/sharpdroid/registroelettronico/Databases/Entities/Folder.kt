@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.orm.SugarRecord
 import com.orm.dsl.Ignore
+import java.io.Serializable
 import java.util.*
 
 /*
@@ -26,6 +27,7 @@ import java.util.*
     ]
 }
  */
+
 data class Folder(
         @Expose @SerializedName("folderId") var folderId: Int,
         @Expose @SerializedName("folderName") var name: String,
@@ -33,6 +35,6 @@ data class Folder(
         @Expose @SerializedName("contents") @Ignore var files: List<File>,
         var teacher: Long,
         var profile: Long
-) : SugarRecord() {
+) : SugarRecord(), Serializable {
     constructor() : this(0, "", Date(), emptyList(), 0, -1)
 }

@@ -124,7 +124,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
             drawer?.setSelectionAtPosition(drawerToOpen + 1, true)
         } else {
-            drawer?.setSelectionAtPosition(savedInstanceState.getInt("drawer_to_open"), true)
+            drawer?.setSelectionAtPosition(savedInstanceState.getInt("drawer_to_open"), true) //true will emulate click on drawer, false will keep the old fragment but some errors may occur
         }
     }
 
@@ -167,15 +167,14 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                         PrimaryDrawerItem().withIdentifier(R.id.nav_send.toLong()).withName(R.string.send).withIcon(R.drawable.ic_menu_send).withIconTintingEnabled(true).withSelectable(false))
                 .build()
 
-        if (toolbar != null) {
-            toggle = ActionBarDrawerToggle(
-                    this, drawer?.drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-            toggle?.isDrawerIndicatorEnabled = true
-            drawer?.actionBarDrawerToggle = toggle!!
+        toggle = ActionBarDrawerToggle(
+                this, drawer!!.drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        toggle!!.isDrawerIndicatorEnabled = true
+        drawer!!.actionBarDrawerToggle = toggle!!
 
-            drawer?.drawerLayout?.addDrawerListener(toggle!!)
-            toggle?.syncState()
-        }
+        drawer!!.drawerLayout?.addDrawerListener(toggle!!)
+        toggle!!.syncState()
+
     }
 
     override fun onBackPressed() {

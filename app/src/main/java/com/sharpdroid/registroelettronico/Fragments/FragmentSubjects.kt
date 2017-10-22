@@ -25,6 +25,8 @@ import kotlinx.android.synthetic.main.fragment_lessons.*
 class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, NotificationManager.NotificationReceiver {
     lateinit var adapter: SubjectsAdapter
 
+    var selectedSubject: Subject? = null
+
     override fun didReceiveNotification(code: Int, args: Array<in Any>) {
         when (code) {
             EventType.UPDATE_SUBJECTS_START -> {
@@ -52,6 +54,11 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
             onSubjectClick(SugarRecord.findById(Subject::class.java, arguments?.getInt("lessons")))
         }
 
+        if (savedInstanceState != null) {
+            selectedSubject = savedInstanceState["subject"] as Subject?
+            if (selectedSubject != null) onSubjectClick(selectedSubject!!)
+        }
+
         //updateSubjects(activity) //This will fire didReceiveNotification(...)
         activity.title = getString(R.string.lessons)
         adapter = SubjectsAdapter(this)
@@ -59,6 +66,16 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
         recycler.addItemDecoration(HorizontalDividerItemDecoration.Builder(context).colorResId(R.color.divider).size(dp(1)).build())
         recycler.adapter = adapter
         setAdapterData(fetch())
+    }
+
+    override fun onResume() {
+        super.onResume()
+        selectedSubject = null
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        if (selectedSubject != null) outState?.putSerializable("subject", selectedSubject)
     }
 
     private fun setAdapterData(data: List<SubjectInfo>) {
@@ -71,6 +88,7 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
     }
 
     override fun onSubjectClick(subject: Subject) {
+        selectedSubject = subject
         val transaction = activity.supportFragmentManager.beginTransaction()
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)/*setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)*/.replace(R.id.fragment_container, FragmentLessons.newInstance(subject.id.toInt())).addToBackStack(null)
         transaction.commit()
@@ -78,7 +96,6 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
 
     override fun onSubjectLongClick(subject: Subject) {
         startActivity(Intent(activity, EditSubjectDetailsActivity::class.java).putExtra("code", subject.id))
-
     }
 
     override fun onDestroyView() {

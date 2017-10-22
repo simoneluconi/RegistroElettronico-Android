@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +22,8 @@ import com.sharpdroid.registroelettronico.Utils.Metodi.updateFolders
 import kotlinx.android.synthetic.main.coordinator_swipe_recycler.*
 
 class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, FolderAdapter.Listener, NotificationManager.NotificationReceiver {
+    var selectedFolder: Folder? = null
+
     override fun didReceiveNotification(code: Int, args: Array<in Any>) {
         when (code) {
             EventType.UPDATE_FOLDERS_START -> {
@@ -63,8 +66,26 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
         recycler.adapter = mRVAdapter
 
         load()
+
+        if (savedInstanceState != null) {
+            selectedFolder = savedInstanceState.getSerializable("folder") as Folder?
+            if (selectedFolder != null) onFolderClick(selectedFolder!!)
+        }
         //update()
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        selectedFolder = null
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        if (selectedFolder != null) {
+            Log.d("FragmentFolders", "SAVE STATE")
+            outState?.putSerializable("folder", selectedFolder)
+        }
     }
 
     private fun addFiles(teachers: List<Teacher>, docache: Boolean) {
@@ -106,6 +127,7 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
     }
 
     override fun onFolderClick(f: Folder) {
+        selectedFolder = f
         val transaction = activity.supportFragmentManager.beginTransaction()
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)/*setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)*/.replace(R.id.fragment_container, FragmentFiles.newInstance(f)).addToBackStack(null)
         transaction.commit()
