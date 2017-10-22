@@ -100,12 +100,8 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
     }
 
     private fun initTarget() {
-        if (avg.avg != 0f) {
-            target.setProgress(avg.avg)
-        } else {
-            target.visibility = View.GONE
-        }
         target.setTarget(getTarget(subject), false)
+        target.setProgress(avg.avg)
 
         //set listener for button
 
