@@ -11,7 +11,7 @@ App non ufficiale sviluppata per accedere al Registro Elettronico Spaggiari.
 - Visualizzare tutti i **voti** con il relativo commento
 - Impostare un **obiettivo** per ogni materia e sapere i voti che devi prendere per raggiungerlo
 - Sapere cosa si è fatto a scuola
-- Visualizzare **circolari** , **scrutini**, **note** e **materiali didattici**
+- Visualizzare **circolari** , **scrutini**, **layout_note** e **materiali didattici**
 - Visualizzare l'**agenda scolastica**
 - Aggiungere eventi dall'agenda scolastica al calendario del telefono
 - Aggiungere e rimuovere eventi personali all'agenda scolastica 

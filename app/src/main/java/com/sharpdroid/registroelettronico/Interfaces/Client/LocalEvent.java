@@ -1,17 +1,20 @@
 package com.sharpdroid.registroelettronico.Interfaces.Client;
 
+import com.orm.SugarRecord;
+import com.sharpdroid.registroelettronico.Databases.Entities.Teacher;
+
 import java.util.Date;
 
-public class LocalEvent {
+public class LocalEvent extends SugarRecord {
     private String title;
     private String content;
     private String type;
     private Date day;
-    private int subject_id;
-    private int prof_id;
+    private com.sharpdroid.registroelettronico.Databases.Entities.Subject subject_id;
+    private Teacher prof_id;
     private Date completed_at;
 
-    public LocalEvent(String title, String content, String type, Date day, int subject_id, int prof_id, Date completed_at) {
+    public LocalEvent(String title, String content, String type, Date day, com.sharpdroid.registroelettronico.Databases.Entities.Subject subject_id, Teacher prof_id, Date completed_at) {
         this.title = title;
         this.content = content;
         this.type = type;
@@ -37,11 +40,11 @@ public class LocalEvent {
         return day;
     }
 
-    public int getSubjectId() {
+    public com.sharpdroid.registroelettronico.Databases.Entities.Subject getSubject() {
         return subject_id;
     }
 
-    public int getProfId() {
+    public Teacher getTeacher() {
         return prof_id;
     }
 

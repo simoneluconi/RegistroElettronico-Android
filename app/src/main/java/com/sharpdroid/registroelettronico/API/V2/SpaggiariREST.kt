@@ -88,7 +88,7 @@ interface SpaggiariREST {
     @GET("students/{studentId}/subjects")
     fun getSubjects(): Observable<SubjectAPI>
 
-    @POST("students/{studentId}/notes/{type}/read/{note}")
-    fun markNote(@Path("type") type: String, @Path("note") note: Int): Observable<ResponseBody>
+    @POST("students/{studentId}/notes/{type}/read/{layout_note}")
+    fun markNote(@Path("type") type: String, @Path("layout_note") note: Int): Observable<ResponseBody>
 
 }
