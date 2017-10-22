@@ -775,7 +775,7 @@ public class Metodi {
 
 
     public static String eventToString(SuperAgenda e, String head) {
-        return capitalizeFirst(complex.format(e.getAgenda().getStart())) + "\n---" + head + "---\n" + capitalizeFirst(e.getAgenda().getNotes());
+        return capitalizeFirst(complex.format(e.getAgenda().getStart())) + "\n" + capitalizeFirst(e.getAgenda().getNotes());
     }
 
     public static List<String> getNamesFromSubjects(List<Subject> subjects) {
