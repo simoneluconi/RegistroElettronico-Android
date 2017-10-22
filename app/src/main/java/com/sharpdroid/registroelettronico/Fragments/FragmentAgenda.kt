@@ -11,12 +11,10 @@ import com.orm.SugarRecord
 import com.sharpdroid.registroelettronico.Activities.AddEventActivity
 import com.sharpdroid.registroelettronico.Adapters.AgendaAdapter
 import com.sharpdroid.registroelettronico.BottomSheet.AgendaBS
-import com.sharpdroid.registroelettronico.Databases.Entities.Profile
-import com.sharpdroid.registroelettronico.Databases.Entities.RemoteAgenda
-import com.sharpdroid.registroelettronico.Databases.Entities.RemoteAgendaInfo
-import com.sharpdroid.registroelettronico.Databases.Entities.SuperAgenda
+import com.sharpdroid.registroelettronico.Databases.Entities.*
 import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
+import com.sharpdroid.registroelettronico.Utils.Account
 import com.sharpdroid.registroelettronico.Utils.EventType
 import com.sharpdroid.registroelettronico.Utils.Metodi.*
 import com.transitionseverywhere.ChangeText
@@ -39,6 +37,8 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                 //started
             }
             EventType.UPDATE_AGENDA_OK -> {
+                load()
+
                 updateCalendar()
                 updateAdapter()
             }
@@ -56,7 +56,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
     private var mContext: Context? = null
     private lateinit var adapter: AgendaAdapter
     private var mDate: Date = Date()
-    private val events = ArrayList<SuperAgenda>()
+    private val events = ArrayList<Any>()
 
     private var active: Boolean = false //avoid updating views if fragment is gone
 
@@ -85,9 +85,9 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
             fab_big_add.visibility = View.VISIBLE
 
             fab_big_add.setClosedOnTouchOutside(true)
-            fab_mini_verifica.setOnClickListener { _ -> startActivity(Intent(context, AddEventActivity::class.java).putExtra("type", "Verifica").putExtra("time", mDate.time)) }
-            fab_mini_esercizi.setOnClickListener { _ -> startActivity(Intent(context, AddEventActivity::class.java).putExtra("type", "Compiti").putExtra("time", mDate.time)) }
-            fab_mini_altro.setOnClickListener { _ -> startActivity(Intent(context, AddEventActivity::class.java).putExtra("type", "Altro").putExtra("time", mDate.time)) }
+            fab_mini_verifica.setOnClickListener { _ -> startActivity(Intent(context, AddEventActivity::class.java).putExtra("type", "Verifica").putExtra("time", mDate.time)); fab_big_add.close(true) }
+            fab_mini_esercizi.setOnClickListener { _ -> startActivity(Intent(context, AddEventActivity::class.java).putExtra("type", "Compiti").putExtra("time", mDate.time)); fab_big_add.close(true) }
+            fab_mini_altro.setOnClickListener { _ -> startActivity(Intent(context, AddEventActivity::class.java).putExtra("type", "Altro").putExtra("time", mDate.time)); fab_big_add.close(true) }
         }
 
         adapter = AgendaAdapter(place_holder)
@@ -95,10 +95,16 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         recycler.layoutManager = LinearLayoutManager(context)
         recycler.adapter = adapter
 
-        updateAdapter()
-        updateCalendar()
 
-        //download()
+        load()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        activity.calendar.visibility = View.VISIBLE
+        setTitleSubtitle(mDate)
+        updateCalendar()
+        updateAdapter()
     }
 
     override fun onDestroyView() {
@@ -128,19 +134,23 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         mDate = cal.time
     }
 
-    private fun fetch(currentDate: Boolean?): List<SuperAgenda> {
-        val profile = Profile.getProfile(context)
-        if (profile != null) {
-            return if (currentDate == true) RemoteAgenda.getAgenda(profile.id, mDate) else RemoteAgenda.getSuperAgenda(profile.id)
-        }
-        return listOf()
+    private fun fetch(currentDate: Boolean?): List<Any> {
+        return if (currentDate == true)
+            events.filter {
+                if (it is SuperAgenda) {
+                    return@filter it.agenda.end.time in mDate.time until mDate.time + 86400000 && it.agenda.start.time in mDate.time until mDate.time + 86400000
+                } else if (it is LocalAgenda) {
+                    return@filter it.day.time in mDate.time until mDate.time + 86400000
+                }
+                true
+            }
+        else events
     }
 
     private fun load() {
         events.clear()
-        events.addAll(fetch(false))
-        // TODO: 30/09/2017 ADD LOCAL EVENTS
-        //events.addAll(Agenda.Companion.getSuperAgenda(getActivity()));
+        events.addAll(RemoteAgenda.getSuperAgenda(Account.with(activity).user))
+        events.addAll(SugarRecord.find(LocalAgenda::class.java, "PROFILE=?", Account.with(activity).user.toString()))
     }
 
     private fun updateAdapter() {
@@ -149,7 +159,6 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
 
     private fun updateCalendar() {
         activity.calendar.removeAllEvents()
-        load()
         activity.calendar.addEvents(convertEvents(events))
         activity.calendar.invalidate()
 
@@ -177,7 +186,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         activity.toolbar.subtitle = capitalizeEach(year.format(d))
     }
 
-    private fun setAdapterEvents(events: List<SuperAgenda>) {
+    private fun setAdapterEvents(events: List<Any>) {
         adapter.clear()
         adapter.addAll(events)
     }
@@ -204,13 +213,6 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         active = false
     }
 
-    override fun onResume() {
-        super.onResume()
-        activity.calendar.visibility = View.VISIBLE
-        setTitleSubtitle(mDate)
-        updateCalendar()
-        updateAdapter()
-    }
 
     override fun onAgendaItemClicked(e: SuperAgenda) {
         val bottomSheetAgenda = AgendaBS()
@@ -230,6 +232,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                 }
 
                 e.completed = !e.completed
+                load()
                 updateAdapter()
             }
             1 -> {
@@ -241,6 +244,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                     SugarRecord.save(RemoteAgendaInfo(e.agenda.id, false, false, !isEventTest(e)))
                 }
 
+                load()
                 updateAdapter()
                 updateCalendar()
             }
@@ -260,6 +264,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                     SugarRecord.save(RemoteAgendaInfo(e.agenda.id, false, true, isEventTest(e)))
                 }
 
+                load()
                 updateAdapter()
                 updateCalendar()
             }

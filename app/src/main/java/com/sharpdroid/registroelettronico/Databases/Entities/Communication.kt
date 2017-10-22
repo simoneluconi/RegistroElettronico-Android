@@ -58,7 +58,7 @@ data class CommunicationAPI(@Expose @SerializedName("items") val communications:
 /*
  *{
     "item": {
-        "title": "CIR. N. 22  LIBRI IN COMODATO D’USO.",
+        "layout_verifica": "CIR. N. 22  LIBRI IN COMODATO D’USO.",
         "text": "Restituzione alla Sig.ra Maria Rosa presso la segreteria didattica dal prossimo Mercoledì 4 Ottobre a Sabato 7 Ottobre.\r\nRichiesta libri comodato d'uso anno corrente: consegnare nello stesso periodo la relativa richiesta.(VEDEI CIRCOLARE NEL SITO)"
     },
     "reply": {
@@ -70,7 +70,7 @@ data class CommunicationAPI(@Expose @SerializedName("items") val communications:
  */
 @Table
 data class CommunicationInfo(@Unique var id: Long,
-                             @Expose @SerializedName("title") var title: String,
+                             @Expose @SerializedName("layout") var title: String,
                              @Expose @SerializedName("text") var content: String,
                              var path: String) {
     constructor() : this(0L, "", "", "")

@@ -22,6 +22,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.widget.Toast;
 
+import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.orm.SugarRecord;
 import com.sharpdroid.registroelettronico.API.SpiaggiariAPI;
 import com.sharpdroid.registroelettronico.API.V2.APIClient;
@@ -30,6 +31,7 @@ import com.sharpdroid.registroelettronico.Databases.Entities.CommunicationInfo;
 import com.sharpdroid.registroelettronico.Databases.Entities.FileInfo;
 import com.sharpdroid.registroelettronico.Databases.Entities.Folder;
 import com.sharpdroid.registroelettronico.Databases.Entities.Grade;
+import com.sharpdroid.registroelettronico.Databases.Entities.LocalAgenda;
 import com.sharpdroid.registroelettronico.Databases.Entities.Period;
 import com.sharpdroid.registroelettronico.Databases.Entities.Profile;
 import com.sharpdroid.registroelettronico.Databases.Entities.RemoteAgenda;
@@ -380,10 +382,14 @@ public class Metodi {
                 || title.contains("interrogazione scritta") || title.contains("prova ") || title.contains("test ") || title.endsWith("test") || title.contains("verifiche orali");
     }
 
-    public static List<com.github.sundeepk.compactcalendarview.domain.Event> convertEvents(List<SuperAgenda> events) {
+    public static List<com.github.sundeepk.compactcalendarview.domain.Event> convertEvents(List<Object> events) {
         List<com.github.sundeepk.compactcalendarview.domain.Event> list = new ArrayList<>();
-        for (SuperAgenda event : events) {
-            list.add(new com.github.sundeepk.compactcalendarview.domain.Event(event.getTest() ? Color.parseColor("#FF9800") : Color.WHITE, event.getAgenda().getStart().getTime(), null));
+        for (Object event : events) {
+            if (event instanceof SuperAgenda)
+                list.add(new Event(((SuperAgenda) event).getTest() ? Color.parseColor("#FF9800") : Color.WHITE, ((SuperAgenda) event).getAgenda().getStart().getTime()));
+            else if (event instanceof LocalAgenda) {
+                list.add(new Event(((LocalAgenda) event).getType().equalsIgnoreCase("verifica") ? Color.parseColor("#FF9800") : Color.WHITE, ((LocalAgenda) event).getDay().getTime()));
+            }
         }
         return list;
     }

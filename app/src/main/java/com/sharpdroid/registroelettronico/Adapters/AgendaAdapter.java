@@ -11,9 +11,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.sharpdroid.registroelettronico.Adapters.Holders.HeaderHolder;
+import com.sharpdroid.registroelettronico.Databases.Entities.LocalAgenda;
 import com.sharpdroid.registroelettronico.Databases.Entities.SuperAgenda;
-import com.sharpdroid.registroelettronico.Interfaces.Client.AgendaEntry;
-import com.sharpdroid.registroelettronico.Interfaces.Client.Entry;
 import com.sharpdroid.registroelettronico.Interfaces.Client.HeaderEntry;
 import com.sharpdroid.registroelettronico.R;
 
@@ -31,7 +30,7 @@ import butterknife.ButterKnife;
 import static com.sharpdroid.registroelettronico.Utils.Metodi.capitalizeEach;
 
 public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<Entry> CVDataList;
+    private List<Object> CVDataList;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM", Locale.getDefault());
     private View place_holder;
     private AgendaClickListener mClickListener;
@@ -51,12 +50,12 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Entry entry = CVDataList.get(position);
+        Object entry = CVDataList.get(position);
         if (entry instanceof HeaderEntry) {
             ((HeaderHolder) holder).content.setText(((HeaderEntry) entry).getTitle());
-        } else {
+        } else if (entry instanceof SuperAgenda) {
             EventHolder eventHolder = (EventHolder) holder;
-            SuperAgenda event = ((AgendaEntry) entry).getEvent();
+            SuperAgenda event = ((SuperAgenda) entry);
             Spannable title = new SpannableString(event.getAgenda().getNotes());
             if (event.getCompleted()) {
                 title.setSpan(new StrikethroughSpan(), 0, event.getAgenda().getNotes().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -74,12 +73,37 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 if (mClickListener != null)
                     mClickListener.onAgendaItemClicked(event);
             });
+        } else if (entry instanceof LocalAgenda) {
+            EventHolder eventHolder = (EventHolder) holder;
+            LocalAgenda event = ((LocalAgenda) entry);
+
+            Spannable title = new SpannableString(event.getTitle());
+            if (event.getCompleted_date() != null) {
+                title.setSpan(new StrikethroughSpan(), 0, event.getTitle().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+
+            eventHolder.date.setText(dateFormat.format(event.getDay()));
+            eventHolder.subject.setText(capitalizeEach(event.getTeacher().getTeacherName(), true));
+            eventHolder.title.setText(title);
+            eventHolder.notes.setText(event.getContent().trim());
+
+            eventHolder.notes.setVisibility(event.getContent().isEmpty() ? View.GONE : View.VISIBLE);
+            eventHolder.divider.setVisibility(getItemViewType(position - 1) == R.layout.adapter_header ? View.INVISIBLE : View.VISIBLE);
+/*
+            eventHolder.itemView.setOnClickListener((View v) -> {
+                Log.d("CLICK", "CLICK");
+                if (mClickListener != null)
+                    mClickListener.onAgendaItemClicked(event);
+            });
+  */
         }
     }
 
     @Override
     public int getItemViewType(int position) {
-        return CVDataList.get(position).getID();
+        Object item = CVDataList.get(position);
+        if (item instanceof HeaderEntry) return R.layout.adapter_header;
+        else return R.layout.adapter_event;
     }
 
     @Override
@@ -91,7 +115,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         mClickListener = longClickListener;
     }
 
-    public void addAll(List<SuperAgenda> events) {
+    public void addAll(List<Object> events) {
         CVDataList.addAll(convert(events));
         if (CVDataList.isEmpty()) {
             place_holder.setVisibility(View.VISIBLE);
@@ -106,44 +130,60 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         notifyDataSetChanged();
     }
 
-    private List<Entry> convert(List<SuperAgenda> events) {
-        LinkedHashMap<String, List<SuperAgenda>> organized = new LinkedHashMap<>();
-        for (SuperAgenda e : events) {
-            if (e.getTest()) {
-                if (organized.containsKey("Verifiche")) {
-                    List<SuperAgenda> verifiche = new ArrayList<>(organized.get("Verifiche"));
-                    verifiche.add(e);
-                    organized.put("Verifiche", verifiche);
+    private List<Object> convert(List<Object> events) {
+        LinkedHashMap<String, List<Object>> organized = new LinkedHashMap<>();
+        for (Object e : events) {
+            if (e instanceof SuperAgenda) {
+                if (((SuperAgenda) e).getTest()) {
+                    if (organized.containsKey("Verifiche")) {
+                        List<Object> verifiche = new ArrayList<>(organized.get("Verifiche"));
+                        verifiche.add(e);
+                        organized.put("Verifiche", verifiche);
+                    } else {
+                        organized.put("Verifiche", Collections.singletonList(e));
+                    }
                 } else {
-                    organized.put("Verifiche", Collections.singletonList(e));
+                    if (organized.containsKey("ALTRI EVENTI")) {
+                        List<Object> otherEvents = new ArrayList<>(organized.get("ALTRI EVENTI"));
+                        otherEvents.add(e);
+                        organized.put("ALTRI EVENTI", otherEvents);
+                    } else {
+                        organized.put("ALTRI EVENTI", Collections.singletonList(e));
+                    }
                 }
-            } else {
-                if (organized.containsKey("ALTRI EVENTI")) {
-                    List<SuperAgenda> otherEvents = new ArrayList<>(organized.get("ALTRI EVENTI"));
-                    otherEvents.add(e);
-                    organized.put("ALTRI EVENTI", otherEvents);
+            } else if (e instanceof LocalAgenda) {
+                if (((LocalAgenda) e).getType().equalsIgnoreCase("test")) {
+                    if (organized.containsKey("Verifiche")) {
+                        List<Object> verifiche = new ArrayList<>(organized.get("Verifiche"));
+                        verifiche.add(e);
+                        organized.put("Verifiche", verifiche);
+                    } else {
+                        organized.put("Verifiche", Collections.singletonList(e));
+                    }
                 } else {
-                    organized.put("ALTRI EVENTI", Collections.singletonList(e));
+                    if (organized.containsKey("ALTRI EVENTI")) {
+                        List<Object> otherEvents = new ArrayList<>(organized.get("ALTRI EVENTI"));
+                        otherEvents.add(e);
+                        organized.put("ALTRI EVENTI", otherEvents);
+                    } else {
+                        organized.put("ALTRI EVENTI", Collections.singletonList(e));
+                    }
                 }
             }
         }
 
-        List<Entry> convert = new LinkedList<>();
+        List<Object> convert = new LinkedList<>();
 
         //Priorità alle verifiche
         if (organized.containsKey("Verifiche")) {
             convert.add(new HeaderEntry("Verifiche"));
-            for (SuperAgenda e : organized.get("Verifiche")) {
-                convert.add(new AgendaEntry(e));
-            }
+            convert.addAll(organized.get("Verifiche"));
             organized.remove("Verifiche");
         }
 
         for (String k : organized.keySet()) {
             convert.add(new HeaderEntry(k));
-            for (SuperAgenda e : organized.get(k)) {
-                convert.add(new AgendaEntry(e));
-            }
+            convert.addAll(organized.get(k));
         }
 
         return convert;
