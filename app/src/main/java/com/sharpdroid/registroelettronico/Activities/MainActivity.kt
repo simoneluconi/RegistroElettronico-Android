@@ -310,7 +310,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             Log.d(Info.ACCOUNT, profile.email.text)
             Account.with(this).user = profile.identifier
 
-            fetchDataOfUser(this)
+            //fetchDataOfUser(this)
 
             //Update fragment
             drawer?.setSelectionAtPosition(drawer?.currentSelectedPosition!!, true)
