@@ -78,7 +78,12 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
             setUseThreeLetterAbbreviation(true)
             setListener(this@FragmentAgenda)
             shouldSelectFirstDayOfMonthOnScroll(false)
-            prepareDate(true)
+
+            if (savedInstanceState != null) {
+                mDate = Date(savedInstanceState.getLong("date"))
+            } else {
+                prepareDate(true)
+            }
             setCurrentDate(mDate)
         }
 
@@ -98,6 +103,11 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
 
 
         load()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        outState?.putLong("date", mDate.time)
     }
 
     override fun onResume() {
