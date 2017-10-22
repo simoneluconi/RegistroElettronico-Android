@@ -78,6 +78,9 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
         NotificationManager.instance.addObserver(this, EventType.DOWNLOAD_FILE_START, EventType.DOWNLOAD_FILE_OK, EventType.DOWNLOAD_FILE_KO)
         val mRecyclerView = view!!.findViewById<RecyclerView>(R.id.recycler)
         mRVAdapter = FileAdapter(this)
+        if (data == null) {
+            data = savedInstanceState?.getSerializable("data") as Folder?
+        }
         addSubjects(data!!)
         setTitle(data?.name?.trim { it <= ' ' }!!)
 
@@ -88,7 +91,11 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
             itemAnimator = null
             adapter = mRVAdapter
         }
+    }
 
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        outState?.putSerializable("data", data)
     }
 
     override fun onFileClick(file: File) {

@@ -117,10 +117,9 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
         // Programmatically start a fragment
         if (savedInstanceState == null) {
-            var drawerToOpen = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getString("drawer_to_open", "0"))!!
+            var default = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getString("drawer_to_open", "0")) ?: 0
 
-            val extras = intent.extras
-            drawerToOpen = extras?.getInt("drawer_to_open", drawerToOpen) ?: 0
+            var drawerToOpen = intent.extras?.getInt("drawer_to_open", default) ?: default
 
             drawer?.setSelectionAtPosition(drawerToOpen + 1, true)
         } else {
