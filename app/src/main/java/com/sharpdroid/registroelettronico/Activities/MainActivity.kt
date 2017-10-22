@@ -56,32 +56,19 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         setSupportActionBar(toolbar)
         params = toolbar.layoutParams as AppBarLayout.LayoutParams?
 
-        //  first run
-        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("first_run", true)) {
-            // first time task
-            startActivityForResult(Intent(this, Intro::class.java), 1)
-        } else {
-            init(savedInstanceState)
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
         val profile = Profile.getProfile(this)
-        if (profile == null && !PreferenceManager.getDefaultSharedPreferences(this).getBoolean("first_run", true))
-            startActivity(Intent(this, LoginActivity::class.java))
-        else {
-            try {
+        when {
+            PreferenceManager.getDefaultSharedPreferences(this).getBoolean("first_run", true) -> // first time task
+                startActivityForResult(Intent(this, Intro::class.java), 1)
+            profile == null -> startActivity(Intent(this, LoginActivity::class.java))
+            else -> {
+                init(savedInstanceState)/*
                 headerResult.profiles = Profile.getIProfiles()
                 headerResult.addProfiles(ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true))
-                headerResult.setActiveProfile(profile?.id!!, false)
-                drawer?.setSelectionAtPosition(drawer!!.currentSelectedPosition, true)
-            } catch (err: Exception) {
-                Log.w("LOGIN", "USER NOT YET LOGGED IN")
+                headerResult.setActiveProfile(profile.id, false)
+                drawer?.setSelectionAtPosition(drawer!!.currentSelectedPosition, true)*/
             }
         }
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -98,9 +85,57 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         }
     }
 
+    private fun init(savedInstanceState: Bundle?) {
+        initDrawer()
+        Log.d("MAIN", "init drawer")
+        fragmentManager = supportFragmentManager
+        fragmentManager?.addOnBackStackChangedListener {
+            canOpenDrawer = fragmentManager?.backStackEntryCount == 0
+            if (toggle != null) {
+                if (!canOpenDrawer) {
+                    anim = ObjectAnimator.ofFloat(toggle?.drawerArrowDrawable, "progress", 1f)
+                    anim?.interpolator = DecelerateInterpolator(1f)
+                    anim?.duration = 250
+                    anim?.start()
+                    drawer?.drawerLayout?.removeDrawerListener(toggle!!)
+                } else {
+                    anim = ObjectAnimator.ofFloat(toggle?.drawerArrowDrawable, "progress", 0f)
+                    anim?.interpolator = DecelerateInterpolator(1f)
+                    anim?.duration = 250
+                    anim?.start()
+                    drawer?.drawerLayout?.addDrawerListener(toggle!!)
+                }
+            }
+        }
+        toolbar.setNavigationOnClickListener { _ ->
+            if (canOpenDrawer) {
+                drawer?.drawerLayout?.openDrawer(GravityCompat.START)
+            } else {
+                fragmentManager?.popBackStack()
+            }
+        }
+
+        // Programmatically start a fragment
+        if (savedInstanceState == null) {
+            var drawerToOpen = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getString("drawer_to_open", "0"))!!
+
+            val extras = intent.extras
+            drawerToOpen = extras?.getInt("drawer_to_open", drawerToOpen) ?: 0
+
+            drawer?.setSelectionAtPosition(drawerToOpen + 1, true)
+        } else {
+            drawer?.setSelectionAtPosition(savedInstanceState.getInt("drawer_to_open"), true)
+        }
+    }
+
     override fun setTitle(title: CharSequence) {
         TransitionManager.beginDelayedTransition(toolbar, ChangeText().setChangeBehavior(ChangeText.CHANGE_BEHAVIOR_IN).setDuration(250))
         super.setTitle(title)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        outState?.putInt("drawer_to_select", drawer?.currentSelectedPosition ?: 0)
     }
 
     private fun initDrawer() {
@@ -153,48 +188,6 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
     private fun clearBackstack() {
         fragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-    }
-
-    private fun init(savedInstanceState: Bundle?) {
-        initDrawer()
-        Log.d("MAIN", "init drawer")
-        fragmentManager = supportFragmentManager
-        fragmentManager?.addOnBackStackChangedListener {
-            canOpenDrawer = fragmentManager?.backStackEntryCount == 0
-            if (toggle != null) {
-                if (!canOpenDrawer) {
-                    anim = ObjectAnimator.ofFloat(toggle?.drawerArrowDrawable, "progress", 1f)
-                    anim?.interpolator = DecelerateInterpolator(1f)
-                    anim?.duration = 250
-                    anim?.start()
-                    drawer?.drawerLayout?.removeDrawerListener(toggle!!)
-                } else {
-                    anim = ObjectAnimator.ofFloat(toggle?.drawerArrowDrawable, "progress", 0f)
-                    anim?.interpolator = DecelerateInterpolator(1f)
-                    anim?.duration = 250
-                    anim?.start()
-                    drawer?.drawerLayout?.addDrawerListener(toggle!!)
-                }
-            }
-        }
-        toolbar?.setNavigationOnClickListener { _ ->
-            if (canOpenDrawer) {
-                drawer?.drawerLayout?.openDrawer(GravityCompat.START)
-            } else {
-                fragmentManager?.popBackStack()
-            }
-        }
-
-        // Programmatically start a fragment
-        if (savedInstanceState == null) {
-            var drawerToOpen = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getString("drawer_to_open", "0"))!!
-
-            val extras = intent.extras
-            drawerToOpen = extras?.getInt("drawer_to_open", drawerToOpen) ?: 0
-
-
-            drawer?.setSelectionAtPosition(drawerToOpen + 1, true)
-        }
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
@@ -334,5 +327,9 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             }.show()
         }
         return false
+    }
+
+    companion object {
+        const val REQUEST_CODE = 1905
     }
 }
