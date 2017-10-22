@@ -18,6 +18,7 @@
         android:layout_gravity="bottom|end"
         android:fitsSystemWindows="true"
         android:padding="8dp"
+        android:visibility="gone"
         app:menu_animationDelayPerItem="20"
         app:menu_backgroundColor="#ccffffff"
         app:menu_colorNormal="?colorPrimary"

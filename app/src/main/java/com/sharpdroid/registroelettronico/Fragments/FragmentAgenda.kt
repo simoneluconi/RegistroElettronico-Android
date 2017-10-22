@@ -74,6 +74,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         NotificationManager.instance.addObserver(this, EventType.UPDATE_AGENDA_OK, EventType.UPDATE_AGENDA_KO, EventType.UPDATE_AGENDA_START)
 
         with(activity.calendar) {
+            visibility = View.VISIBLE
             setLocale(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALIAN)
             setUseThreeLetterAbbreviation(true)
             setListener(this@FragmentAgenda)

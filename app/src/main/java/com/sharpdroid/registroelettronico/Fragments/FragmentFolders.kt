@@ -69,7 +69,7 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
 
         if (savedInstanceState != null) {
             selectedFolder = savedInstanceState.getSerializable("folder") as Folder?
-            if (selectedFolder != null) onFolderClick(selectedFolder!!)
+            //if (selectedFolder != null) onFolderClick(selectedFolder!!)
         }
         //update()
 

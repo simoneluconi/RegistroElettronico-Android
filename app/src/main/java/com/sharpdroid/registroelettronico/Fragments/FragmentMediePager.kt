@@ -3,14 +3,15 @@ package com.sharpdroid.registroelettronico.Fragments
 
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.support.design.widget.AppBarLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.PagerAdapter
 import android.support.v4.widget.SwipeRefreshLayout
 import android.view.*
-import butterknife.ButterKnife
 import com.orm.SugarRecord
+import com.sharpdroid.registroelettronico.Activities.MainActivity
 import com.sharpdroid.registroelettronico.BottomSheet.OrderMedieBS
 import com.sharpdroid.registroelettronico.Databases.Entities.Grade
 import com.sharpdroid.registroelettronico.Databases.Entities.Lesson
@@ -53,11 +54,15 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ButterKnife.bind(this, view!!)
         NotificationManager.instance.addObserver(this, EventType.UPDATE_MARKS_OK, EventType.UPDATE_MARKS_START, EventType.UPDATE_MARKS_KO, EventType.UPDATE_PERIODS_START, EventType.UPDATE_PERIODS_OK, EventType.UPDATE_PERIODS_KO)
 
         setHasOptionsMenu(true)
-        activity.title = getString(R.string.medie)
+
+        with(activity as MainActivity) {
+            title = getString(R.string.medie)
+            tab_layout?.visibility = View.VISIBLE
+            (toolbar.layoutParams as AppBarLayout.LayoutParams?)?.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS or AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP
+        }
 
         pagerAdapter = MediePager(childFragmentManager)
         view_pager.adapter = pagerAdapter
@@ -71,7 +76,20 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
                 R.color.greenmaterial,
                 R.color.orangematerial)
         load()
+
+        if (savedInstanceState != null) {
+            view_pager.currentItem = savedInstanceState.getInt("position")
+            pagerSelected = true
+        } else if (!pagerSelected && Grade.hasMarksSecondPeriod(activity)) {
+            view_pager.setCurrentItem(1, false)
+            pagerSelected = true
+        }
         //download()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        outState?.putInt("position", view_pager.currentItem)
     }
 
     override fun onDestroyView() {
@@ -90,6 +108,9 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
         return super.onOptionsItemSelected(item)
     }
 
+    /**
+    Listener for Bottom Sheet
+     */
     override fun onItemClicked(position: Int) {
         when (position) {
             0 -> PreferenceManager.getDefaultSharedPreferences(context).edit().putString("order", "ORDER BY lower(`NAME`) ASC").apply()
@@ -135,11 +156,6 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
                 1 -> fragment.addSubjects(Grade.getAverages(activity, "M_PERIOD!=1 AND", order), 3)
                 2 -> fragment.addSubjects(Grade.getAverages(activity, "", order), -1)
             }
-        }
-
-        if (!pagerSelected && Grade.hasMarksSecondPeriod(activity)) {
-            view_pager!!.setCurrentItem(1, false)
-            pagerSelected = true
         }
     }
 

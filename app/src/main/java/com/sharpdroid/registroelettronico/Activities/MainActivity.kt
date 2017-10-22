@@ -107,6 +107,24 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                 }
             }
         }
+        if (savedInstanceState != null) {
+            canOpenDrawer = fragmentManager?.backStackEntryCount == 0
+            if (toggle != null) {
+                if (!canOpenDrawer) {
+                    anim = ObjectAnimator.ofFloat(toggle?.drawerArrowDrawable, "progress", 1f)
+                    anim?.interpolator = DecelerateInterpolator(1f)
+                    anim?.duration = 250
+                    anim?.start()
+                    drawer?.drawerLayout?.removeDrawerListener(toggle!!)
+                } else {
+                    anim = ObjectAnimator.ofFloat(toggle?.drawerArrowDrawable, "progress", 0f)
+                    anim?.interpolator = DecelerateInterpolator(1f)
+                    anim?.duration = 250
+                    anim?.start()
+                    drawer?.drawerLayout?.addDrawerListener(toggle!!)
+                }
+            }
+        } //init back button on layout change (backstack remains but listener doesn't fire)
         toolbar.setNavigationOnClickListener { _ ->
             if (canOpenDrawer) {
                 drawer?.drawerLayout?.openDrawer(GravityCompat.START)
@@ -123,7 +141,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
             drawer?.setSelectionAtPosition(drawerToOpen + 1, true)
         } else {
-            drawer?.setSelectionAtPosition(savedInstanceState.getInt("drawer_to_open"), true) //true will emulate click on drawer, false will keep the old fragment but some errors may occur
+            drawer?.setSelectionAtPosition(savedInstanceState.getInt("drawer_to_open"), false)
         }
     }
 
@@ -134,7 +152,8 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
-        outState?.putInt("drawer_to_select", drawer?.currentSelectedPosition ?: 0)
+        if (drawer != null)
+            outState?.putInt("drawer_to_open", drawer!!.currentSelectedPosition)
     }
 
     private fun initDrawer() {
@@ -215,49 +234,45 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
     override fun onItemClick(view: View?, position: Int, drawerItem: IDrawerItem<*, *>): Boolean {
         clearBackstack()
         val fragment: Fragment
-        val id = drawerItem.identifier.toInt()
-        calendar?.visibility = View.GONE
-        tab_layout?.visibility = View.GONE
+        calendar.visibility = View.GONE
+        tab_layout.visibility = View.GONE
         fab_big_add.visibility = View.GONE
 
         params?.scrollFlags = 0
-        when (id) {
-            R.id.agenda -> {
-                calendar?.visibility = View.VISIBLE
+        when (position) {
+            1 -> {
                 fragment = FragmentAgenda()
                 updateAgenda(this)
                 updatePeriods(this)
             }
-            R.id.medie -> {
-                tab_layout?.visibility = View.VISIBLE
-                params?.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS or AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP
+            2 -> {
                 fragment = FragmentMediePager()
                 updateSubjects(this)
                 updateMarks(this)
             }
-            R.id.communications -> {
-                fragment = FragmentCommunications()
-                updateBacheca(this)
-            }
-            R.id.notes -> {
-                fragment = FragmentNote()
-                updateNote(this)
-            }
-            R.id.absences -> {
-                fragment = FragmentAllAbsences()
-                updateAbsence(this)
-            }
-            R.id.settings -> fragment = FragmentSettings()
-            R.id.files -> {
-                fragment = FragmentFolders()
-                updateFolders(this)
-            }
-            R.id.lessons -> {
+            3 -> {
                 fragment = FragmentSubjects()
                 updateSubjects(this)
                 updateLessons(this)
             }
-            R.id.nav_share -> {
+            4 -> {
+                fragment = FragmentFolders()
+                updateFolders(this)
+            }
+            5 -> {
+                fragment = FragmentAllAbsences()
+                updateAbsence(this)
+            }
+            6 -> {
+                fragment = FragmentNote()
+                updateNote(this)
+            }
+            7 -> {
+                fragment = FragmentCommunications()
+                updateBacheca(this)
+            }
+            8 -> fragment = FragmentSettings()
+            9 -> {
                 val intent = Intent(Intent.ACTION_SEND)
                 intent.type = "text/plain"
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Registro Elettronico")
@@ -266,7 +281,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                 startActivity(Intent.createChooser(intent, getString(R.string.share_with)))
                 return false
             }
-            R.id.nav_send -> {
+            10 -> {
                 val intentMail = Intent(Intent.ACTION_SENDTO)
                 intentMail.data = Uri.parse("mailto:registroelettronico@simoneluconi.com")
                 intentMail.putExtra(Intent.EXTRA_SUBJECT, "Registro Elettronico")
