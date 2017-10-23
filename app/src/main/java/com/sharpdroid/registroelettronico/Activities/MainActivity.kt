@@ -70,6 +70,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             profile == null -> startActivity(Intent(this, LoginActivity::class.java))
         }
         init(savedInstanceState)
+        savedInstanceState = null
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

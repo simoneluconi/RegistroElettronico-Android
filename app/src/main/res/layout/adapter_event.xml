@@ -26,7 +26,7 @@
         android:layout_toLeftOf="@+id/date"
         android:layout_toStartOf="@+id/date"
         android:autoLink="email|web"
-        android:linksClickable="false"
+        android:linksClickable="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColorLink="@color/bluematerial" />
 
