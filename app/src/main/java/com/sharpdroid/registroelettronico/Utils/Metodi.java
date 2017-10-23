@@ -595,7 +595,8 @@ public class Metodi {
                         }
 
                         @Nullable CommunicationInfo info = SugarRecord.findById(CommunicationInfo.class, communication.getMyId());
-                        if (!communication.isRead() || (info != null && info.getContent().isEmpty()) || info == null) {
+                        if (info == null || !communication.isRead() || info.getContent().isEmpty()) {
+                            System.out.println("REQUEST - " + communication.getTitle());
                             APIClient.Companion.with(c, p).readBacheca(communication.getEvtCode(), communication.getId()).subscribe(readResponse -> {
                                 communication.setRead(true);
                                 SugarRecord.save(communication);
@@ -604,7 +605,8 @@ public class Metodi {
                                 downloadedInfo.setId(communication.getMyId());
                                 downloadedInfo.setContent(
                                         downloadedInfo.getContent().isEmpty() ?
-                                                ((info != null) ? info.getContent() : "") :
+                                                ((info != null) ?
+                                                        info.getContent() : "") :
                                                 downloadedInfo.getContent());
                                 SugarRecord.save(downloadedInfo);
                             });
