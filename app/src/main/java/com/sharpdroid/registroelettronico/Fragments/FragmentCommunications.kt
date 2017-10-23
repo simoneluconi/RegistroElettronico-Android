@@ -44,12 +44,16 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
                 with(snackbar!!) {
                     setText(activity.getString(R.string.file_downloaded, file.name))
                     setAction(R.string.open) { openFile(activity, file) }
-                    duration = Snackbar.LENGTH_LONG
+                    duration = Snackbar.LENGTH_SHORT
                     show()
                 }
             }
             EventType.DOWNLOAD_FILE_KO -> {
-
+                with(snackbar!!) {
+                    setText("File non scaricato")
+                    duration = Snackbar.LENGTH_SHORT
+                    show()
+                }
             }
         }
 
