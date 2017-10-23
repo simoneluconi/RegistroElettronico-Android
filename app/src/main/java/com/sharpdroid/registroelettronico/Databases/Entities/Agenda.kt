@@ -1,5 +1,6 @@
 package com.sharpdroid.registroelettronico.Databases.Entities
 
+import android.util.SparseArray
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.orm.SugarRecord
@@ -55,19 +56,32 @@ data class RemoteAgenda(
     constructor() : this(0, Date(), Date(), false, "", "", -1L)
 
     fun getInfo(): RemoteAgendaInfo? {
+        if (infoCache.indexOfKey(id.toInt()) >= 0)
+            return infoCache[id.toInt()]
+
         return SugarRecord.findById(RemoteAgendaInfo::class.java, id)
     }
 
     fun isTest(): Boolean {
-        val info = getInfo()
-        return if (info != null) {
-            info.test
+        return if (infoCache.indexOfKey(id.toInt()) >= 0) {
+            infoCache[id.toInt()].test
         } else {
             Metodi.isEventTest(this)
         }
     }
 
     companion object {
+        private val infoCache = SparseArray<RemoteAgendaInfo>()
+
+        fun clearCache() {
+            infoCache.clear()
+        }
+
+        fun setupCache(account: Long) {
+            val infos = SugarRecord.find<RemoteAgendaInfo>(RemoteAgendaInfo::class.java, "ID IN (SELECT ID FROM REMOTE_AGENDA WHERE PROFILE=?)", account.toString())
+            infos.forEach { infoCache.put(it.id.toInt(), it) }
+        }
+
         fun getSuperAgenda(id: Long): List<SuperAgenda> {
             val completed: MutableList<RemoteAgendaInfo> = SugarRecord.find(RemoteAgendaInfo::class.java, "ARCHIVED=0 AND COMPLETED=1") ?: mutableListOf()
             val archived: MutableList<RemoteAgendaInfo> = SugarRecord.find(RemoteAgendaInfo::class.java, "ARCHIVED=1") ?: mutableListOf()
