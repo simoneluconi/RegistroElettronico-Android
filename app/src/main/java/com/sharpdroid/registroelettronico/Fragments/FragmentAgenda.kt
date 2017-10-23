@@ -1,6 +1,5 @@
 package com.sharpdroid.registroelettronico.Fragments
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -37,14 +36,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
             EventType.UPDATE_AGENDA_START -> {
                 //started
             }
-            EventType.UPDATE_AGENDA_OK -> {
-                RemoteAgenda.clearCache()
-                RemoteAgenda.setupCache(Account.with(context).user)
-
-                load()
-                updateCalendar()
-                updateAdapter()
-            }
+            EventType.UPDATE_AGENDA_OK,
             EventType.UPDATE_AGENDA_KO -> {
                 load()
                 updateCalendar()
@@ -53,12 +45,10 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         }
     }
 
-    private val TAG = FragmentAgenda::class.java.simpleName
-    internal var month = SimpleDateFormat("MMMM", Locale.getDefault())
-    internal var year = SimpleDateFormat("yyyy", Locale.getDefault())
+    private var month = SimpleDateFormat("MMMM", Locale.getDefault())
+    private var year = SimpleDateFormat("yyyy", Locale.getDefault())
     internal var agenda = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
 
-    private var mContext: Context? = null
     private lateinit var adapter: AgendaAdapter
     private var mDate: Date = Date()
     private val events = ArrayList<Any>()
@@ -68,7 +58,6 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
     override fun onCreateView(inflater: LayoutInflater?,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
-        mContext = activity.applicationContext
         active = true
         return inflater!!.inflate(R.layout.fragment_agenda, container, false)
     }
@@ -295,14 +284,14 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
             when (position) {
                 0 -> {
                     e.completed_date = if (e.completed_date != null) null else Date()
-                    SugarRecord.update(e)
+                    SugarRecord.save(e)
 
                     load()
                     updateAdapter()
                 }
                 1 -> {
                     e.type = if (e.type == "verifica") "altro" else "verifica"
-                    SugarRecord.update(e)
+                    SugarRecord.save(e)
 
                     load()
                     updateAdapter()
@@ -317,7 +306,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                 }
                 3 -> {
                     e.archived = !e.archived
-                    SugarRecord.update(e)
+                    SugarRecord.save(e)
 
                     load()
                     updateAdapter()
