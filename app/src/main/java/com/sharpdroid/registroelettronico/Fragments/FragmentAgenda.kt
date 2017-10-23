@@ -38,13 +38,17 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                 //started
             }
             EventType.UPDATE_AGENDA_OK -> {
-                load()
+                RemoteAgenda.clearCache()
+                RemoteAgenda.setupCache(Account.with(context).user)
 
+                load()
                 updateCalendar()
                 updateAdapter()
             }
             EventType.UPDATE_AGENDA_KO -> {
-                //failed
+                load()
+                updateCalendar()
+                updateAdapter()
             }
         }
     }
@@ -101,7 +105,6 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         adapter.setItemClickListener(this)
         recycler.layoutManager = LinearLayoutManager(context)
         recycler.adapter = adapter
-
 
         load()
     }
@@ -160,6 +163,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
     }
 
     private fun load() {
+        invalidateCache()
         events.clear()
         events.addAll(RemoteAgenda.getSuperAgenda(Account.with(activity).user))
         events.addAll(SugarRecord.find(LocalAgenda::class.java, "PROFILE=? AND ARCHIVED=0", Account.with(activity).user.toString()))
@@ -230,6 +234,11 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         val bottomSheetAgenda = AgendaBS()
         bottomSheetAgenda.setEvent(e)
         bottomSheetAgenda.show(childFragmentManager, "dialog")
+    }
+
+    private fun invalidateCache() {
+        RemoteAgenda.clearCache()
+        RemoteAgenda.setupCache(Account.with(context).user)
     }
 
     override fun onBottomSheetItemClicked(position: Int, e: Any) {
