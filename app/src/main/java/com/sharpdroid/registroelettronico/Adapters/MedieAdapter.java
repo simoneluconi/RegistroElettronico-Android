@@ -12,9 +12,7 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.orm.SugarRecord;
 import com.sharpdroid.registroelettronico.Activities.MarkSubjectDetailActivity;
-import com.sharpdroid.registroelettronico.Databases.Entities.Subject;
 import com.sharpdroid.registroelettronico.Interfaces.Client.Average;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.Views.CircleProgressBar;
@@ -84,9 +82,7 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
                         .getString("voto_obiettivo", "8");
 
                 if (t.equals("Auto")) {
-                    int tar = getPossibileSubjectTarget(avg.avg);
-                    SugarRecord.findById(Subject.class, avg.code);
-                    target = tar;
+                    target = getPossibileSubjectTarget(avg.avg);
 
                 } else target = Float.parseFloat(t);
 

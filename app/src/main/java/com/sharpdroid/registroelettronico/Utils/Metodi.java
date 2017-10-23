@@ -414,6 +414,7 @@ public class Metodi {
     public static void updateMarks(@NotNull Context c, Profile p) {
         if (p == null) return;
 
+        handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_MARKS_START, null));
         APIClient.Companion.with(c, p).getGrades().subscribe(gradeAPI -> {
             SugarRecord.deleteAll(Grade.class, "PROFILE=?", String.valueOf(p.getId()));
             SugarRecord.saveInTx(gradeAPI.getGrades(p));

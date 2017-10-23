@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
     private var toggle: ActionBarDrawerToggle? = null
     private var canOpenDrawer = true
     private var anim: ObjectAnimator? = null
-    private lateinit var headerResult: AccountHeader
+    private var headerResult: AccountHeader? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,18 +56,16 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         setSupportActionBar(toolbar)
         params = toolbar.layoutParams as AppBarLayout.LayoutParams?
 
+        init(savedInstanceState)
+    }
+
+    override fun onResume() {
+        super.onResume()
         val profile = Profile.getProfile(this)
         when {
             PreferenceManager.getDefaultSharedPreferences(this).getBoolean("first_run", true) -> // first time task
                 startActivityForResult(Intent(this, Intro::class.java), 1)
             profile == null -> startActivity(Intent(this, LoginActivity::class.java))
-            else -> {
-                init(savedInstanceState)/*
-                headerResult.profiles = Profile.getIProfiles()
-                headerResult.addProfiles(ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true))
-                headerResult.setActiveProfile(profile.id, false)
-                drawer?.setSelectionAtPosition(drawer!!.currentSelectedPosition, true)*/
-            }
         }
     }
 
@@ -157,33 +155,34 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
     }
 
     private fun initDrawer() {
-        headerResult = AccountHeaderBuilder()
-                .withActivity(this)
-                .withHeaderBackground(R.drawable.side_nav_bar)
-                .withProfiles(Profile.getIProfiles())
-                .addProfiles(ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true))
-                .withOnAccountHeaderItemLongClickListener(this)
-                .withOnAccountHeaderListener(this)
-                .build()
-
-        drawer = DrawerBuilder()
-                .withActivity(this)
-                .withToolbar(toolbar)
-                .withAccountHeader(headerResult)
-                .withActionBarDrawerToggleAnimated(true)
-                .withOnDrawerItemClickListener(this)
-                .addDrawerItems(PrimaryDrawerItem().withIdentifier(R.id.agenda.toLong()).withName(R.string.agenda).withIcon(R.drawable.ic_event).withIconTintingEnabled(true),
-                        PrimaryDrawerItem().withIdentifier(R.id.medie.toLong()).withName(R.string.medie).withIcon(R.drawable.ic_timeline).withIconTintingEnabled(true),
-                        PrimaryDrawerItem().withIdentifier(R.id.lessons.toLong()).withName(R.string.lessons).withIcon(R.drawable.ic_view_agenda).withIconTintingEnabled(true),
-                        PrimaryDrawerItem().withIdentifier(R.id.files.toLong()).withName(R.string.files).withIcon(R.drawable.ic_folder).withIconTintingEnabled(true),
-                        PrimaryDrawerItem().withIdentifier(R.id.absences.toLong()).withName(R.string.absences).withIcon(R.drawable.ic_supervisor).withIconTintingEnabled(true),
-                        PrimaryDrawerItem().withIdentifier(R.id.notes.toLong()).withName(R.string.note).withIcon(R.drawable.ic_error).withIconTintingEnabled(true),
-                        PrimaryDrawerItem().withIdentifier(R.id.communications.toLong()).withName(R.string.communications).withIcon(R.drawable.ic_assignment).withIconTintingEnabled(true),
-                        PrimaryDrawerItem().withIdentifier(R.id.settings.toLong()).withName(R.string.settings).withIcon(R.drawable.ic_settings).withIconTintingEnabled(true))
-                .addDrawerItems(DividerDrawerItem(),
-                        PrimaryDrawerItem().withIdentifier(R.id.nav_share.toLong()).withName(R.string.share).withIcon(R.drawable.ic_menu_share).withIconTintingEnabled(true).withSelectable(false),
-                        PrimaryDrawerItem().withIdentifier(R.id.nav_send.toLong()).withName(R.string.send).withIcon(R.drawable.ic_menu_send).withIconTintingEnabled(true).withSelectable(false))
-                .build()
+        if (headerResult == null)
+            headerResult = AccountHeaderBuilder()
+                    .withActivity(this)
+                    .withHeaderBackground(R.drawable.side_nav_bar)
+                    .withProfiles(Profile.getIProfiles())
+                    .addProfiles(ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true))
+                    .withOnAccountHeaderItemLongClickListener(this)
+                    .withOnAccountHeaderListener(this)
+                    .build()
+        if (drawer == null)
+            drawer = DrawerBuilder()
+                    .withActivity(this)
+                    .withToolbar(toolbar)
+                    .withAccountHeader(headerResult!!)
+                    .withActionBarDrawerToggleAnimated(true)
+                    .withOnDrawerItemClickListener(this)
+                    .addDrawerItems(PrimaryDrawerItem().withIdentifier(R.id.agenda.toLong()).withName(R.string.agenda).withIcon(R.drawable.ic_event).withIconTintingEnabled(true),
+                            PrimaryDrawerItem().withIdentifier(R.id.medie.toLong()).withName(R.string.medie).withIcon(R.drawable.ic_timeline).withIconTintingEnabled(true),
+                            PrimaryDrawerItem().withIdentifier(R.id.lessons.toLong()).withName(R.string.lessons).withIcon(R.drawable.ic_view_agenda).withIconTintingEnabled(true),
+                            PrimaryDrawerItem().withIdentifier(R.id.files.toLong()).withName(R.string.files).withIcon(R.drawable.ic_folder).withIconTintingEnabled(true),
+                            PrimaryDrawerItem().withIdentifier(R.id.absences.toLong()).withName(R.string.absences).withIcon(R.drawable.ic_supervisor).withIconTintingEnabled(true),
+                            PrimaryDrawerItem().withIdentifier(R.id.notes.toLong()).withName(R.string.note).withIcon(R.drawable.ic_error).withIconTintingEnabled(true),
+                            PrimaryDrawerItem().withIdentifier(R.id.communications.toLong()).withName(R.string.communications).withIcon(R.drawable.ic_assignment).withIconTintingEnabled(true),
+                            PrimaryDrawerItem().withIdentifier(R.id.settings.toLong()).withName(R.string.settings).withIcon(R.drawable.ic_settings).withIconTintingEnabled(true))
+                    .addDrawerItems(DividerDrawerItem(),
+                            PrimaryDrawerItem().withIdentifier(R.id.nav_share.toLong()).withName(R.string.share).withIcon(R.drawable.ic_menu_share).withIconTintingEnabled(true).withSelectable(false),
+                            PrimaryDrawerItem().withIdentifier(R.id.nav_send.toLong()).withName(R.string.send).withIcon(R.drawable.ic_menu_send).withIconTintingEnabled(true).withSelectable(false))
+                    .build()
 
         toggle = ActionBarDrawerToggle(
                 this, drawer!!.drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -196,7 +195,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
     }
 
     override fun onBackPressed() {
-        if (drawer?.drawerLayout?.isDrawerOpen(GravityCompat.START)!!) {
+        if (drawer?.drawerLayout?.isDrawerOpen(GravityCompat.START) == true) {
             drawer?.drawerLayout?.closeDrawer(GravityCompat.START)
         } else {
             super.onBackPressed()
@@ -247,7 +246,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             }
             2 -> {
                 fragment = FragmentMediePager()
-                updateSubjects(this)
+                //updateSubjects(this)
                 updateMarks(this)
             }
             3 -> {
@@ -310,7 +309,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             Log.d(Info.ACCOUNT, profile.email.text)
             Account.with(this).user = profile.identifier
 
-            //fetchDataOfUser(this)
+            fetchDataOfUser(this)
 
             //Update fragment
             drawer?.setSelectionAtPosition(drawer?.currentSelectedPosition!!, true)
@@ -324,15 +323,15 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
                 SugarRecord.delete(Profile.getProfile(this))
 
-                headerResult.clear()
-                headerResult.profiles = Profile.getIProfiles()
-                headerResult.addProfiles(ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true))
+                headerResult?.clear()
+                headerResult?.profiles = Profile.getIProfiles()
+                headerResult?.addProfiles(ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true))
 
 
                 val p = SugarRecord.first(Profile::class.java)
                 if (p != null) {
                     Account.with(this).user = p.id
-                    headerResult.setActiveProfile(p.id, true)
+                    headerResult?.setActiveProfile(p.id, true)
                 } else {
                     startActivity(Intent(this, LoginActivity::class.java))
                 }

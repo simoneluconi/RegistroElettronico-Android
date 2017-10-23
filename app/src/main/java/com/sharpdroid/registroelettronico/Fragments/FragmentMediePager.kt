@@ -33,11 +33,10 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
     override fun didReceiveNotification(code: Int, args: Array<in Any>) {
         when (code) {
             EventType.UPDATE_MARKS_START -> if (!swiperefresh.isRefreshing) swiperefresh.isRefreshing = true
-            EventType.UPDATE_MARKS_OK -> {
+            EventType.UPDATE_MARKS_OK,
+            EventType.UPDATE_MARKS_KO,
+            EventType.UPDATE_SUBJECTS_OK -> {
                 load()
-                if (swiperefresh.isRefreshing) swiperefresh.isRefreshing = false
-            }
-            EventType.UPDATE_LESSONS_KO -> {
                 if (swiperefresh.isRefreshing) swiperefresh.isRefreshing = false
             }
         }
@@ -55,7 +54,7 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        NotificationManager.instance.addObserver(this, EventType.UPDATE_MARKS_OK, EventType.UPDATE_MARKS_START, EventType.UPDATE_MARKS_KO, EventType.UPDATE_PERIODS_START, EventType.UPDATE_PERIODS_OK, EventType.UPDATE_PERIODS_KO)
+        NotificationManager.instance.addObserver(this, EventType.UPDATE_MARKS_OK, EventType.UPDATE_MARKS_START, EventType.UPDATE_MARKS_KO, EventType.UPDATE_PERIODS_START, EventType.UPDATE_PERIODS_OK, EventType.UPDATE_PERIODS_KO, EventType.UPDATE_SUBJECTS_OK)
 
         setHasOptionsMenu(true)
 
@@ -89,6 +88,11 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
         //download()
     }
 
+    override fun onResume() {
+        super.onResume()
+        load()
+    }
+
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
         outState?.putInt("position", view_pager.currentItem)
@@ -96,7 +100,7 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
 
     override fun onDestroyView() {
         super.onDestroyView()
-        NotificationManager.instance.removeObserver(this, EventType.UPDATE_MARKS_OK, EventType.UPDATE_MARKS_START, EventType.UPDATE_MARKS_KO, EventType.UPDATE_PERIODS_START, EventType.UPDATE_PERIODS_OK, EventType.UPDATE_PERIODS_KO)
+        NotificationManager.instance.removeObserver(this, EventType.UPDATE_MARKS_OK, EventType.UPDATE_MARKS_START, EventType.UPDATE_MARKS_KO, EventType.UPDATE_PERIODS_START, EventType.UPDATE_PERIODS_OK, EventType.UPDATE_PERIODS_KO, EventType.UPDATE_SUBJECTS_OK)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -151,6 +155,9 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
     private fun load() {
         val order = PreferenceManager.getDefaultSharedPreferences(context).getString("order", "")
 
+        Grade.clearSubjectCache()
+        Grade.setupSubjectCache(Account.with(context).user)
+
         grades.clear()
         grades.addAll(SugarRecord.find(Grade::class.java, "PROFILE = ?", Account.with(context).user.toString()))
 
@@ -158,9 +165,9 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
         for (i in 0..pagerAdapter.count) {
             fragment = pagerAdapter.instantiateItem(view_pager, i) as FragmentMedie
             when (i) {
-                0 -> fragment.addSubjects(Grade.getAverages(context, grades.filter { it.mPeriod == 1 }, order), 1)
-                1 -> fragment.addSubjects(Grade.getAverages(context, grades.filter { it.mPeriod != 1 }, order), 3)
-                2 -> fragment.addSubjects(Grade.getAverages(context, grades, order), -1)
+                0 -> fragment.addSubjects(Grade.getAverages(grades.filter { it.mPeriod == 1 }, order), 1)
+                1 -> fragment.addSubjects(Grade.getAverages(grades.filter { it.mPeriod != 1 }, order), 3)
+                2 -> fragment.addSubjects(Grade.getAverages(grades, order), -1)
             }
         }
     }
