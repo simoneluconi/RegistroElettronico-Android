@@ -7,7 +7,6 @@ import com.google.gson.annotations.SerializedName
 import com.orm.SugarRecord
 import com.orm.dsl.Table
 import com.orm.dsl.Unique
-import com.sharpdroid.registroelettronico.Activities.or
 import com.sharpdroid.registroelettronico.Interfaces.Client.Average
 import com.sharpdroid.registroelettronico.Utils.Account
 import java.util.*
@@ -32,35 +31,75 @@ data class Grade(@Expose @SerializedName("evtCode") val mCode: String,
     constructor() : this("", 0, Date(), "", 0, "", 0, "", "", 0, "", false, 0f, 0.0, -1L)
 
     companion object {
-        val subjectCache = SparseArray<Subject>()
+        private val subjectCache = SparseArray<Subject>()
+        private val subjectInfoCache = SparseArray<SubjectInfo>()
+        private val subjectOriginalNames = SparseArray<String>()
 
-        fun getAverages(context: Context, grades: List<Grade>, order: String): List<Average> {
+        fun clearSubjectCache() {
+            subjectCache.clear()
+            subjectInfoCache.clear()
+            subjectOriginalNames.clear()
+        }
 
-            val map: Map<Subject?, List<Grade>> = grades.groupBy({
-                if (subjectCache.indexOfKey(it.mSubjectId) < 0 && subjectCache.get(it.mSubjectId) == null) {
+        fun setupSubjectCache(account: Long) {
+            val subjects = SugarRecord.find(Subject::class.java, "SUBJECT.ID IN (SELECT SUBJECT_TEACHER.SUBJECT FROM SUBJECT_TEACHER WHERE SUBJECT_TEACHER.PROFILE=?)", account.toString())
+            val subjectInfos = SugarRecord.find(SubjectInfo::class.java, "SUBJECT_INFO.SUBJECT IN (SELECT SUBJECT.ID FROM SUBJECT) AND SUBJECT_INFO.PROFILE=?", account.toString())
+
+            subjects.forEach { subjectCache.put(it.id.toInt(), it) }
+            subjectInfos.forEach { subjectInfoCache.put(it.subject.id.toInt(), it) }
+        }
+
+        fun getAverages(grades: List<Grade>, order: String): List<Average> {
+
+            val marksBySubject: Map<Int, List<Grade>> = grades.groupBy({
+                subjectOriginalNames.put(it.mSubjectId, it.mDescription)
+
+                return@groupBy it.mSubjectId
+                /*if (subjectCache.indexOfKey(it.mSubjectId) < 0 && subjectCache.get(it.mSubjectId) == null) {
                     subjectCache.put(it.mSubjectId, SugarRecord.findById(Subject::class.java, it.mSubjectId))
                 } else {
                     println("load from cache")
                 }
-                return@groupBy subjectCache[it.mSubjectId]
+                return@groupBy subjectCache[it.mSubjectId]*/
             }, { it })
 
-            var toReturn = map.keys.map {
+            var toReturn = marksBySubject.keys.map {
                 val average = Average()
-                println(it)
-                val info = it?.getInfo(context)
+                var title = subjectOriginalNames[it, ""]
+                var target = 0f
 
-                val marks = map[it]!!
+                var temp = subjectInfoCache.indexOfKey(it)
+                if (temp >= 0) {
+                    println("$it found in subjectInfoCache at index $temp")
+                    val t = subjectInfoCache.valueAt(temp)
+                    if (!t.description.isEmpty())
+                        title = t.description
+                    target = t.target
+
+                } else {
+                    temp = subjectCache.indexOfKey(it)
+                    if (temp >= 0) {
+                        title = subjectCache.valueAt(temp).description
+                        println("$it found in subjectCache at index $temp")
+                    }
+                }
+
+
+                val marks = marksBySubject[it]!!
 
                 marks.forEach {
                     average.avg += it.mValue
                     average.count += if (it.mValue != 0f) 1 else 0
                 }
+
+                //divide if contains valid marks
                 if (average.count != 0)
                     average.avg /= average.count
-                average.setCode(it?.id?.toInt() ?: -1)
-                average.setTarget(info?.target ?: 0f)
-                average.setName(info?.description.or(it?.description.orEmpty()))
+
+                //add additional informations
+                average.setCode(it)
+                average.setTarget(target)
+                average.setName(title)
                 return@map average
             }
 
