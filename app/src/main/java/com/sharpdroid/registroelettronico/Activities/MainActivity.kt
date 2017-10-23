@@ -243,11 +243,17 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         params?.scrollFlags = 0
         when (position) {
             1 -> {
+                calendar.visibility = View.VISIBLE
+                fab_big_add.visibility = View.VISIBLE
+
                 fragment = FragmentAgenda()
                 updateAgenda(this)
                 updatePeriods(this)
             }
             2 -> {
+                tab_layout?.visibility = View.VISIBLE
+                params?.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS or AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP
+
                 fragment = FragmentMediePager()
                 //updateSubjects(this)
                 updateMarks(this)
