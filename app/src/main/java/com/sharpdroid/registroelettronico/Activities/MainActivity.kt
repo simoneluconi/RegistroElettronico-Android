@@ -48,6 +48,8 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
     private var anim: ObjectAnimator? = null
     private var headerResult: AccountHeader? = null
 
+    private var savedInstanceState: Bundle? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -56,7 +58,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         setSupportActionBar(toolbar)
         params = toolbar.layoutParams as AppBarLayout.LayoutParams?
 
-        init(savedInstanceState)
+        this.savedInstanceState = savedInstanceState
     }
 
     override fun onResume() {
@@ -67,7 +69,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                 startActivityForResult(Intent(this, Intro::class.java), 1)
             profile == null -> startActivity(Intent(this, LoginActivity::class.java))
         }
-        initDrawer()
+        init(savedInstanceState)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -305,7 +307,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         println("${profile.name} - ${profile.identifier} ")
         if (profile.identifier == 1234L) {
             startActivity(Intent(this, LoginActivity::class.java))
-        } else {
+        } else if (!current) {
 
             Log.d(Info.ACCOUNT, profile.email.text)
             Account.with(this).user = profile.identifier
