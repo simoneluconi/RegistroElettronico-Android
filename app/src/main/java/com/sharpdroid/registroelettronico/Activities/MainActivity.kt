@@ -17,6 +17,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import com.afollestad.materialdialogs.MaterialDialog
+import com.google.firebase.messaging.FirebaseMessaging
 import com.mikepenz.materialdrawer.AccountHeader
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
 import com.mikepenz.materialdrawer.Drawer
@@ -27,6 +28,7 @@ import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IProfile
 import com.orm.SugarRecord
+import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.Databases.Entities.Profile
 import com.sharpdroid.registroelettronico.Fragments.*
 import com.sharpdroid.registroelettronico.R
@@ -55,6 +57,10 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         //  actionBar
         setSupportActionBar(toolbar)
         params = toolbar.layoutParams as AppBarLayout.LayoutParams?
+
+        FirebaseMessaging.getInstance().subscribeToTopic("v479")
+        if (BuildConfig.DEBUG)
+            FirebaseMessaging.getInstance().subscribeToTopic("dev")
 
         this.savedInstanceState = savedInstanceState
         init(savedInstanceState)

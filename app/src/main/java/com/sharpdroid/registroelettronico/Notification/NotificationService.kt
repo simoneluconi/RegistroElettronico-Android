@@ -72,20 +72,20 @@ class NotificationService : JobService() {
         if (notificationsList.keys.size == 1) {
             when (notificationsList.keys.toTypedArray()[0]) {
                 "agenda" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_agenda, notificationsList["agenda"]!!, notificationsList["agenda"]!!), null, sound, vibrate)
+                    pushNotification(resources.getQuantityString(R.plurals.notification_agenda, notificationsList["agenda"]!!, notificationsList["agenda"]!!), null, sound, vibrate, R.id.agenda)
                 }
                 "voti" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_voti, notificationsList["voti"]!!, notificationsList["voti"]!!), null, sound, vibrate)
+                    pushNotification(resources.getQuantityString(R.plurals.notification_voti, notificationsList["voti"]!!, notificationsList["voti"]!!), null, sound, vibrate, R.id.medie)
                 }
                 "comunicazioni" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_communication, notificationsList["comunicazioni"]!!, notificationsList["comunicazioni"]!!), null, sound, vibrate)
+                    pushNotification(resources.getQuantityString(R.plurals.notification_communication, notificationsList["comunicazioni"]!!, notificationsList["comunicazioni"]!!), null, sound, vibrate, R.id.communications)
                 }
                 "note" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_note, notificationsList["note"]!!, notificationsList["note"]!!), null, sound, vibrate)
+                    pushNotification(resources.getQuantityString(R.plurals.notification_note, notificationsList["note"]!!, notificationsList["note"]!!), null, sound, vibrate, R.id.notes)
                 }
             }
         } else {
-            pushNotification("Ci sono novità!", null, sound, vibrate)
+            pushNotification("Ci sono novità!", null, sound, vibrate, null)
             return
         }
     }
@@ -115,16 +115,19 @@ class NotificationService : JobService() {
         return note.size - SugarRecord.count<Note>(Note::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
     }
 
-    private fun pushNotification(title: String, content: String?, sound: Boolean, vibrate: Boolean) {
+    private fun pushNotification(title: String, content: String?, sound: Boolean, vibrate: Boolean, tabToOpen: Int?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationManager: NotificationManager = getSystemService(NotificationManager::class.java)
             val mBuilder: Notification.Builder
 
             val i = Intent(this, MainActivity::class.java)
+            if (tabToOpen != null)
+                i.putExtra("drawer_to_open", tabToOpen)
             val intent = PendingIntent.getActivity(this, MainActivity.REQUEST_CODE, i, 0)
 
             mBuilder = Notification.Builder(this, if (sound) channelId else channelId_mute)
                     .setContentTitle(title)
+                    .setSmallIcon(R.mipmap.ic_launcher)
                     .setContentIntent(intent)
                     .setAutoCancel(true)
 
@@ -155,10 +158,13 @@ class NotificationService : JobService() {
             val notificationManager: NotificationManagerCompat = NotificationManagerCompat.from(this)
             val mBuilder: NotificationCompat.Builder
             val i = Intent(this, MainActivity::class.java)
+            if (tabToOpen != null)
+                i.putExtra("drawer_to_open", tabToOpen)
             val intent = PendingIntent.getActivity(this, MainActivity.REQUEST_CODE, i, 0)
 
             mBuilder = NotificationCompat.Builder(this, "Registro Elettronico")
                     .setContentTitle(title)
+                    .setSmallIcon(R.mipmap.ic_launcher)
                     .setContentIntent(intent)
                     .setLights(Color.BLUE, 3000, 3000)
                     .setAutoCancel(true)
