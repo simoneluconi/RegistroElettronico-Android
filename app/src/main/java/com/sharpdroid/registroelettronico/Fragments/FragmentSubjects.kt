@@ -15,6 +15,8 @@ import com.sharpdroid.registroelettronico.Activities.EditSubjectDetailsActivity
 import com.sharpdroid.registroelettronico.Adapters.SubjectsAdapter
 import com.sharpdroid.registroelettronico.Databases.Entities.Subject
 import com.sharpdroid.registroelettronico.Databases.Entities.SubjectInfo
+import com.sharpdroid.registroelettronico.Databases.Entities.SubjectTeacher
+import com.sharpdroid.registroelettronico.Databases.Entities.Teacher
 import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Account
@@ -33,11 +35,9 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
             EventType.UPDATE_SUBJECTS_START -> {
 
             }
-            EventType.UPDATE_SUBJECTS_OK -> {
-                setAdapterData(fetch())
-            }
+            EventType.UPDATE_SUBJECTS_OK,
             EventType.UPDATE_SUBJECTS_KO -> {
-
+                setAdapterData(fetch())
             }
         }
     }
@@ -82,6 +82,10 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
     }
 
     private fun setAdapterData(data: List<SubjectInfo>) {
+        Teacher.clearCache()
+        SubjectTeacher.clearCache()
+        SubjectTeacher.setupCache(Account.with(context).user)
+        Teacher.setupCache(Account.with(context).user)
         adapter.clear()
         adapter.addAll(data)
     }
@@ -93,7 +97,9 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
     override fun onSubjectClick(subject: Subject) {
         selectedSubject = subject
         val transaction = activity.supportFragmentManager.beginTransaction()
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)/*setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)*/.replace(R.id.fragment_container, FragmentLessons.newInstance(subject.id.toInt())).addToBackStack(null)
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)/*setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)*/.replace(R.id.fragment_container,
+                FragmentLessons.newInstance(subject.id.toInt())
+        ).addToBackStack(null)
         transaction.commit()
     }
 
@@ -104,5 +110,7 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
     override fun onDestroyView() {
         super.onDestroyView()
         NotificationManager.instance.removeObserver(this, EventType.UPDATE_SUBJECTS_START, EventType.UPDATE_SUBJECTS_OK, EventType.UPDATE_SUBJECTS_KO)
+        Teacher.clearCache()
+        SubjectTeacher.clearCache()
     }
 }

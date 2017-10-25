@@ -172,6 +172,11 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        Grade.clearSubjectCache()
+    }
+
     override fun onRefresh() {
         download()
     }

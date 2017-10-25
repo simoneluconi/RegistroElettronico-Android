@@ -444,7 +444,7 @@ public class Metodi {
             for (com.sharpdroid.registroelettronico.Databases.Entities.Subject subject : subjectAPI.getSubjects()) {
                 allTeachers.addAll(subject.getTeachers());
                 for (Teacher t : subject.getTeachers()) {
-                    SubjectTeacher obj = new SubjectTeacher(subject, t, p);
+                    SubjectTeacher obj = new SubjectTeacher(subject.getId(), t.getId(), p.getId());
                     SugarRecord.deleteAll(SubjectTeacher.class, "PROFILE=? AND SUBJECT=? AND TEACHER=?", String.valueOf(p.getId()), String.valueOf(subject.getId()), String.valueOf(t.getId()));
                     SugarRecord.save(obj);
                 }

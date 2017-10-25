@@ -90,14 +90,14 @@ public class LoginActivity extends AppCompatActivity {
                     if (login.getChoices() != null) {
                         for (Iterator<Profile> it = SugarRecord.findAll(Profile.class); it.hasNext(); ) {
                             Profile p = it.next();
-
+                            List<Choice> toRemove = new ArrayList<>();
                             //remove already logged in profiles
                             for (Choice c : login.getChoices()) {
                                 if (c.getIdent().substring(1, 8).equals(String.valueOf(p.getId()))) {
-                                    login.getChoices().remove(c);
-                                    break;
+                                    toRemove.add(c);
                                 }
                             }
+                            login.getChoices().removeAll(toRemove);
                         }
 
                         if (login.getChoices().size() > 0) {

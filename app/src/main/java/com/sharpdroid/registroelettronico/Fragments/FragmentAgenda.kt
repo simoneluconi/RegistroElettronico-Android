@@ -10,7 +10,10 @@ import com.orm.SugarRecord
 import com.sharpdroid.registroelettronico.Activities.AddEventActivity
 import com.sharpdroid.registroelettronico.Adapters.AgendaAdapter
 import com.sharpdroid.registroelettronico.BottomSheet.AgendaBS
-import com.sharpdroid.registroelettronico.Databases.Entities.*
+import com.sharpdroid.registroelettronico.Databases.Entities.LocalAgenda
+import com.sharpdroid.registroelettronico.Databases.Entities.RemoteAgenda
+import com.sharpdroid.registroelettronico.Databases.Entities.RemoteAgendaInfo
+import com.sharpdroid.registroelettronico.Databases.Entities.SuperAgenda
 import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Account
@@ -34,7 +37,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
     override fun didReceiveNotification(code: Int, args: Array<in Any>) {
         when (code) {
             EventType.UPDATE_AGENDA_START -> {
-                //started
+
             }
             EventType.UPDATE_AGENDA_OK,
             EventType.UPDATE_AGENDA_KO -> {
@@ -209,7 +212,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
             activity.calendar.setCurrentDate(mDate)
             setTitleSubtitle(mDate)
 
-            setAdapterEvents(RemoteAgenda.getAgenda(Profile.getProfile(activity)!!.id, mDate))
+            setAdapterEvents(fetch(true))
         }
         return super.onOptionsItemSelected(item)
     }
