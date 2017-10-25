@@ -13,7 +13,6 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
@@ -30,7 +29,6 @@ import com.mikepenz.materialdrawer.model.interfaces.IProfile
 import com.orm.SugarRecord
 import com.sharpdroid.registroelettronico.Databases.Entities.Profile
 import com.sharpdroid.registroelettronico.Fragments.*
-import com.sharpdroid.registroelettronico.Info
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Account
 import com.sharpdroid.registroelettronico.Utils.Metodi.*
@@ -75,7 +73,6 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
     override fun onStop() {
         super.onStop()
-        Log.d("MAIN", "STOP")
         savedInstanceState = null
     }
 
@@ -100,7 +97,6 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
     private fun init(savedInstanceState: Bundle?) {
         initDrawer(savedInstanceState)
-        Log.d("MAIN", "init drawer")
         fragmentManager = supportFragmentManager
         fragmentManager?.addOnBackStackChangedListener {
             initBackButton()
@@ -129,15 +125,19 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         if (toggle != null) {
             if (!canOpenDrawer) {
                 anim = ObjectAnimator.ofFloat(toggle?.drawerArrowDrawable, "progress", 1f)
-                anim?.interpolator = DecelerateInterpolator(1f)
-                anim?.duration = 250
-                anim?.start()
+                with(anim!!) {
+                    interpolator = DecelerateInterpolator(1f)
+                    duration = 250
+                    start()
+                }
                 drawer?.drawerLayout?.removeDrawerListener(toggle!!)
             } else {
                 anim = ObjectAnimator.ofFloat(toggle?.drawerArrowDrawable, "progress", 0f)
-                anim?.interpolator = DecelerateInterpolator(1f)
-                anim?.duration = 250
-                anim?.start()
+                with(anim!!) {
+                    interpolator = DecelerateInterpolator(1f)
+                    duration = 250
+                    start()
+                }
                 drawer?.drawerLayout?.addDrawerListener(toggle!!)
             }
         }
@@ -192,11 +192,12 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
         toggle = ActionBarDrawerToggle(
                 this, drawer!!.drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        toggle!!.isDrawerIndicatorEnabled = true
-        drawer!!.actionBarDrawerToggle = toggle!!
-
-        drawer!!.drawerLayout?.addDrawerListener(toggle!!)
-        toggle!!.syncState()
+        with(toggle!!) {
+            isDrawerIndicatorEnabled = true
+            drawer!!.actionBarDrawerToggle = this
+            drawer!!.drawerLayout?.addDrawerListener(this)
+            syncState()
+        }
 
     }
 
@@ -320,12 +321,10 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
     }
 
     override fun onProfileChanged(view: View?, profile: IProfile<*>, current: Boolean): Boolean {
-        println("${profile.name} - ${profile.identifier} ")
         if (profile.identifier == 1234L) {
             startActivityForResult(Intent(this, LoginActivity::class.java), 2)
         } else if (!current) {
 
-            Log.d(Info.ACCOUNT, profile.email.text)
             Account.with(this).user = profile.identifier
 
             fetchDataOfUser(this)
@@ -337,7 +336,6 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
     }
 
     override fun onProfileLongClick(view: View?, profile: IProfile<*>, current: Boolean): Boolean {
-        println("${profile.name} - ${profile.identifier} ")
         if (profile.identifier != 1234L) {
             MaterialDialog.Builder(this).title("Eliminare il profilo?").content("Continuare con l'eliminazione di " + profile.email.text + " ?").positiveText("SI").negativeText("NO").onPositive { _, _ ->
                 SugarRecord.delete(SugarRecord.findById(Profile::class.java, profile.identifier))
