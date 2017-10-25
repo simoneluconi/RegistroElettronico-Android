@@ -78,7 +78,7 @@ class FragmentNote : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notificat
     }
 
     private fun load() {
-        addNotes(SugarRecord.find(Note::class.java, "PROFILE=?", Account.with(activity).user.toString()))
+        addNotes(SugarRecord.find(Note::class.java, "PROFILE=? ORDER BY M_DATE DESC", Account.with(activity).user.toString()))
     }
 
 
