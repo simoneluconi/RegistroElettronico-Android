@@ -33,7 +33,7 @@ data class Profile(
     }
 
     companion object {
-        fun getIProfiles(): List<IProfile<*>> {
+        fun getIProfiles(): List<IProfile<ProfileDrawerItem>> {
             return SugarRecord.find(Profile::class.java, "").map {
                 it.asIProfile()
             }
