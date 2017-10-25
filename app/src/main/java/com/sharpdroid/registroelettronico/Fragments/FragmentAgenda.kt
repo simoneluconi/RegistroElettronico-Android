@@ -95,6 +95,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         recycler.layoutManager = LinearLayoutManager(context)
         recycler.adapter = adapter
 
+        invalidateCache()
         load()
     }
 
@@ -152,7 +153,6 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
     }
 
     private fun load() {
-        invalidateCache()
         events.clear()
         events.addAll(RemoteAgenda.getSuperAgenda(Account.with(activity).user))
         events.addAll(SugarRecord.find(LocalAgenda::class.java, "PROFILE=? AND ARCHIVED=0", Account.with(activity).user.toString()))
