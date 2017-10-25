@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.sharpdroid.registroelettronico.Databases.Entities.Teacher;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.Utils.Metodi;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -122,8 +123,13 @@ public class InfoView extends CardView {
                                 (data.getDescription().isEmpty()) ?
                                         data.getSubject().getDescription() :
                                         data.getDescription())));
-                if (!data.getSubject().getTeachers().isEmpty())
-                    list.add(new Pair<>(R.drawable.ic_person, capitalizeEach(TextUtils.join(" - ", data.getSubject().getTeachers()), true)));
+                if (!data.getSubject().getTeachers().isEmpty()) {
+                    List<String> prof = new ArrayList<>();
+                    for (Teacher t : data.getSubject().getTeachers()) {
+                        prof.add(t.getTeacherName());
+                    }
+                    list.add(new Pair<>(R.drawable.ic_person, capitalizeEach(TextUtils.join(" - ", prof), true)));
+                }
                 if (!TextUtils.isEmpty(data.getClassroom()))
                     list.add(new Pair<>(R.drawable.ic_room, data.getClassroom()));
                 if (!TextUtils.isEmpty(data.getDetails()))
