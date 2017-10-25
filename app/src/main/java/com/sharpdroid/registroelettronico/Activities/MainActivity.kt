@@ -59,6 +59,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         params = toolbar.layoutParams as AppBarLayout.LayoutParams?
 
         this.savedInstanceState = savedInstanceState
+        init(savedInstanceState)
     }
 
     override fun onResume() {
@@ -68,8 +69,13 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             PreferenceManager.getDefaultSharedPreferences(this).getBoolean("first_run", true) -> // first time task
                 startActivityForResult(Intent(this, Intro::class.java), 1)
             profile == null -> startActivity(Intent(this, LoginActivity::class.java))
+            else -> headerResult?.setActiveProfile(profile.id, true)
         }
-        init(savedInstanceState)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d("MAIN", "STOP")
         savedInstanceState = null
     }
 
@@ -84,31 +90,39 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                 //User cancelled the intro so we'll finish this activity too.
                 finish()
             }
+        } else if (requestCode == 2) {
+
+            if (resultCode == Activity.RESULT_OK) {
+                init(null)
+            }
         }
     }
 
     private fun init(savedInstanceState: Bundle?) {
-        initDrawer()
+        initDrawer(savedInstanceState)
         Log.d("MAIN", "init drawer")
         fragmentManager = supportFragmentManager
         fragmentManager?.addOnBackStackChangedListener {
-            canOpenDrawer = fragmentManager?.backStackEntryCount == 0
-            if (toggle != null) {
-                if (!canOpenDrawer) {
-                    anim = ObjectAnimator.ofFloat(toggle?.drawerArrowDrawable, "progress", 1f)
-                    anim?.interpolator = DecelerateInterpolator(1f)
-                    anim?.duration = 250
-                    anim?.start()
-                    drawer?.drawerLayout?.removeDrawerListener(toggle!!)
-                } else {
-                    anim = ObjectAnimator.ofFloat(toggle?.drawerArrowDrawable, "progress", 0f)
-                    anim?.interpolator = DecelerateInterpolator(1f)
-                    anim?.duration = 250
-                    anim?.start()
-                    drawer?.drawerLayout?.addDrawerListener(toggle!!)
-                }
+            initBackButton()
+        }
+        initBackButton() //init back button on layout change (backstack remains but listener doesn't fire)
+        toolbar.setNavigationOnClickListener { _ ->
+            if (canOpenDrawer) {
+                drawer?.drawerLayout?.openDrawer(GravityCompat.START)
+            } else {
+                fragmentManager?.popBackStack()
             }
         }
+
+        // Programmatically start a fragment
+        if (savedInstanceState == null) {
+            val default = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getString("drawer_to_open", "0")) ?: 0
+            val drawerToOpen = intent.extras?.getInt("drawer_to_open", default) ?: default
+            drawer?.setSelectionAtPosition(drawerToOpen + 1, true)
+        }
+    }
+
+    private fun initBackButton() {
         if (savedInstanceState != null) {
             canOpenDrawer = fragmentManager?.backStackEntryCount == 0
             if (toggle != null) {
@@ -126,24 +140,6 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                     drawer?.drawerLayout?.addDrawerListener(toggle!!)
                 }
             }
-        } //init back button on layout change (backstack remains but listener doesn't fire)
-        toolbar.setNavigationOnClickListener { _ ->
-            if (canOpenDrawer) {
-                drawer?.drawerLayout?.openDrawer(GravityCompat.START)
-            } else {
-                fragmentManager?.popBackStack()
-            }
-        }
-
-        // Programmatically start a fragment
-        if (savedInstanceState == null) {
-            val default = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getString("drawer_to_open", "0")) ?: 0
-
-            val drawerToOpen = intent.extras?.getInt("drawer_to_open", default) ?: default
-
-            drawer?.setSelectionAtPosition(drawerToOpen + 1, true)
-        } else {
-            drawer?.setSelectionAtPosition(savedInstanceState.getInt("drawer_to_open"), false)
         }
     }
 
@@ -153,39 +149,46 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
+        if (drawer != null) {
+            drawer?.saveInstanceState(outState)
+            headerResult?.saveInstanceState(outState)
+        }
+
         super.onSaveInstanceState(outState)
-        if (drawer != null)
-            outState?.putInt("drawer_to_open", drawer!!.currentSelectedPosition)
     }
 
-    private fun initDrawer() {
-        headerResult = AccountHeaderBuilder()
-                .withActivity(this)
-                .withHeaderBackground(R.drawable.side_nav_bar)
-                .withProfiles(Profile.getIProfiles())
-                .addProfiles(ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true).withIdentifier(1234L))
-                .withOnAccountHeaderItemLongClickListener(this)
-                .withOnAccountHeaderListener(this)
-                .build()
+    private fun initDrawer(savedInstanceState: Bundle?) {
+        if (headerResult == null || savedInstanceState == null)
+            headerResult = AccountHeaderBuilder()
+                    .withActivity(this)
+                    .withSavedInstance(savedInstanceState)
+                    .withHeaderBackground(R.drawable.side_nav_bar)
+                    .withProfiles(Profile.getIProfiles())
+                    .addProfiles(ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true).withIdentifier(1234L))
+                    .withOnAccountHeaderItemLongClickListener(this)
+                    .withOnAccountHeaderListener(this)
+                    .build()
 
-        drawer = DrawerBuilder()
-                .withActivity(this)
-                .withToolbar(toolbar)
-                .withAccountHeader(headerResult!!)
-                .withActionBarDrawerToggleAnimated(true)
-                .withOnDrawerItemClickListener(this)
-                .addDrawerItems(PrimaryDrawerItem().withIdentifier(R.id.agenda.toLong()).withName(R.string.agenda).withIcon(R.drawable.ic_event).withIconTintingEnabled(true),
-                        PrimaryDrawerItem().withIdentifier(R.id.medie.toLong()).withName(R.string.medie).withIcon(R.drawable.ic_timeline).withIconTintingEnabled(true),
-                        PrimaryDrawerItem().withIdentifier(R.id.lessons.toLong()).withName(R.string.lessons).withIcon(R.drawable.ic_view_agenda).withIconTintingEnabled(true),
-                        PrimaryDrawerItem().withIdentifier(R.id.files.toLong()).withName(R.string.files).withIcon(R.drawable.ic_folder).withIconTintingEnabled(true),
-                        PrimaryDrawerItem().withIdentifier(R.id.absences.toLong()).withName(R.string.absences).withIcon(R.drawable.ic_supervisor).withIconTintingEnabled(true),
-                        PrimaryDrawerItem().withIdentifier(R.id.notes.toLong()).withName(R.string.note).withIcon(R.drawable.ic_error).withIconTintingEnabled(true),
-                        PrimaryDrawerItem().withIdentifier(R.id.communications.toLong()).withName(R.string.communications).withIcon(R.drawable.ic_assignment).withIconTintingEnabled(true),
-                        PrimaryDrawerItem().withIdentifier(R.id.settings.toLong()).withName(R.string.settings).withIcon(R.drawable.ic_settings).withIconTintingEnabled(true))
-                .addDrawerItems(DividerDrawerItem(),
-                        PrimaryDrawerItem().withIdentifier(R.id.nav_share.toLong()).withName(R.string.share).withIcon(R.drawable.ic_menu_share).withIconTintingEnabled(true).withSelectable(false),
-                        PrimaryDrawerItem().withIdentifier(R.id.nav_send.toLong()).withName(R.string.send).withIcon(R.drawable.ic_menu_send).withIconTintingEnabled(true).withSelectable(false))
-                .build()
+        if (drawer == null || savedInstanceState == null)
+            drawer = DrawerBuilder()
+                    .withActivity(this)
+                    .withToolbar(toolbar)
+                    .withSavedInstance(savedInstanceState)
+                    .withAccountHeader(headerResult!!)
+                    .withActionBarDrawerToggleAnimated(true)
+                    .withOnDrawerItemClickListener(this)
+                    .addDrawerItems(PrimaryDrawerItem().withIdentifier(R.id.agenda.toLong()).withName(R.string.agenda).withIcon(R.drawable.ic_event).withIconTintingEnabled(true),
+                            PrimaryDrawerItem().withIdentifier(R.id.medie.toLong()).withName(R.string.medie).withIcon(R.drawable.ic_timeline).withIconTintingEnabled(true),
+                            PrimaryDrawerItem().withIdentifier(R.id.lessons.toLong()).withName(R.string.lessons).withIcon(R.drawable.ic_view_agenda).withIconTintingEnabled(true),
+                            PrimaryDrawerItem().withIdentifier(R.id.files.toLong()).withName(R.string.files).withIcon(R.drawable.ic_folder).withIconTintingEnabled(true),
+                            PrimaryDrawerItem().withIdentifier(R.id.absences.toLong()).withName(R.string.absences).withIcon(R.drawable.ic_supervisor).withIconTintingEnabled(true),
+                            PrimaryDrawerItem().withIdentifier(R.id.notes.toLong()).withName(R.string.note).withIcon(R.drawable.ic_error).withIconTintingEnabled(true),
+                            PrimaryDrawerItem().withIdentifier(R.id.communications.toLong()).withName(R.string.communications).withIcon(R.drawable.ic_assignment).withIconTintingEnabled(true),
+                            PrimaryDrawerItem().withIdentifier(R.id.settings.toLong()).withName(R.string.settings).withIcon(R.drawable.ic_settings).withIconTintingEnabled(true))
+                    .addDrawerItems(DividerDrawerItem(),
+                            PrimaryDrawerItem().withIdentifier(R.id.nav_share.toLong()).withName(R.string.share).withIcon(R.drawable.ic_menu_share).withIconTintingEnabled(true).withSelectable(false),
+                            PrimaryDrawerItem().withIdentifier(R.id.nav_send.toLong()).withName(R.string.send).withIcon(R.drawable.ic_menu_send).withIconTintingEnabled(true).withSelectable(false))
+                    .build()
 
         toggle = ActionBarDrawerToggle(
                 this, drawer!!.drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -313,7 +316,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
     override fun onProfileChanged(view: View?, profile: IProfile<*>, current: Boolean): Boolean {
         println("${profile.name} - ${profile.identifier} ")
         if (profile.identifier == 1234L) {
-            startActivity(Intent(this, LoginActivity::class.java))
+            startActivityForResult(Intent(this, LoginActivity::class.java), 2)
         } else if (!current) {
 
             Log.d(Info.ACCOUNT, profile.email.text)
@@ -333,6 +336,12 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             MaterialDialog.Builder(this).title("Eliminare il profilo?").content("Continuare con l'eliminazione di " + profile.email.text + " ?").positiveText("SI").negativeText("NO").onPositive { _, _ ->
                 SugarRecord.delete(SugarRecord.findById(Profile::class.java, profile.identifier))
 
+                drawer?.closeDrawer()
+                initDrawer(savedInstanceState)
+
+                headerResult?.removeProfileByIdentifier(profile.identifier)
+                drawer?.headerAdapter?.notifyDataSetChanged()
+
                 val p = SugarRecord.first(Profile::class.java)
                 if (p != null) {
                     Account.with(this).user = p.id
@@ -340,9 +349,6 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                 } else {
                     startActivity(Intent(this, LoginActivity::class.java))
                 }
-
-                drawer?.closeDrawer()
-                initDrawer()
             }.show()
         }
         return false
