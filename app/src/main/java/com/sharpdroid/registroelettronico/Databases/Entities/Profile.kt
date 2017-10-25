@@ -43,13 +43,4 @@ data class Profile(
             return SugarRecord.findById(Profile::class.java, Account.with(context).user)
         }
     }
-
-
-    fun getTeachers(): List<Teacher> {
-        return SugarRecord.find(SubjectTeacher::class.java, "USERNAME = ?", username)?.map { it?.teacher!! } ?: emptyList()
-    }
-
-    fun getSubjects(): List<Subject> {
-        return SugarRecord.find(SubjectTeacher::class.java, "USERNAME = ?", username)?.map { it?.subject!! } ?: emptyList()
-    }
 }

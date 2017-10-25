@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.widget.TextView
-import com.orm.SugarRecord
 import com.sharpdroid.registroelettronico.Activities.or
 import com.sharpdroid.registroelettronico.Databases.Entities.Subject
 import com.sharpdroid.registroelettronico.Databases.Entities.SubjectInfo
@@ -62,7 +61,7 @@ class SubjectsAdapter(fragmentAgenda: FragmentSubjects?) : RecyclerView.Adapter<
         CVDataList.addAll(subjects)
         Collections.sort(CVDataList) { subject, t1 -> (subject.description.or(subject.subject.description)).compareTo(t1.description.or(t1.subject.description), true) }
         for (s in subjects) {
-            s.subject.teachers = SugarRecord.findWithQuery(Teacher::class.java, "select * from TEACHER where TEACHER.ID IN (select SUBJECT_TEACHER.TEACHER from SUBJECT_TEACHER where SUBJECT_TEACHER.SUBJECT=?)", s.subject.id.toString())
+            s.subject.teachers = Teacher.professorsOfSubject(s.subject.id)
         }
         notifyDataSetChanged()
     }

@@ -1,6 +1,7 @@
 package com.sharpdroid.registroelettronico.Databases.Entities
 
 import android.content.Context
+import android.util.SparseArray
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.orm.SugarRecord
@@ -38,6 +39,21 @@ data class Subject(
     fun getInfo(c: Context): SubjectInfo {
         return SugarRecord.find(SubjectInfo::class.java, "ID=? LIMIT 1", Account.with(c).user.toString() + id.toString()).getOrNull(0) ?:
                 SubjectInfo((com.sharpdroid.registroelettronico.Utils.Account.with(c).user.toString() + "" + id.toString()).toLong(), 0f, "", "", "", this, Account.with(c).user)
+    }
+
+    companion object {
+        private val subjectCache = SparseArray<Subject>()
+
+        fun clearCache() = subjectCache.clear()
+
+        fun setupCache(account: Long) {
+            val subjects: List<Subject> = SugarRecord.find(Subject::class.java, "")!!
+            val subjectTeacher = SugarRecord.find(SubjectTeacher::class.java, "PROFILE=?", account.toString())
+
+            subjectTeacher.forEach {
+                subjectCache.put(it.subject.toInt(), subjects.first { subject -> it.subject == subject.id })
+            }
+        }
     }
 }
 
