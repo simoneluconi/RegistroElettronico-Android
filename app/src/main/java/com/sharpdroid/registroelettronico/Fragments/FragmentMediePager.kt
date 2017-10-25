@@ -84,7 +84,7 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
             pagerSelected = true
         }
 
-        load()
+        //load()
         //download()
     }
 
