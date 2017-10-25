@@ -135,6 +135,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("first_run", false).apply();
                         mButtonLogin.setText(R.string.login_riuscito);
+                        setResult(Activity.RESULT_OK);
                         finish();
                     }
                 }, error -> {
@@ -159,7 +160,8 @@ public class LoginActivity extends AppCompatActivity {
 
                     PreferenceManager.getDefaultSharedPreferences(c).edit().putBoolean("first_run", false).apply();
                     mButtonLogin.setText(R.string.login_riuscito);
-                    c.onBackPressed();
+                    setResult(Activity.RESULT_OK);
+                    finish();
                 }, error -> {
                     loginFeedback(error, c);
 
