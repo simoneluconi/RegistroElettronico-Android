@@ -5,6 +5,7 @@ import android.content.Intent
 import android.support.v7.app.AppCompatDelegate
 import android.util.Log
 import com.google.android.gms.security.ProviderInstaller
+import com.google.firebase.FirebaseApp
 import com.orm.SugarContext
 
 class App : Application() {
@@ -15,6 +16,7 @@ class App : Application() {
         super.onCreate()
         upgradeSecurityProvider()
         SugarContext.init(this)
+        FirebaseApp.initializeApp(this)
     }
 
     private fun upgradeSecurityProvider() {
