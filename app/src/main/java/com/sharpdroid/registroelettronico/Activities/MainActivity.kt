@@ -105,7 +105,9 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         fragmentManager?.addOnBackStackChangedListener {
             initBackButton()
         }
-        initBackButton() //init back button on layout change (backstack remains but listener doesn't fire)
+        if (savedInstanceState != null)
+            initBackButton()
+
         toolbar.setNavigationOnClickListener { _ ->
             if (canOpenDrawer) {
                 drawer?.drawerLayout?.openDrawer(GravityCompat.START)
@@ -123,22 +125,20 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
     }
 
     private fun initBackButton() {
-        if (savedInstanceState != null) {
-            canOpenDrawer = fragmentManager?.backStackEntryCount == 0
-            if (toggle != null) {
-                if (!canOpenDrawer) {
-                    anim = ObjectAnimator.ofFloat(toggle?.drawerArrowDrawable, "progress", 1f)
-                    anim?.interpolator = DecelerateInterpolator(1f)
-                    anim?.duration = 250
-                    anim?.start()
-                    drawer?.drawerLayout?.removeDrawerListener(toggle!!)
-                } else {
-                    anim = ObjectAnimator.ofFloat(toggle?.drawerArrowDrawable, "progress", 0f)
-                    anim?.interpolator = DecelerateInterpolator(1f)
-                    anim?.duration = 250
-                    anim?.start()
-                    drawer?.drawerLayout?.addDrawerListener(toggle!!)
-                }
+        canOpenDrawer = fragmentManager?.backStackEntryCount == 0
+        if (toggle != null) {
+            if (!canOpenDrawer) {
+                anim = ObjectAnimator.ofFloat(toggle?.drawerArrowDrawable, "progress", 1f)
+                anim?.interpolator = DecelerateInterpolator(1f)
+                anim?.duration = 250
+                anim?.start()
+                drawer?.drawerLayout?.removeDrawerListener(toggle!!)
+            } else {
+                anim = ObjectAnimator.ofFloat(toggle?.drawerArrowDrawable, "progress", 0f)
+                anim?.interpolator = DecelerateInterpolator(1f)
+                anim?.duration = 250
+                anim?.start()
+                drawer?.drawerLayout?.addDrawerListener(toggle!!)
             }
         }
     }
@@ -212,6 +212,9 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         fragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
+    /**
+     * listener for volume down
+     */
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
             event.startTracking()
@@ -220,6 +223,9 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         return super.onKeyDown(keyCode, event)
     }
 
+    /**
+     * listener for volume down
+     */
     override fun onKeyLongPress(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
             //Cancella Dati Friendly
