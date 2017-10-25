@@ -17,6 +17,7 @@ import com.sharpdroid.registroelettronico.API.SpiaggiariAPI
 import com.sharpdroid.registroelettronico.Databases.Entities.Grade
 import com.sharpdroid.registroelettronico.Databases.Entities.Subject
 import com.sharpdroid.registroelettronico.Databases.Entities.SubjectInfo
+import com.sharpdroid.registroelettronico.Databases.Entities.Teacher
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Account
 import com.sharpdroid.registroelettronico.Utils.Metodi.MessaggioVoto
@@ -64,6 +65,7 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
         }
 
         subject = temp.getInfo(this)
+        subject.subject.teachers = SugarRecord.findWithQuery(Teacher::class.java, "SELECT * FROM TEACHER WHERE TEACHER.ID IN (SELECT SUBJECT_TEACHER.TEACHER FROM SUBJECT_TEACHER WHERE SUBJECT_TEACHER.SUBJECT=?)", subject.subject.id.toString())
         p = intent.getIntExtra("period", 0)
         avg = SugarRecord.findWithQuery(AverageType::class.java, "SELECT ID, AVG(M_VALUE) as `AVG` , 'Generale' as `TYPE`, COUNT(M_VALUE) as `COUNT`  FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=?", subject.subject.id.toString())[0]
 
@@ -82,7 +84,7 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
     }
 
     private fun initOverall(subject: Subject) {
-        val avgTypes: List<AverageType> = SugarRecord.findWithQuery(AverageType::class.java, "SELECT ID, AVG(M_VALUE) as `AVG` , 'Generale' as `TYPE`, COUNT(M_VALUE) as `COUNT`  FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=? GROUP BY TYPE", subject.id.toString())
+        val avgTypes: List<AverageType> = SugarRecord.findWithQuery(AverageType::class.java, "SELECT ID, AVG(M_VALUE) as `AVG` ,M_TYPE as `TYPE`, COUNT(M_VALUE) as `COUNT`  FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=? GROUP BY TYPE", subject.id.toString())
         overall.setOrale(avgTypes.filter { it.type.equals(SpiaggiariAPI.ORALE, false) }.getOrNull(0)?.avg)
         overall.setScritto(avgTypes.filter { it.type.equals(SpiaggiariAPI.SCRITTO, false) }.getOrNull(0)?.avg)
         overall.setPratico(avgTypes.filter { it.type.equals(SpiaggiariAPI.PRATICO, false) }.getOrNull(0)?.avg)
