@@ -38,7 +38,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
             }
             EventType.UPDATE_AGENDA_OK,
             EventType.UPDATE_AGENDA_KO -> {
-                load()
+                load(true)
                 updateCalendar()
                 updateAdapter()
             }
@@ -95,8 +95,8 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         recycler.layoutManager = LinearLayoutManager(context)
         recycler.adapter = adapter
 
-        invalidateCache()
-        load()
+
+        load(true)
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -152,7 +152,9 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         else events
     }
 
-    private fun load() {
+    private fun load(invalidate: Boolean) {
+        if (invalidate) invalidateCache()
+
         events.clear()
         events.addAll(RemoteAgenda.getSuperAgenda(Account.with(activity).user))
         events.addAll(SugarRecord.find(LocalAgenda::class.java, "PROFILE=? AND ARCHIVED=0", Account.with(activity).user.toString()))
@@ -243,7 +245,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                     }
 
                     e.completed = !e.completed
-                    load()
+                    load(true)
                     updateAdapter()
                 }
                 1 -> {
@@ -255,7 +257,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                         SugarRecord.save(RemoteAgendaInfo(e.agenda.id, false, false, !isEventTest(e)))
                     }
 
-                    load()
+                    load(true)
                     updateAdapter()
                     updateCalendar()
                 }
@@ -275,25 +277,25 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                         SugarRecord.save(RemoteAgendaInfo(e.agenda.id, false, true, isEventTest(e)))
                     }
 
-                    load()
+                    load(true)
                     updateAdapter()
                     updateCalendar()
                 }
             }
-        } else if (e is LocalAgenda) {
+        } else if (e is LocalAgenda) { //no need to invalidate since cache is used only for RemoteAgenda
             when (position) {
                 0 -> {
                     e.completed_date = if (e.completed_date != null) null else Date()
                     SugarRecord.save(e)
 
-                    load()
+                    load(false)
                     updateAdapter()
                 }
                 1 -> {
                     e.type = if (e.type == "verifica") "altro" else "verifica"
                     SugarRecord.save(e)
 
-                    load()
+                    load(false)
                     updateAdapter()
                     updateCalendar()
                 }
@@ -308,7 +310,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                     e.archived = !e.archived
                     SugarRecord.save(e)
 
-                    load()
+                    load(false)
                     updateAdapter()
                     updateCalendar()
                 }
