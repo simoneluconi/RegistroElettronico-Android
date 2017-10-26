@@ -62,7 +62,8 @@ public class FragmentSettings extends PreferenceFragmentCompat implements Shared
 
                         @Override
                         public View postOnCreateView(View view) {
-                            getActivity().setTitle("Attribuzioni");
+                            if (getActivity() != null)
+                                getActivity().setTitle("Attribuzioni");
                             return view;
                         }
                     }).supportFragment()).addToBackStack(null);
