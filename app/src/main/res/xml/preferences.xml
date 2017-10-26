@@ -24,11 +24,13 @@
 
     <PreferenceCategory android:title="Notifiche">
         <SwitchPreferenceCompat
+            android:defaultValue="true"
             android:key="notify"
             android:summary="Ricevi notifiche relative all'account corrente"
             android:title="Notifiche" />
 
         <SwitchPreferenceCompat
+            android:defaultValue="true"
             android:dependency="notify"
             android:drawablePadding="8dp"
             android:icon="@drawable/ic_vibration_black_24dp"
@@ -36,6 +38,7 @@
             android:title="Vibrazione" />
 
         <SwitchPreferenceCompat
+            android:defaultValue="true"
             android:dependency="notify"
             android:drawablePadding="8dp"
             android:icon="@drawable/ic_volume_up_black_24dp"

@@ -2,6 +2,8 @@ package com.sharpdroid.registroelettronico.Activities
 
 import android.animation.ObjectAnimator
 import android.app.Activity
+import android.content.ActivityNotFoundException
+import android.content.ComponentName
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -13,9 +15,11 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
+import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import com.google.firebase.messaging.FirebaseMessaging
 import com.mikepenz.materialdrawer.AccountHeader
@@ -72,8 +76,11 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         when {
             PreferenceManager.getDefaultSharedPreferences(this).getBoolean("first_run", true) -> // first time task
                 startActivityForResult(Intent(this, Intro::class.java), 1)
-            profile == null -> startActivity(Intent(this, LoginActivity::class.java))
-            else -> headerResult?.setActiveProfile(profile.id, true)
+            profile == null -> startActivityForResult(Intent(this, LoginActivity::class.java), 2)
+            else -> {
+                headerResult?.setActiveProfile(profile.id, true)
+                ifHuaweiAlert()
+            }
         }
     }
 
@@ -94,15 +101,18 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                 finish()
             }
         } else if (requestCode == 2) {
-
             if (resultCode == Activity.RESULT_OK) {
+                Log.d("MAIN", "LOGIN OK")
                 init(null)
+            } else {
+                finish()
             }
         }
     }
 
     private fun init(savedInstanceState: Bundle?) {
         initDrawer(savedInstanceState)
+        println("INIT")
         fragmentManager = supportFragmentManager
         fragmentManager?.addOnBackStackChangedListener {
             initBackButton()
@@ -118,16 +128,18 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             }
         }
 
-        // Programmatically start a fragment
-        if (savedInstanceState == null) {
-            if (intent.extras?.containsKey("drawer_to_open") == true) {
-                drawer?.setSelection(intent.extras.getLong("drawer_to_open"), true)
-                intent.extras.clear()
-            } else {
-                val default = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getString("drawer_to_open", "0")) ?: 0
-                val drawerToOpen = intent.extras?.getInt("drawer_to_open", default) ?: default
-                drawer?.setSelectionAtPosition(drawerToOpen + 1, true)
-            }
+        // Aperto da notifica
+        println(intent?.extras?.toString())
+        if (intent?.extras?.containsKey("drawer_open_id") == true) {
+            println("INIT BY NOTIFICATION")
+            drawer?.setSelection(intent?.extras?.getLong("drawer_open_id") ?: -1L, true)
+            intent?.extras?.clear()
+
+            //Primo avvio
+        } else if (savedInstanceState == null) {
+            val default = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getString("drawer_to_open", "0")) ?: 0
+            val drawerToOpen = intent.extras?.getInt("drawer_to_open", default) ?: default
+            drawer?.setSelectionAtPosition(drawerToOpen + 1, true)
         }
     }
 
@@ -166,6 +178,25 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         }
 
         super.onSaveInstanceState(outState)
+    }
+
+    private fun ifHuaweiAlert() {
+        if ("huawei".equals(android.os.Build.MANUFACTURER, true) && !PreferenceManager.getDefaultSharedPreferences(this).getBoolean("huawei_protected", false)) {
+            val builder = MaterialDialog.Builder(this)
+            builder.title(R.string.huawei_headline).content(R.string.huawei_text).positiveText("OK").neutralText("Annulla")
+                    .onPositive { _, _ ->
+                        try {
+                            val intent = Intent()
+                            intent.component = ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.optimize.process.ProtectActivity")
+                            startActivity(intent)
+                            PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("huawei_protected", true).apply()
+                        } catch (e: ActivityNotFoundException) {
+                            Toast.makeText(applicationContext, "Non è possibile aggiungere l'app fra le app protette.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+            builder.show()
+
+        }
     }
 
     private fun initDrawer(savedInstanceState: Bundle?) {
@@ -349,7 +380,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
     override fun onProfileLongClick(view: View?, profile: IProfile<*>, current: Boolean): Boolean {
         if (profile.identifier != 1234L) {
             MaterialDialog.Builder(this).title("Eliminare il profilo?").content("Continuare con l'eliminazione di " + profile.email.text + " ?").positiveText("SI").negativeText("NO").onPositive { _, _ ->
-                SugarRecord.delete(SugarRecord.findById(Profile::class.java, profile.identifier))
+                deleteUser(profile.identifier.toString())
 
                 drawer?.closeDrawer()
                 initDrawer(savedInstanceState)
