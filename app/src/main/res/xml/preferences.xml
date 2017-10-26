@@ -21,7 +21,6 @@
         android:summary="@string/restore_archived_summary"
         android:title="@string/restore_archived_title" />
 
-
     <PreferenceCategory android:title="Notifiche">
         <SwitchPreferenceCompat
             android:defaultValue="true"
@@ -45,4 +44,18 @@
             android:key="notify_sound"
             android:title="Suoni" />
     </PreferenceCategory>
+
+    <PreferenceCategory android:title="Informazioni">
+        <Preference
+            android:key="credits"
+            android:summary="Conosci gli sviluppatori :)"
+            android:title="Riconoscimenti" />
+
+        <Preference
+            android:key="attribution"
+            android:summary="Librerie Open Source"
+            android:title="Attribuzioni" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>
