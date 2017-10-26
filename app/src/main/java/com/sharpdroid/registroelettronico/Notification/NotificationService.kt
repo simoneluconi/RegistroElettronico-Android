@@ -74,7 +74,7 @@ class NotificationService : JobService() {
 
         val sound = preferences.getBoolean("notify_sound", true)
         val vibrate = preferences.getBoolean("notify_vibrate", true)
-        val content = "Clicca per aprire nell'applicazione"
+        val content = resources.getString(R.string.click_to_open);
 
         if (notificationsList.keys.size == 1) {
             when (notificationsList.keys.toTypedArray()[0]) {
@@ -92,7 +92,7 @@ class NotificationService : JobService() {
                 }
             }
         } else {
-            pushNotification("Ci sono novità", content, sound, vibrate, null)
+            pushNotification(resources.getString(R.string.new_news), content, sound, vibrate, null)
             return
         }
     }

@@ -130,4 +130,7 @@
         <item quantity="other">%d nuove comunicazioni</item>
     </plurals>
 
+    <string name="new_news">Ci sono novità</string>
+    <string name="click_to_open">Clicca per aprire nell\'applicazione</string>
+
 </resources>
