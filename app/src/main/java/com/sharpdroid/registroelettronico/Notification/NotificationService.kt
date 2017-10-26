@@ -21,7 +21,6 @@ import com.firebase.jobdispatcher.JobService
 import com.orm.SugarRecord
 import com.sharpdroid.registroelettronico.API.V2.APIClient
 import com.sharpdroid.registroelettronico.Activities.MainActivity
-import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.Databases.Entities.*
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Metodi.getStartEnd
@@ -48,7 +47,7 @@ class NotificationService : JobService() {
         }
         if (option.notifyVoti) {
             val diff = getVotiDiff(profile)
-            if (diff != 0 || BuildConfig.DEBUG)
+            if (diff != 0)
                 notificationsList.put("voti", diff)
             Log.d("NOTIFICATION", "VOTI - $diff")
         }
