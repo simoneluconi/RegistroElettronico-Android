@@ -44,3 +44,12 @@
 -keep class android.support.v7.widget.SearchView { *; }
 
 -keep class com.sharpdroid.registroelettronico.Database.Entities** { *; }
+
+#ABOUT-LIBRARIES
+-keep class .R
+-keep class **.R$* {
+    <fields>;
+}
+-keepclasseswithmembers class **.R$* {
+    public static final int define_*;
+}

@@ -4,11 +4,13 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.TwoStatePreference;
 
+import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.orm.SugarRecord;
 import com.sharpdroid.registroelettronico.Databases.Entities.RemoteAgendaInfo;
 import com.sharpdroid.registroelettronico.R;
@@ -39,6 +41,22 @@ public class FragmentSettings extends PreferenceFragmentCompat implements Shared
             SugarRecord.executeQuery("UPDATE LOCAL_AGENDA SET ARCHIVED=0 WHERE ARCHIVED!=0");
             return true;
         });
+
+        findPreference("credits").setOnPreferenceClickListener(preference -> {
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.fragment_container, new FragmentCredits()).addToBackStack(null);
+            transaction.commit();
+            return true;
+        });
+
+        findPreference("attribution").setOnPreferenceClickListener(
+                preference -> {
+                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.fragment_container, new LibsBuilder().withActivityTitle("Attribuzioni").supportFragment()).addToBackStack(null);
+                    transaction.commit();
+                    return true;
+                }
+        );
 
     }
 

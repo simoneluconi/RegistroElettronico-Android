@@ -135,4 +135,7 @@
     <string name="new_news">Ci sono novità</string>
     <string name="click_to_open">Clicca per aprire nell\'applicazione</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>
