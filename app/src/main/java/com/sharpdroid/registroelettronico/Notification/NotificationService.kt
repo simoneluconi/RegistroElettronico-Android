@@ -11,6 +11,7 @@ import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.RingtoneManager
 import android.os.Build
+import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
@@ -39,7 +40,7 @@ class NotificationService : JobService() {
 
         val notificationsList = mutableMapOf<String, Int>()
 
-        if (option.notifyAgenda || BuildConfig.DEBUG) {
+        if (option.notifyAgenda) {
             val diff = getAgendaDiff(profile)
             if (diff != 0)
                 notificationsList.put("agenda", diff)
@@ -47,7 +48,7 @@ class NotificationService : JobService() {
         }
         if (option.notifyVoti) {
             val diff = getVotiDiff(profile)
-            if (diff != 0)
+            if (diff != 0 || BuildConfig.DEBUG)
                 notificationsList.put("voti", diff)
             Log.d("NOTIFICATION", "VOTI - $diff")
         }
@@ -79,16 +80,16 @@ class NotificationService : JobService() {
         if (notificationsList.keys.size == 1) {
             when (notificationsList.keys.toTypedArray()[0]) {
                 "agenda" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_agenda, notificationsList["agenda"]!!, notificationsList["agenda"]!!), content, sound, vibrate, R.id.agenda)
+                    pushNotification(resources.getQuantityString(R.plurals.notification_agenda, notificationsList["agenda"]!!, notificationsList["agenda"]!!), content, sound, vibrate, R.id.agenda.toLong())
                 }
                 "voti" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_voti, notificationsList["voti"]!!, notificationsList["voti"]!!), content, sound, vibrate, R.id.medie)
+                    pushNotification(resources.getQuantityString(R.plurals.notification_voti, notificationsList["voti"]!!, notificationsList["voti"]!!), content, sound, vibrate, R.id.medie.toLong())
                 }
                 "comunicazioni" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_communication, notificationsList["comunicazioni"]!!, notificationsList["comunicazioni"]!!), content, sound, vibrate, R.id.communications)
+                    pushNotification(resources.getQuantityString(R.plurals.notification_communication, notificationsList["comunicazioni"]!!, notificationsList["comunicazioni"]!!), content, sound, vibrate, R.id.communications.toLong())
                 }
                 "note" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_note, notificationsList["note"]!!, notificationsList["note"]!!), content, sound, vibrate, R.id.notes)
+                    pushNotification(resources.getQuantityString(R.plurals.notification_note, notificationsList["note"]!!, notificationsList["note"]!!), content, sound, vibrate, R.id.notes.toLong())
                 }
             }
         } else {
@@ -100,47 +101,54 @@ class NotificationService : JobService() {
     private fun getAgendaDiff(profile: Profile): Int {
         val dates = getStartEnd("yyyyMMdd")
         val agenda = APIClient.with(applicationContext, profile).getAgenda(dates[0], dates[1]).blockingFirst()?.getAgenda(profile) ?: return 0
-        if (agenda.isEmpty()) return 0
-
         val diff = agenda.size - SugarRecord.count<RemoteAgenda>(RemoteAgenda::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
         SugarRecord.deleteAll(RemoteAgenda::class.java, "PROFILE=?", profile.id.toString())
-        return diff
+        SugarRecord.saveInTx(agenda)
+        return if (diff < 0) 0 else diff
     }
 
     private fun getVotiDiff(profile: Profile): Int {
-        val marks = APIClient.with(applicationContext, profile).getGrades().blockingFirst()?.grades ?: return 0
-        if (marks.isEmpty()) return 0
-
+        val marks = APIClient.with(applicationContext, profile).getGrades().blockingFirst()?.getGrades(profile) ?: return 0
         val diff = marks.size - SugarRecord.count<Grade>(Grade::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
         SugarRecord.deleteAll(Grade::class.java, "PROFILE=?", profile.id.toString())
-        return diff
+        marks.forEach { it.profile = profile.id }
+        SugarRecord.saveInTx(marks)
+        return if (diff < 0) 0 else diff
     }
 
     private fun getComunicazioniDiff(profile: Profile): Int {
-        val comm = APIClient.with(applicationContext, profile).getBacheca().blockingFirst()?.communications ?: return 0
+        var comm = APIClient.with(applicationContext, profile).getBacheca().blockingFirst()?.getCommunications(profile) ?: return 0
+        comm = comm.filter { it.cntStatus == "deleted" }
         val diff = comm.size - SugarRecord.count<Communication>(Communication::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
         SugarRecord.deleteAll(Communication::class.java, "PROFILE=?", profile.id.toString())
-        return diff
+        SugarRecord.saveInTx(comm)
+        return if (diff < 0) 0 else diff
     }
 
     private fun getNoteDiff(profile: Profile): Int {
         val note = APIClient.with(applicationContext, profile).getNotes().blockingFirst()?.getNotes(profile) ?: return 0
-        return note.size - SugarRecord.count<Note>(Note::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
+        val diff = note.size - SugarRecord.count<Note>(Note::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
+        SugarRecord.deleteAll(Note::class.java, "PROFILE=?", profile.id.toString())
+        SugarRecord.saveInTx(note)
+        return if (diff < 0) 0 else diff
     }
 
-    private fun pushNotification(title: String, content: String?, sound: Boolean, vibrate: Boolean, tabToOpen: Int?) {
+    private fun pushNotification(title: String, content: String?, sound: Boolean, vibrate: Boolean, tabToOpen: Long?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationManager: NotificationManager = getSystemService(NotificationManager::class.java)
             val mBuilder: Notification.Builder
 
             val i = Intent(this, MainActivity::class.java)
-            if (tabToOpen != null)
-                i.putExtra("drawer_to_open", tabToOpen)
-            val intent = PendingIntent.getActivity(this, MainActivity.REQUEST_CODE, i, 0)
+            if (tabToOpen != null) {
+                val bundle = Bundle()
+                bundle.putLong("drawer_open_id", tabToOpen)
+                i.putExtras(bundle)
+            }
+            val intent = PendingIntent.getActivity(this, MainActivity.REQUEST_CODE, i, PendingIntent.FLAG_UPDATE_CURRENT)
 
             mBuilder = Notification.Builder(this, if (sound) channelId else channelId_mute)
                     .setContentTitle(title)
-                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setSmallIcon(R.drawable.ic_stat_name)
                     .setContentIntent(intent)
                     .setAutoCancel(true)
 
@@ -171,13 +179,16 @@ class NotificationService : JobService() {
             val notificationManager: NotificationManagerCompat = NotificationManagerCompat.from(this)
             val mBuilder: NotificationCompat.Builder
             val i = Intent(this, MainActivity::class.java)
-            if (tabToOpen != null)
-                i.putExtra("drawer_to_open", tabToOpen)
-            val intent = PendingIntent.getActivity(this, MainActivity.REQUEST_CODE, i, 0)
+            if (tabToOpen != null) {
+                val bundle = Bundle()
+                bundle.putLong("drawer_open_id", tabToOpen)
+                i.putExtras(bundle)
+            }
+            val intent = PendingIntent.getActivity(this, MainActivity.REQUEST_CODE, i, PendingIntent.FLAG_UPDATE_CURRENT)
 
             mBuilder = NotificationCompat.Builder(this, "Registro Elettronico")
                     .setContentTitle(title)
-                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setSmallIcon(R.drawable.ic_stat_name)
                     .setContentIntent(intent)
                     .setLights(Color.BLUE, 3000, 3000)
                     .setAutoCancel(true)

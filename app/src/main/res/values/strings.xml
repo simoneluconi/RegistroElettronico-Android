@@ -109,6 +109,8 @@
     <string name="compito_bs">Contrassegna come compito</string>
     <string name="cerca">Cerca</string>
     <string name="credenziali">Credenziali errate</string>
+    <string name="huawei_text">Vuoi aggiungere l\'app fra le app protette in modo da ricevere notifiche?</string>
+    <string name="huawei_headline">Aggiungere ad \'App protette\'?</string>
 
     <plurals name="notification_agenda">
         <item quantity="one">Un nuovo evento</item>

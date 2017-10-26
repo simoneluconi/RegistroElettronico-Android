@@ -171,4 +171,10 @@ public class LoginActivity extends AppCompatActivity {
                     mButtonLogin.setEnabled(true);
                 });
     }
+
+    @Override
+    public void onBackPressed() {
+        setResult(Activity.RESULT_CANCELED);
+        finish();
+    }
 }

@@ -1,5 +1,6 @@
 package com.sharpdroid.registroelettronico.Notification
 
+import android.preference.PreferenceManager
 import com.firebase.jobdispatcher.Constraint
 import com.firebase.jobdispatcher.FirebaseJobDispatcher
 import com.firebase.jobdispatcher.GooglePlayDriver
@@ -12,7 +13,7 @@ class FirebaseReceiver : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage?) {
         if (remoteMessage?.notification != null) {
             super.onMessageReceived(remoteMessage)
-        } else if (remoteMessage?.data != null) {
+        } else if (remoteMessage?.data != null && PreferenceManager.getDefaultSharedPreferences(this).getBoolean("notify", true)) {
 
             val dispatcher = FirebaseJobDispatcher(GooglePlayDriver(applicationContext))
             val notificationJob = dispatcher.newJobBuilder()

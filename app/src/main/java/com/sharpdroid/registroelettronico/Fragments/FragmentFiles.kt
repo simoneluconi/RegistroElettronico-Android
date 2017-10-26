@@ -113,7 +113,9 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
                 }
             }
             "link" -> {
-                openLink(activity, info.path)
+                if (snackbar == null)
+                    snackbar = Snackbar.make(layout, "", Snackbar.LENGTH_SHORT)
+                openLink(activity, info.path, snackbar)
             }
             "text" -> {
                 MaterialDialog.Builder(activity).title(file.contentName).content(info.path).positiveText("OK").autoDismiss(true).show()

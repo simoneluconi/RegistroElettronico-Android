@@ -16,6 +16,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.CalendarContract;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v4.util.Pair;
 import android.util.Log;
@@ -32,6 +33,7 @@ import com.sharpdroid.registroelettronico.Databases.Entities.FileInfo;
 import com.sharpdroid.registroelettronico.Databases.Entities.Folder;
 import com.sharpdroid.registroelettronico.Databases.Entities.Grade;
 import com.sharpdroid.registroelettronico.Databases.Entities.LocalAgenda;
+import com.sharpdroid.registroelettronico.Databases.Entities.Note;
 import com.sharpdroid.registroelettronico.Databases.Entities.Option;
 import com.sharpdroid.registroelettronico.Databases.Entities.Period;
 import com.sharpdroid.registroelettronico.Databases.Entities.Profile;
@@ -396,15 +398,15 @@ public class Metodi {
     }
 
     public static void deleteUser(String account) {
+        SugarRecord.deleteAll(Profile.class, "ID=?", account);
         SugarRecord.deleteAll(com.sharpdroid.registroelettronico.Databases.Entities.Absence.class, "PROFILE=?", account);
         SugarRecord.deleteAll(Communication.class, "PROFILE=?", account);
         SugarRecord.deleteAll(com.sharpdroid.registroelettronico.Databases.Entities.File.class, "PROFILE=?", account);
         SugarRecord.deleteAll(Folder.class, "PROFILE=?", account);
         SugarRecord.deleteAll(Grade.class, "PROFILE=?", account);
         SugarRecord.deleteAll(Lesson.class, "PROFILE=?", account);
-        SugarRecord.deleteAll(Option.class, "PROFILE=?", account);
+        SugarRecord.deleteAll(Option.class, "ID=?", account);
         SugarRecord.deleteAll(Period.class, "PROFILE=?", account);
-        SugarRecord.deleteAll(Profile.class, "PROFILE=?", account);
         SugarRecord.deleteAll(RemoteAgenda.class, "PROFILE=?", account);
         SugarRecord.deleteAll(SubjectTeacher.class, "PROFILE=?", account);
     }
@@ -647,6 +649,7 @@ public class Metodi {
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_NOTES_START, null));
         APIClient.Companion.with(c, p).getNotes()
                 .subscribe(notes -> {
+                    SugarRecord.deleteAll(Note.class, "PROFILE=?", String.valueOf(p.getId()));
                     SugarRecord.saveInTx(notes.getNotes(p));
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_NOTES_OK, null));
                 }, throwable -> {
@@ -909,9 +912,17 @@ public class Metodi {
 
     }
 
-    public static void openLink(Context context, String url) {
+    public static void openLink(Context context, String url, Snackbar snackbar) {
+        if (!url.startsWith("http://") && !url.startsWith("https://")) url = "http://" + url;
+
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        context.startActivity(browserIntent);
+        try {
+            context.startActivity(browserIntent);
+        } catch (ActivityNotFoundException e) {
+            snackbar.setText("Impossibile aprire il link richiesto");
+            snackbar.setDuration(Snackbar.LENGTH_SHORT);
+            snackbar.show();
+        }
     }
 
 }
