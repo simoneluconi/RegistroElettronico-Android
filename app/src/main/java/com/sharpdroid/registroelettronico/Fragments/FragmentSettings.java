@@ -1,11 +1,13 @@
 package com.sharpdroid.registroelettronico.Fragments;
 
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.TwoStatePreference;
 
 import com.orm.SugarRecord;
 import com.sharpdroid.registroelettronico.Databases.Entities.RemoteAgendaInfo;
@@ -27,6 +29,9 @@ public class FragmentSettings extends PreferenceFragmentCompat implements Shared
 
         onSharedPreferenceChanged(sharedPreferences, "voto_obiettivo");
         onSharedPreferenceChanged(sharedPreferences, "drawer_to_open");
+        onSharedPreferenceChanged(sharedPreferences, "notify");
+        onSharedPreferenceChanged(sharedPreferences, "notify_sound");
+        onSharedPreferenceChanged(sharedPreferences, "notify_vibrate");
 
         Preference button = findPreference("clear_archive");
         button.setOnPreferenceClickListener(preference -> {
@@ -54,6 +59,16 @@ public class FragmentSettings extends PreferenceFragmentCompat implements Shared
             int prefIndex = listPreference.findIndexOfValue(sharedPreferences.getString(key, ""));
             if (prefIndex >= 0) {
                 preference.setSummary(listPreference.getEntries()[prefIndex]);
+            }
+        } else if (preference instanceof TwoStatePreference) {
+            if (key.equalsIgnoreCase("notify")) {
+                Drawable vibrate_d = findPreference("notify_vibrate").getIcon();
+                vibrate_d.setAlpha(((TwoStatePreference) preference).isChecked() ? 255 : 102);
+                findPreference("notify_vibrate").setIcon(vibrate_d);
+
+                Drawable sound_d = findPreference("notify_sound").getIcon();
+                sound_d.setAlpha(((TwoStatePreference) preference).isChecked() ? 255 : 102);
+                findPreference("notify_sound").setIcon(sound_d);
             }
         } else {
             preference.setSummary(sharedPreferences.getString(key, ""));

@@ -14,11 +14,13 @@ import android.os.Build
 import android.preference.PreferenceManager
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
+import android.util.Log
 import com.firebase.jobdispatcher.JobParameters
 import com.firebase.jobdispatcher.JobService
 import com.orm.SugarRecord
 import com.sharpdroid.registroelettronico.API.V2.APIClient
 import com.sharpdroid.registroelettronico.Activities.MainActivity
+import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.Databases.Entities.*
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Metodi.getStartEnd
@@ -37,25 +39,29 @@ class NotificationService : JobService() {
 
         val notificationsList = mutableMapOf<String, Int>()
 
-        if (option.notifyAgenda) {
+        if (option.notifyAgenda || BuildConfig.DEBUG) {
             val diff = getAgendaDiff(profile)
             if (diff != 0)
                 notificationsList.put("agenda", diff)
+            Log.d("NOTIFICATION", "AGENDA - $diff")
         }
         if (option.notifyVoti) {
             val diff = getVotiDiff(profile)
             if (diff != 0)
                 notificationsList.put("voti", diff)
+            Log.d("NOTIFICATION", "VOTI - $diff")
         }
         if (option.notifyComunicazioni) {
             val diff = getComunicazioniDiff(profile)
             if (diff != 0)
                 notificationsList.put("comunicazioni", diff)
+            Log.d("NOTIFICATION", "COMUNICAZIONI - $diff")
         }
         if (option.notifyNote) {
             val diff = getNoteDiff(profile)
             if (diff != 0)
                 notificationsList.put("note", diff)
+            Log.d("NOTIFICATION", "NOTE - $diff")
         }
 
         notify(notificationsList, PreferenceManager.getDefaultSharedPreferences(this))
@@ -68,24 +74,25 @@ class NotificationService : JobService() {
 
         val sound = preferences.getBoolean("notify_sound", true)
         val vibrate = preferences.getBoolean("notify_vibrate", true)
+        val content = "Clicca per aprire nell'applicazione"
 
         if (notificationsList.keys.size == 1) {
             when (notificationsList.keys.toTypedArray()[0]) {
                 "agenda" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_agenda, notificationsList["agenda"]!!, notificationsList["agenda"]!!), null, sound, vibrate, R.id.agenda)
+                    pushNotification(resources.getQuantityString(R.plurals.notification_agenda, notificationsList["agenda"]!!, notificationsList["agenda"]!!), content, sound, vibrate, R.id.agenda)
                 }
                 "voti" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_voti, notificationsList["voti"]!!, notificationsList["voti"]!!), null, sound, vibrate, R.id.medie)
+                    pushNotification(resources.getQuantityString(R.plurals.notification_voti, notificationsList["voti"]!!, notificationsList["voti"]!!), content, sound, vibrate, R.id.medie)
                 }
                 "comunicazioni" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_communication, notificationsList["comunicazioni"]!!, notificationsList["comunicazioni"]!!), null, sound, vibrate, R.id.communications)
+                    pushNotification(resources.getQuantityString(R.plurals.notification_communication, notificationsList["comunicazioni"]!!, notificationsList["comunicazioni"]!!), content, sound, vibrate, R.id.communications)
                 }
                 "note" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_note, notificationsList["note"]!!, notificationsList["note"]!!), null, sound, vibrate, R.id.notes)
+                    pushNotification(resources.getQuantityString(R.plurals.notification_note, notificationsList["note"]!!, notificationsList["note"]!!), content, sound, vibrate, R.id.notes)
                 }
             }
         } else {
-            pushNotification("Ci sono novità!", null, sound, vibrate, null)
+            pushNotification("Ci sono novità", content, sound, vibrate, null)
             return
         }
     }
@@ -95,19 +102,25 @@ class NotificationService : JobService() {
         val agenda = APIClient.with(applicationContext, profile).getAgenda(dates[0], dates[1]).blockingFirst()?.getAgenda(profile) ?: return 0
         if (agenda.isEmpty()) return 0
 
-        return agenda.size - SugarRecord.count<RemoteAgenda>(RemoteAgenda::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
+        val diff = agenda.size - SugarRecord.count<RemoteAgenda>(RemoteAgenda::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
+        SugarRecord.deleteAll(RemoteAgenda::class.java, "PROFILE=?", profile.id.toString())
+        return diff
     }
 
     private fun getVotiDiff(profile: Profile): Int {
-        var marks = APIClient.with(applicationContext, profile).getGrades().blockingFirst()?.grades ?: return 0
+        val marks = APIClient.with(applicationContext, profile).getGrades().blockingFirst()?.grades ?: return 0
         if (marks.isEmpty()) return 0
 
-        return marks.size - SugarRecord.count<Grade>(Grade::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
+        val diff = marks.size - SugarRecord.count<Grade>(Grade::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
+        SugarRecord.deleteAll(Grade::class.java, "PROFILE=?", profile.id.toString())
+        return diff
     }
 
     private fun getComunicazioniDiff(profile: Profile): Int {
         val comm = APIClient.with(applicationContext, profile).getBacheca().blockingFirst()?.communications ?: return 0
-        return comm.size - SugarRecord.count<Communication>(Communication::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
+        val diff = comm.size - SugarRecord.count<Communication>(Communication::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
+        SugarRecord.deleteAll(Communication::class.java, "PROFILE=?", profile.id.toString())
+        return diff
     }
 
     private fun getNoteDiff(profile: Profile): Int {

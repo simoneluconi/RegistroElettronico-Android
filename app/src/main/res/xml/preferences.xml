@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <android.support.v7.preference.ListPreference
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
         android:defaultValue="8"
         android:entries="@array/voti_list"
         android:entryValues="@array/voti_list"
@@ -8,7 +8,7 @@
         android:summary="@string/obiettivo_summary"
         android:title="@string/obiettivo_title" />
 
-    <android.support.v7.preference.ListPreference
+    <ListPreference
         android:defaultValue="0"
         android:entries="@array/tab_list"
         android:entryValues="@array/tab_list_n"
@@ -16,8 +16,30 @@
         android:summary="@string/start_tab_summary"
         android:title="@string/start_tab_title" />
 
-    <android.support.v7.preference.Preference
+    <Preference
         android:key="clear_archive"
         android:summary="@string/restore_archived_summary"
         android:title="@string/restore_archived_title" />
-</android.support.v7.preference.PreferenceScreen>
+
+
+    <PreferenceCategory android:title="Notifiche">
+        <SwitchPreferenceCompat
+            android:key="notify"
+            android:summary="Ricevi notifiche relative all'account corrente"
+            android:title="Notifiche" />
+
+        <SwitchPreferenceCompat
+            android:dependency="notify"
+            android:drawablePadding="8dp"
+            android:icon="@drawable/ic_vibration_black_24dp"
+            android:key="notify_vibrate"
+            android:title="Vibrazione" />
+
+        <SwitchPreferenceCompat
+            android:dependency="notify"
+            android:drawablePadding="8dp"
+            android:icon="@drawable/ic_volume_up_black_24dp"
+            android:key="notify_sound"
+            android:title="Suoni" />
+    </PreferenceCategory>
+</PreferenceScreen>

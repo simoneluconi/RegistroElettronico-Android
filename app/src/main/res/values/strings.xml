@@ -111,23 +111,23 @@
     <string name="credenziali">Credenziali errate</string>
 
     <plurals name="notification_agenda">
-        <item quantity="one">Un nuovo evento!</item>
-        <item quantity="other">%d nuovi eventi!</item>
+        <item quantity="one">Un nuovo evento</item>
+        <item quantity="other">%d nuovi eventi</item>
     </plurals>
 
     <plurals name="notification_voti">
-        <item quantity="one">Un nuovo voto!</item>
+        <item quantity="one">Un nuovo voto</item>
         <item quantity="other">%d nuovi voti!</item>
     </plurals>
 
     <plurals name="notification_note">
-        <item quantity="one">Una nuova nota!</item>
-        <item quantity="other">%d nuove note!</item>
+        <item quantity="one">Una nuova nota</item>
+        <item quantity="other">%d nuove note</item>
     </plurals>
 
     <plurals name="notification_communication">
-        <item quantity="one">Una nuova comunicazione!</item>
-        <item quantity="other">%d nuove comunicazioni!</item>
+        <item quantity="one">Una nuova comunicazione</item>
+        <item quantity="other">%d nuove comunicazioni</item>
     </plurals>
 
 </resources>

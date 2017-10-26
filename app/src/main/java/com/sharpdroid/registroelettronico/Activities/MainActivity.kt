@@ -120,9 +120,14 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
         // Programmatically start a fragment
         if (savedInstanceState == null) {
-            val default = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getString("drawer_to_open", "0")) ?: 0
-            val drawerToOpen = intent.extras?.getInt("drawer_to_open", default) ?: default
-            drawer?.setSelectionAtPosition(drawerToOpen + 1, true)
+            if (intent.extras?.containsKey("drawer_to_open") == true) {
+                drawer?.setSelection(intent.extras.getLong("drawer_to_open"), true)
+                intent.extras.clear()
+            } else {
+                val default = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getString("drawer_to_open", "0")) ?: 0
+                val drawerToOpen = intent.extras?.getInt("drawer_to_open", default) ?: default
+                drawer?.setSelectionAtPosition(drawerToOpen + 1, true)
+            }
         }
     }
 
