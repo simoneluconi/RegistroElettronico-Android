@@ -32,6 +32,7 @@ import com.sharpdroid.registroelettronico.Databases.Entities.FileInfo;
 import com.sharpdroid.registroelettronico.Databases.Entities.Folder;
 import com.sharpdroid.registroelettronico.Databases.Entities.Grade;
 import com.sharpdroid.registroelettronico.Databases.Entities.LocalAgenda;
+import com.sharpdroid.registroelettronico.Databases.Entities.Option;
 import com.sharpdroid.registroelettronico.Databases.Entities.Period;
 import com.sharpdroid.registroelettronico.Databases.Entities.Profile;
 import com.sharpdroid.registroelettronico.Databases.Entities.RemoteAgenda;
@@ -392,6 +393,20 @@ public class Metodi {
             }
         }
         return list;
+    }
+
+    public static void deleteUser(String account) {
+        SugarRecord.deleteAll(com.sharpdroid.registroelettronico.Databases.Entities.Absence.class, "PROFILE=?", account);
+        SugarRecord.deleteAll(Communication.class, "PROFILE=?", account);
+        SugarRecord.deleteAll(com.sharpdroid.registroelettronico.Databases.Entities.File.class, "PROFILE=?", account);
+        SugarRecord.deleteAll(Folder.class, "PROFILE=?", account);
+        SugarRecord.deleteAll(Grade.class, "PROFILE=?", account);
+        SugarRecord.deleteAll(Lesson.class, "PROFILE=?", account);
+        SugarRecord.deleteAll(Option.class, "PROFILE=?", account);
+        SugarRecord.deleteAll(Period.class, "PROFILE=?", account);
+        SugarRecord.deleteAll(Profile.class, "PROFILE=?", account);
+        SugarRecord.deleteAll(RemoteAgenda.class, "PROFILE=?", account);
+        SugarRecord.deleteAll(SubjectTeacher.class, "PROFILE=?", account);
     }
 
     public static void fetchDataOfUser(@NotNull Context c) {
