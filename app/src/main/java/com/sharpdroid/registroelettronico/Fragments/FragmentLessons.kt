@@ -27,12 +27,10 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
             EventType.UPDATE_LESSONS_START -> {
                 swiperefresh.isRefreshing = true
             }
-            EventType.UPDATE_LESSONS_OK -> {
-                swiperefresh.isRefreshing = false
-                load()
-            }
+            EventType.UPDATE_LESSONS_OK,
             EventType.UPDATE_LESSONS_KO -> {
                 swiperefresh.isRefreshing = false
+                load()
             }
         }
     }
@@ -83,10 +81,8 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
     }
 
     private fun addLessons(lessons: List<Lesson>) {
-        if (!lessons.isEmpty()) {
-            mRVAdapter.clear()
-            mRVAdapter.addAll(lessons)
-        }
+        mRVAdapter.clear()
+        mRVAdapter.addAll(lessons)
     }
 
     private fun load() {

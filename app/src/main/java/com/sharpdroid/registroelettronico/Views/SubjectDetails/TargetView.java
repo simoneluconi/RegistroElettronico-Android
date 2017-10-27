@@ -78,6 +78,10 @@ public class TargetView extends CardView {
             progressBar.setMax(10);
             progressBar.setProgress(11);
             mediaView.setText("-");
+
+            if (target == -1) {
+                targetView.setText("-");
+            }
         } else {
             this.media = media;
             this.mediaView.setText(String.format(Locale.getDefault(), "%.2f", media));
