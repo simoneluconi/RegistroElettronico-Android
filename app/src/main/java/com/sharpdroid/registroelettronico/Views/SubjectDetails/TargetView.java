@@ -63,8 +63,7 @@ public class TargetView extends CardView {
     }
 
     public void setProgress(Float media) {
-        if (target == -1)
-            setMedia(media, false);
+        setMedia(media, false);
     }
 
     public float getMedia() {
