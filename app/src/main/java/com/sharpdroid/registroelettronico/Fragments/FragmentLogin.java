@@ -17,10 +17,13 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.LoginEvent;
 import com.heinrichreimersoftware.materialintro.app.SlideFragment;
 import com.orm.SugarRecord;
 import com.sharpdroid.registroelettronico.API.V2.APIClient;
 import com.sharpdroid.registroelettronico.Adapters.LoginAdapter;
+import com.sharpdroid.registroelettronico.BuildConfig;
 import com.sharpdroid.registroelettronico.Databases.Entities.LoginRequest;
 import com.sharpdroid.registroelettronico.Databases.Entities.Option;
 import com.sharpdroid.registroelettronico.Databases.Entities.Profile;
@@ -161,6 +164,8 @@ public class FragmentLogin extends SlideFragment {
         loggedIn = true;
         updateNavigation();
         nextSlide();
+        if (!BuildConfig.DEBUG)
+            Answers.getInstance().logLogin(new LoginEvent().putMethod("multiple"));
     }
 
     private void loginWithIdent(String email, String password, String ident) {

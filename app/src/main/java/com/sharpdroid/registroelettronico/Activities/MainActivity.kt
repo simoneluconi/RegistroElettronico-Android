@@ -14,13 +14,19 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
+import android.widget.CheckBox
+import android.widget.LinearLayout
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
+import com.crashlytics.android.answers.Answers
+import com.crashlytics.android.answers.ShareEvent
 import com.google.firebase.messaging.FirebaseMessaging
 import com.mikepenz.materialdrawer.AccountHeader
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
@@ -53,6 +59,8 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
     private var headerResult: AccountHeader? = null
 
     private var savedInstanceState: Bundle? = null
+
+    private var huaweiAlert: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -189,22 +197,41 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
     private fun ifHuaweiAlert() {
         val intent = Intent()
-        intent.component = ComponentName("com.huawei.systemmanager",
-                "com.huawei.systemmanager.optimize.process.ProtectActivity")
+        intent.component = ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.optimize.process.ProtectActivity")
+
         if (intent.resolveActivityInfo(packageManager, 0) != null &&
+                !PreferenceManager.getDefaultSharedPreferences(this).getBoolean("huawei_do_not_ask_again", false) &&
                 "huawei".equals(android.os.Build.MANUFACTURER, true) &&
                 !PreferenceManager.getDefaultSharedPreferences(this).getBoolean("huawei_protected", false)) {
-            val builder = MaterialDialog.Builder(this)
-            builder.title(R.string.huawei_headline).content(R.string.huawei_text).positiveText("OK").neutralText("Annulla")
-                    .onPositive { _, _ ->
-                        try {
-                            startActivity(intent)
-                            PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("huawei_protected", true).apply()
-                        } catch (e: ActivityNotFoundException) {
-                            Toast.makeText(applicationContext, R.string.huawei_error, Toast.LENGTH_SHORT).show()
-                        }
-                    }
-            builder.show()
+
+            val doNotAskAgain = CheckBox(this)
+            val l = LinearLayout(this)
+            with(doNotAskAgain) {
+                text = context.getString(R.string.do_not_ask_again)
+                isChecked = false
+                gravity = Gravity.CENTER_VERTICAL
+            }
+            val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            params.setMargins(dp(16), dp(16), dp(16), dp(0))
+            l.addView(doNotAskAgain, params)
+
+            if (huaweiAlert == null)
+                huaweiAlert = AlertDialog.Builder(this)
+                        .setTitle(R.string.huawei_headline)
+                        .setMessage(R.string.huawei_text)
+                        .setView(l)
+                        .setPositiveButton("OK") { _, _ ->
+                            try {
+                                startActivity(intent)
+                                PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("huawei_protected", true).apply()
+                            } catch (e: ActivityNotFoundException) {
+                                Toast.makeText(applicationContext, "Non è possibile aggiungere l'app fra le app protette.", Toast.LENGTH_SHORT).show()
+                                PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("huawei_do_not_ask_again", true).apply()
+                            }
+                        }.setNegativeButton(android.R.string.cancel) { _, _ ->
+                    PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("huawei_do_not_ask_again", doNotAskAgain.isChecked).apply()
+
+                }.show()
 
         }
     }
@@ -338,21 +365,27 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                 updateBacheca(this)
             }
             8 -> fragment = FragmentSettings()
-            9 -> {
+            10 -> {
                 val intent = Intent(Intent.ACTION_SEND)
                 intent.type = "text/plain"
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Registro Elettronico")
                 val url = "https://play.google.com/store/apps/details?id=com.sharpdroid.registroelettronico"
                 intent.putExtra(Intent.EXTRA_TEXT, url)
                 startActivity(Intent.createChooser(intent, getString(R.string.share_with)))
+
+                if (!BuildConfig.DEBUG)
+                    Answers.getInstance().logShare(ShareEvent().putMethod("ACTION_SEND"))
                 return true
             }
-            10 -> {
+            11 -> {
                 val intentMail = Intent(Intent.ACTION_SENDTO)
                 intentMail.data = Uri.parse("mailto:registroelettronico@simoneluconi.com")
                 intentMail.putExtra(Intent.EXTRA_SUBJECT, "Registro Elettronico")
                 intentMail.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intentMail)
+
+                if (!BuildConfig.DEBUG)
+                    Answers.getInstance().logShare(ShareEvent().putMethod("ACTION_SEND"))
                 return false
             }
             else -> return false

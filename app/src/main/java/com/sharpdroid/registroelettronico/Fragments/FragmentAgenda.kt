@@ -99,7 +99,6 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         recycler.adapter = adapter
 
 
-        load(true)
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -109,6 +108,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
 
     override fun onResume() {
         super.onResume()
+        load(true)
         activity.calendar.visibility = View.VISIBLE
         setTitleSubtitle(mDate)
         updateCalendar()

@@ -15,12 +15,8 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Install a hook to Crashlytics and Answers (only in production releases)
         if (!BuildConfig.DEBUG) {
-            final Fabric fabric = new Fabric.Builder(this)
-                    .kits(new Crashlytics(), new Answers())
-                    .build();
-            Fabric.with(fabric);
+            Fabric.with(this, new Crashlytics(), new Answers());
         }
         startActivity(new Intent(SplashActivity.this, MainActivity.class));
     }
