@@ -66,6 +66,10 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        fab_mini_verifica.setImageResource(R.drawable.agenda_fab_verifiche)
+        fab_mini_esercizi.setImageResource(R.drawable.agenda_fab_compiti)
+        fab_mini_altro.setImageResource(R.drawable.agenda_fab_altro)
+
         //  actionBar
         setSupportActionBar(toolbar)
         params = toolbar.layoutParams as AppBarLayout.LayoutParams?

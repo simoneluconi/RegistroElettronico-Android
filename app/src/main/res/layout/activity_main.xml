@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -33,27 +32,21 @@
             style="@style/MenuButtonsStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/agenda_fab_verifiche"
-            app:fab_label="Verifica"
-            tools:ignore="VectorDrawableCompat" />
+            app:fab_label="Verifica" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_mini_esercizi"
             style="@style/MenuButtonsStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/agenda_fab_compiti"
-            app:fab_label="Compiti"
-            tools:ignore="VectorDrawableCompat" />
+            app:fab_label="Compiti" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_mini_altro"
             style="@style/MenuButtonsStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/agenda_fab_altro"
-            app:fab_label="Altro"
-            tools:ignore="VectorDrawableCompat" />
+            app:fab_label="Altro" />
 
     </com.github.clans.fab.FloatingActionMenu>
 </android.support.design.widget.CoordinatorLayout>
