@@ -16,8 +16,10 @@ import com.sharpdroid.registroelettronico.Utils.Account
 import com.sharpdroid.registroelettronico.Utils.EventType
 import com.sharpdroid.registroelettronico.Utils.Metodi.dp
 import com.sharpdroid.registroelettronico.Utils.Metodi.updateNote
+import com.sharpdroid.registroelettronico.Views.EmptyFragment
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import kotlinx.android.synthetic.main.coordinator_swipe_recycler.*
+import kotlinx.android.synthetic.main.coordinator_swipe_recycler.view.*
 
 class FragmentNote : Fragment(), SwipeRefreshLayout.OnRefreshListener, NotificationManager.NotificationReceiver {
 
@@ -37,10 +39,16 @@ class FragmentNote : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notificat
     }
 
     private var mRVAdapter: NoteAdapter? = null
+    private var emptyHolder: EmptyFragment? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.coordinator_swipe_recycler, container, false)
+        val layout = inflater!!.inflate(R.layout.coordinator_swipe_recycler, container, false)
+        emptyHolder = EmptyFragment(context)
+        emptyHolder!!.visibility = View.GONE
+        emptyHolder!!.setTextAndDrawable("Nessuna nota!", R.drawable.ic_error)
+        layout.coordinator_layout.addView(emptyHolder)
+        return layout
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -71,10 +79,11 @@ class FragmentNote : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notificat
     }
 
     private fun addNotes(notes: List<Note>) {
-        if (!notes.isEmpty()) {
-            mRVAdapter!!.clear()
-            mRVAdapter!!.addAll(notes)
-        }
+        mRVAdapter!!.clear()
+        mRVAdapter!!.addAll(notes)
+
+        emptyHolder?.visibility = if (notes.isEmpty()) View.VISIBLE else View.GONE
+
     }
 
     private fun load() {
