@@ -61,15 +61,15 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
 
     }
 
-    private var mRVAdapter: CommunicationAdapter? = null
-    private var emptyHolder: EmptyFragment? = null
+    lateinit private var mRVAdapter: CommunicationAdapter
+    lateinit private var emptyHolder: EmptyFragment
 
     override fun onCreateView(inflater: LayoutInflater?,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val layout = inflater!!.inflate(R.layout.coordinator_swipe_recycler, container, false)
         emptyHolder = EmptyFragment(context)
-        emptyHolder!!.visibility = View.GONE
-        emptyHolder!!.setTextAndDrawable("Nessuna comunicazione!", R.drawable.ic_assignment)
+        emptyHolder.visibility = View.GONE
+        emptyHolder.setTextAndDrawable("Nessuna comunicazione!", R.drawable.ic_assignment)
         layout.coordinator_layout.addView(emptyHolder)
         return layout
     }
@@ -134,10 +134,10 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
     }
 
     private fun addCommunications(communications: List<Communication>) {
-        mRVAdapter!!.clear()
-        mRVAdapter!!.addAll(communications)
+        mRVAdapter.clear()
+        mRVAdapter.addAll(communications)
 
-        emptyHolder?.visibility = if (communications.isEmpty()) View.VISIBLE else View.GONE
+        emptyHolder.visibility = if (communications.isEmpty()) View.VISIBLE else View.GONE
     }
 
     override fun onRefresh() {
@@ -158,12 +158,12 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
     }
 
     override fun onQueryTextSubmit(query: String): Boolean {
-        mRVAdapter!!.filter.filter(query)
+        mRVAdapter.filter.filter(query)
         return false
     }
 
     override fun onQueryTextChange(newText: String): Boolean {
-        mRVAdapter!!.filter.filter(newText)
+        mRVAdapter.filter.filter(newText)
         return false
     }
 }

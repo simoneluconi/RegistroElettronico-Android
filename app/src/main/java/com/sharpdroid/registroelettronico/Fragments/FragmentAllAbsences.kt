@@ -37,15 +37,15 @@ class FragmentAllAbsences : Fragment(), SwipeRefreshLayout.OnRefreshListener, No
         }
     }
 
-    internal var adapter: AllAbsencesAdapter? = null
-    internal var emptyHolder: EmptyFragment? = null
+    lateinit var adapter: AllAbsencesAdapter
+    lateinit var emptyHolder: EmptyFragment
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val layout = inflater!!.inflate(R.layout.coordinator_swipe_recycler, container, false)
         emptyHolder = EmptyFragment(context)
-        emptyHolder!!.visibility = View.GONE
-        emptyHolder!!.setTextAndDrawable("Nessuna assenza!", R.drawable.ic_supervisor)
+        emptyHolder.visibility = View.GONE
+        emptyHolder.setTextAndDrawable("Nessuna assenza!", R.drawable.ic_supervisor)
         layout.coordinator_layout.addView(emptyHolder)
         return layout
     }
@@ -73,10 +73,10 @@ class FragmentAllAbsences : Fragment(), SwipeRefreshLayout.OnRefreshListener, No
     }
 
     private fun addAbsence(absence: Array<in Any>) {
-        adapter?.clear()
-        adapter?.addAll(absence)
+        adapter.clear()
+        adapter.addAll(absence)
 
-        emptyHolder?.visibility = if (absence.isEmpty()) View.VISIBLE else View.GONE
+        emptyHolder.visibility = if (absence.isEmpty()) View.VISIBLE else View.GONE
         //recycler.visibility = if (absence.isNotEmpty()) View.VISIBLE else View.GONE
     }
 

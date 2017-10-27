@@ -18,16 +18,16 @@ import kotlinx.android.synthetic.main.coordinator_swipe_recycler_padding.*
 import kotlinx.android.synthetic.main.coordinator_swipe_recycler_padding.view.*
 
 class FragmentMedie : Fragment() {
-    internal var periodo: Int = 0
-    private var mRVAdapter: MedieAdapter? = null
-    private var emptyHolder: EmptyFragment? = null
+    private var periodo: Int = 0
+    lateinit private var mRVAdapter: MedieAdapter
+    lateinit private var emptyHolder: EmptyFragment
 
     override fun onCreateView(inflater: LayoutInflater?,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val layout = inflater!!.inflate(R.layout.coordinator_swipe_recycler_padding, container, false)
         emptyHolder = EmptyFragment(context)
-        emptyHolder!!.visibility = View.GONE
-        emptyHolder!!.setTextAndDrawable("Nessun voto", R.drawable.ic_timeline)
+        emptyHolder.visibility = View.GONE
+        emptyHolder.setTextAndDrawable("Nessun voto", R.drawable.ic_timeline)
         layout.relative.addView(emptyHolder)
         return layout
     }
@@ -37,6 +37,7 @@ class FragmentMedie : Fragment() {
         ButterKnife.bind(this, view!!)
 
         periodo = arguments.getInt("q")
+        mRVAdapter = MedieAdapter(context)
 
         with(recycler) {
             setBackgroundColor(Color.parseColor("#F1F1F1"))
@@ -48,20 +49,15 @@ class FragmentMedie : Fragment() {
             }
             addItemDecoration(ItemOffsetDecoration(context, R.dimen.cards_margin))
 
-            if (mRVAdapter == null)
-                mRVAdapter = MedieAdapter(context)
             adapter = mRVAdapter
         }
     }
 
     fun addSubjects(markSubjects: List<Average>, p: Int) {
-        if (mRVAdapter == null)
-            mRVAdapter = MedieAdapter(context)
+        mRVAdapter.clear()
+        mRVAdapter.addAll(markSubjects, p)
 
-        mRVAdapter!!.clear()
-        mRVAdapter!!.addAll(markSubjects, p)
-
-        emptyHolder?.visibility = if (markSubjects.isEmpty()) View.VISIBLE else View.GONE
+        emptyHolder.visibility = if (markSubjects.isEmpty()) View.VISIBLE else View.GONE
 
     }
 }

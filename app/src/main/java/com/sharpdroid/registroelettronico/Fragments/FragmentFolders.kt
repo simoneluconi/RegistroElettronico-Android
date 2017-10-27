@@ -40,14 +40,14 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
     }
 
     lateinit var mRVAdapter: FolderAdapter
-    private var emptyHolder: EmptyFragment? = null
+    lateinit private var emptyHolder: EmptyFragment
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val layout = inflater!!.inflate(R.layout.coordinator_swipe_recycler, container, false)
         emptyHolder = EmptyFragment(context)
-        emptyHolder!!.visibility = View.GONE
-        emptyHolder!!.setTextAndDrawable("Nessun materiale didattico condiviso", R.drawable.ic_folder)
+        emptyHolder.visibility = View.GONE
+        emptyHolder.setTextAndDrawable("Nessun materiale didattico condiviso", R.drawable.ic_folder)
         layout.coordinator_layout.addView(emptyHolder)
         return layout
     }
@@ -75,10 +75,7 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
 
         if (savedInstanceState != null) {
             selectedFolder = savedInstanceState.getSerializable("folder") as Folder?
-            //if (selectedFolder != null) onFolderClick(selectedFolder!!)
         }
-        //update()
-
     }
 
     override fun onResume() {

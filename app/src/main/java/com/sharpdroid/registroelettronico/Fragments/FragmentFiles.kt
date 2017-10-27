@@ -25,16 +25,16 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 
 class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, FileAdapter.DownloadListener {
     lateinit var layout: CoordinatorLayout
-    var snackbar: Snackbar? = null
+    private var snackbar: Snackbar = Snackbar.make(layout, "", Snackbar.LENGTH_SHORT)
 
     override fun didReceiveNotification(code: Int, args: Array<in Any>) {
         when (code) {
             EventType.DOWNLOAD_FILE_START -> {
                 snackbar = Snackbar.make(layout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE)
-                snackbar?.show()
+                snackbar.show()
             }
             EventType.DOWNLOAD_FILE_OK -> {
-                with(snackbar ?: return) {
+                with(snackbar) {
                     val file: java.io.File = java.io.File(SugarRecord.findById(FileInfo::class.java, args[0] as Long).path)
                     setText(activity.getString(R.string.file_downloaded, file.name))
                     setAction(R.string.open) { openFile(activity, file) }
@@ -43,7 +43,7 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
                 }
             }
             EventType.DOWNLOAD_FILE_KO -> {
-                with(snackbar ?: return) {
+                with(snackbar) {
                     setText("File non scaricato")
                     duration = Snackbar.LENGTH_SHORT
                     show()
@@ -52,7 +52,7 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
         }
     }
 
-    private var data: Folder? = null
+    private lateinit var data: Folder
     private lateinit var mRVAdapter: FileAdapter
 
     fun setData(data: Folder) {
@@ -78,11 +78,10 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
         NotificationManager.instance.addObserver(this, EventType.DOWNLOAD_FILE_START, EventType.DOWNLOAD_FILE_OK, EventType.DOWNLOAD_FILE_KO)
         val mRecyclerView = view!!.findViewById<RecyclerView>(R.id.recycler)
         mRVAdapter = FileAdapter(this)
-        if (data == null) {
-            data = savedInstanceState?.getSerializable("data") as Folder?
-        }
-        addSubjects(data!!)
-        setTitle(data?.name?.trim { it <= ' ' }!!)
+
+        data = savedInstanceState?.getSerializable("data") as Folder
+        addSubjects(data)
+        setTitle(data.name.trim { it <= ' ' })
 
         with(mRecyclerView) {
             layoutManager = LinearLayoutManager(context)
@@ -113,8 +112,6 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
                 }
             }
             "link" -> {
-                if (snackbar == null)
-                    snackbar = Snackbar.make(layout, "", Snackbar.LENGTH_SHORT)
                 openLink(activity, info.path, snackbar)
             }
             "text" -> {

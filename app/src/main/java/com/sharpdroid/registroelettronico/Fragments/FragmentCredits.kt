@@ -1,8 +1,8 @@
 package com.sharpdroid.registroelettronico.Fragments
 
-
 import android.graphics.Color
 import android.graphics.Typeface
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.NestedScrollView
@@ -22,7 +22,11 @@ class FragmentCredits : Fragment() {
         val textView = TextView(activity)
         textView.typeface = Typeface.create("sans-serif-light", Typeface.NORMAL)
         textView.setPadding(Metodi.dp(16), Metodi.dp(16), Metodi.dp(16), Metodi.dp(16))
-        textView.text = Html.fromHtml(credits)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            textView.text = Html.fromHtml(credits, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            textView.text = Html.fromHtml(credits)
+        }
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
         Linkify.addLinks(textView, Linkify.ALL)
         textView.setTextColor(Color.parseColor("#AA000000"))
