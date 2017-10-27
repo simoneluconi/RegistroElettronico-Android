@@ -79,7 +79,7 @@ android {
 
             zipAlignEnabled true
             shrinkResources false
-            minifyEnabled true
+            minifyEnabled false
             useProguard false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 

@@ -99,7 +99,12 @@ class NotificationService : JobService() {
 
     private fun getAgendaDiff(profile: Profile): Int {
         val dates = getStartEnd("yyyyMMdd")
-        val agenda = APIClient.with(applicationContext, profile).getAgenda(dates[0], dates[1]).blockingFirst()?.getAgenda(profile) ?: return 0
+        val agenda: List<RemoteAgenda>
+        try {
+            agenda = APIClient.with(applicationContext, profile).getAgenda(dates[0], dates[1]).blockingFirst()?.getAgenda(profile) ?: return 0
+        } catch (err: Error) {
+            return 0
+        }
         val diff = agenda.size - SugarRecord.count<RemoteAgenda>(RemoteAgenda::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
         SugarRecord.deleteAll(RemoteAgenda::class.java, "PROFILE=?", profile.id.toString())
         SugarRecord.saveInTx(agenda)
@@ -107,7 +112,12 @@ class NotificationService : JobService() {
     }
 
     private fun getVotiDiff(profile: Profile): Int {
-        val marks = APIClient.with(applicationContext, profile).getGrades().blockingFirst()?.getGrades(profile) ?: return 0
+        val marks: List<Grade>
+        try {
+            marks = APIClient.with(applicationContext, profile).getGrades().blockingFirst()?.getGrades(profile) ?: return 0
+        } catch (e: Error) {
+            return 0
+        }
         val diff = marks.size - SugarRecord.count<Grade>(Grade::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
         SugarRecord.deleteAll(Grade::class.java, "PROFILE=?", profile.id.toString())
         marks.forEach { it.profile = profile.id }
@@ -116,7 +126,12 @@ class NotificationService : JobService() {
     }
 
     private fun getComunicazioniDiff(profile: Profile): Int {
-        var comm = APIClient.with(applicationContext, profile).getBacheca().blockingFirst()?.getCommunications(profile) ?: return 0
+        var comm: List<Communication>
+        try {
+            comm = APIClient.with(applicationContext, profile).getBacheca().blockingFirst()?.getCommunications(profile) ?: return 0
+        } catch (e: Error) {
+            return 0
+        }
         comm = comm.filter { it.cntStatus == "deleted" }
         val diff = comm.size - SugarRecord.count<Communication>(Communication::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
         SugarRecord.deleteAll(Communication::class.java, "PROFILE=?", profile.id.toString())
@@ -125,7 +140,12 @@ class NotificationService : JobService() {
     }
 
     private fun getNoteDiff(profile: Profile): Int {
-        val note = APIClient.with(applicationContext, profile).getNotes().blockingFirst()?.getNotes(profile) ?: return 0
+        val note: List<Note>
+        try {
+            note = APIClient.with(applicationContext, profile).getNotes().blockingFirst()?.getNotes(profile) ?: return 0
+        } catch (e: Error) {
+            return 0
+        }
         val diff = note.size - SugarRecord.count<Note>(Note::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
         SugarRecord.deleteAll(Note::class.java, "PROFILE=?", profile.id.toString())
         SugarRecord.saveInTx(note)
