@@ -55,8 +55,12 @@ public class LoginActivity extends AppCompatActivity {
         Drawable p = AppCompatResources.getDrawable(this, R.drawable.ic_person);
         Drawable l = AppCompatResources.getDrawable(this, R.drawable.ic_password);
 
-        p.setColorFilter(ContextCompat.getColor(this, android.R.color.secondary_text_dark), PorterDuff.Mode.SRC_IN);
-        l.setColorFilter(ContextCompat.getColor(this, android.R.color.secondary_text_dark), PorterDuff.Mode.SRC_IN);
+        if (p != null) {
+            p.setColorFilter(ContextCompat.getColor(this, android.R.color.secondary_text_dark), PorterDuff.Mode.SRC_IN);
+        }
+        if (l != null) {
+            l.setColorFilter(ContextCompat.getColor(this, android.R.color.secondary_text_dark), PorterDuff.Mode.SRC_IN);
+        }
 
         mEditTextMail.setCompoundDrawablesWithIntrinsicBounds(p, null, null, null);
         mEditTextPassword.setCompoundDrawablesWithIntrinsicBounds(l, null, null, null);
@@ -129,7 +133,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     } else {
                         SugarRecord.save(new Option(Long.valueOf(login.getIdent().substring(1, 8)), true, true, true, true, true));
-                        SugarRecord.save(new Profile(mEmail, login.getFirstName() + " " + login.getLastName(), mPassword, "", Long.valueOf(login.getIdent().substring(1, 8)), login.getToken(), login.getExpire().getTime()));
+                        SugarRecord.save(new Profile(login.getIdent(), login.getFirstName() + " " + login.getLastName(), mPassword, "", Long.valueOf(login.getIdent().substring(1, 8)), login.getToken(), login.getExpire().getTime()));
                         Account.Companion.with(this).setUser(Long.valueOf(login.getIdent().substring(1, 8)));
                         fetchDataOfUser(this);
 
@@ -154,7 +158,7 @@ public class LoginActivity extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(login_nested -> {
                     SugarRecord.save(new Option(Long.valueOf(login_nested.getIdent().substring(1, 8)), true, true, true, true, true));
-                    SugarRecord.save(new Profile(email, login_nested.getFirstName() + " " + login_nested.getLastName(), password, "", Long.valueOf(login_nested.getIdent().substring(1, 8)), login_nested.getToken(), login_nested.getExpire().getTime()));
+                    SugarRecord.save(new Profile(login_nested.getIdent(), login_nested.getFirstName() + " " + login_nested.getLastName(), password, "", Long.valueOf(login_nested.getIdent().substring(1, 8)), login_nested.getToken(), login_nested.getExpire().getTime()));
                     Account.Companion.with(c).setUser(Long.valueOf(login_nested.getIdent().substring(1, 8)));
                     fetchDataOfUser(c);
 

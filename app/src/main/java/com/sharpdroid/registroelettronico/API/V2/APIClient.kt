@@ -60,9 +60,9 @@ class APIClient {
 
                         Log.d("LOGIN INTERCEPTOR", "UPDATE TOKEN: " + loginResponse.token)
 
+                        profile.expire = loginResponse.expire?.time ?: throw IllegalStateException("Cannot achieve expire.time from:\n${loginRes.body()?.string()}")
+                        profile.token = loginResponse.token ?: throw IllegalStateException("Cannot achieve token from:\n${loginRes.body()?.string()}")
 
-                        profile.expire = loginResponse.expire!!.time
-                        profile.token = loginResponse.token!!
                         SugarRecord.update(profile)
 
                         sharedPref.edit()
