@@ -3,6 +3,7 @@ package com.sharpdroid.registroelettronico.Activities
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.LayerDrawable
+import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -158,7 +159,12 @@ class EditSubjectDetailsActivity : AppCompatActivity() {
                 val drawableFromTheme = ta.getDrawable(0)
                 val wrapper = LayerDrawable(arrayOf(ColorDrawable(Color.WHITE), drawableFromTheme))
                 ta.recycle()
-                holder.itemView.setBackgroundDrawable(wrapper)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    holder.itemView.background = wrapper
+                } else {
+                    @Suppress("DEPRECATION")
+                    holder.itemView.setBackgroundDrawable(wrapper)
+                }
                 holder.itemView.setOnClickListener { view ->
                     view.postDelayed({ listener.invoke(position) }, ViewConfiguration.getTapTimeout().toLong())
                 }

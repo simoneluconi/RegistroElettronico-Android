@@ -112,7 +112,7 @@ public class LoginActivity extends AppCompatActivity {
                             MaterialDialog.Builder builder = new MaterialDialog.Builder(this).title("Account multiplo").content("Seleziona gli account che vuoi importare").positiveText("OK").neutralText("Annulla")
                                     .alwaysCallMultiChoiceCallback()
                                     .dividerColor(Color.TRANSPARENT)
-                                    .adapter(new LoginAdapter(mPassword, mEmail, login.getChoices(), LoginActivity.this, (idents) -> {
+                                    .adapter(new LoginAdapter(login.getChoices(), LoginActivity.this, (idents) -> {
                                         checkedIdents.clear();
                                         checkedIdents.addAll(idents);
                                         System.out.println(checkedIdents);

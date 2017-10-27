@@ -28,6 +28,7 @@ class FragmentCredits : Fragment() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             textView.text = Html.fromHtml(credits, Html.FROM_HTML_MODE_LEGACY)
         } else {
+            @Suppress("DEPRECATION")
             textView.text = Html.fromHtml(credits)
         }
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
