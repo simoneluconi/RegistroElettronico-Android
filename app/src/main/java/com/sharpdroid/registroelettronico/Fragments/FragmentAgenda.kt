@@ -5,11 +5,14 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
+import com.crashlytics.android.answers.Answers
+import com.crashlytics.android.answers.ContentViewEvent
 import com.github.sundeepk.compactcalendarview.CompactCalendarView
 import com.orm.SugarRecord
 import com.sharpdroid.registroelettronico.Activities.AddEventActivity
 import com.sharpdroid.registroelettronico.Adapters.AgendaAdapter
 import com.sharpdroid.registroelettronico.BottomSheet.AgendaBS
+import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.Databases.Entities.LocalAgenda
 import com.sharpdroid.registroelettronico.Databases.Entities.RemoteAgenda
 import com.sharpdroid.registroelettronico.Databases.Entities.RemoteAgendaInfo
@@ -98,6 +101,8 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         recycler.layoutManager = LinearLayoutManager(context)
         recycler.adapter = adapter
 
+        if (!BuildConfig.DEBUG)
+            Answers.getInstance().logContentView(ContentViewEvent().putContentId("Agenda"))
 
     }
 

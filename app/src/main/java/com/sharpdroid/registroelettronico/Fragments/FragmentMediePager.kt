@@ -9,9 +9,12 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.PagerAdapter
 import android.support.v4.widget.SwipeRefreshLayout
 import android.view.*
+import com.crashlytics.android.answers.Answers
+import com.crashlytics.android.answers.ContentViewEvent
 import com.orm.SugarRecord
 import com.sharpdroid.registroelettronico.Activities.MainActivity
 import com.sharpdroid.registroelettronico.BottomSheet.OrderMedieBS
+import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.Databases.Entities.Grade
 import com.sharpdroid.registroelettronico.Databases.Entities.Lesson
 import com.sharpdroid.registroelettronico.Interfaces.Client.Average
@@ -85,6 +88,8 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
 
         //load()
         //download()
+        if (!BuildConfig.DEBUG)
+            Answers.getInstance().logContentView(ContentViewEvent().putContentId("Medie"))
     }
 
     override fun onResume() {

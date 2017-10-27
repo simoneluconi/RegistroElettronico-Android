@@ -10,9 +10,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.crashlytics.android.answers.Answers
+import com.crashlytics.android.answers.ContentViewEvent
 import com.orm.SugarRecord
 import com.sharpdroid.registroelettronico.Activities.EditSubjectDetailsActivity
 import com.sharpdroid.registroelettronico.Adapters.SubjectsAdapter
+import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.Databases.Entities.Subject
 import com.sharpdroid.registroelettronico.Databases.Entities.SubjectInfo
 import com.sharpdroid.registroelettronico.Databases.Entities.SubjectTeacher
@@ -70,6 +73,8 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
         recycler.addItemDecoration(HorizontalDividerItemDecoration.Builder(context).colorResId(R.color.divider).size(dp(1)).build())
         recycler.adapter = adapter
         setAdapterData(fetch())
+        if (!BuildConfig.DEBUG)
+            Answers.getInstance().logContentView(ContentViewEvent().putContentId("Lezioni").putContentType("Materie"))
     }
 
     override fun onResume() {

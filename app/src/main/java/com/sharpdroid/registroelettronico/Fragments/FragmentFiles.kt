@@ -11,8 +11,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.afollestad.materialdialogs.MaterialDialog
+import com.crashlytics.android.answers.Answers
+import com.crashlytics.android.answers.ContentViewEvent
 import com.orm.SugarRecord
 import com.sharpdroid.registroelettronico.Adapters.FileAdapter
+import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.Databases.Entities.File
 import com.sharpdroid.registroelettronico.Databases.Entities.FileInfo
 import com.sharpdroid.registroelettronico.Databases.Entities.Folder
@@ -91,6 +94,8 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
             itemAnimator = null
             adapter = mRVAdapter
         }
+        if (!BuildConfig.DEBUG)
+            Answers.getInstance().logContentView(ContentViewEvent().putContentId("Didattica").putContentType("File"))
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
