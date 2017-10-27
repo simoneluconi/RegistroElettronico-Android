@@ -125,6 +125,7 @@ public class LoginActivity extends AppCompatActivity {
                                         if (!BuildConfig.DEBUG)
                                             Answers.getInstance().logLogin(new LoginEvent().putMethod("multiple"));
                                     })
+                                    .canceledOnTouchOutside(false)
                                     .onNeutral((dialog, which) -> {
                                         mButtonLogin.setText(R.string.login);
                                         mEditTextMail.setEnabled(true);

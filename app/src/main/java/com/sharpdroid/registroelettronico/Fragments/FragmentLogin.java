@@ -127,6 +127,7 @@ public class FragmentLogin extends SlideFragment {
                                     }
                                     postLogin();
                                 })
+                                .canceledOnTouchOutside(false)
                                 .onNeutral((dialog, which) -> {
                                     mButtonLogin.setText(R.string.login);
                                     mEditTextMail.setEnabled(true);
