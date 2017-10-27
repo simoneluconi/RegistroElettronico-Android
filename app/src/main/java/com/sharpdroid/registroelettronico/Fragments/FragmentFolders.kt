@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.coordinator_swipe_recycler.*
 import kotlinx.android.synthetic.main.coordinator_swipe_recycler.view.*
 
 class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, FolderAdapter.Listener, NotificationManager.NotificationReceiver {
-    var selectedFolder: Folder? = null
+    private var selectedFolder: Folder? = null
 
     override fun didReceiveNotification(code: Int, args: Array<in Any>) {
         when (code) {
@@ -99,6 +99,8 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
                 // Update cache
                 save(teachers)
             }
+        } else {
+            emptyHolder.visibility = View.VISIBLE
         }
     }
 
