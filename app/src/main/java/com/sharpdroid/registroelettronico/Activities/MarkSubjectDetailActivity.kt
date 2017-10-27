@@ -103,7 +103,7 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
         if (target <= 0) {
             val pref = PreferenceManager.getDefaultSharedPreferences(this)
                     .getString("voto_obiettivo", "8")
-            target = java.lang.Float.parseFloat(if (pref == "Auto") "-1" else pref)
+            target = (if (pref == "Auto") "-1" else pref).toFloat()
         }
         return target
     }
