@@ -92,7 +92,7 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
         Teacher.clearCache()
         SubjectTeacher.clearCache()
         SubjectTeacher.setupCache(Account.with(context).user)
-        Teacher.setupCache(Account.with(context).user)
+        Teacher.setupCache()
         adapter.clear()
         adapter.addAll(data)
     }

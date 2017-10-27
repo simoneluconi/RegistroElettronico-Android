@@ -115,7 +115,7 @@ public class FragmentLogin extends SlideFragment {
                         MaterialDialog.Builder builder = new MaterialDialog.Builder(getContext()).title("Account multiplo").content("Seleziona gli account che vuoi importare").positiveText("OK").neutralText("Annulla")
                                 .alwaysCallMultiChoiceCallback()
                                 .dividerColor(Color.TRANSPARENT)
-                                .adapter(new LoginAdapter(mPassword, mEmail, login.getChoices(), getContext(), (checked) -> {
+                                .adapter(new LoginAdapter(login.getChoices(), getContext(), (checked) -> {
                                     checkedIdents.clear();
                                     checkedIdents.addAll(checked);
                                     System.out.println(checked.toString());

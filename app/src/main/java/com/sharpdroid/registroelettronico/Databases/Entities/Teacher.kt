@@ -22,7 +22,7 @@ data class Teacher(
 
         fun clearCache() = teachersOfSubject.clear()
 
-        fun setupCache(account: Long) {
+        fun setupCache() {
             if (SubjectTeacher.cache.isEmpty()) throw IllegalStateException("You need to inizialize SubjectTeacher's cache before Teacher's")
 
             val teachers: List<Teacher> = SugarRecord.find(Teacher::class.java, "")!!
