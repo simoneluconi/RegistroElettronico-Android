@@ -59,7 +59,7 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
         this.data = data
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         layout = CoordinatorLayout(context)
         layout.layoutParams = CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
@@ -73,10 +73,10 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
         return layout
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         NotificationManager.instance.addObserver(this, EventType.DOWNLOAD_FILE_START, EventType.DOWNLOAD_FILE_OK, EventType.DOWNLOAD_FILE_KO)
-        val mRecyclerView = view!!.findViewById<RecyclerView>(R.id.recycler)
+        val mRecyclerView = view.findViewById<RecyclerView>(R.id.recycler)
         mRVAdapter = FileAdapter(this)
 
         if (data == null)
@@ -93,9 +93,9 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState?.putSerializable("data", data)
+        outState.putSerializable("data", data)
     }
 
     override fun onFileClick(file: File) {

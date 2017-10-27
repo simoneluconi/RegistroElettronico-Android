@@ -42,18 +42,19 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.fragment_lessons, container, false)
+        return inflater.inflate(R.layout.fragment_lessons, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         NotificationManager.instance.addObserver(this, EventType.UPDATE_SUBJECTS_START, EventType.UPDATE_SUBJECTS_OK, EventType.UPDATE_SUBJECTS_KO)
 
         Log.d("FragmentSubjects", "onViewCreated")
 
-        if (arguments != null && arguments.getInt("lessons", -1) != -1) {
+        val bundle = arguments
+        if (bundle != null && bundle.getInt("lessons", -1) != -1) {
             onSubjectClick(SugarRecord.findById(Subject::class.java, arguments?.getInt("lessons")))
         }
 
@@ -76,9 +77,9 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
         selectedSubject = null
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        if (selectedSubject != null) outState?.putSerializable("subject", selectedSubject)
+        if (selectedSubject != null) outState.putSerializable("subject", selectedSubject)
     }
 
     private fun setAdapterData(data: List<SubjectInfo>) {

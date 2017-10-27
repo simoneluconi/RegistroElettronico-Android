@@ -42,9 +42,9 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
     lateinit var mRVAdapter: FolderAdapter
     lateinit private var emptyHolder: EmptyFragment
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val layout = inflater!!.inflate(R.layout.coordinator_swipe_recycler, container, false)
+        val layout = inflater.inflate(R.layout.coordinator_swipe_recycler, container, false)
         emptyHolder = EmptyFragment(context)
         emptyHolder.visibility = View.GONE
         emptyHolder.setTextAndDrawable("Nessun materiale didattico condiviso", R.drawable.ic_folder)
@@ -52,7 +52,7 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
         return layout
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         NotificationManager.instance.addObserver(this, EventType.UPDATE_FOLDERS_START, EventType.UPDATE_FOLDERS_OK, EventType.UPDATE_FOLDERS_KO)
         swiperefresh.setOnRefreshListener(this)
@@ -83,11 +83,11 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
         selectedFolder = null
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         if (selectedFolder != null) {
             Log.d("FragmentFolders", "SAVE STATE")
-            outState?.putSerializable("folder", selectedFolder)
+            outState.putSerializable("folder", selectedFolder)
         }
     }
 

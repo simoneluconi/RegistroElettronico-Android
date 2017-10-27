@@ -21,9 +21,9 @@ public class HeaderCell extends FrameLayout {
         textView = new TextView(getContext());
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
         textView.setTextColor(ContextCompat.getColor(context, R.color.primary));
-        textView.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+        textView.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
         textView.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
-        addView(textView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.LEFT | Gravity.TOP, 17, 15, 17, 0));
+        addView(textView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.START | Gravity.TOP, 17, 15, 17, 0));
     }
 
     public TextView getTextView() {

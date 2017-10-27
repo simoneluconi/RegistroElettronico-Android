@@ -28,13 +28,13 @@ class OrderMedieBS : BottomSheetDialogFragment() {
     private val images = intArrayOf(R.drawable.ic_title, R.drawable.ic_timeline, R.drawable.ic_timeline)
     private var mListener: OrderListener? = null
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.bottom_sheet_list_order_medie, container, false)
+        return inflater.inflate(R.layout.bottom_sheet_list_order_medie, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        val recyclerView = view?.findViewById<RecyclerView>(R.id.list)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val recyclerView = view.findViewById<RecyclerView>(R.id.list)
         recyclerView?.layoutManager = LinearLayoutManager(context)
         recyclerView?.adapter = ItemAdapter(3, mListener!!)
     }

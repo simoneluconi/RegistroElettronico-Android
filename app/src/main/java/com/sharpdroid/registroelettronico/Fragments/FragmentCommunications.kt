@@ -66,9 +66,9 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
     lateinit private var mRVAdapter: CommunicationAdapter
     lateinit private var emptyHolder: EmptyFragment
 
-    override fun onCreateView(inflater: LayoutInflater?,
+    override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val layout = inflater!!.inflate(R.layout.coordinator_swipe_recycler, container, false)
+        val layout = inflater.inflate(R.layout.coordinator_swipe_recycler, container, false)
         emptyHolder = EmptyFragment(context)
         emptyHolder.visibility = View.GONE
         emptyHolder.setTextAndDrawable("Nessuna comunicazione!", R.drawable.ic_assignment)
@@ -76,7 +76,7 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
         return layout
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         NotificationManager.instance.addObserver(this, EventType.UPDATE_BACHECA_START, EventType.UPDATE_BACHECA_OK, EventType.UPDATE_BACHECA_KO, EventType.DOWNLOAD_FILE_START, EventType.DOWNLOAD_FILE_OK, EventType.DOWNLOAD_FILE_KO)
         setHasOptionsMenu(true)

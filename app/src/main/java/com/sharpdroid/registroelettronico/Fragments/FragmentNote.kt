@@ -41,9 +41,9 @@ class FragmentNote : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notificat
     lateinit private var mRVAdapter: NoteAdapter
     lateinit private var emptyHolder: EmptyFragment
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val layout = inflater!!.inflate(R.layout.coordinator_swipe_recycler, container, false)
+        val layout = inflater.inflate(R.layout.coordinator_swipe_recycler, container, false)
         emptyHolder = EmptyFragment(context)
         emptyHolder.visibility = View.GONE
         emptyHolder.setTextAndDrawable("Nessuna nota!", R.drawable.ic_error)
@@ -51,7 +51,7 @@ class FragmentNote : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notificat
         return layout
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         NotificationManager.instance.addObserver(this, EventType.UPDATE_NOTES_START, EventType.UPDATE_NOTES_OK, EventType.UPDATE_NOTES_KO)
 

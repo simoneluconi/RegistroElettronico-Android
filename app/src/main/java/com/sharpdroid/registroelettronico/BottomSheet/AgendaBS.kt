@@ -25,15 +25,15 @@ class AgendaBS : BottomSheetDialogFragment() {
         this.event = event
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.fragment_item_list_options, container, false)
+        return inflater.inflate(R.layout.fragment_item_list_options, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        val recyclerView = view as RecyclerView?
-        recyclerView?.layoutManager = LinearLayoutManager(context)
-        recyclerView?.adapter = ItemAdapter(mListener!!)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val recyclerView = view as RecyclerView
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = ItemAdapter(mListener!!)
     }
 
     override fun onAttach(context: Context?) {
