@@ -526,7 +526,7 @@ public class Metodi {
                                 folder.setFiles(Collections.emptyList());
                                 folder.setProfile(p.getId());
                                 if (folder.getName().equals("Uncategorized"))
-                                    folder.setName("Senza nome");
+                                    folder.setName("Altri materiali");
                                 folders.add(folder);
                             }
                             teacher.setFolders(Collections.emptyList());
