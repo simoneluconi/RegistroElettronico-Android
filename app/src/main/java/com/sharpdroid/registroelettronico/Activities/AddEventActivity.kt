@@ -1,7 +1,10 @@
 package com.sharpdroid.registroelettronico.Activities
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.VibrationEffect.DEFAULT_AMPLITUDE
 import android.os.Vibrator
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
@@ -31,6 +34,7 @@ import java.util.*
 class AddEventActivity : AppCompatActivity() {
     internal var format = SimpleDateFormat("EEEE d MMMM yyyy", Locale.ITALIAN)
     lateinit private var animShake: Animation
+    lateinit private var vibrator: Vibrator
 
     private var selectedSubject: SubjectInfo? = null
     private var selectedProfessor: Teacher? = null
@@ -51,6 +55,7 @@ class AddEventActivity : AppCompatActivity() {
         if (!BuildConfig.DEBUG)
             Answers.getInstance().logContentView(ContentViewEvent().putContentId("Evento").putContentType("Nuovo"))
 
+        vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
     }
 
     private fun init(type: String) {
@@ -66,22 +71,31 @@ class AddEventActivity : AppCompatActivity() {
                 SugarRecord.save(LocalAgenda(layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay!!, selectedSubject!!.subject, selectedProfessor!!, null, Account.with(this).user, false))
                 finish()
             } else {
-                (getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrate(40)
+                vibrate()
             }
             "compiti" -> if (handleTitle() && handleSubject() && handleProfessor() && handleDate()) {
                 selectedDay = betterDate(selectedDay)
                 SugarRecord.save(LocalAgenda(layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay!!, selectedSubject!!.subject, selectedProfessor!!, null, Account.with(this).user, false))
                 finish()
             } else {
-                (getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrate(40)
+                vibrate()
             }
             else -> if (handleTitle() && handleDate()) {
                 selectedDay = betterDate(selectedDay)
                 SugarRecord.save(LocalAgenda(layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay!!, selectedSubject?.subject ?: Subject(), selectedProfessor ?: Teacher(), null, Account.with(this).user, false))
                 finish()
             } else {
-                (getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrate(40)
+                vibrate()
             }
+        }
+    }
+
+    @Suppress("DEPRECATION")
+    private fun vibrate() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(40, DEFAULT_AMPLITUDE))
+        } else {
+            vibrator.vibrate(40)
         }
     }
 
