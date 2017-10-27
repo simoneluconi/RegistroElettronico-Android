@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
-import android.os.VibrationEffect.DEFAULT_AMPLITUDE
 import android.os.Vibrator
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
@@ -93,7 +92,7 @@ class AddEventActivity : AppCompatActivity() {
     @Suppress("DEPRECATION")
     private fun vibrate() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createOneShot(40, DEFAULT_AMPLITUDE))
+            vibrator.vibrate(VibrationEffect.createOneShot(40, VibrationEffect.DEFAULT_AMPLITUDE))
         } else {
             vibrator.vibrate(40)
         }
