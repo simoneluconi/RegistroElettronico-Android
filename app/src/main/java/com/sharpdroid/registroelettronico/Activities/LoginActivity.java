@@ -16,9 +16,12 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.LoginEvent;
 import com.orm.SugarRecord;
 import com.sharpdroid.registroelettronico.API.V2.APIClient;
 import com.sharpdroid.registroelettronico.Adapters.LoginAdapter;
+import com.sharpdroid.registroelettronico.BuildConfig;
 import com.sharpdroid.registroelettronico.Databases.Entities.Choice;
 import com.sharpdroid.registroelettronico.Databases.Entities.LoginRequest;
 import com.sharpdroid.registroelettronico.Databases.Entities.Option;
@@ -119,6 +122,8 @@ public class LoginActivity extends AppCompatActivity {
                                         for (String ident : checkedIdents) {
                                             loginWithIdent(mEmail, mPassword, ident);
                                         }
+                                        if (!BuildConfig.DEBUG)
+                                            Answers.getInstance().logLogin(new LoginEvent().putMethod("multiple"));
                                     })
                                     .onNeutral((dialog, which) -> {
                                         mButtonLogin.setText(R.string.login);
@@ -139,6 +144,8 @@ public class LoginActivity extends AppCompatActivity {
 
                         PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("first_run", false).apply();
                         mButtonLogin.setText(R.string.login_riuscito);
+                        if (!BuildConfig.DEBUG)
+                            Answers.getInstance().logLogin(new LoginEvent().putMethod("single"));
                         setResult(Activity.RESULT_OK);
                         finish();
                     }
