@@ -52,7 +52,7 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
         }
     }
 
-    private lateinit var data: Folder
+    private var data: Folder? = null
     private lateinit var mRVAdapter: FileAdapter
 
     fun setData(data: Folder) {
@@ -79,9 +79,10 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
         val mRecyclerView = view!!.findViewById<RecyclerView>(R.id.recycler)
         mRVAdapter = FileAdapter(this)
 
-        data = savedInstanceState?.getSerializable("data") as Folder
-        addSubjects(data)
-        setTitle(data.name.trim { it <= ' ' })
+        if (data == null)
+            data = savedInstanceState?.getSerializable("data") as Folder
+        addSubjects(data ?: throw NullPointerException("data==null"))
+        setTitle(data?.name?.trim { it <= ' ' } ?: throw NullPointerException("data==null"))
 
         with(mRecyclerView) {
             layoutManager = LinearLayoutManager(context)
