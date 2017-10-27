@@ -63,7 +63,8 @@ public class TargetView extends CardView {
     }
 
     public void setProgress(Float media) {
-        setMedia(media, false);
+        if (target == -1)
+            setMedia(media, false);
     }
 
     public float getMedia() {
@@ -80,6 +81,10 @@ public class TargetView extends CardView {
         } else {
             this.media = media;
             this.mediaView.setText(String.format(Locale.getDefault(), "%.2f", media));
+
+            if (target == -1) {
+                setTarget((float) Math.ceil(media), false);
+            }
 
             if (animate) {
                 animateBar(target, media, getColor(getMarkColor(media, target)));

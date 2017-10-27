@@ -121,7 +121,14 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
     }
 
     private void setTarget(SubjectInfo subject) {
-        float target = ((Float) subject.getTarget()).equals(0f) ? Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(mContext).getString("voto_obiettivo", "8")) : subject.getTarget();
+        String pref = PreferenceManager.getDefaultSharedPreferences(mContext).getString("voto_obiettivo", "8");
+        Float prefTarget;
+        if (pref.equals("Auto")) {
+            prefTarget = -1f;
+        } else {
+            prefTarget = Float.parseFloat(pref);
+        }
+        float target = ((Float) subject.getTarget()).equals(0f) ? prefTarget : subject.getTarget();
         adapter.setTarget(target);
         invalidate();
     }
@@ -132,9 +139,14 @@ public class MarksView extends CardView implements PopupMenu.OnMenuItemClickList
 
     private void setLimitLines(float target, float media) {
         Float t = target;
-        if (t.equals(0f))
-            t = Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(mContext).getString("voto_obiettivo", "8"));
-
+        if (t.equals(0f)) {
+            String pref = PreferenceManager.getDefaultSharedPreferences(mContext).getString("voto_obiettivo", "8");
+            if (pref.equals("Auto")) {
+                t = (float) Math.ceil(media);
+            } else {
+                t = Float.parseFloat(pref);
+            }
+        }
         LimitLine ll2 = new LimitLine(t, "Il tuo obiettivo");
         ll2.setLineWidth(1f);
         ll2.setLineColor(ContextCompat.getColor(mContext, R.color.md_pink_400));
