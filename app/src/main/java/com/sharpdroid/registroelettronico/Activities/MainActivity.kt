@@ -188,17 +188,20 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
     }
 
     private fun ifHuaweiAlert() {
-        if ("huawei".equals(android.os.Build.MANUFACTURER, true) && !PreferenceManager.getDefaultSharedPreferences(this).getBoolean("huawei_protected", false)) {
+        val intent = Intent()
+        intent.component = ComponentName("com.huawei.systemmanager",
+                "com.huawei.systemmanager.optimize.process.ProtectActivity")
+        if (intent.resolveActivityInfo(packageManager, 0) != null &&
+                "huawei".equals(android.os.Build.MANUFACTURER, true) &&
+                !PreferenceManager.getDefaultSharedPreferences(this).getBoolean("huawei_protected", false)) {
             val builder = MaterialDialog.Builder(this)
             builder.title(R.string.huawei_headline).content(R.string.huawei_text).positiveText("OK").neutralText("Annulla")
                     .onPositive { _, _ ->
                         try {
-                            val intent = Intent()
-                            intent.component = ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.optimize.process.ProtectActivity")
                             startActivity(intent)
                             PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("huawei_protected", true).apply()
                         } catch (e: ActivityNotFoundException) {
-                            Toast.makeText(applicationContext, "Non è possibile aggiungere l'app fra le app protette.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(applicationContext, R.string.huawei_error, Toast.LENGTH_SHORT).show()
                         }
                     }
             builder.show()
