@@ -110,9 +110,9 @@ class LoginActivity : AppCompatActivity() {
                             super.onBackPressed()
                         }
                     } else {
-                        SugarRecord.save(Option(java.lang.Long.valueOf(login.ident!!.substring(1, 8))!!, true, true, true, true, true))
+                        SugarRecord.save(Option(login.ident!!.substring(1, 8).toLong(), true, true, true, true, true))
                         SugarRecord.save(Profile(login.ident, login.firstName + " " + login.lastName, mPassword, "", login.ident.substring(1, 8).toLong(), login.token!!, login.expire!!.time))
-                        Account.with(this).user = java.lang.Long.valueOf(login.ident.substring(1, 8))
+                        Account.with(this).user = login.ident.substring(1, 8).toLong()
                         fetchDataOfUser(this)
 
                         PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("first_run", false).apply()
@@ -137,9 +137,9 @@ class LoginActivity : AppCompatActivity() {
         APIClient.with(c, null).postLogin(LoginRequest(password, email, ident))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ (ident1, firstName, lastName, token, expire) ->
-                    SugarRecord.save(Option(java.lang.Long.valueOf(ident1!!.substring(1, 8))!!, true, true, true, true, true))
-                    SugarRecord.save(Profile(ident1, firstName + " " + lastName, password, "", java.lang.Long.valueOf(ident1.substring(1, 8))!!, token!!, expire!!.time))
-                    Account.with(c).user = java.lang.Long.valueOf(ident1.substring(1, 8))
+                    SugarRecord.save(Option(ident1!!.substring(1, 8).toLong(), true, true, true, true, true))
+                    SugarRecord.save(Profile(ident1, firstName + " " + lastName, password, "", ident1.substring(1, 8).toLong(), token!!, expire!!.time))
+                    Account.with(c).user = ident1.substring(1, 8).toLong()
                     fetchDataOfUser(c)
 
                     PreferenceManager.getDefaultSharedPreferences(c).edit().putBoolean("first_run", false).apply()
