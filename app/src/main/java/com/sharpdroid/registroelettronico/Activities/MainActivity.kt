@@ -72,7 +72,13 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
     override fun onResume() {
         super.onResume()
-        val profile = Profile.getProfile(this)
+        var profile = Profile.getProfile(this)
+
+        if (profile == null) {
+            profile = SugarRecord.first(Profile::class.java)
+            onProfileChanged(null, profile?.asIProfile(), false)
+        }
+
         when {
             PreferenceManager.getDefaultSharedPreferences(this).getBoolean("first_run", true) -> // first time task
                 startActivityForResult(Intent(this, Intro::class.java), 1)
@@ -83,6 +89,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             }
         }
     }
+
 
     override fun onStop() {
         super.onStop()
@@ -363,7 +370,8 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         return false
     }
 
-    override fun onProfileChanged(view: View?, profile: IProfile<*>, current: Boolean): Boolean {
+    override fun onProfileChanged(view: View?, profile: IProfile<*>?, current: Boolean): Boolean {
+        if (profile == null) return false
         if (profile.identifier == 1234L) {
             startActivityForResult(Intent(this, LoginActivity::class.java), 2)
         } else if (!current) {

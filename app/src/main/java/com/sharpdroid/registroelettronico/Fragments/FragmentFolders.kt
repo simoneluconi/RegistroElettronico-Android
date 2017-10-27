@@ -19,7 +19,9 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Account
 import com.sharpdroid.registroelettronico.Utils.EventType
 import com.sharpdroid.registroelettronico.Utils.Metodi.updateFolders
+import com.sharpdroid.registroelettronico.Views.EmptyFragment
 import kotlinx.android.synthetic.main.coordinator_swipe_recycler.*
+import kotlinx.android.synthetic.main.coordinator_swipe_recycler.view.*
 
 class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, FolderAdapter.Listener, NotificationManager.NotificationReceiver {
     var selectedFolder: Folder? = null
@@ -38,10 +40,16 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
     }
 
     lateinit var mRVAdapter: FolderAdapter
+    private var emptyHolder: EmptyFragment? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.coordinator_swipe_recycler, container, false)
+        val layout = inflater!!.inflate(R.layout.coordinator_swipe_recycler, container, false)
+        emptyHolder = EmptyFragment(context)
+        emptyHolder!!.visibility = View.GONE
+        emptyHolder!!.setTextAndDrawable("Nessun materiale didattico condiviso", R.drawable.ic_folder)
+        layout.coordinator_layout.addView(emptyHolder)
+        return layout
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {

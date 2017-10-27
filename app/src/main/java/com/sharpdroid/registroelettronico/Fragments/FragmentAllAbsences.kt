@@ -17,7 +17,9 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Account
 import com.sharpdroid.registroelettronico.Utils.EventType
 import com.sharpdroid.registroelettronico.Utils.Metodi.updateAbsence
+import com.sharpdroid.registroelettronico.Views.EmptyFragment
 import kotlinx.android.synthetic.main.coordinator_swipe_recycler.*
+import kotlinx.android.synthetic.main.coordinator_swipe_recycler.view.*
 
 class FragmentAllAbsences : Fragment(), SwipeRefreshLayout.OnRefreshListener, NotificationManager.NotificationReceiver {
     override fun didReceiveNotification(code: Int, args: Array<in Any>) {
@@ -26,11 +28,9 @@ class FragmentAllAbsences : Fragment(), SwipeRefreshLayout.OnRefreshListener, No
             EventType.UPDATE_ABSENCES_START -> {
                 if (!swiperefresh.isRefreshing) swiperefresh.isRefreshing = true
             }
-            EventType.UPDATE_ABSENCES_OK -> {
-                load()
-                if (swiperefresh.isRefreshing) swiperefresh.isRefreshing = false
-            }
+            EventType.UPDATE_ABSENCES_OK,
             EventType.UPDATE_ABSENCES_KO -> {
+                load()
                 if (swiperefresh.isRefreshing) swiperefresh.isRefreshing = false
 
             }
@@ -38,10 +38,16 @@ class FragmentAllAbsences : Fragment(), SwipeRefreshLayout.OnRefreshListener, No
     }
 
     internal var adapter: AllAbsencesAdapter? = null
+    internal var emptyHolder: EmptyFragment? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.coordinator_swipe_recycler, container, false)
+        val layout = inflater!!.inflate(R.layout.coordinator_swipe_recycler, container, false)
+        emptyHolder = EmptyFragment(context)
+        emptyHolder!!.visibility = View.GONE
+        emptyHolder!!.setTextAndDrawable("Nessuna assenza!", R.drawable.ic_supervisor)
+        layout.coordinator_layout.addView(emptyHolder)
+        return layout
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -69,6 +75,9 @@ class FragmentAllAbsences : Fragment(), SwipeRefreshLayout.OnRefreshListener, No
     private fun addAbsence(absence: Array<in Any>) {
         adapter?.clear()
         adapter?.addAll(absence)
+
+        emptyHolder?.visibility = if (absence.isEmpty()) View.VISIBLE else View.GONE
+        //recycler.visibility = if (absence.isNotEmpty()) View.VISIBLE else View.GONE
     }
 
     private fun load() {

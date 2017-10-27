@@ -18,6 +18,8 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.EventType
 import com.sharpdroid.registroelettronico.Utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.Utils.Metodi.updateLessons
+import com.sharpdroid.registroelettronico.Views.EmptyFragment
+import kotlinx.android.synthetic.main.coordinator_swipe_recycler.view.*
 import kotlinx.android.synthetic.main.fragment_recycler_refresh_scrollbar.*
 
 
@@ -37,6 +39,7 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
 
     lateinit var mRVAdapter: AllLessonsAdapter
     var subject: SubjectInfo? = null
+    var emptyHolder: EmptyFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +48,12 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.fragment_recycler_refresh_scrollbar, container, false)
+        val layout = inflater!!.inflate(R.layout.fragment_recycler_refresh_scrollbar, container, false)
+        emptyHolder = EmptyFragment(context)
+        emptyHolder!!.visibility = View.GONE
+        emptyHolder!!.setTextAndDrawable("Nessuna lezione", R.drawable.ic_view_agenda)
+        layout.coordinator_layout.addView(emptyHolder)
+        return layout
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -83,6 +91,8 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
     private fun addLessons(lessons: List<Lesson>) {
         mRVAdapter.clear()
         mRVAdapter.addAll(lessons)
+
+        emptyHolder?.visibility = if (lessons.isEmpty()) View.VISIBLE else View.GONE
     }
 
     private fun load() {

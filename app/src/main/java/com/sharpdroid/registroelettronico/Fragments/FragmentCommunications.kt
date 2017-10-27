@@ -17,8 +17,10 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Account
 import com.sharpdroid.registroelettronico.Utils.EventType
 import com.sharpdroid.registroelettronico.Utils.Metodi.*
+import com.sharpdroid.registroelettronico.Views.EmptyFragment
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import kotlinx.android.synthetic.main.coordinator_swipe_recycler.*
+import kotlinx.android.synthetic.main.coordinator_swipe_recycler.view.*
 import java.io.File
 
 class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener, NotificationManager.NotificationReceiver, CommunicationAdapter.DownloadListener {
@@ -60,10 +62,16 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
     }
 
     private var mRVAdapter: CommunicationAdapter? = null
+    private var emptyHolder: EmptyFragment? = null
 
     override fun onCreateView(inflater: LayoutInflater?,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.coordinator_swipe_recycler, container, false)
+        val layout = inflater!!.inflate(R.layout.coordinator_swipe_recycler, container, false)
+        emptyHolder = EmptyFragment(context)
+        emptyHolder!!.visibility = View.GONE
+        emptyHolder!!.setTextAndDrawable("Nessuna comunicazione!", R.drawable.ic_assignment)
+        layout.coordinator_layout.addView(emptyHolder)
+        return layout
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -126,10 +134,10 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
     }
 
     private fun addCommunications(communications: List<Communication>) {
-        if (!communications.isEmpty()) {
-            mRVAdapter!!.clear()
-            mRVAdapter!!.addAll(communications)
-        }
+        mRVAdapter!!.clear()
+        mRVAdapter!!.addAll(communications)
+
+        emptyHolder?.visibility = if (communications.isEmpty()) View.VISIBLE else View.GONE
     }
 
     override fun onRefresh() {
