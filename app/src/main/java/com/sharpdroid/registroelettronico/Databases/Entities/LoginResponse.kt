@@ -8,7 +8,7 @@ data class LoginResponse(@Expose val ident: String?,
                          @Expose val lastName: String?,
                          @Expose val token: String?,
                          @Expose val expire: Date?,
-                         @Expose val choices: List<Choice>?
+                         @Expose val choices: MutableList<Choice>?
 )
 
 data class Choice(
