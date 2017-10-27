@@ -51,7 +51,7 @@ class AllAbsencesAdapter(private val mContext: Context) : RecyclerView.Adapter<R
                     absencesHolder.type_text.text = "RB"
                 }
                 "ABU0" -> {
-                    absencesHolder.hour.text = mContext.resources.getString(R.string.hours, "entrato", entry.hPos)
+                    absencesHolder.hour.text = mContext.resources.getString(R.string.hours, "uscito", entry.hPos)
                     absencesHolder.type_color.setImageDrawable(ColorDrawable(ContextCompat.getColor(mContext, R.color.bluematerial)))
                     absencesHolder.type_text.text = "U"
                 }
