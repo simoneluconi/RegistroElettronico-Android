@@ -34,7 +34,6 @@ class FragmentMedie : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ButterKnife.bind(this, view)
 
         periodo = arguments.getInt("q")
         mRVAdapter = MedieAdapter(context)
