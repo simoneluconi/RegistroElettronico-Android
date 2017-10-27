@@ -286,17 +286,13 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
      * Click listener for drawer's items
      */
     override fun onItemClick(view: View?, position: Int, drawerItem: IDrawerItem<*, *>): Boolean {
-        clearBackstack()
         val fragment: Fragment
-        calendar.visibility = View.GONE
-        tab_layout.visibility = View.GONE
-        fab_big_add.visibility = View.GONE
 
         params?.scrollFlags = 0
         when (position) {
             1 -> {
-                calendar.visibility = View.VISIBLE
-                fab_big_add.visibility = View.VISIBLE
+                //calendar.visibility = View.VISIBLE
+                //fab_big_add.visibility = View.VISIBLE
 
                 fragment = FragmentAgenda()
                 updateAgenda(this)
@@ -339,7 +335,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                 val url = "https://play.google.com/store/apps/details?id=com.sharpdroid.registroelettronico"
                 intent.putExtra(Intent.EXTRA_TEXT, url)
                 startActivity(Intent.createChooser(intent, getString(R.string.share_with)))
-                return false
+                return true
             }
             10 -> {
                 val intentMail = Intent(Intent.ACTION_SENDTO)
@@ -351,6 +347,11 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             }
             else -> return false
         }
+
+        clearBackstack()
+        calendar.visibility = View.GONE
+        tab_layout.visibility = View.GONE
+        fab_big_add.visibility = View.GONE
 
         val transaction = supportFragmentManager.beginTransaction()
 

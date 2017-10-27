@@ -95,8 +95,9 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
     private fun getTarget(subject: SubjectInfo): Float {
         var target = subject.target
         if (target <= 0) {
-            target = java.lang.Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(this)
-                    .getString("voto_obiettivo", "8"))
+            val pref = PreferenceManager.getDefaultSharedPreferences(this)
+                    .getString("voto_obiettivo", "8")
+            target = java.lang.Float.parseFloat(if (pref == "Auto") "-1" else pref)
         }
         return target
     }
