@@ -77,7 +77,7 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
 
     override fun onRefresh() {
         swiperefresh.isRefreshing = true
-        updateLessons(activity)
+        updateLessons(context)
     }
 
     private fun addLessons(lessons: List<Lesson>) {
