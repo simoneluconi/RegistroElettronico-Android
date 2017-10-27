@@ -55,7 +55,7 @@ class EditSubjectDetailsActivity : AppCompatActivity() {
         if (code == -1L) return
         val temp = SugarRecord.findById(Subject::class.java, code)
         subjectInfo = temp.getInfo(this)
-        subjectInfo?.subject?.teachers = SugarRecord.findWithQuery(Teacher::class.java, "select * from TEACHER where TEACHER.ID IN (select SUBJECT_TEACHER.TEACHER from SUBJECT_TEACHER where SUBJECT_TEACHER.SUBJECT=?)", code.toString())
+        subjectInfo?.subject?.teachers = SugarRecord.findWithQuery(Teacher::class.java, "select * from TEACHER where TEACHER.ID IN (select SUBJECT_TEACHER.TEACHER from SUBJECT_TEACHER where SUBJECT_TEACHER.SUBJECT=$code)")
         title = Metodi.capitalizeEach(subjectInfo?.description.or(subjectInfo?.subject?.description!!))
 
         rowCount = 0
