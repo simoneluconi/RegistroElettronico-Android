@@ -22,10 +22,6 @@ import static com.sharpdroid.registroelettronico.Utils.Metodi.getMarkColor;
 public class TargetView extends CardView {
     Context mContext;
 
-    @BindView(R.id.text1)
-    TextView text1;
-    @BindView(R.id.text2)
-    TextView text2;
     @BindView(R.id.media)
     TextView mediaView;
     @BindView(R.id.obiettivo)
@@ -63,14 +59,14 @@ public class TargetView extends CardView {
     }
 
     public void setProgress(Float media) {
-        setMedia(media, false);
+        setMedia(media);
     }
 
     public float getMedia() {
         return media;
     }
 
-    private void setMedia(float media, boolean animate) {
+    private void setMedia(float media) {
         if (media == -1) {
             this.media = -1;
             progressBar.setProgressColor(getColor(R.color.intro_blue));
@@ -89,13 +85,9 @@ public class TargetView extends CardView {
                 setTarget((float) Math.ceil(media), false);
             }
 
-            if (animate) {
-                animateBar(target, media, getColor(getMarkColor(media, target)));
-            } else {
-                progressBar.setProgressColor(getColor(getMarkColor(media, target)));
-                progressBar.setMax(target);
-                progressBar.setProgress(media);
-            }
+            progressBar.setProgressColor(getColor(getMarkColor(media, target)));
+            progressBar.setMax(target);
+            progressBar.setProgress(media);
         }
     }
 
