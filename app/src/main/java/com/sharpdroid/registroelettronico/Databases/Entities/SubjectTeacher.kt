@@ -17,7 +17,7 @@ data class SubjectTeacher(
         }
 
         fun setupCache(account: Long) {
-            val subjectsTeachers = SugarRecord.find(SubjectTeacher::class.java, "PROFILE=?", account.toString())
+            val subjectsTeachers = SugarRecord.find(SubjectTeacher::class.java, "PROFILE=$account")
             subjectsTeachers.forEach {
                 cache.add(it)
             }

@@ -29,12 +29,10 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
             EventType.UPDATE_FOLDERS_START -> {
                 if (!swiperefresh.isRefreshing) swiperefresh.isRefreshing = true
             }
-            EventType.UPDATE_FOLDERS_OK -> {
-                if (swiperefresh.isRefreshing) swiperefresh.isRefreshing = false
-                load()
-            }
+            EventType.UPDATE_FOLDERS_OK,
             EventType.UPDATE_FOLDERS_KO -> {
                 if (swiperefresh.isRefreshing) swiperefresh.isRefreshing = false
+                load()
             }
         }
     }

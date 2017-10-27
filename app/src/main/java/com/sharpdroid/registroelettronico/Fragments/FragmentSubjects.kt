@@ -82,6 +82,7 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
     }
 
     private fun setAdapterData(data: List<SubjectInfo>) {
+        println("setAdapterData")
         Teacher.clearCache()
         SubjectTeacher.clearCache()
         SubjectTeacher.setupCache(Account.with(context).user)
@@ -91,7 +92,7 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
     }
 
     private fun fetch(): List<SubjectInfo> {
-        return SugarRecord.findWithQuery(Subject::class.java, "select * from SUBJECT where SUBJECT.ID IN (SELECT  SUBJECT_TEACHER.SUBJECT from SUBJECT_TEACHER WHERE SUBJECT_TEACHER.PROFILE=?) ORDER BY DESCRIPTION ASC", Account.with(activity).user.toString()).map { it.getInfo(activity) }
+        return SugarRecord.findWithQuery(Subject::class.java, "select * from SUBJECT where SUBJECT.ID IN (SELECT  SUBJECT_TEACHER.SUBJECT from SUBJECT_TEACHER WHERE SUBJECT_TEACHER.PROFILE=${Account.with(activity).user}) ORDER BY DESCRIPTION ASC").map { it.getInfo(activity) }
     }
 
     override fun onSubjectClick(subject: Subject) {
