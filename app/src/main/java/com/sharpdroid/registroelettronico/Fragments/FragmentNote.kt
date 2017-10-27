@@ -38,15 +38,15 @@ class FragmentNote : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notificat
         }
     }
 
-    private var mRVAdapter: NoteAdapter? = null
-    private var emptyHolder: EmptyFragment? = null
+    lateinit private var mRVAdapter: NoteAdapter
+    lateinit private var emptyHolder: EmptyFragment
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val layout = inflater!!.inflate(R.layout.coordinator_swipe_recycler, container, false)
         emptyHolder = EmptyFragment(context)
-        emptyHolder!!.visibility = View.GONE
-        emptyHolder!!.setTextAndDrawable("Nessuna nota!", R.drawable.ic_error)
+        emptyHolder.visibility = View.GONE
+        emptyHolder.setTextAndDrawable("Nessuna nota!", R.drawable.ic_error)
         layout.coordinator_layout.addView(emptyHolder)
         return layout
     }
@@ -63,6 +63,7 @@ class FragmentNote : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notificat
                 R.color.orangematerial)
 
         activity.title = getString(R.string.note)
+        mRVAdapter = NoteAdapter(context)
 
         with(recycler) {
             layoutManager = LinearLayoutManager(context)
@@ -70,7 +71,6 @@ class FragmentNote : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notificat
             addItemDecoration(HorizontalDividerItemDecoration.Builder(context).colorResId(R.color.divider).size(dp(1)).build())
             itemAnimator = null
 
-            mRVAdapter = NoteAdapter(context)
             adapter = mRVAdapter
         }
 
@@ -79,17 +79,15 @@ class FragmentNote : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notificat
     }
 
     private fun addNotes(notes: List<Note>) {
-        mRVAdapter!!.clear()
-        mRVAdapter!!.addAll(notes)
+        mRVAdapter.clear()
+        mRVAdapter.addAll(notes)
 
-        emptyHolder?.visibility = if (notes.isEmpty()) View.VISIBLE else View.GONE
-
+        emptyHolder.visibility = if (notes.isEmpty()) View.VISIBLE else View.GONE
     }
 
     private fun load() {
         addNotes(SugarRecord.find(Note::class.java, "PROFILE=? ORDER BY M_DATE DESC", Account.with(activity).user.toString()))
     }
-
 
     override fun onRefresh() {
         download()

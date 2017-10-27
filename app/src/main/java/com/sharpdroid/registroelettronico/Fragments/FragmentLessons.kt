@@ -38,8 +38,8 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
     }
 
     lateinit var mRVAdapter: AllLessonsAdapter
+    lateinit var emptyHolder: EmptyFragment
     var subject: SubjectInfo? = null
-    var emptyHolder: EmptyFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,8 +50,8 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
                               savedInstanceState: Bundle?): View? {
         val layout = inflater!!.inflate(R.layout.fragment_recycler_refresh_scrollbar, container, false)
         emptyHolder = EmptyFragment(context)
-        emptyHolder!!.visibility = View.GONE
-        emptyHolder!!.setTextAndDrawable("Nessuna lezione", R.drawable.ic_view_agenda)
+        emptyHolder.visibility = View.GONE
+        emptyHolder.setTextAndDrawable("Nessuna lezione", R.drawable.ic_view_agenda)
         layout.coordinator_layout.addView(emptyHolder)
         return layout
     }
@@ -92,7 +92,7 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
         mRVAdapter.clear()
         mRVAdapter.addAll(lessons)
 
-        emptyHolder?.visibility = if (lessons.isEmpty()) View.VISIBLE else View.GONE
+        emptyHolder.visibility = if (lessons.isEmpty()) View.VISIBLE else View.GONE
     }
 
     private fun load() {
