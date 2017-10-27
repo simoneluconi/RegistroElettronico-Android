@@ -10,8 +10,11 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.*
 import com.afollestad.materialdialogs.MaterialDialog
+import com.crashlytics.android.answers.Answers
+import com.crashlytics.android.answers.ContentViewEvent
 import com.orm.SugarRecord
 import com.sharpdroid.registroelettronico.Adapters.Holders.Holder
+import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.Databases.Entities.Subject
 import com.sharpdroid.registroelettronico.Databases.Entities.SubjectInfo
 import com.sharpdroid.registroelettronico.Databases.Entities.Teacher
@@ -48,6 +51,9 @@ class EditSubjectDetailsActivity : AppCompatActivity() {
 
 
         init(intent.getLongExtra("code", -1))
+
+        if (!BuildConfig.DEBUG)
+            Answers.getInstance().logContentView(ContentViewEvent().putContentId("Materia").putContentType("Modifica"))
 
     }
 

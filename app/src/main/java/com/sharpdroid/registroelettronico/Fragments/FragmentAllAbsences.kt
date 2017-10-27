@@ -7,8 +7,11 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.crashlytics.android.answers.Answers
+import com.crashlytics.android.answers.ContentViewEvent
 import com.orm.SugarRecord
 import com.sharpdroid.registroelettronico.Adapters.AllAbsencesAdapter
+import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.Databases.Entities.Absence
 import com.sharpdroid.registroelettronico.Databases.Entities.MyAbsence
 import com.sharpdroid.registroelettronico.Databases.Entities.Profile
@@ -69,6 +72,8 @@ class FragmentAllAbsences : Fragment(), SwipeRefreshLayout.OnRefreshListener, No
         load()
         //download()
 
+        if (!BuildConfig.DEBUG)
+            Answers.getInstance().logContentView(ContentViewEvent().putContentId("Assenze"))
     }
 
     private fun addAbsence(absence: Array<in Any>) {

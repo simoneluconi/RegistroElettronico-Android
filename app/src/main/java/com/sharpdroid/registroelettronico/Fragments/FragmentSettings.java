@@ -11,9 +11,12 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.TwoStatePreference;
 import android.view.View;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.mikepenz.aboutlibraries.LibsConfiguration;
 import com.orm.SugarRecord;
+import com.sharpdroid.registroelettronico.BuildConfig;
 import com.sharpdroid.registroelettronico.Databases.Entities.RemoteAgendaInfo;
 import com.sharpdroid.registroelettronico.R;
 
@@ -72,6 +75,8 @@ public class FragmentSettings extends PreferenceFragmentCompat implements Shared
                 }
         );
 
+        if (!BuildConfig.DEBUG)
+            Answers.getInstance().logContentView(new ContentViewEvent().putContentId("Impostazioni"));
     }
 
     @Override

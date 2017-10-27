@@ -10,10 +10,13 @@ import android.view.View
 import android.view.ViewConfiguration
 import android.widget.SeekBar
 import android.widget.TextView
+import com.crashlytics.android.answers.Answers
+import com.crashlytics.android.answers.ContentViewEvent
 import com.github.mikephil.charting.data.Entry
 import com.orm.SugarRecord
 import com.orm.dsl.Column
 import com.sharpdroid.registroelettronico.API.SpiaggiariAPI
+import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.Databases.Entities.Grade
 import com.sharpdroid.registroelettronico.Databases.Entities.Subject
 import com.sharpdroid.registroelettronico.Databases.Entities.SubjectInfo
@@ -53,6 +56,9 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+
+        if (!BuildConfig.DEBUG)
+            Answers.getInstance().logContentView(ContentViewEvent().putContentId("Materia").putContentType("Dettagli"))
 
     }
 
