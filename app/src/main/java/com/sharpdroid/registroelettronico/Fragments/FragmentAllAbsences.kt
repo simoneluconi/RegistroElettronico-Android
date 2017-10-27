@@ -57,8 +57,8 @@ class FragmentAllAbsences : Fragment(), SwipeRefreshLayout.OnRefreshListener, No
 
         activity.title = getString(R.string.absences)
 
-        adapter = AllAbsencesAdapter(activity)
-        recycler.layoutManager = LinearLayoutManager(activity)
+        adapter = AllAbsencesAdapter(context)
+        recycler.layoutManager = LinearLayoutManager(context)
         recycler.adapter = adapter
 
         load()
@@ -72,8 +72,8 @@ class FragmentAllAbsences : Fragment(), SwipeRefreshLayout.OnRefreshListener, No
     }
 
     private fun load() {
-        val absencesAndDurations = Absence.getAbsences(Profile.getProfile(activity)!!)
-        val list: MutableList<in Any> = SugarRecord.find(Absence::class.java, "PROFILE=? AND TYPE!='ABA0'", Account.with(activity).user.toString()).toMutableList()
+        val absencesAndDurations = Absence.getAbsences(Profile.getProfile(context)!!)
+        val list: MutableList<in Any> = SugarRecord.find(Absence::class.java, "PROFILE=? AND TYPE!='ABA0'", Account.with(context).user.toString()).toMutableList()
         list.addAll(absencesAndDurations.map { MyAbsence(it.key, it.value) })
         addAbsence(list.toTypedArray())
     }
