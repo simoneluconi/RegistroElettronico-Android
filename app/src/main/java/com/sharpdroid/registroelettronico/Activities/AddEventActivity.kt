@@ -99,9 +99,9 @@ class AddEventActivity : AppCompatActivity() {
     }
 
     private fun initDefault() {
-        options!!.addView(OptionView.Builder(this).title("Materia").content("Non impostata").image(R.drawable.event_subject).onClick { this.subjectDialog(it) }.build())
-        options!!.addView(OptionView.Builder(this).title("Professore").content("Non impostato").image(R.drawable.event_professor).onClick { this.professorDialog(it) }.build())
-        options!!.addView(OptionView.Builder(this).title("Data").content(capitalizeFirst(format.format(selectedDay))).image(R.drawable.event_date).onClick { this.datePicker(it) }.build())
+        options.addView(OptionView.Builder(this).title("Materia").content("Non impostata").image(R.drawable.event_subject).onClick { this.subjectDialog(it) }.build())
+        options.addView(OptionView.Builder(this).title("Professore").content("Non impostato").image(R.drawable.event_professor).onClick { this.professorDialog(it) }.build())
+        options.addView(OptionView.Builder(this).title("Data").content(capitalizeFirst(format.format(selectedDay))).image(R.drawable.event_date).onClick { this.datePicker(it) }.build())
     }
 
     private fun subjectDialog(v: View) {
@@ -157,23 +157,23 @@ class AddEventActivity : AppCompatActivity() {
     }
 
     override fun setTitle(title: CharSequence) {
-        this.layout_verifica!!.hint = title
+        this.layout_verifica.hint = title
     }
 
     private fun handleTitle(): Boolean {
-        val ok = layout_verifica!!.editText != null && !layout_verifica!!.editText!!.text.toString().isEmpty()
+        val ok = layout_verifica.editText != null && !layout_verifica.editText!!.text.toString().isEmpty()
         if (!ok) {
-            layout_verifica!!.startAnimation(animShake)
-            layout_verifica!!.requestFocus()
+            layout_verifica.startAnimation(animShake)
+            layout_verifica.requestFocus()
         }
         return ok
     }
 
     private fun handleSubtitle(): Boolean {
-        val ok = layout_note!!.editText != null && !layout_note!!.editText!!.text.toString().isEmpty()
+        val ok = layout_note.editText != null && !layout_note.editText!!.text.toString().isEmpty()
         if (!ok) {
-            layout_note!!.startAnimation(animShake)
-            layout_note!!.requestFocus()
+            layout_note.startAnimation(animShake)
+            layout_note.requestFocus()
         }
         return ok
     }
