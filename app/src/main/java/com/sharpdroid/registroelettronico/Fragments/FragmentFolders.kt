@@ -96,14 +96,9 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
         }
     }
 
-    private fun addFiles(teachers: List<Teacher>, docache: Boolean) {
+    private fun addFiles(teachers: List<Teacher>) {
         if (!teachers.isEmpty()) {
             mRVAdapter.setTeacherFolder(teachers)
-
-            if (docache) {
-                // Update cache
-                save(teachers)
-            }
         } else {
             emptyHolder.visibility = View.VISIBLE
         }
@@ -117,14 +112,7 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
         val teachers = SugarRecord.findWithQuery(Teacher::class.java, "select * from TEACHER where TEACHER.ID IN (select TEACHER FROM FOLDER WHERE FOLDER.PROFILE=?)", Account.with(activity).user.toString())
         teachers.forEach { it.folders = SugarRecord.find(Folder::class.java, "TEACHER=? AND PROFILE=?", it.id.toString(), Account.with(activity).user.toString()) }
 
-        addFiles(teachers, false)
-    }
-
-    private fun save(teachers: List<Teacher>) {
-        val list = mutableListOf<Folder>()
-        teachers.forEach { list.addAll(it.folders) }
-
-        SugarRecord.updateInTx(list)
+        addFiles(teachers)
     }
 
     private fun update() {
