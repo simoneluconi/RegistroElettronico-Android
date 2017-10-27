@@ -119,7 +119,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             if (resultCode == Activity.RESULT_OK) {
                 Log.d("MAIN", "LOGIN OK")
                 init(null)
-            } else {
+            } else if (Profile.getProfile(this) == null) {
                 finish()
             }
         }
