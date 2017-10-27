@@ -119,7 +119,6 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
                 MaterialDialog.Builder(activity).title(file.contentName).content(info.path).positiveText("OK").autoDismiss(true).show()
             }
         }
-
     }
 
     private fun setTitle(title: CharSequence) {
@@ -143,7 +142,6 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
     }
 
     companion object {
-
         fun newInstance(data: Folder): FragmentFiles {
             val fragment = FragmentFiles()
             fragment.setData(data)
