@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import android.view.View
-import butterknife.ButterKnife
 import com.orm.SugarRecord
 import com.sharpdroid.registroelettronico.Adapters.AllLessonsAdapter
 import com.sharpdroid.registroelettronico.Databases.Entities.Lesson
@@ -22,7 +21,6 @@ class AllLessonsWithDownloadActivity : AppCompatActivity(), SwipeRefreshLayout.O
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recycler_refresh_scrollbar)
-        ButterKnife.bind(this)
 
         code = intent.getIntExtra("code", -1)
         setSupportActionBar(toolbar)
