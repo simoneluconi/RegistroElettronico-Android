@@ -23,7 +23,6 @@ import kotlinx.android.synthetic.main.coordinator_swipe_recycler.view.*
 
 class FragmentAllAbsences : Fragment(), SwipeRefreshLayout.OnRefreshListener, NotificationManager.NotificationReceiver {
     override fun didReceiveNotification(code: Int, args: Array<in Any>) {
-
         when (code) {
             EventType.UPDATE_ABSENCES_START -> {
                 if (!swiperefresh.isRefreshing) swiperefresh.isRefreshing = true
@@ -40,9 +39,9 @@ class FragmentAllAbsences : Fragment(), SwipeRefreshLayout.OnRefreshListener, No
     lateinit var adapter: AllAbsencesAdapter
     lateinit var emptyHolder: EmptyFragment
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val layout = inflater!!.inflate(R.layout.coordinator_swipe_recycler, container, false)
+        val layout = inflater.inflate(R.layout.coordinator_swipe_recycler, container, false)
         emptyHolder = EmptyFragment(context)
         emptyHolder.visibility = View.GONE
         emptyHolder.setTextAndDrawable("Nessuna assenza!", R.drawable.ic_supervisor)
@@ -50,7 +49,7 @@ class FragmentAllAbsences : Fragment(), SwipeRefreshLayout.OnRefreshListener, No
         return layout
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         NotificationManager.instance.addObserver(this, EventType.UPDATE_ABSENCES_START, EventType.UPDATE_ABSENCES_OK, EventType.UPDATE_ABSENCES_KO)
 

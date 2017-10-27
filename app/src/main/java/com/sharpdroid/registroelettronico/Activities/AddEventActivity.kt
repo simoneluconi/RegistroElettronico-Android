@@ -45,7 +45,6 @@ class AddEventActivity : AppCompatActivity() {
         selectedDay = Date(intent.getLongExtra("time", 0))
         init(intent.getStringExtra("type"))
         animShake = AnimationUtils.loadAnimation(this, R.anim.shake)
-
     }
 
     private fun init(type: String) {
@@ -152,23 +151,23 @@ class AddEventActivity : AppCompatActivity() {
     }
 
     override fun setTitle(title: CharSequence) {
-        this.layout_verifica!!.hint = title
+        this.layout_verifica.hint = title
     }
 
     private fun handleTitle(): Boolean {
-        val ok = layout_verifica!!.editText != null && !layout_verifica!!.editText!!.text.toString().isEmpty()
+        val ok = layout_verifica.editText != null && !layout_verifica.editText!!.text.toString().isEmpty()
         if (!ok) {
-            layout_verifica!!.startAnimation(animShake)
-            layout_verifica!!.requestFocus()
+            layout_verifica.startAnimation(animShake)
+            layout_verifica.requestFocus()
         }
         return ok
     }
 
     private fun handleSubtitle(): Boolean {
-        val ok = layout_note!!.editText != null && !layout_note!!.editText!!.text.toString().isEmpty()
+        val ok = layout_note.editText != null && !layout_note.editText!!.text.toString().isEmpty()
         if (!ok) {
-            layout_note!!.startAnimation(animShake)
-            layout_note!!.requestFocus()
+            layout_note.startAnimation(animShake)
+            layout_note.requestFocus()
         }
         return ok
     }

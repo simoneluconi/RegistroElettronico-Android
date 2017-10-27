@@ -22,9 +22,9 @@ class FragmentMedie : Fragment() {
     lateinit private var mRVAdapter: MedieAdapter
     lateinit private var emptyHolder: EmptyFragment
 
-    override fun onCreateView(inflater: LayoutInflater?,
+    override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val layout = inflater!!.inflate(R.layout.coordinator_swipe_recycler_padding, container, false)
+        val layout = inflater.inflate(R.layout.coordinator_swipe_recycler_padding, container, false)
         emptyHolder = EmptyFragment(context)
         emptyHolder.visibility = View.GONE
         emptyHolder.setTextAndDrawable("Nessun voto", R.drawable.ic_timeline)
@@ -32,9 +32,9 @@ class FragmentMedie : Fragment() {
         return layout
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ButterKnife.bind(this, view!!)
+        ButterKnife.bind(this, view)
 
         periodo = arguments.getInt("q")
         mRVAdapter = MedieAdapter(context)

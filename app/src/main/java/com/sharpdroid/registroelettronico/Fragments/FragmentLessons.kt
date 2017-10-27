@@ -46,9 +46,9 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
         subject = SugarRecord.findById(Subject::class.java, arguments?.getInt("code") ?: savedInstanceState?.getInt("code") ?: -1)?.getInfo(activity)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val layout = inflater!!.inflate(R.layout.fragment_recycler_refresh_scrollbar, container, false)
+        val layout = inflater.inflate(R.layout.fragment_recycler_refresh_scrollbar, container, false)
         emptyHolder = EmptyFragment(context)
         emptyHolder.visibility = View.GONE
         emptyHolder.setTextAndDrawable("Nessuna lezione", R.drawable.ic_view_agenda)
@@ -56,7 +56,7 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
         return layout
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         NotificationManager.instance.addObserver(this, EventType.UPDATE_LESSONS_KO, EventType.UPDATE_LESSONS_OK, EventType.UPDATE_LESSONS_START)
 
@@ -78,9 +78,9 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
         //onRefresh()
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState?.putInt("code", subject?.subject?.id?.toInt()!!)
+        outState.putInt("code", subject?.subject?.id?.toInt()!!)
     }
 
     override fun onRefresh() {

@@ -15,9 +15,8 @@ class EmptyFragment(context: Context) : RelativeLayout(context) {
 
     fun setTextAndDrawable(text: String, @DrawableRes drawableRes: Int) {
         val drawable = ContextCompat.getDrawable(context, drawableRes)
-        drawable.setColorFilter(0xff636363.toInt(), PorterDuff.Mode.SRC_ATOP)
+        drawable?.setColorFilter(0xff636363.toInt(), PorterDuff.Mode.SRC_ATOP)
         place_holder_image.setImageDrawable(drawable)
         place_holder_text.text = text
     }
-
 }

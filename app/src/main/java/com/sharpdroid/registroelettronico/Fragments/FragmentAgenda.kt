@@ -58,14 +58,14 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
 
     private var active: Boolean = false //avoid updating views if fragment is gone
 
-    override fun onCreateView(inflater: LayoutInflater?,
+    override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
         active = true
-        return inflater!!.inflate(R.layout.fragment_agenda, container, false)
+        return inflater.inflate(R.layout.fragment_agenda, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         NotificationManager.instance.addObserver(this, EventType.UPDATE_AGENDA_OK, EventType.UPDATE_AGENDA_KO, EventType.UPDATE_AGENDA_START)
 
@@ -101,9 +101,9 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
 
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState?.putLong("date", mDate.time)
+        outState.putLong("date", mDate.time)
     }
 
     override fun onResume() {

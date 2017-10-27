@@ -16,7 +16,7 @@ import android.widget.TextView
 import com.sharpdroid.registroelettronico.Utils.Metodi
 
 class FragmentCredits : Fragment() {
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val scroll = NestedScrollView(activity)
         val textView = TextView(activity)
@@ -36,7 +36,7 @@ class FragmentCredits : Fragment() {
         return scroll
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity.title = "Riconoscimenti"
     }
