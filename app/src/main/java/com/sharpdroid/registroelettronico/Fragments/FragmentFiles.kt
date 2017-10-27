@@ -1,6 +1,5 @@
 package com.sharpdroid.registroelettronico.Fragments
 
-
 import android.content.ActivityNotFoundException
 import android.os.Bundle
 import android.support.design.widget.CoordinatorLayout
@@ -25,9 +24,10 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 
 class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, FileAdapter.DownloadListener {
     lateinit var layout: CoordinatorLayout
-    private var snackbar: Snackbar = Snackbar.make(layout, "", Snackbar.LENGTH_SHORT)
+    lateinit private var snackbar: Snackbar
 
     override fun didReceiveNotification(code: Int, args: Array<in Any>) {
+        snackbar = Snackbar.make(layout, "", Snackbar.LENGTH_SHORT)
         when (code) {
             EventType.DOWNLOAD_FILE_START -> {
                 snackbar = Snackbar.make(layout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE)

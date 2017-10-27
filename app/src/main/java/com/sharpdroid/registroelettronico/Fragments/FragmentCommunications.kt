@@ -24,11 +24,13 @@ import kotlinx.android.synthetic.main.coordinator_swipe_recycler.view.*
 import java.io.File
 
 class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener, NotificationManager.NotificationReceiver, CommunicationAdapter.DownloadListener {
-    var snackbar: Snackbar? = null
+    lateinit private var snackbar: Snackbar
+
     override fun didReceiveNotification(code: Int, args: Array<in Any>) {
+        snackbar = Snackbar.make(coordinator_layout, R.string.download_in_corso,
+                Snackbar.LENGTH_INDEFINITE)
         when (code) {
             EventType.UPDATE_BACHECA_START -> {
-                snackbar = Snackbar.make(coordinator_layout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE)
                 if (!swiperefresh.isRefreshing) swiperefresh.isRefreshing = true
             }
             EventType.UPDATE_BACHECA_OK -> {
@@ -39,11 +41,11 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
                 if (swiperefresh.isRefreshing) swiperefresh.isRefreshing = false
             }
             EventType.DOWNLOAD_FILE_START -> {
-                snackbar?.show()
+                snackbar.show()
             }
             EventType.DOWNLOAD_FILE_OK -> {
                 val file = File(SugarRecord.findById(CommunicationInfo::class.java, args[0] as Long).path)
-                with(snackbar!!) {
+                with(snackbar) {
                     setText(activity.getString(R.string.file_downloaded, file.name))
                     setAction(R.string.open) { openFile(activity, file) }
                     duration = Snackbar.LENGTH_SHORT
@@ -51,7 +53,7 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
                 }
             }
             EventType.DOWNLOAD_FILE_KO -> {
-                with(snackbar!!) {
+                with(snackbar) {
                     setText("File non scaricato")
                     duration = Snackbar.LENGTH_SHORT
                     show()
