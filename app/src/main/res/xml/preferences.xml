@@ -22,13 +22,13 @@
         android:title="@string/restore_archived_title" />
 
     <PreferenceCategory android:title="Notifiche">
-        <SwitchPreferenceCompat
+        <SwitchPreference
             android:defaultValue="true"
             android:key="notify"
             android:summary="Ricevi notifiche relative all'account corrente"
             android:title="Notifiche" />
 
-        <SwitchPreferenceCompat
+        <SwitchPreference
             android:defaultValue="true"
             android:dependency="notify"
             android:drawablePadding="8dp"
@@ -36,7 +36,7 @@
             android:key="notify_vibrate"
             android:title="Vibrazione" />
 
-        <SwitchPreferenceCompat
+        <SwitchPreference
             android:defaultValue="true"
             android:dependency="notify"
             android:drawablePadding="8dp"

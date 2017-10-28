@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#F1F1F1"
     android:fitsSystemWindows="true"
-    tools:context="com.sharpdroid.registroelettronico.Activities.MarkSubjectDetailActivity">
+    tools:context="com.sharpdroid.registroelettronico.activities.MarkSubjectDetailActivity">
 
     <include
         layout="@layout/app_bar_main"
@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.sharpdroid.registroelettronico.Views.SubjectDetails.InfoView
+            <com.sharpdroid.registroelettronico.views.subjectDetails.InfoView
                 android:id="@+id/info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
                 android:layout_marginTop="8dp"
                 app:cardElevation="@dimen/card_elevation" />
 
-            <com.sharpdroid.registroelettronico.Views.SubjectDetails.OverallView
+            <com.sharpdroid.registroelettronico.views.subjectDetails.OverallView
                 android:id="@+id/overall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
                 android:layout_marginTop="8dp"
                 app:cardElevation="@dimen/card_elevation" />
 
-            <com.sharpdroid.registroelettronico.Views.SubjectDetails.TargetView
+            <com.sharpdroid.registroelettronico.views.subjectDetails.TargetView
                 android:id="@+id/target"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
                 android:layout_marginTop="8dp"
                 app:cardElevation="@dimen/card_elevation" />
 
-            <com.sharpdroid.registroelettronico.Views.SubjectDetails.MarksView
+            <com.sharpdroid.registroelettronico.views.subjectDetails.MarksView
                 android:id="@+id/marks"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
                 android:layout_marginTop="8dp"
                 app:cardElevation="@dimen/card_elevation" />
 
-            <com.sharpdroid.registroelettronico.Views.SubjectDetails.RecentLessonsView
+            <com.sharpdroid.registroelettronico.views.subjectDetails.RecentLessonsView
                 android:id="@+id/lessons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

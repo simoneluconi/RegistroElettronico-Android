@@ -9,7 +9,7 @@
         android:shortcutShortLabel="@string/agenda">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.sharpdroid.registroelettronico.Activities.MainActivity"
+            android:targetClass="com.sharpdroid.registroelettronico.activities.MainActivity"
             android:targetPackage="com.sharpdroid.registroelettronico">
             <extra
                 android:name="drawer_to_open"
@@ -25,7 +25,7 @@
         android:shortcutShortLabel="@string/medie">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.sharpdroid.registroelettronico.Activities.MainActivity"
+            android:targetClass="com.sharpdroid.registroelettronico.activities.MainActivity"
             android:targetPackage="com.sharpdroid.registroelettronico">
             <extra
                 android:name="drawer_to_open"
@@ -41,7 +41,7 @@
         android:shortcutShortLabel="@string/communications">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.sharpdroid.registroelettronico.Activities.MainActivity"
+            android:targetClass="com.sharpdroid.registroelettronico.activities.MainActivity"
             android:targetPackage="com.sharpdroid.registroelettronico">
             <extra
                 android:name="drawer_to_open"

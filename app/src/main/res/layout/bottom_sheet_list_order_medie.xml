@@ -22,7 +22,7 @@
         android:clipToPadding="false"
         android:paddingBottom="@dimen/list_item_spacing_half"
         android:paddingTop="@dimen/list_item_spacing_half"
-        tools:context="com.sharpdroid.registroelettronico.BottomSheet.OrderMedieBS"
+        tools:context=".fragments.bottomSheet.OrderMedieBS"
         tools:listitem="@layout/bottom_sheet_order_medie" />
 
 </RelativeLayout>

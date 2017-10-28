@@ -36,7 +36,7 @@
                 android:textColor="@color/textcolorgrey"
                 android:textSize="16sp" />
 
-            <com.sharpdroid.registroelettronico.Views.CircleProgressBar
+            <com.sharpdroid.registroelettronico.views.CircleProgressBar
                 android:id="@+id/custom_progressBar"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
