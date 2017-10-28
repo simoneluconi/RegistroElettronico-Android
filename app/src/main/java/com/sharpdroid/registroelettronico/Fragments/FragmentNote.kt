@@ -49,7 +49,7 @@ class FragmentNote : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notificat
         val layout = inflater.inflate(R.layout.coordinator_swipe_recycler, container, false)
         emptyHolder = EmptyFragment(context)
         emptyHolder.visibility = View.GONE
-        emptyHolder.setTextAndDrawable("Nessuna nota!", R.drawable.ic_error)
+        emptyHolder.setTextAndDrawable("Nessuna nota", R.drawable.ic_error)
         layout.coordinator_layout.addView(emptyHolder)
         return layout
     }
