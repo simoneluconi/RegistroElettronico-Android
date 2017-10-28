@@ -8,7 +8,6 @@ import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import butterknife.ButterKnife
 import com.sharpdroid.registroelettronico.Adapters.MedieAdapter
 import com.sharpdroid.registroelettronico.Interfaces.Client.Average
 import com.sharpdroid.registroelettronico.R
@@ -19,7 +18,9 @@ import kotlinx.android.synthetic.main.coordinator_swipe_recycler_padding.view.*
 
 class FragmentMedie : Fragment() {
     private var periodo: Int = 0
-    lateinit private var mRVAdapter: MedieAdapter
+    private val mRVAdapter by lazy {
+        MedieAdapter(context)
+    }
     lateinit private var emptyHolder: EmptyFragment
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -36,7 +37,6 @@ class FragmentMedie : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         periodo = arguments.getInt("q")
-        mRVAdapter = MedieAdapter(context)
 
         with(recycler) {
             setBackgroundColor(Color.parseColor("#F1F1F1"))
@@ -57,6 +57,5 @@ class FragmentMedie : Fragment() {
         mRVAdapter.addAll(markSubjects, p)
 
         emptyHolder.visibility = if (markSubjects.isEmpty()) View.VISIBLE else View.GONE
-
     }
 }
