@@ -74,7 +74,7 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
         val layout = inflater.inflate(R.layout.coordinator_swipe_recycler, container, false)
         emptyHolder = EmptyFragment(context)
         emptyHolder.visibility = View.GONE
-        emptyHolder.setTextAndDrawable("Nessuna comunicazione!", R.drawable.ic_assignment)
+        emptyHolder.setTextAndDrawable("Nessuna comunicazione", R.drawable.ic_assignment)
         layout.coordinator_layout.addView(emptyHolder)
         return layout
     }

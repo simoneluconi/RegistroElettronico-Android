@@ -47,7 +47,7 @@ class FragmentAllAbsences : Fragment(), SwipeRefreshLayout.OnRefreshListener, No
         val layout = inflater.inflate(R.layout.coordinator_swipe_recycler, container, false)
         emptyHolder = EmptyFragment(context)
         emptyHolder.visibility = View.GONE
-        emptyHolder.setTextAndDrawable("Nessuna assenza!", R.drawable.ic_supervisor)
+        emptyHolder.setTextAndDrawable("Nessuna assenza", R.drawable.ic_supervisor)
         layout.coordinator_layout.addView(emptyHolder)
         return layout
     }
