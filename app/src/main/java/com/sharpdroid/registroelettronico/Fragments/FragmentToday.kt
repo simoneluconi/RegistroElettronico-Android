@@ -14,6 +14,7 @@ import com.sharpdroid.registroelettronico.Databases.Entities.Absence
 import com.sharpdroid.registroelettronico.Databases.Entities.Lesson
 import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
+import com.sharpdroid.registroelettronico.Utils.Account
 import com.sharpdroid.registroelettronico.Utils.EventType.*
 import com.sharpdroid.registroelettronico.Utils.Metodi.dp
 import com.sharpdroid.registroelettronico.Utils.flat
@@ -78,16 +79,19 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
 
         absence_recycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         lessons_recycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        lessons_recycler.isNestedScrollingEnabled = false
+        lessons_recycler.setHasFixedSize(true)
         lessons_recycler.adapter = lessonsAdapter
         lessons_recycler.addItemDecoration(HorizontalDividerItemDecoration.Builder(context).margin(dp(16), dp(16)).build())
-        lessons_recycler.isNestedScrollingEnabled = false
+
+        lessons_empty.setTextAndDrawable("Nessuna lezione", R.drawable.ic_view_agenda)
 
         initializeDay(Date().flat())
     }
 
     private fun initializeDay(date: Date) {
-        absences.addAll(SugarRecord.find(Absence::class.java, "DATE = ${date.time}"))
-        lessons.addAll(SugarRecord.find(Lesson::class.java, "M_DATE = ${date.time} ORDER BY M_HOUR_POSITION ASC"))
+        absences.addAll(SugarRecord.find(Absence::class.java, "DATE = ${date.time} AND PROFILE=${Account.with(context).user}"))
+        lessons.addAll(SugarRecord.find(Lesson::class.java, "M_DATE = ${date.time} AND PROFILE=${Account.with(context).user} ORDER BY M_HOUR_POSITION ASC"))
 
         absence_card.visibility = if (absences.isNotEmpty()) View.VISIBLE else View.GONE
         lessons_empty.visibility = if (lessons.isEmpty()) View.VISIBLE else View.GONE
