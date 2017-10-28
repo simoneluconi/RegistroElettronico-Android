@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.ContentViewEvent
 import com.orm.SugarRecord
-import com.sharpdroid.registroelettronico.Activities.or
 import com.sharpdroid.registroelettronico.Adapters.AllLessonsAdapter
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.Databases.Entities.Lesson
@@ -21,6 +20,7 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.EventType
 import com.sharpdroid.registroelettronico.Utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.Utils.Metodi.updateLessons
+import com.sharpdroid.registroelettronico.Utils.or
 import com.sharpdroid.registroelettronico.Views.EmptyFragment
 import kotlinx.android.synthetic.main.coordinator_swipe_recycler.view.*
 import kotlinx.android.synthetic.main.fragment_recycler_refresh_scrollbar.*

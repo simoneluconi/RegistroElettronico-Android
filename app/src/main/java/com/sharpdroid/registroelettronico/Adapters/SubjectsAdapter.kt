@@ -7,13 +7,13 @@ import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.widget.TextView
-import com.sharpdroid.registroelettronico.Activities.or
 import com.sharpdroid.registroelettronico.Databases.Entities.Subject
 import com.sharpdroid.registroelettronico.Databases.Entities.SubjectInfo
 import com.sharpdroid.registroelettronico.Databases.Entities.Teacher
 import com.sharpdroid.registroelettronico.Fragments.FragmentSubjects
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Metodi.capitalizeEach
+import com.sharpdroid.registroelettronico.Utils.or
 import kotlinx.android.synthetic.main.adapter_subject.view.*
 import java.util.*
 

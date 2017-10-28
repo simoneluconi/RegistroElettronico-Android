@@ -260,7 +260,9 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                     .withAccountHeader(headerResult!!)
                     .withActionBarDrawerToggleAnimated(true)
                     .withOnDrawerItemClickListener(this)
-                    .addDrawerItems(PrimaryDrawerItem().withIdentifier(R.id.agenda.toLong()).withName(R.string.agenda).withIcon(R.drawable.ic_event).withIconTintingEnabled(true),
+                    .addDrawerItems(
+                            PrimaryDrawerItem().withIdentifier(R.id.today.toLong()).withName(R.string.today_at_school).withIcon(R.drawable.ic_today_black_24dp).withIconTintingEnabled(true),
+                            PrimaryDrawerItem().withIdentifier(R.id.agenda.toLong()).withName(R.string.agenda).withIcon(R.drawable.ic_event).withIconTintingEnabled(true),
                             PrimaryDrawerItem().withIdentifier(R.id.medie.toLong()).withName(R.string.medie).withIcon(R.drawable.ic_timeline).withIconTintingEnabled(true),
                             PrimaryDrawerItem().withIdentifier(R.id.lessons.toLong()).withName(R.string.lessons).withIcon(R.drawable.ic_view_agenda).withIconTintingEnabled(true),
                             PrimaryDrawerItem().withIdentifier(R.id.files.toLong()).withName(R.string.files).withIcon(R.drawable.ic_folder).withIconTintingEnabled(true),
@@ -328,48 +330,55 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
      */
     override fun onItemClick(view: View?, position: Int, drawerItem: IDrawerItem<*, *>): Boolean {
         val fragment: Fragment
+        val p = Profile.getProfile(this)
 
         params?.scrollFlags = 0
-        when (position) {
-            1 -> {
+        when (drawerItem.identifier.toInt()) {
+            R.id.today -> {
+                fragment = FragmentToday()
+                updateAbsence(this, p)
+                updateLessons(this, p)
+                updateAgenda(this, p)
+            }
+            R.id.agenda -> {
                 //calendar.visibility = View.VISIBLE
                 //fab_big_add.visibility = View.VISIBLE
 
                 fragment = FragmentAgenda()
-                updateAgenda(this)
-                updatePeriods(this)
+                updateAgenda(this, p)
+                updatePeriods(this, p)
             }
-            2 -> {
+            R.id.medie -> {
                 tab_layout?.visibility = View.VISIBLE
                 params?.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS or AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP
 
                 fragment = FragmentMediePager()
-                //updateSubjects(this)
-                updateMarks(this)
+                //updateSubjects(this, p)
+                updateMarks(this, p)
             }
-            3 -> {
+            R.id.lessons -> {
                 fragment = FragmentSubjects()
-                updateSubjects(this)
-                updateLessons(this)
+                updateSubjects(this, p)
+                updateLessons(this, p)
             }
-            4 -> {
+            R.id.files -> {
                 fragment = FragmentFolders()
-                updateFolders(this)
+                updateFolders(this, p)
             }
-            5 -> {
+            R.id.absences -> {
                 fragment = FragmentAllAbsences()
-                updateAbsence(this)
+                updateAbsence(this, p)
             }
-            6 -> {
+            R.id.notes -> {
                 fragment = FragmentNote()
-                updateNote(this)
+                updateNote(this, p)
             }
-            7 -> {
+            R.id.communications -> {
                 fragment = FragmentCommunications()
-                updateBacheca(this)
+                updateBacheca(this, p)
             }
-            8 -> fragment = FragmentSettings()
-            10 -> {
+            R.id.settings -> fragment = FragmentSettings()
+            R.id.nav_share -> {
                 val intent = Intent(Intent.ACTION_SEND)
                 intent.type = "text/plain"
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Registro Elettronico")
@@ -381,7 +390,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                     Answers.getInstance().logShare(ShareEvent().putMethod("ACTION_SEND"))
                 return true
             }
-            11 -> {
+            R.id.nav_send -> {
                 val intentMail = Intent(Intent.ACTION_SENDTO)
                 intentMail.data = Uri.parse("mailto:registroelettronico@simoneluconi.com")
                 intentMail.putExtra(Intent.EXTRA_SUBJECT, "Registro Elettronico")

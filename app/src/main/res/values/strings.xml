@@ -69,6 +69,7 @@
     <string name="hours">Sei %1$s alla %2$dª ora</string>
 
     <string name="free_day">Giornata libera!</string>
+    <string name="today_at_school">Oggi a scuola</string>
     <string name="your_averages">Le tue medie</string>
     <string name="orale">Orale</string>
     <string name="scritto">Scritto</string>

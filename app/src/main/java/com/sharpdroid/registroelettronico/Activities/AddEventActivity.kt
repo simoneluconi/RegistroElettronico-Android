@@ -24,6 +24,7 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Account
 import com.sharpdroid.registroelettronico.Utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.Utils.Metodi.capitalizeFirst
+import com.sharpdroid.registroelettronico.Utils.or
 import com.sharpdroid.registroelettronico.Views.LocalEvent.OptionView
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import kotlinx.android.synthetic.main.activity_add_event.*
