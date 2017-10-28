@@ -109,12 +109,12 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
     }
 
     private fun initTarget() {
-        target.setTarget(getTarget(subject), false)
+        target.setTarget(avg.avg, getTarget(subject), false)
         target.setProgress(avg.avg)
 
         //set listener for button
 
-        target.setButtonsListener({ _ ->
+        target.setButtonsListener(View.OnClickListener { _ ->
             val alert = AlertDialog.Builder(this)
             alert.setTitle(getString(R.string.obiettivo_title))
             alert.setMessage(getString(R.string.obiettivo_summary))
@@ -146,19 +146,19 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
             })
 
             alert.show()
-        }) { _ ->
+        }, View.OnClickListener { _ ->
             val alert = AlertDialog.Builder(this)
             alert.setTitle(getString(R.string.obiettivo_title))
             alert.setMessage(MessaggioVoto(target.target, avg.avg, avg.count))
             alert.show()
-        }
+        })
     }
 
     private fun updateTarget(new_target: Float) {
         subject.target = new_target
         SugarRecord.save(subject)
 
-        target.postDelayed({ target.setTarget(getTarget(subject), true) }, ViewConfiguration.getTapTimeout().toLong())
+        target.postDelayed({ target.setTarget(avg.avg, getTarget(subject), true) }, ViewConfiguration.getTapTimeout().toLong())
         marks.setSubject(subject, avg.avg)
     }
 
