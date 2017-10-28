@@ -13,6 +13,7 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_gravity="center"
+        android:contentDescription="TODO"
         app:srcCompat="@drawable/ic_event_available" />
 
     <TextView

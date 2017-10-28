@@ -7,5 +7,5 @@
     android:clipToPadding="false"
     android:paddingBottom="@dimen/list_item_spacing_half"
     android:paddingTop="@dimen/list_item_spacing_half"
-    tools:context="com.sharpdroid.registroelettronico.BottomSheet.AgendaBS"
+    tools:context=".fragments.bottomSheet.AgendaBS"
     tools:listitem="@layout/fragment_item_agenda_options" />

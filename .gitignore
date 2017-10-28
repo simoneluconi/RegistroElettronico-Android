@@ -6,8 +6,6 @@
 /build
 /captures
 .externalNativeBuild
-.idea/kotlinc.xml
-
 # Local configuration file (sdk path, etc)
 keystore.properties
 app/fabric.properties
