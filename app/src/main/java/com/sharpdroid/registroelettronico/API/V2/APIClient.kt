@@ -40,11 +40,11 @@ class APIClient {
 
             val loginInterceptor = Interceptor { chain: Interceptor.Chain ->
                 val original = chain.request()
-                if (profile != null && original.url().toString() != API_URL + "/auth/login" && profile.expire < System.currentTimeMillis()) {
+                if (profile != null && original.url().toString() != API_URL + "auth/login" && profile.expire < System.currentTimeMillis()) {
                     Log.d("LOGIN INTERCEPTOR", "TOKEN EXPIRED, REQUESTING NEW TOKEN")
 
                     val loginRes = chain.proceed(original.newBuilder()
-                            .url(API_URL + "/auth/login")
+                            .url(API_URL + "auth/login")
                             .method("POST",
                                     RequestBody.create(
                                             MediaType.parse("application/json"),
