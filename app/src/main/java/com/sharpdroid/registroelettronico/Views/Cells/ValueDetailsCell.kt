@@ -1,0 +1,75 @@
+package com.sharpdroid.registroelettronico.Views.Cells
+
+import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.text.TextUtils
+import android.util.TypedValue
+import android.view.Gravity
+import android.view.View
+import android.widget.FrameLayout
+import android.widget.TextView
+
+import com.sharpdroid.registroelettronico.Utils.LayoutHelper
+import com.sharpdroid.registroelettronico.Utils.Metodi
+
+class ValueDetailsCell(context: Context) : FrameLayout(context) {
+    private var textView: TextView
+    private var valueTextView: TextView
+    private var dividerPaint: Paint = Paint()
+    private var needDivider: Boolean = false
+
+    init {
+        dividerPaint.strokeWidth = 1f
+        dividerPaint.color = -0x262627
+
+        textView = TextView(context)
+        textView.setTextColor(Color.BLACK)
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
+        textView.setLines(1)
+        textView.maxLines = 1
+        textView.setSingleLine(true)
+        textView.ellipsize = TextUtils.TruncateAt.END
+        textView.gravity = Gravity.START or Gravity.CENTER_VERTICAL
+        addView(textView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT.toFloat(), Gravity.START or Gravity.TOP, 17f, 10f, 17f, 0f))
+
+        valueTextView = TextView(context)
+        valueTextView.setTextColor(-0x757576)
+        valueTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 13f)
+        valueTextView.gravity = Gravity.START
+        valueTextView.setLines(1)
+        valueTextView.maxLines = 1
+        valueTextView.setSingleLine(true)
+        valueTextView.setPadding(0, 0, 0, 0)
+        addView(valueTextView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT.toFloat(), Gravity.START or Gravity.TOP, 17f, 35f, 17f, 0f))
+    }
+
+    fun setTextAndValue(text: String, value: String, divider: Boolean) {
+        textView.visibility = View.VISIBLE
+        valueTextView.visibility = View.VISIBLE
+        textView.text = text
+        valueTextView.text = value
+        needDivider = divider
+        setWillNotDraw(!divider)
+    }
+
+    fun setText(text: String, divider: Boolean) {
+        textView.visibility = View.VISIBLE
+        valueTextView.visibility = View.GONE
+        textView.text = text
+        needDivider = divider
+        setWillNotDraw(!divider)
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        if (needDivider) {
+            canvas.drawLine(paddingLeft.toFloat(), (height - 1).toFloat(), (width - paddingRight).toFloat(), (height - 1).toFloat(), dividerPaint)
+        }
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(View.MeasureSpec.makeMeasureSpec(View.MeasureSpec.getSize(widthMeasureSpec), View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(Metodi.dp(64) + if (needDivider) 1 else 0, View.MeasureSpec.EXACTLY))
+
+    }
+}

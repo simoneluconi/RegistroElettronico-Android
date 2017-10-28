@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.support.v7.widget.RecyclerView
+import android.view.View
 import android.view.ViewGroup
 import com.sharpdroid.registroelettronico.Adapters.Holders.Holder
 import com.sharpdroid.registroelettronico.Databases.Entities.Choice
@@ -40,13 +41,13 @@ class LoginAdapter(choiceList: List<Choice>, private val c: Context, private val
                     checked.remove(ident)
                 listener.invoke(checked)
             }
-            checkboxCell.setCheckBoxListener { _ ->
+            checkboxCell.setCheckBoxListener(View.OnClickListener { _ ->
                 if (checkboxCell.isChecked)
                     checked.add(ident)
                 else
                     checked.remove(ident)
                 listener.invoke(checked)
-            }
+            })
         }
         val attrs = intArrayOf(android.R.attr.selectableItemBackground)
         val ta = c.obtainStyledAttributes(attrs)
