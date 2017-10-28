@@ -919,8 +919,6 @@ public class Metodi {
         try {
             context.startActivity(browserIntent);
         } catch (ActivityNotFoundException e) {
-            snackbar.setText("Impossibile aprire il link richiesto");
-            snackbar.setDuration(Snackbar.LENGTH_SHORT);
             snackbar.show();
         }
     }
