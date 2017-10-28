@@ -4,7 +4,10 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
@@ -687,6 +690,32 @@ public class Metodi {
         } catch (ActivityNotFoundException e) {
             snackbar.show();
         }
+    }
+
+    public static String eventToString(SuperAgenda e, String head) {
+        return capitalizeFirst(complex.format(e.getAgenda().getStart())) + "\n" + capitalizeFirst(e.getAgenda().getNotes());
+    }
+
+    public static Bitmap AccountImage(String nome) {
+        Bitmap src = Bitmap.createBitmap(255, 255, Bitmap.Config.ARGB_8888);
+        src.eraseColor(Color.parseColor("#03A9F4"));
+        StringBuilder nomef = new StringBuilder();
+        String[] lett = nome.split("\\s+");
+        for (String s :
+                lett) {
+            nomef.append(s.substring(0, 1).toUpperCase());
+        }
+        Canvas cs = new Canvas(src);
+        Paint tPaint = new Paint();
+        float reduce = tPaint.measureText(nomef.toString());
+        tPaint.setTextSize(100 - reduce);
+        tPaint.setColor(Color.WHITE);
+        tPaint.setStyle(Paint.Style.FILL);
+        tPaint.setTextAlign(Paint.Align.CENTER);
+        float x_coord = src.getWidth() / 2;
+        float height = (src.getHeight() / 2) + 33;
+        cs.drawText(nomef.toString(), x_coord, height, tPaint);
+        return src;
     }
 
 }
