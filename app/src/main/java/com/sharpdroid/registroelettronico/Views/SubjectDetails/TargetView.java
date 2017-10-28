@@ -99,12 +99,14 @@ public class TargetView extends CardView {
         this.target = target;
         targetView.setText(String.format(Locale.getDefault(), "%.2f", target));
 
-        if (animate) {
-            animateBar(target, media, getColor(getMarkColor(media, target)));
-        } else {
-            progressBar.setProgressColor(getColor(getMarkColor(media, target)));
-            progressBar.setMax(target);
-            progressBar.setProgress(media);
+        if (media != -1) {
+            if (animate) {
+                animateBar(target, media, getColor(getMarkColor(media, target)));
+            } else {
+                progressBar.setProgressColor(getColor(getMarkColor(media, target)));
+                progressBar.setMax(target);
+                progressBar.setProgress(media);
+            }
         }
     }
 
