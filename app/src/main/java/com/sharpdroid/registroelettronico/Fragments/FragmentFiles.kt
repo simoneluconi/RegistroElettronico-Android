@@ -27,34 +27,20 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 
 class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, FileAdapter.DownloadListener {
     lateinit var layout: CoordinatorLayout
-    private val snackbar by lazy {
-        Snackbar.make(layout, "", Snackbar.LENGTH_SHORT)
-    }
 
     override fun didReceiveNotification(code: Int, args: Array<in Any>) {
         when (code) {
             EventType.DOWNLOAD_FILE_START -> {
-                with(snackbar) {
-                    setText(R.string.download_in_corso)
-                    duration = Snackbar.LENGTH_INDEFINITE
-                    show()
-                }
+                Snackbar.make(layout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE).show()
             }
             EventType.DOWNLOAD_FILE_OK -> {
-                with(snackbar) {
-                    val file: java.io.File = java.io.File(SugarRecord.findById(FileInfo::class.java, args[0] as Long).path)
-                    setText(activity.getString(R.string.file_downloaded, file.name))
-                    setAction(R.string.open) { openFile(activity, file) }
-                    duration = Snackbar.LENGTH_SHORT
-                    show()
-                }
+                val file: java.io.File = java.io.File(SugarRecord.findById(FileInfo::class.java, args[0] as Long).path)
+                Snackbar.make(layout, String.format(getString(R.string.file_downloaded), file.name), Snackbar.LENGTH_SHORT)
+                        .setAction(R.string.open) { openFile(activity, file) }
+                        .show()
             }
             EventType.DOWNLOAD_FILE_KO -> {
-                with(snackbar) {
-                    setText("File non scaricato")
-                    duration = Snackbar.LENGTH_SHORT
-                    show()
-                }
+                Snackbar.make(layout, R.string.download_failed, Snackbar.LENGTH_SHORT).show()
             }
         }
     }
@@ -122,7 +108,7 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
                 }
             }
             "link" -> {
-                openLink(activity, info.path, snackbar)
+                openLink(activity, info.path, Snackbar.make(layout, getString(R.string.failed_to_open_link), Snackbar.LENGTH_SHORT))
             }
             "text" -> {
                 MaterialDialog.Builder(activity).title(file.contentName).content(info.path).positiveText("OK").autoDismiss(true).show()
