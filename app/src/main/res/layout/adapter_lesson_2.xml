@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="72dp"
+    android:layout_height="wrap_content"
     android:paddingBottom="16dp"
     android:paddingTop="16dp"
     tools:layout_editor_absoluteY="25dp">
@@ -12,8 +12,8 @@
         android:id="@+id/circleImageView2"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
+        android:src="@color/light_green"
         app:layout_constraintBottom_toBottomOf="@+id/date"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/content" />
@@ -24,12 +24,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:layout_marginLeft="72dp"
-        android:layout_marginRight="16dp"
         android:layout_marginStart="72dp"
         android:text="Interrogazione, Julius Caesar"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textSize="18sp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -41,8 +39,21 @@
         android:layout_height="wrap_content"
         android:text="Inglese"
         android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/content"
         app:layout_constraintStart_toStartOf="@+id/content"
         app:layout_constraintTop_toBottomOf="@+id/content" />
+
+    <TextView
+        android:id="@+id/duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2h"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title.Inverse"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/circleImageView2"
+        app:layout_constraintEnd_toEndOf="@+id/circleImageView2"
+        app:layout_constraintStart_toStartOf="@+id/circleImageView2"
+        app:layout_constraintTop_toTopOf="@+id/circleImageView2" />
 
 </android.support.constraint.ConstraintLayout>
