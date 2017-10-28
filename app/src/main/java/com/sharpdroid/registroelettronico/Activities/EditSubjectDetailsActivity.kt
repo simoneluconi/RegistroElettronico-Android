@@ -21,6 +21,7 @@ import com.sharpdroid.registroelettronico.Databases.Entities.SubjectInfo
 import com.sharpdroid.registroelettronico.Databases.Entities.Teacher
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Metodi
+import com.sharpdroid.registroelettronico.Utils.or
 import com.sharpdroid.registroelettronico.Views.Cells.HeaderCell
 import com.sharpdroid.registroelettronico.Views.Cells.ShadowCell
 import com.sharpdroid.registroelettronico.Views.Cells.ValueDetailsCell
@@ -182,5 +183,3 @@ class EditSubjectDetailsActivity : AppCompatActivity() {
         }
     }
 }
-
-fun String?.or(s: String): String = if (isNullOrEmpty()) s else this!!

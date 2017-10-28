@@ -25,6 +25,7 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.Utils.Account
 import com.sharpdroid.registroelettronico.Utils.Metodi.MessaggioVoto
 import com.sharpdroid.registroelettronico.Utils.Metodi.capitalizeEach
+import com.sharpdroid.registroelettronico.Utils.or
 import kotlinx.android.synthetic.main.activity_mark_subject_detail.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import java.util.*
