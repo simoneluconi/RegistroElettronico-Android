@@ -68,7 +68,7 @@ data class Absence(
                 return map
             }
 
-            for (i in 0 until absencesInSchoolDays.size - 1) {
+            loop@ for (i in 0 until absencesInSchoolDays.size - 1) {
                 val timeDifference = (absencesInSchoolDays[i].date.time - absencesInSchoolDays[i + 1].date.time) / 3600000
                 if (startAbsence == null) {
                     startAbsence = absencesInSchoolDays[i]
@@ -85,6 +85,7 @@ data class Absence(
                         //SPLIT absences
                         map.put(startAbsence!!, days)
                         startAbsence = null
+                        continue@loop
                     }
                     timeDifference == 72L -> {
                         //is friday->monday CONTINUE else SPLIT
@@ -93,6 +94,7 @@ data class Absence(
                         } else {
                             map.put(startAbsence!!, days)
                             startAbsence = null
+                            continue@loop
                         }
                     }
                     timeDifference == 48L -> {
@@ -102,6 +104,7 @@ data class Absence(
                         } else {
                             map.put(startAbsence!!, days)
                             startAbsence = null
+                            continue@loop
                         }
                     }
                     timeDifference == 24L -> {
