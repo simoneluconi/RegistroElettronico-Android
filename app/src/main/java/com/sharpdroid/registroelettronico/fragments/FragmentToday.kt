@@ -90,9 +90,9 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
     }
 
     private fun initializeDay(date: Date) {
-        absences.addAll(SugarRecord.find(Absence::class.java, "DATE = 1508277600000 AND PROFILE=${Account.with(context).user}"))
+        absences.addAll(SugarRecord.find(Absence::class.java, "DATE = ${date.time} AND PROFILE=${Account.with(context).user}"))
 
-        lessons.addAll(SugarRecord.findWithQuery(Lesson::class.java, "SELECT ID, M_ARGUMENT, M_AUTHOR_NAME, M_DATE, M_HOUR_POSITION, M_SUBJECT_DESCRIPTION, COUNT(ID) as M_DURATION FROM LESSON WHERE M_DATE = 1508277600000 AND PROFILE=${Account.with(context).user} GROUP BY M_ARGUMENT, M_SUBJECT_ID ORDER BY M_HOUR_POSITION ASC "))
+        lessons.addAll(SugarRecord.findWithQuery(Lesson::class.java, "SELECT ID, M_ARGUMENT, M_AUTHOR_NAME, M_DATE, M_HOUR_POSITION, M_SUBJECT_DESCRIPTION, COUNT(ID) as M_DURATION FROM LESSON WHERE M_DATE = ${date.time} AND PROFILE=${Account.with(context).user} GROUP BY M_ARGUMENT, M_SUBJECT_ID ORDER BY M_HOUR_POSITION ASC "))
 
         absence_card.visibility = if (absences.isNotEmpty()) View.VISIBLE else View.GONE
         lessons_empty.visibility = if (lessons.isEmpty()) View.VISIBLE else View.GONE
