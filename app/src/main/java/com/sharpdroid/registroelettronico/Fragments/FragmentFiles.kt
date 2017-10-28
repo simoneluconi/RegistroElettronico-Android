@@ -27,14 +27,18 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 
 class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, FileAdapter.DownloadListener {
     lateinit var layout: CoordinatorLayout
-    lateinit private var snackbar: Snackbar
+    private val snackbar by lazy {
+        Snackbar.make(layout, "", Snackbar.LENGTH_SHORT)
+    }
 
     override fun didReceiveNotification(code: Int, args: Array<in Any>) {
-        snackbar = Snackbar.make(layout, "", Snackbar.LENGTH_SHORT)
         when (code) {
             EventType.DOWNLOAD_FILE_START -> {
-                snackbar = Snackbar.make(layout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE)
-                snackbar.show()
+                with(snackbar) {
+                    setText(R.string.download_in_corso)
+                    duration = Snackbar.LENGTH_INDEFINITE
+                    show()
+                }
             }
             EventType.DOWNLOAD_FILE_OK -> {
                 with(snackbar) {
