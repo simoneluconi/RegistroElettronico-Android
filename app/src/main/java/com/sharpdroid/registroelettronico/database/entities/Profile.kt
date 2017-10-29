@@ -34,9 +34,9 @@ data class Profile(
 
     companion object {
         fun getIProfiles(): List<IProfile<ProfileDrawerItem>> {
-            return SugarRecord.find(Profile::class.java, "").map {
+            return SugarRecord.findWithQuery(Profile::class.java, "SELECT * FROM PROFILE")?.map {
                 it.asIProfile()
-            }
+            } ?: emptyList()
         }
 
         fun getProfile(context: Context): Profile? {
