@@ -34,8 +34,10 @@ data class Profile(
 
     companion object {
         fun getIProfiles(): List<IProfile<ProfileDrawerItem>> {
-            return SugarRecord.findWithQuery(Profile::class.java, "SELECT * FROM PROFILE")?.map {
-                it.asIProfile()
+            return SugarRecord.findWithQuery(Profile::class.java, "SELECT * FROM PROFILE")?.filter {
+                it != null
+            }?.map {
+                it?.asIProfile() ?: throw IllegalStateException("Profile cannot be null")
             } ?: emptyList()
         }
 
