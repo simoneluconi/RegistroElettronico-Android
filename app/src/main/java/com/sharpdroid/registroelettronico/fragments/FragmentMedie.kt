@@ -1,5 +1,6 @@
 package com.sharpdroid.registroelettronico.fragments
 
+import android.content.Context
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.graphics.Color
 import android.os.Bundle
@@ -14,28 +15,25 @@ import com.sharpdroid.registroelettronico.database.entities.Average
 import com.sharpdroid.registroelettronico.utils.ItemOffsetDecoration
 import com.sharpdroid.registroelettronico.views.EmptyFragment
 import kotlinx.android.synthetic.main.coordinator_swipe_recycler_padding.*
-import kotlinx.android.synthetic.main.coordinator_swipe_recycler_padding.view.*
 
 class FragmentMedie : Fragment() {
     private var periodo: Int = 0
     private val mRVAdapter by lazy {
         MedieAdapter(context)
     }
-    private val emptyHolder by lazy {
-        EmptyFragment(context)
-    }
+    private var emptyHolder: EmptyFragment? = null
 
-    override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val layout = inflater.inflate(R.layout.coordinator_swipe_recycler_padding, container, false)
-        emptyHolder.visibility = View.GONE
-        emptyHolder.setTextAndDrawable("Nessun voto", R.drawable.ic_timeline)
-        layout.relative.addView(emptyHolder)
-        return layout
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) = inflater.inflate(R.layout.coordinator_swipe_recycler_padding, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (emptyHolder == null) {
+            emptyHolder = EmptyFragment(context)
+        }
+        emptyHolder?.visibility = View.GONE
+        emptyHolder?.setTextAndDrawable("Nessun voto", R.drawable.ic_timeline)
+        relative.addView(emptyHolder)
 
         periodo = arguments.getInt("q")
 
@@ -53,10 +51,13 @@ class FragmentMedie : Fragment() {
         }
     }
 
-    fun addSubjects(markSubjects: List<Average>, p: Int) {
+    fun addSubjects(context: Context, markSubjects: List<Average>, p: Int) {
         mRVAdapter.clear()
         mRVAdapter.addAll(markSubjects, p)
 
-        emptyHolder.visibility = if (markSubjects.isEmpty()) View.VISIBLE else View.GONE
+        if (emptyHolder == null) {
+            emptyHolder = EmptyFragment(context)
+        }
+        emptyHolder?.visibility = if (markSubjects.isEmpty()) View.VISIBLE else View.GONE
     }
 }

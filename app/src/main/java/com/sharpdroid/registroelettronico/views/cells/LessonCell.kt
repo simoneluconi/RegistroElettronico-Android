@@ -26,8 +26,4 @@ class LessonCell(context: Context) : FrameLayout(context) {
         duration.text = "${lesson.mDuration}h"
         date.text = capitalizeEach(lesson.mSubjectDescription)
     }
-
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec * (data?.mDuration ?: 1))
-    }
 }

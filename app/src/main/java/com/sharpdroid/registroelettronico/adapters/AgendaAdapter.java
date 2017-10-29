@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.StrikethroughSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,7 +67,6 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             eventHolder.divider.setVisibility((CVDataList.get(position - 1) instanceof String) ? View.INVISIBLE : View.VISIBLE);
 
             eventHolder.itemView.setOnClickListener((View v) -> {
-                Log.d("CLICK", "CLICK");
                 if (mClickListener != null)
                     mClickListener.onAgendaItemClicked(event);
             });
@@ -90,7 +88,6 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             eventHolder.divider.setVisibility(getItemViewType(position - 1) == R.layout.adapter_header ? View.INVISIBLE : View.VISIBLE);
 
             eventHolder.itemView.setOnClickListener((View v) -> {
-                Log.d("CLICK", "CLICK");
                 if (mClickListener != null)
                     mClickListener.onAgendaItemClicked(event);
             });
