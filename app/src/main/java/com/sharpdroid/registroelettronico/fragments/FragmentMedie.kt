@@ -21,12 +21,13 @@ class FragmentMedie : Fragment() {
     private val mRVAdapter by lazy {
         MedieAdapter(context)
     }
-    lateinit private var emptyHolder: EmptyFragment
+    private val emptyHolder by lazy {
+        EmptyFragment(context)
+    }
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val layout = inflater.inflate(R.layout.coordinator_swipe_recycler_padding, container, false)
-        emptyHolder = EmptyFragment(context)
         emptyHolder.visibility = View.GONE
         emptyHolder.setTextAndDrawable("Nessun voto", R.drawable.ic_timeline)
         layout.relative.addView(emptyHolder)
