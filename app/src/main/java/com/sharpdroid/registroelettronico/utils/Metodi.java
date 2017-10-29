@@ -307,7 +307,7 @@ public class Metodi {
         if (p == null) return;
 
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_MARKS_START, null));
-        APIClient.Companion.with(c, p).getGrades().subscribe(gradeAPI -> {
+        APIClient.Companion.with(p).getGrades().subscribe(gradeAPI -> {
             SugarRecord.deleteAll(Grade.class, "PROFILE=?", String.valueOf(p.getId()));
             SugarRecord.saveInTx(gradeAPI.getGrades(p));
             handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_MARKS_OK, null));
@@ -327,7 +327,7 @@ public class Metodi {
             NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_SUBJECTS_START, null);
             NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_TEACHERS_START, null);
         });
-        APIClient.Companion.with(c, p).getSubjects().subscribeOn(AndroidSchedulers.mainThread()).subscribe(subjectAPI -> {
+        APIClient.Companion.with(p).getSubjects().subscribeOn(AndroidSchedulers.mainThread()).subscribe(subjectAPI -> {
             List<Teacher> allTeachers = new ArrayList<>();
 
             Log.d("SugarOrm", "DELETING SUBJECTS");
@@ -364,7 +364,7 @@ public class Metodi {
         String[] dates = getStartEnd("yyyyMMdd");
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_LESSONS_START, null));
-        APIClient.Companion.with(c, p).getLessons(dates[0], dates[1])
+        APIClient.Companion.with(p).getLessons(dates[0], dates[1])
                 .subscribe(l -> {
                     SugarRecord.deleteAll(Lesson.class, "PROFILE=?", String.valueOf(p.getId()));
                     SugarRecord.saveInTx(l.getLessons(p));
@@ -382,7 +382,7 @@ public class Metodi {
     public static void updateFolders(@NotNull Context c, Profile p) {
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_FOLDERS_START, null));
-        APIClient.Companion.with(c, p).getDidactics()
+        APIClient.Companion.with(p).getDidactics()
                 .subscribe(didacticAPI -> {
                     List<com.sharpdroid.registroelettronico.database.entities.File> files = new LinkedList<>();
                     List<Folder> folders = new LinkedList<>();
@@ -418,9 +418,9 @@ public class Metodi {
                     //Download informations if not file
                     for (com.sharpdroid.registroelettronico.database.entities.File f : SugarRecord.find(com.sharpdroid.registroelettronico.database.entities.File.class, "PROFILE=? AND TYPE!='file' AND ID NOT IN (SELECT ID FROM FILE_INFO)", new String[]{String.valueOf(p.getId())})) {
                         if (f.getType().equals("link"))
-                            APIClient.Companion.with(c, p).getAttachmentUrl(f.getId()).subscribe(downloadURL -> SugarRecord.save(new FileInfo(f.getObjectId(), downloadURL.getItem().getLink())), Throwable::printStackTrace);
+                            APIClient.Companion.with(p).getAttachmentUrl(f.getId()).subscribe(downloadURL -> SugarRecord.save(new FileInfo(f.getObjectId(), downloadURL.getItem().getLink())), Throwable::printStackTrace);
                         else
-                            APIClient.Companion.with(c, p).getAttachmentTxt(f.getId()).subscribe(downloadTXT -> SugarRecord.save(new FileInfo(f.getObjectId(), downloadTXT.getItem().getText())));
+                            APIClient.Companion.with(p).getAttachmentTxt(f.getId()).subscribe(downloadTXT -> SugarRecord.save(new FileInfo(f.getObjectId(), downloadTXT.getItem().getText())));
                     }
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_FOLDERS_OK, null));
                 }, throwable -> {
@@ -438,7 +438,7 @@ public class Metodi {
         String[] dates = getStartEnd("yyyyMMdd");
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_AGENDA_START, null));
-        APIClient.Companion.with(c, p).getAgenda(dates[0], dates[1])
+        APIClient.Companion.with(p).getAgenda(dates[0], dates[1])
                 .subscribe(agendaAPI -> {
                     List<RemoteAgenda> apiAgenda = agendaAPI.getAgenda(p);
                     SugarRecord.deleteAll(RemoteAgenda.class, "PROFILE=?", String.valueOf(p.getId()));
@@ -457,7 +457,7 @@ public class Metodi {
     public static void updateAbsence(@NotNull Context c, Profile p) {
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_ABSENCES_START, null));
-        APIClient.Companion.with(c, p).getAbsences()
+        APIClient.Companion.with(p).getAbsences()
                 .subscribe(absenceAPI -> {
                     SugarRecord.deleteAll(Absence.class, "PROFILE=?", String.valueOf(p.getId()));
                     SugarRecord.saveInTx(absenceAPI.getEvents(p));
@@ -475,7 +475,7 @@ public class Metodi {
     public static void updateBacheca(@NotNull Context c, Profile p) {
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_BACHECA_START, null));
-        APIClient.Companion.with(c, p).getBacheca()
+        APIClient.Companion.with(p).getBacheca()
                 .subscribe(communicationAPI -> {
                     List<Communication> list = communicationAPI.getCommunications(p);
                     List<Communication> toRemove = new ArrayList<>();
@@ -489,7 +489,7 @@ public class Metodi {
                         @Nullable CommunicationInfo info = SugarRecord.findById(CommunicationInfo.class, communication.getMyId());
                         if (info == null || !communication.isRead() || info.getContent().isEmpty()) {
                             System.out.println("REQUEST - " + communication.getTitle());
-                            APIClient.Companion.with(c, p).readBacheca(communication.getEvtCode(), communication.getId()).subscribe(readResponse -> {
+                            APIClient.Companion.with(p).readBacheca(communication.getEvtCode(), communication.getId()).subscribe(readResponse -> {
                                 communication.setRead(true);
                                 SugarRecord.save(communication);
 
@@ -522,7 +522,7 @@ public class Metodi {
     public static void updateNote(@NotNull Context c, Profile p) {
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_NOTES_START, null));
-        APIClient.Companion.with(c, p).getNotes()
+        APIClient.Companion.with(p).getNotes()
                 .subscribe(notes -> {
                     SugarRecord.deleteAll(Note.class, "PROFILE=?", String.valueOf(p.getId()));
                     SugarRecord.saveInTx(notes.getNotes(p));
@@ -540,7 +540,7 @@ public class Metodi {
     public static void updatePeriods(@NotNull Context c, Profile p) {
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_PERIODS_START, null));
-        APIClient.Companion.with(c, p).getPeriods()
+        APIClient.Companion.with(p).getPeriods()
                 .subscribe(notes -> {
                     SugarRecord.deleteAll(Period.class, "PROFILE=?", String.valueOf(p.getId()));
                     SugarRecord.saveInTx(notes.getPeriods(p));
@@ -563,7 +563,7 @@ public class Metodi {
                         "Registro Elettronico" + File.separator + "Circolari");
 
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_START, new Long[]{communication.getMyId()}));
-        APIClient.Companion.with(c, p).getBachecaAttachment(communication.getEvtCode(), communication.getId())
+        APIClient.Companion.with(p).getBachecaAttachment(communication.getEvtCode(), communication.getId())
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -610,7 +610,7 @@ public class Metodi {
                         "Registro Elettronico" + File.separator + "Didattica");
 
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_START, new Long[]{f.getObjectId()}));
-        APIClient.Companion.with(c, p).getAttachmentFile((int) f.getId())
+        APIClient.Companion.with(p).getAttachmentFile((int) f.getId())
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

@@ -67,7 +67,7 @@ class LoginActivity : AppCompatActivity() {
         login_btn.isEnabled = false
         login_btn.setText(R.string.caricamento)
 
-        APIClient.with(this, null).postLogin(LoginRequest(mPassword, mEmail, ""))
+        APIClient.with(null).postLogin(LoginRequest(mPassword, mEmail, ""))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ login ->
                     if (login.choices != null) {
@@ -134,7 +134,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun loginWithIdent(email: String, password: String, ident: String) {
         val c = this
-        APIClient.with(c, null).postLogin(LoginRequest(password, email, ident))
+        APIClient.with(null).postLogin(LoginRequest(password, email, ident))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ (ident1, firstName, lastName, token, expire) ->
                     SugarRecord.save(Option(ident1!!.substring(1, 8).toLong(), true, true, true, true, true))
