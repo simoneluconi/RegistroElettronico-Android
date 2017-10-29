@@ -27,11 +27,15 @@ android {
         applicationId "com.sharpdroid.registroelettronico"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 482
-        versionName "2.0.82"
+        versionCode 483
+        versionName "2.0.83"
 
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
+    }
+
+    dexOptions {
+        javaMaxHeapSize "2g"
     }
 
     dataBinding {
