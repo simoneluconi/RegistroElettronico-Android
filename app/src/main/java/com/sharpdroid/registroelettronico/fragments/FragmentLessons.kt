@@ -43,11 +43,7 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
     private lateinit var mRVAdapter: AllLessonsAdapter
     private lateinit var emptyHolder: EmptyFragment
     var subject: SubjectInfo? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        subject = SugarRecord.findById(Subject::class.java, arguments?.getInt("code") ?: savedInstanceState?.getInt("code") ?: -1)?.getInfo(activity)
-    }
+    var code: Int? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -62,13 +58,11 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         NotificationManager.instance.addObserver(this, EventType.UPDATE_LESSONS_KO, EventType.UPDATE_LESSONS_OK, EventType.UPDATE_LESSONS_START)
-
-        activity.title = capitalizeEach(subject!!.description.or(subject!!.subject.description))
+        code = arguments?.getInt("code") ?: savedInstanceState?.getInt("code") ?: -1
 
         mRVAdapter = AllLessonsAdapter(context)
         recycler.layoutManager = LinearLayoutManager(context)
         recycler.adapter = mRVAdapter
-
 
         swiperefresh.setOnRefreshListener(this)
         swiperefresh.setColorSchemeResources(
@@ -89,7 +83,6 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
     }
 
     override fun onRefresh() {
-        swiperefresh.isRefreshing = true
         updateLessons(context)
     }
 
@@ -101,7 +94,12 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
     }
 
     private fun load() {
-        addLessons(SugarRecord.findWithQuery(Lesson::class.java, "select * from LESSON where M_SUBJECT_ID=? ORDER BY M_DATE DESC", subject?.subject?.id.toString()))
+        if (subject == null) {
+            subject = SugarRecord.findById(Subject::class.java, code)?.getInfo(activity)
+            activity.title = capitalizeEach(subject?.description.or(subject?.subject?.description ?: ""))
+        }
+
+        addLessons(SugarRecord.findWithQuery(Lesson::class.java, "select * from LESSON where M_SUBJECT_ID=? ORDER BY M_DATE DESC", code.toString()))
     }
 
     override fun onDestroyView() {
