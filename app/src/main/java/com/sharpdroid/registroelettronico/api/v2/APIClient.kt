@@ -1,9 +1,6 @@
 package com.sharpdroid.registroelettronico.api.v2
 
-import android.content.Context
-import android.preference.PreferenceManager
 import android.util.Log
-import com.google.android.gms.security.ProviderInstaller
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.orm.SugarRecord
@@ -26,18 +23,7 @@ import java.util.*
 class APIClient {
 
     companion object {
-
-
-        fun with(context: Context, profile: Profile?): SpaggiariREST {
-            val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
-
-            try {
-                //Installa il supporto al TSL se non è presente
-                ProviderInstaller.installIfNeeded(context)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-
+        fun with(profile: Profile?): SpaggiariREST {
             val loginInterceptor = Interceptor { chain: Interceptor.Chain ->
                 val original = chain.request()
                 if (profile != null && original.url().toString() != API_URL + "auth/login" && profile.expire < System.currentTimeMillis()) {
@@ -65,12 +51,8 @@ class APIClient {
 
                         SugarRecord.update(profile)
 
-                        sharedPref.edit()
-                                .putBoolean("spaggiari-logged", false)
-                                .apply()
                         chain.proceed(original)
                     } else {
-                        sharedPref.edit().putBoolean("spaggiari-logged", false).apply()
                         chain.proceed(original)
                     }
 

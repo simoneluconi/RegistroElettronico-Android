@@ -101,7 +101,7 @@ class NotificationService : JobService() {
         val dates = getStartEnd("yyyyMMdd")
         val agenda: List<RemoteAgenda>
         agenda = try {
-            APIClient.with(applicationContext, profile).getAgenda(dates[0], dates[1]).blockingFirst()?.getAgenda(profile) ?: return 0
+            APIClient.with(profile).getAgenda(dates[0], dates[1]).blockingFirst()?.getAgenda(profile) ?: return 0
         } catch (err: Error) {
             return 0
         }
@@ -113,7 +113,7 @@ class NotificationService : JobService() {
 
     private fun getVotiDiff(profile: Profile): Int {
         val marks: List<Grade> = try {
-            APIClient.with(applicationContext, profile).getGrades().blockingFirst()?.getGrades(profile) ?: return 0
+            APIClient.with(profile).getGrades().blockingFirst()?.getGrades(profile) ?: return 0
         } catch (e: Error) {
             return 0
         }
@@ -126,7 +126,7 @@ class NotificationService : JobService() {
 
     private fun getComunicazioniDiff(profile: Profile): Int {
         var comm: List<Communication> = try {
-            APIClient.with(applicationContext, profile).getBacheca().blockingFirst()?.getCommunications(profile) ?: return 0
+            APIClient.with(profile).getBacheca().blockingFirst()?.getCommunications(profile) ?: return 0
         } catch (e: Error) {
             return 0
         }
@@ -139,7 +139,7 @@ class NotificationService : JobService() {
 
     private fun getNoteDiff(profile: Profile): Int {
         val note: List<Note> = try {
-            APIClient.with(applicationContext, profile).getNotes().blockingFirst()?.getNotes(profile) ?: return 0
+            APIClient.with(profile).getNotes().blockingFirst()?.getNotes(profile) ?: return 0
         } catch (e: Error) {
             return 0
         }

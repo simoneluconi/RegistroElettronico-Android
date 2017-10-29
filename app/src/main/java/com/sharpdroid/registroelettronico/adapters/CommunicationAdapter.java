@@ -1,6 +1,5 @@
 package com.sharpdroid.registroelettronico.adapters;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -32,13 +31,11 @@ public class CommunicationAdapter extends RecyclerView.Adapter<CommunicationAdap
     private static final String TAG = CommunicationAdapter.class.getSimpleName();
     private final List<Communication> CVDataList = new CopyOnWriteArrayList<>();
     private final List<Communication> filtered = new CopyOnWriteArrayList<>();
-    private final Context mContext;
     private final SimpleDateFormat formatter = new SimpleDateFormat("d MMM", Locale.ITALIAN);
     private ItemFilter mFilter = new ItemFilter();
     private DownloadListener listener;
 
     public CommunicationAdapter(FragmentCommunications fragmentCommunications) {
-        this.mContext = fragmentCommunications.getContext();
         listener = fragmentCommunications;
     }
 
