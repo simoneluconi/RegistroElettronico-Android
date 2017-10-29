@@ -16,6 +16,7 @@
     <string name="note">Note</string>
     <string name="settings">Impostazioni</string>
     <string name="files">Materiale didattico</string>
+    <string name="incoming_events">Prossimi eventi</string>
 
     <!--ERRORI-->
     <string name="nointernet">Non sei connesso ad internet!</string>
