@@ -288,22 +288,22 @@ public class Metodi {
 
     public static void fetchDataOfUser(@NotNull Context c) {
         Profile p = Profile.Companion.getProfile(c);
-        updateSubjects(c, p);
-        updateLessons(c, p);
-        updateFolders(c, p);
-        updateAgenda(c, p);
-        updateAbsence(c, p);
-        updateBacheca(c, p);
-        updateNote(c, p);
-        updatePeriods(c, p);
-        updateMarks(c, p);
+        updateSubjects(p);
+        updateLessons(p);
+        updateFolders(p);
+        updateAgenda(p);
+        updateAbsence(p);
+        updateBacheca(p);
+        updateNote(p);
+        updatePeriods(p);
+        updateMarks(p);
     }
 
     public static void updateMarks(@NotNull Context c) {
-        updateMarks(c, Profile.Companion.getProfile(c));
+        updateMarks(Profile.Companion.getProfile(c));
     }
 
-    public static void updateMarks(@NotNull Context c, Profile p) {
+    public static void updateMarks(Profile p) {
         if (p == null) return;
 
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_MARKS_START, null));
@@ -318,10 +318,10 @@ public class Metodi {
     }
 
     public static void updateSubjects(@NotNull Context c) {
-        updateSubjects(c, Profile.Companion.getProfile(c));
+        updateSubjects(Profile.Companion.getProfile(c));
     }
 
-    public static void updateSubjects(@NotNull Context c, Profile p) {
+    public static void updateSubjects(Profile p) {
         if (p == null) return;
         handler.post(() -> {
             NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_SUBJECTS_START, null);
@@ -357,10 +357,10 @@ public class Metodi {
     }
 
     public static void updateLessons(@NotNull Context c) {
-        updateLessons(c, Profile.Companion.getProfile(c));
+        updateLessons(Profile.Companion.getProfile(c));
     }
 
-    public static void updateLessons(@NotNull Context c, Profile p) {
+    public static void updateLessons(Profile p) {
         String[] dates = getStartEnd("yyyyMMdd");
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_LESSONS_START, null));
@@ -376,10 +376,10 @@ public class Metodi {
     }
 
     public static void updateFolders(@NotNull Context c) {
-        updateFolders(c, Profile.Companion.getProfile(c));
+        updateFolders(Profile.Companion.getProfile(c));
     }
 
-    public static void updateFolders(@NotNull Context c, Profile p) {
+    public static void updateFolders(Profile p) {
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_FOLDERS_START, null));
         APIClient.Companion.with(p).getDidactics()
@@ -431,10 +431,10 @@ public class Metodi {
     }
 
     public static void updateAgenda(@NotNull Context c) {
-        updateAgenda(c, Profile.Companion.getProfile(c));
+        updateAgenda(Profile.Companion.getProfile(c));
     }
 
-    public static void updateAgenda(@NotNull Context c, Profile p) {
+    public static void updateAgenda(Profile p) {
         String[] dates = getStartEnd("yyyyMMdd");
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_AGENDA_START, null));
@@ -451,10 +451,10 @@ public class Metodi {
     }
 
     public static void updateAbsence(@NotNull Context c) {
-        updateAbsence(c, Profile.Companion.getProfile(c));
+        updateAbsence(Profile.Companion.getProfile(c));
     }
 
-    public static void updateAbsence(@NotNull Context c, Profile p) {
+    public static void updateAbsence(Profile p) {
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_ABSENCES_START, null));
         APIClient.Companion.with(p).getAbsences()
@@ -469,10 +469,10 @@ public class Metodi {
     }
 
     public static void updateBacheca(@NotNull Context c) {
-        updateBacheca(c, Profile.Companion.getProfile(c));
+        updateBacheca(Profile.Companion.getProfile(c));
     }
 
-    public static void updateBacheca(@NotNull Context c, Profile p) {
+    public static void updateBacheca(Profile p) {
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_BACHECA_START, null));
         APIClient.Companion.with(p).getBacheca()
@@ -516,10 +516,10 @@ public class Metodi {
     }
 
     public static void updateNote(@NotNull Context c) {
-        updateNote(c, Profile.Companion.getProfile(c));
+        updateNote(Profile.Companion.getProfile(c));
     }
 
-    public static void updateNote(@NotNull Context c, Profile p) {
+    public static void updateNote(Profile p) {
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_NOTES_START, null));
         APIClient.Companion.with(p).getNotes()
@@ -534,10 +534,10 @@ public class Metodi {
     }
 
     public static void updatePeriods(@NotNull Context c) {
-        updatePeriods(c, Profile.Companion.getProfile(c));
+        updatePeriods(Profile.Companion.getProfile(c));
     }
 
-    public static void updatePeriods(@NotNull Context c, Profile p) {
+    public static void updatePeriods(Profile p) {
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_PERIODS_START, null));
         APIClient.Companion.with(p).getPeriods()

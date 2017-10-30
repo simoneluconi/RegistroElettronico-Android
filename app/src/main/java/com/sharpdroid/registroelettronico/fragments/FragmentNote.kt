@@ -78,7 +78,7 @@ class FragmentNote : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notificat
         }
 
         load()
-        //download()
+        download()
         if (!BuildConfig.DEBUG)
             Answers.getInstance().logContentView(ContentViewEvent().putContentId("Note"))
     }

@@ -14,10 +14,7 @@ import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.AddEventActivity
 import com.sharpdroid.registroelettronico.adapters.AgendaAdapter
-import com.sharpdroid.registroelettronico.database.entities.LocalAgenda
-import com.sharpdroid.registroelettronico.database.entities.RemoteAgenda
-import com.sharpdroid.registroelettronico.database.entities.RemoteAgendaInfo
-import com.sharpdroid.registroelettronico.database.entities.SuperAgenda
+import com.sharpdroid.registroelettronico.database.entities.*
 import com.sharpdroid.registroelettronico.fragments.bottomSheet.AgendaBS
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.EventType
@@ -104,6 +101,13 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         if (!BuildConfig.DEBUG)
             Answers.getInstance().logContentView(ContentViewEvent().putContentId("Agenda"))
 
+        download()
+    }
+
+    private fun download() {
+        val p = Profile.getProfile(context)
+        updateAgenda(p)
+        updatePeriods(p)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

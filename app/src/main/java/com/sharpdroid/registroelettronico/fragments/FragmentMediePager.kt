@@ -95,6 +95,7 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
     override fun onResume() {
         super.onResume()
         load()
+        download()
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -131,7 +132,7 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
     }
 
     private fun download() {
-        updateMarks(activity)
+        updateMarks(context)
     }
 
     private fun getSnackBarMessage(pos: Int): String {
@@ -169,9 +170,9 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
         for (i in 0..pagerAdapter.count) {
             fragment = pagerAdapter.instantiateItem(view_pager, i) as FragmentMedie
             when (i) {
-                0 -> fragment.addSubjects(context, Grade.getAverages(grades.filter { it.mPeriod == 1 }, order), 1)
-                1 -> fragment.addSubjects(context, Grade.getAverages(grades.filter { it.mPeriod != 1 }, order), 3)
-                2 -> fragment.addSubjects(context, Grade.getAverages(grades, order), -1)
+                0 -> fragment.addSubjects(Grade.getAverages(grades.filter { it.mPeriod == 1 }, order), 1)
+                1 -> fragment.addSubjects(Grade.getAverages(grades.filter { it.mPeriod != 1 }, order), 3)
+                2 -> fragment.addSubjects(Grade.getAverages(grades, order), -1)
             }
         }
     }

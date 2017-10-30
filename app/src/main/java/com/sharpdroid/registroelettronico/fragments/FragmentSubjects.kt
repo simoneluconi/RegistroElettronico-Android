@@ -18,13 +18,10 @@ import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.EditSubjectDetailsActivity
 import com.sharpdroid.registroelettronico.adapters.SubjectsAdapter
-import com.sharpdroid.registroelettronico.database.entities.Subject
-import com.sharpdroid.registroelettronico.database.entities.SubjectInfo
-import com.sharpdroid.registroelettronico.database.entities.SubjectTeacher
-import com.sharpdroid.registroelettronico.database.entities.Teacher
+import com.sharpdroid.registroelettronico.database.entities.*
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.EventType
-import com.sharpdroid.registroelettronico.utils.Metodi.dp
+import com.sharpdroid.registroelettronico.utils.Metodi.*
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import kotlinx.android.synthetic.main.fragment_lessons.*
 
@@ -40,7 +37,7 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
             }
             EventType.UPDATE_SUBJECTS_OK,
             EventType.UPDATE_SUBJECTS_KO -> {
-                setAdapterData(fetch())
+                load()
             }
         }
     }
@@ -72,9 +69,21 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
         recycler.layoutManager = LinearLayoutManager(context)
         recycler.addItemDecoration(HorizontalDividerItemDecoration.Builder(context).colorResId(R.color.divider).size(dp(1)).build())
         recycler.adapter = adapter
-        setAdapterData(fetch())
         if (!BuildConfig.DEBUG)
             Answers.getInstance().logContentView(ContentViewEvent().putContentId("Lezioni").putContentType("Materie"))
+
+        load()
+        download()
+    }
+
+    private fun load() {
+        setAdapterData(fetch())
+    }
+
+    private fun download() {
+        val p = Profile.getProfile(context)
+        updateSubjects(p)
+        updateLessons(p)
     }
 
     override fun onResume() {

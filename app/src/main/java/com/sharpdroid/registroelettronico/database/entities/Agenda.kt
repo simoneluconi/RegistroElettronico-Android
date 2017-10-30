@@ -101,19 +101,6 @@ data class RemoteAgenda(
             }
             return events.map { agenda -> SuperAgenda(agenda, completed.any { it.id == agenda.id }, agenda.isTest()) }
         }
-
-        fun getAgenda(id: Long, date: Date): List<SuperAgenda> {
-            val completed: MutableList<RemoteAgendaInfo> = SugarRecord.find(RemoteAgendaInfo::class.java, "ARCHIVED=0 AND COMPLETED=1") ?: mutableListOf()
-            val archived: MutableList<RemoteAgendaInfo> = SugarRecord.find(RemoteAgendaInfo::class.java, "ARCHIVED=1") ?: mutableListOf()
-            val events = SugarRecord.find(RemoteAgenda::class.java, "PROFILE=? AND START BETWEEN ? AND ? AND END BETWEEN ? AND ?", id.toString(), date.time.toString(), (date.time + 24 * 3600 * 1000).toString(), date.time.toString(), (date.time + 24 * 3600 * 1000).toString())
-
-            return events.filter { a -> !archived.any { it.id == a.id } }.map { agenda ->
-                SuperAgenda(
-                        agenda,
-                        completed.any { it.id == agenda.id },
-                        agenda.isTest())
-            }
-        }
     }
 
     override fun equals(other: Any?): Boolean {

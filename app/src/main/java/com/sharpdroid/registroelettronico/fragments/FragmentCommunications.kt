@@ -104,7 +104,7 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
         }
 
         load()
-        //download()
+        download()
         if (!BuildConfig.DEBUG)
             Answers.getInstance().logContentView(ContentViewEvent().putContentId("Comunicazioni"))
     }

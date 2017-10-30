@@ -43,7 +43,6 @@ data class Grade(@Expose @SerializedName("evtCode") val mCode: String,
         fun setupSubjectCache(account: Long) {
             val subjects = SugarRecord.find(Subject::class.java, "SUBJECT.ID IN (SELECT SUBJECT_TEACHER.SUBJECT FROM SUBJECT_TEACHER WHERE SUBJECT_TEACHER.PROFILE=?)", account.toString())
             val subjectInfos = SugarRecord.find(SubjectInfo::class.java, "SUBJECT_INFO.SUBJECT IN (SELECT SUBJECT.ID FROM SUBJECT) AND SUBJECT_INFO.PROFILE=?", account.toString())
-
             subjects.forEach { subjectCache.put(it.id.toInt(), it) }
             subjectInfos.forEach { subjectInfoCache.put(it.subject.id.toInt(), it) }
         }
