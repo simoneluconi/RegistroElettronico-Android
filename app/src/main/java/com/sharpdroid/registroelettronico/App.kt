@@ -1,6 +1,6 @@
 package com.sharpdroid.registroelettronico
 
-import android.app.Application
+import android.support.multidex.MultiDexApplication
 import android.support.v7.app.AppCompatDelegate
 import android.util.Log
 import com.crashlytics.android.Crashlytics
@@ -9,7 +9,7 @@ import com.google.firebase.FirebaseApp
 import com.orm.SugarContext
 import io.fabric.sdk.android.Fabric
 
-class App : Application() {
+class App : MultiDexApplication() {
 
     private val TAG = "App"
 

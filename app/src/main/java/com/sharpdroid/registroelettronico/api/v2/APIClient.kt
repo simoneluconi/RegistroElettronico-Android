@@ -24,7 +24,7 @@ class APIClient {
 
     companion object {
         fun with(profile: Profile?): SpaggiariREST {
-            val loginInterceptor = Interceptor { chain: Interceptor.Chain ->
+            val loginInterceptor = Interceptor { chain ->
                 val original = chain.request()
                 if (profile != null && original.url().toString() != API_URL + "auth/login" && profile.expire < System.currentTimeMillis()) {
                     Log.d("LOGIN INTERCEPTOR", "TOKEN EXPIRED, REQUESTING NEW TOKEN")
