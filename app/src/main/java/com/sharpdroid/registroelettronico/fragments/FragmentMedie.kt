@@ -1,6 +1,5 @@
 package com.sharpdroid.registroelettronico.fragments
 
-import android.content.Context
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.graphics.Color
 import android.os.Bundle
@@ -28,9 +27,7 @@ class FragmentMedie : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (emptyHolder == null) {
-            emptyHolder = EmptyFragment(context)
-        }
+        emptyHolder = EmptyFragment(context)
         emptyHolder?.visibility = View.GONE
         emptyHolder?.setTextAndDrawable("Nessun voto", R.drawable.ic_timeline)
         relative.addView(emptyHolder)
@@ -51,13 +48,10 @@ class FragmentMedie : Fragment() {
         }
     }
 
-    fun addSubjects(context: Context, markSubjects: List<Average>, p: Int) {
+    fun addSubjects(markSubjects: List<Average>, p: Int) {
         mRVAdapter.clear()
         mRVAdapter.addAll(markSubjects, p)
 
-        if (emptyHolder == null) {
-            emptyHolder = EmptyFragment(context)
-        }
         emptyHolder?.visibility = if (markSubjects.isEmpty()) View.VISIBLE else View.GONE
     }
 }

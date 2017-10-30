@@ -43,7 +43,8 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.database.entities.Profile
 import com.sharpdroid.registroelettronico.fragments.*
 import com.sharpdroid.registroelettronico.utils.Account
-import com.sharpdroid.registroelettronico.utils.Metodi.*
+import com.sharpdroid.registroelettronico.utils.Metodi.deleteUser
+import com.sharpdroid.registroelettronico.utils.Metodi.dp
 import com.transitionseverywhere.ChangeText
 import com.transitionseverywhere.TransitionManager
 import kotlinx.android.synthetic.main.activity_main.*
@@ -330,23 +331,19 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
      */
     override fun onItemClick(view: View?, position: Int, drawerItem: IDrawerItem<*, *>): Boolean {
         val fragment: Fragment
-        val p = Profile.getProfile(this)
 
         params?.scrollFlags = 0
         when (drawerItem.identifier.toInt()) {
             R.id.today -> {
                 fragment = FragmentToday()
-                updateAbsence(this, p)
-                updateLessons(this, p)
-                updateAgenda(this, p)
             }
             R.id.agenda -> {
                 //calendar.visibility = View.VISIBLE
                 //fab_big_add.visibility = View.VISIBLE
 
                 fragment = FragmentAgenda()
-                updateAgenda(this, p)
-                updatePeriods(this, p)
+                //updateAgenda(p)
+                //updatePeriods(p)
             }
             R.id.medie -> {
                 tab_layout?.visibility = View.VISIBLE
@@ -354,28 +351,22 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
                 fragment = FragmentMediePager()
                 //updateSubjects(this, p)
-                updateMarks(this, p)
+                //updateMarks(this, p)
             }
             R.id.lessons -> {
                 fragment = FragmentSubjects()
-                updateSubjects(this, p)
-                updateLessons(this, p)
             }
             R.id.files -> {
                 fragment = FragmentFolders()
-                updateFolders(this, p)
             }
             R.id.absences -> {
                 fragment = FragmentAllAbsences()
-                updateAbsence(this, p)
             }
             R.id.notes -> {
                 fragment = FragmentNote()
-                updateNote(this, p)
             }
             R.id.communications -> {
                 fragment = FragmentCommunications()
-                updateBacheca(this, p)
             }
             R.id.settings -> fragment = FragmentSettings()
             R.id.nav_share -> {
@@ -427,7 +418,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
             Account.with(this).user = profile.identifier
 
-            fetchDataOfUser(this)
+            //fetchDataOfUser(this)
 
             //Update fragment
             drawer?.setSelectionAtPosition(drawer?.currentSelectedPosition!!, true)

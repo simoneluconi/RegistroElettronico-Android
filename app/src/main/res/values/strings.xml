@@ -17,6 +17,8 @@
     <string name="settings">Impostazioni</string>
     <string name="files">Materiale didattico</string>
     <string name="incoming_events">Prossimi eventi</string>
+    <string name="tomorrow">Domani</string>
+    <string name="this_week">Questa settimana</string>
 
     <!--ERRORI-->
     <string name="nointernet">Non sei connesso ad internet!</string>

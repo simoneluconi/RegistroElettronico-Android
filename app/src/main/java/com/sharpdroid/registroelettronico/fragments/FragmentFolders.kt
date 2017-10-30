@@ -75,6 +75,7 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
         recycler.adapter = mRVAdapter
 
         load()
+        download()
 
         if (savedInstanceState != null) {
             selectedFolder = savedInstanceState.getSerializable("folder") as Folder?
@@ -105,7 +106,7 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
     }
 
     override fun onRefresh() {
-        update()
+        download()
     }
 
     private fun load() {
@@ -115,7 +116,7 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
         addFiles(teachers)
     }
 
-    private fun update() {
+    private fun download() {
         updateFolders(activity)
     }
 

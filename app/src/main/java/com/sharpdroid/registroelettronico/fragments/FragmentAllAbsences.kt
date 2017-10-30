@@ -70,7 +70,7 @@ class FragmentAllAbsences : Fragment(), SwipeRefreshLayout.OnRefreshListener, No
         recycler.adapter = adapter
 
         load()
-        //download()
+        download()
 
         if (!BuildConfig.DEBUG)
             Answers.getInstance().logContentView(ContentViewEvent().putContentId("Assenze"))
@@ -96,7 +96,7 @@ class FragmentAllAbsences : Fragment(), SwipeRefreshLayout.OnRefreshListener, No
     }
 
     private fun download() {
-        updateAbsence(activity)
+        updateAbsence(context)
     }
 
     override fun onDestroyView() {

@@ -15,6 +15,7 @@ import com.sharpdroid.registroelettronico.adapters.Holders.Holder
 import com.sharpdroid.registroelettronico.database.entities.*
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.EventType.*
+import com.sharpdroid.registroelettronico.utils.Metodi
 import com.sharpdroid.registroelettronico.utils.Metodi.dp
 import com.sharpdroid.registroelettronico.utils.flat
 import com.sharpdroid.registroelettronico.views.cells.AbsenceCell
@@ -31,21 +32,21 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
 
             }
             UPDATE_ABSENCES_OK -> {
-                initializeAbsence(Date(1508277600000))
+                initializeAbsence(Date().flat())
             }
             UPDATE_LESSONS_START -> {
 
             }
             UPDATE_LESSONS_KO,
             UPDATE_LESSONS_OK -> {
-                initializeLessons(Date(1508277600000))
+                initializeLessons(Date().flat())
             }
             UPDATE_AGENDA_START -> {
 
             }
             UPDATE_AGENDA_OK,
             UPDATE_AGENDA_KO -> {
-                initializeEvents(Date(1508277600000), false)
+                initializeEvents(Date().flat(), false)
             }
         }
     }
@@ -61,10 +62,12 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
     private val absenceAdapter by lazy {
         AbsencesAdapter()
     }
-    private val eventsAdapter by lazy {
-        EventsAdapter()
+    private val tomorrowAdapter by lazy {
+        EventsAdapter(emptyList())
     }
-
+    private val weekAdapter by lazy {
+        EventsAdapter(emptyList())
+    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?) = inflater?.inflate(R.layout.fragment_today, container, false)
 
@@ -92,16 +95,33 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
             adapter = lessonsAdapter
             addItemDecoration(HorizontalDividerItemDecoration.Builder(context).margin(dp(0), dp(0)).colorResId(R.color.divider).build())
         }
-        with(incoming_recycler) {
+        with(tomorrow_recycler) {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             isNestedScrollingEnabled = false
-            adapter = eventsAdapter
+            adapter = tomorrowAdapter
+            addItemDecoration(HorizontalDividerItemDecoration.Builder(context).margin(dp(0), dp(0)).colorResId(R.color.divider).build())
+        }
+        with(week_recycler) {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            isNestedScrollingEnabled = false
+            adapter = weekAdapter
             addItemDecoration(HorizontalDividerItemDecoration.Builder(context).margin(dp(0), dp(0)).colorResId(R.color.divider).build())
         }
 
         lessons_empty.setTextAndDrawable("Nessuna lezione", R.drawable.ic_view_agenda)
+        tomorrow_empty.setTextAndDrawable("Giornata libera", R.drawable.ic_event_available)
+        week_empty.setTextAndDrawable("Settimana libera", R.drawable.ic_event_available)
 
-        initializeDay(Date(1508277600000).flat())
+        initializeDay(Date().flat())
+
+        download()
+    }
+
+    private fun download() {
+        val p = Profile.getProfile(context)
+        Metodi.updateAbsence(p)
+        Metodi.updateLessons(p)
+        Metodi.updateAgenda(p)
     }
 
     private fun initializeDay(date: Date) {
@@ -131,15 +151,36 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
         }
 
         events.clear()
-        events.addAll(RemoteAgenda.getSuperAgenda(Account.with(activity).user, date, true))
-        events.addAll(SugarRecord.find(LocalAgenda::class.java, "PROFILE=? AND ARCHIVED=0 AND DAY>=${date.time}", Account.with(activity).user.toString()))
+        events.addAll(RemoteAgenda.getSuperAgenda(Account.with(context).user, date, true))
+        events.addAll(SugarRecord.find(LocalAgenda::class.java, "PROFILE=? AND ARCHIVED=0 AND DAY>=${date.time}", Account.with(context).user.toString()))
         events.sortWith(Comparator { t1: Any, t2: Any ->
             val date1 = (t1 as? SuperAgenda)?.agenda?.start ?: ((t1 as? LocalAgenda)?.day ?: Date(0))
             val date2 = (t2 as? SuperAgenda)?.agenda?.start ?: ((t2 as? LocalAgenda)?.day ?: Date(0))
             return@Comparator date1.compareTo(date2)
         })
 
-        incoming_recycler.adapter.notifyDataSetChanged()
+        val tomorrow = Date(date.time + 86400000)
+
+        tomorrowAdapter.events = events.filter {
+            when (it) {
+                is SuperAgenda -> it.agenda.start == tomorrow
+                is LocalAgenda -> it.day == tomorrow
+                else -> false
+            }
+        }
+        tomorrow_recycler.adapter.notifyDataSetChanged()
+        tomorrow_empty.visibility = if (tomorrowAdapter.events.isEmpty()) View.VISIBLE else View.GONE
+
+        val sevenDaysFromDate = Date(date.flat().time + 604800000)
+
+        weekAdapter.events = events.filter {
+            when (it) {
+                is SuperAgenda -> it.agenda.start.after(tomorrow) && it.agenda.start.before(sevenDaysFromDate)
+                is LocalAgenda -> it.day.after(tomorrow) && it.day.before(sevenDaysFromDate)
+                else -> false
+            }
+        }
+        week_empty.visibility = if (weekAdapter.events.isEmpty()) View.VISIBLE else View.GONE
     }
 
     override fun onStop() {
@@ -172,8 +213,7 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) = Holder(LessonCell(context))
     }
 
-    inner class EventsAdapter : RecyclerView.Adapter<Holder>() {
-
+    inner class EventsAdapter(var events: List<Any>) : RecyclerView.Adapter<Holder>() {
         override fun onBindViewHolder(holder: Holder, position: Int) {
             (holder.itemView as EventCell).bindData(events[position])
         }
