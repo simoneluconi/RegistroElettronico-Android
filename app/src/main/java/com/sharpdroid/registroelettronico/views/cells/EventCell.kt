@@ -2,8 +2,10 @@ package com.sharpdroid.registroelettronico.views.cells
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.support.constraint.ConstraintLayout
+import android.support.v4.content.ContextCompat
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.StrikethroughSpan
@@ -25,9 +27,9 @@ class EventCell(context: Context, private val withDateDiff: Boolean) : FrameLayo
         duration.visibility = if (withDateDiff) View.VISIBLE else View.GONE
         circleImageView2.visibility = if (withDateDiff) View.VISIBLE else View.GONE
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            (linearLayout2.layoutParams as ConstraintLayout.LayoutParams).marginStart = dp(if (withDateDiff) 72 else 16)
+            (linearLayout2.layoutParams as ConstraintLayout.LayoutParams).marginStart = dp(if (circleImageView2.visibility == View.VISIBLE) 72 else 16)
         }
-        (linearLayout2.layoutParams as ConstraintLayout.LayoutParams).leftMargin = dp(if (withDateDiff) 72 else 16)
+        (linearLayout2.layoutParams as ConstraintLayout.LayoutParams).leftMargin = dp(if (circleImageView2.visibility == View.VISIBLE) 72 else 16)
 
     }
 
@@ -44,6 +46,7 @@ class EventCell(context: Context, private val withDateDiff: Boolean) : FrameLayo
                 //date.text = dateFormat.format(event.agenda.start)
                 date.text = capitalizeEach(event.agenda.author, true)
                 content.text = spannableString
+                circleImageView2.setImageDrawable(ColorDrawable(ContextCompat.getColor(context, if (event.test) R.color.deep_orange else R.color.light_green)))
             }
             is LocalAgenda -> {
                 val spannableString = SpannableString(event.title)
@@ -57,6 +60,7 @@ class EventCell(context: Context, private val withDateDiff: Boolean) : FrameLayo
                 date.text = capitalizeEach(event.teacher.teacherName, true)
                 content.text = spannableString
                 //notes.text = event.content.trim({ it <= ' ' })
+                circleImageView2.setImageDrawable(ColorDrawable(ContextCompat.getColor(context, if (event.type.equals("verifica", true)) R.color.deep_orange else R.color.light_green)))
             }
             else -> throw IllegalStateException("Allowed data types: SuperAgenda, LocalAgenda\nFound: '${event::class.java.canonicalName}'")
         }
