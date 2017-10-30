@@ -61,6 +61,15 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
         if (!BuildConfig.DEBUG)
             Answers.getInstance().logContentView(ContentViewEvent().putContentId("Materia").putContentType("Dettagli"))
 
+
+        if (savedInstanceState != null && savedInstanceState["scrollY"] != null) {
+            nested_scroll_view.scrollY = savedInstanceState.getInt("scrollY")
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        outState?.putInt("scrollY", nested_scroll_view.scrollY)
     }
 
     override fun onResume() {
@@ -104,7 +113,7 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
         if (target <= 0) {
             val pref = PreferenceManager.getDefaultSharedPreferences(this)
                     .getString("voto_obiettivo", "8")
-            target = (if (pref == "Auto") "-1" else pref).toFloat()
+            target = (if (pref == "Auto") Math.ceil(avg.avg.toDouble()).toFloat() else pref.toFloat())
         }
         return target
     }

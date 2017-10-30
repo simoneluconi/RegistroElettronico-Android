@@ -113,8 +113,16 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
         week_empty.setTextAndDrawable("Settimana libera", R.drawable.ic_event_available)
 
         initializeDay(Date().flat())
-
         download()
+
+        if (savedInstanceState != null && savedInstanceState["scrollY"] != null) {
+            nested_scroll_view.scrollY = savedInstanceState.getInt("scrollY")
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        outState?.putInt("scrollY", nested_scroll_view.scrollY)
     }
 
     private fun download() {
