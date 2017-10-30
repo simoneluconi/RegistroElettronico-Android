@@ -63,10 +63,10 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
         AbsencesAdapter()
     }
     private val tomorrowAdapter by lazy {
-        EventsAdapter(emptyList())
+        EventsAdapter(emptyList(), Date(), false)
     }
     private val weekAdapter by lazy {
-        EventsAdapter(emptyList())
+        EventsAdapter(emptyList(), Date(), true)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?) = inflater?.inflate(R.layout.fragment_today, container, false)
@@ -168,11 +168,13 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
                 else -> false
             }
         }
+        tomorrowAdapter.date = date
         tomorrow_recycler.adapter.notifyDataSetChanged()
         tomorrow_empty.visibility = if (tomorrowAdapter.events.isEmpty()) View.VISIBLE else View.GONE
 
         val sevenDaysFromDate = Date(date.flat().time + 604800000)
 
+        weekAdapter.date = date
         weekAdapter.events = events.filter {
             when (it) {
                 is SuperAgenda -> it.agenda.start.after(tomorrow) && it.agenda.start.before(sevenDaysFromDate)
@@ -213,12 +215,12 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) = Holder(LessonCell(context))
     }
 
-    inner class EventsAdapter(var events: List<Any>) : RecyclerView.Adapter<Holder>() {
+    inner class EventsAdapter(var events: List<Any>, var date: Date, private val withDateDiff: Boolean) : RecyclerView.Adapter<Holder>() {
         override fun onBindViewHolder(holder: Holder, position: Int) {
-            (holder.itemView as EventCell).bindData(events[position])
+            (holder.itemView as EventCell).bindData(events[position], date)
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) = Holder(EventCell(context))
+        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) = Holder(EventCell(context, withDateDiff))
 
         override fun getItemCount() = events.size
 

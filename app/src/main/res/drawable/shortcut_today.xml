@@ -1,0 +1,15 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape
+            android:innerRadius="22dp"
+            android:shape="oval">
+            <solid android:color="@color/shortcut_circle" />
+        </shape>
+    </item>
+    <item
+        android:bottom="10dp"
+        android:drawable="@drawable/ic_home_black_24dp"
+        android:left="10dp"
+        android:right="10dp"
+        android:top="10dp" />
+</layer-list>
