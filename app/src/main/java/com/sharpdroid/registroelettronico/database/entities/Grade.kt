@@ -103,7 +103,7 @@ data class Grade(@Expose @SerializedName("evtCode") val mCode: String,
                     toReturn.sortedByDescending { it.count }
                 }
                 else -> {
-                    toReturn.sortedByDescending { it.name.toLowerCase() }
+                    toReturn.sortedBy { it.name.toLowerCase() }
                 }
             }
             return toReturn
