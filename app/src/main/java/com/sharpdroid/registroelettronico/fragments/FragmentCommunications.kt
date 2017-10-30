@@ -50,7 +50,7 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
                 val file = File(SugarRecord.findById(CommunicationInfo::class.java, args[0] as Long).path)
                 with(snackbar) {
                     setText(activity.getString(R.string.file_downloaded, file.name))
-                    setAction(R.string.open) { openFile(activity, file) }
+                    setAction(R.string.open) { openFile(activity, file, Snackbar.make(coordinator_layout, context.resources.getString(R.string.missing_app, file.name), Snackbar.LENGTH_SHORT)) }
                     duration = Snackbar.LENGTH_SHORT
                     show()
                 }
@@ -117,7 +117,7 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
                 builder.neutralText(if (path.isEmpty() || !java.io.File(path).exists()) "SCARICA" else "APRI")
                 builder.onNeutral { _, _ ->
                     if (path.isNotEmpty() && java.io.File(path).exists()) {
-                        openFile(activity, File(path))
+                        openFile(activity, File(path), Snackbar.make(coordinator_layout, context.resources.getString(R.string.missing_app, java.io.File(path).name), Snackbar.LENGTH_SHORT))
                     } else {
                         downloadAttachment(activity, communication)
                     }

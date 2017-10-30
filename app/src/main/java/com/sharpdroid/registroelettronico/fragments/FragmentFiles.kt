@@ -1,6 +1,5 @@
 package com.sharpdroid.registroelettronico.fragments
 
-import android.content.ActivityNotFoundException
 import android.os.Bundle
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
@@ -36,7 +35,7 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
             EventType.DOWNLOAD_FILE_OK -> {
                 val file: java.io.File = java.io.File(SugarRecord.findById(FileInfo::class.java, args[0] as Long).path)
                 Snackbar.make(layout, String.format(getString(R.string.file_downloaded), file.name), Snackbar.LENGTH_SHORT)
-                        .setAction(R.string.open) { openFile(activity, file) }
+                        .setAction(R.string.open) { openFile(context, file, Snackbar.make(layout, context.resources.getString(R.string.missing_app, file.name), Snackbar.LENGTH_SHORT)) }
                         .show()
             }
             EventType.DOWNLOAD_FILE_KO -> {
@@ -98,20 +97,16 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
         when (file.type) {
             "file" -> {
                 if (info.path.isEmpty() || !java.io.File(info.path).exists()) {
-                    downloadFile(activity, file)
+                    downloadFile(context, file)
                 } else {
-                    try {
-                        openFile(activity, java.io.File(info.path))
-                    } catch (e: ActivityNotFoundException) {
-                        Snackbar.make(layout, activity.resources.getString(R.string.missing_app, java.io.File(info.path).name), Snackbar.LENGTH_SHORT).show()
-                    }
+                    openFile(context, java.io.File(info.path), Snackbar.make(layout, context.resources.getString(R.string.missing_app, java.io.File(info.path).name), Snackbar.LENGTH_SHORT))
                 }
             }
             "link" -> {
-                openLink(activity, info.path, Snackbar.make(layout, getString(R.string.failed_to_open_link), Snackbar.LENGTH_SHORT))
+                openLink(context, info.path, Snackbar.make(layout, getString(R.string.failed_to_open_link), Snackbar.LENGTH_SHORT))
             }
             "text" -> {
-                MaterialDialog.Builder(activity).title(file.contentName).content(info.path).positiveText("OK").autoDismiss(true).show()
+                MaterialDialog.Builder(context).title(file.contentName).content(info.path).positiveText("OK").autoDismiss(true).show()
             }
         }
     }

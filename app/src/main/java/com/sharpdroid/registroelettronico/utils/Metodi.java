@@ -671,14 +671,17 @@ public class Metodi {
         }
     }
 
-    public static void openFile(Context context, java.io.File file) throws ActivityNotFoundException {
+    public static void openFile(Context context, java.io.File file, Snackbar bar) {
         String mime = URLConnection.guessContentTypeFromName(file.toString());
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(FileProvider.getUriForFile(context, context.getPackageName() + ".fileprovider", file), mime);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-        context.startActivity(intent);
-
+        try {
+            context.startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            bar.show();
+        }
     }
 
     public static void openLink(Context context, String url, Snackbar snackbar) {
