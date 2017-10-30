@@ -8,11 +8,8 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.database.entities.Lesson
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import kotlinx.android.synthetic.main.adapter_lesson_2.view.*
-import java.text.SimpleDateFormat
-import java.util.*
 
 class LessonCell(context: Context) : FrameLayout(context) {
-    private val formatter = SimpleDateFormat("d MMM", Locale.ITALIAN)
     var data: Lesson? = null
 
     init {
