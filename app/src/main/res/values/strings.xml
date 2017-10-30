@@ -139,8 +139,6 @@
     <string name="new_news">Ci sono novità</string>
     <string name="click_to_open">Clicca per aprire nell\'applicazione</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="do_not_ask_again">Non chiedermelo più</string>
     <string name="download_failed">File non scaricato</string>
     <string name="failed_to_open_link">Impossibile aprire il link richiesto</string>

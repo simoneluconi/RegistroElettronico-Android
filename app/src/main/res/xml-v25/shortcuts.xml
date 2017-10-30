@@ -2,6 +2,22 @@
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
     <shortcut
         android:enabled="true"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:shortcutDisabledMessage="@string/today_at_school"
+        android:shortcutId="agenda"
+        android:shortcutLongLabel="@string/today_at_school"
+        android:shortcutShortLabel="@string/today_at_school">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.sharpdroid.registroelettronico.activities.MainActivity"
+            android:targetPackage="com.sharpdroid.registroelettronico">
+            <extra
+                android:name="drawer_to_open"
+                android:value="0" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:enabled="true"
         android:icon="@drawable/shortcut_ic_event"
         android:shortcutDisabledMessage="@string/agenda"
         android:shortcutId="agenda"
