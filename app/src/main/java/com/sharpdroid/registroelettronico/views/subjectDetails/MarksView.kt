@@ -137,7 +137,7 @@ class MarksView : CardView, PopupMenu.OnMenuItemClickListener {
         ll2.textColor = ContextCompat.getColor(mContext, R.color.md_pink_400)
 
 
-        val ll1 = LimitLine(media, "La tua class_media")
+        val ll1 = LimitLine(media, "La tua media")
         ll1.lineWidth = 1f
         ll1.lineColor = Color.parseColor("#22000000")
         ll1.enableDashedLine(15f, 0f, 0f)
