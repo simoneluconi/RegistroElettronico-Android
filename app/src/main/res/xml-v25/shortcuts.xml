@@ -2,7 +2,7 @@
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
     <shortcut
         android:enabled="true"
-        android:icon="@drawable/ic_home_black_24dp"
+        android:icon="@drawable/shortcut_ic_home"
         android:shortcutDisabledMessage="@string/today_at_school"
         android:shortcutId="agenda"
         android:shortcutLongLabel="@string/today_at_school"
@@ -29,7 +29,7 @@
             android:targetPackage="com.sharpdroid.registroelettronico">
             <extra
                 android:name="drawer_to_open"
-                android:value="0" />
+                android:value="1" />
         </intent>
     </shortcut>
     <shortcut
@@ -45,7 +45,7 @@
             android:targetPackage="com.sharpdroid.registroelettronico">
             <extra
                 android:name="drawer_to_open"
-                android:value="1" />
+                android:value="2" />
         </intent>
     </shortcut>
     <shortcut
@@ -61,7 +61,7 @@
             android:targetPackage="com.sharpdroid.registroelettronico">
             <extra
                 android:name="drawer_to_open"
-                android:value="6" />
+                android:value="7" />
         </intent>
     </shortcut>
 </shortcuts>
