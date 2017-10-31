@@ -59,33 +59,33 @@
         <item>10-</item>
         <item>10</item>
     </string-array>
-    <string-array name="marks_list_values">
-        <item>4</item>
-        <item>4.25</item>
-        <item>4.5</item>
-        <item>4.75</item>
-        <item>5</item>
-        <item>5.25</item>
-        <item>5.5</item>
-        <item>5.75</item>
-        <item>6</item>
-        <item>6.25</item>
-        <item>6.5</item>
-        <item>6.75</item>
-        <item>7</item>
-        <item>7.25</item>
-        <item>7.5</item>
-        <item>7.75</item>
-        <item>8</item>
-        <item>8.25</item>
-        <item>8.5</item>
-        <item>8.75</item>
-        <item>9</item>
-        <item>9.25</item>
-        <item>9.5</item>
-        <item>9.75</item>
-        <item>10</item>
-    </string-array>
+    <integer-array name="marks_list_values">
+        <item>400</item>
+        <item>425</item>
+        <item>450</item>
+        <item>475</item>
+        <item>500</item>
+        <item>525</item>
+        <item>550</item>
+        <item>575</item>
+        <item>600</item>
+        <item>625</item>
+        <item>650</item>
+        <item>675</item>
+        <item>700</item>
+        <item>725</item>
+        <item>750</item>
+        <item>775</item>
+        <item>800</item>
+        <item>825</item>
+        <item>850</item>
+        <item>875</item>
+        <item>900</item>
+        <item>925</item>
+        <item>950</item>
+        <item>975</item>
+        <item>1000</item>
+    </integer-array>
 
     <string-array name="mark_type">
         <item>Generale</item>
