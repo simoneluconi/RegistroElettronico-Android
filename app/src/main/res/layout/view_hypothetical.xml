@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
 
     <LinearLayout
@@ -21,13 +22,53 @@
             android:text="@string/i_tuoi_voti_ipotetici"
             android:textColor="#414141" />
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="3">
+            android:layout_margin="16dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/avg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="-"
+                    android:textColor="@color/textcolorgrey"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/text1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Media ipotetica"
+                    android:textColor="@color/textcolorgrey"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/percentage"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:text="-14.5%"
+                android:textSize="18sp" />
 
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e5e5e5" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler"
@@ -35,6 +76,37 @@
             android:layout_height="wrap_content"
             android:paddingBottom="8dp"
             android:paddingTop="8dp" />
+
+        <com.sharpdroid.registroelettronico.views.EmptyFragment
+            android:id="@+id/empty"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:visibility="gone" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e5e5e5" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#fafafa"
+            android:gravity="end"
+            android:paddingEnd="8dp"
+            android:paddingRight="8dp"
+            tools:ignore="RtlSymmetry">
+
+            <Button
+                android:id="@+id/add_hypo"
+                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:background="?selectableItemBackgroundBorderless"
+                android:padding="8dp"
+                android:text="@string/aggiungi" />
+        </LinearLayout>
 
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

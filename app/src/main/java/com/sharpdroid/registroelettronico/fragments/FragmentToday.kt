@@ -8,7 +8,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.crashlytics.android.answers.Answers
+import com.crashlytics.android.answers.ContentViewEvent
 import com.orm.SugarRecord
+import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.Holders.Holder
@@ -124,6 +127,8 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
         Subject.setupCache()
         Teacher.setupCache()
 
+        if (!BuildConfig.DEBUG)
+            Answers.getInstance().logContentView(ContentViewEvent().putContentId("Panoramica"))
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -196,8 +201,8 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
                 else -> false
             }
         }
-        week_card.visibility = if (weekAdapter.events.isEmpty()) View.VISIBLE else View.GONE
-        textView4.visibility = if (weekAdapter.events.isEmpty()) View.VISIBLE else View.GONE
+        week_card.visibility = if (weekAdapter.events.isNotEmpty()) View.VISIBLE else View.GONE
+        textView4.visibility = if (weekAdapter.events.isNotEmpty()) View.VISIBLE else View.GONE
     }
 
     override fun onStop() {

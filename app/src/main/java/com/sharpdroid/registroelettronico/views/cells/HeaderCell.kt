@@ -22,7 +22,7 @@ class HeaderCell(context: Context) : FrameLayout(context) {
         textView.setTextColor(ContextCompat.getColor(context, R.color.primary))
         textView.gravity = Gravity.START or Gravity.CENTER_VERTICAL
         textView.typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
-        addView(textView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT.toFloat(), Gravity.START or Gravity.TOP, 17f, 15f, 17f, 0f))
+        addView(textView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.START or Gravity.TOP, 17f, 15f, 17f, 0f))
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

@@ -32,7 +32,7 @@ class ValueDetailsCell(context: Context) : FrameLayout(context) {
         textView.setSingleLine(true)
         textView.ellipsize = TextUtils.TruncateAt.END
         textView.gravity = Gravity.START or Gravity.CENTER_VERTICAL
-        addView(textView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT.toFloat(), Gravity.START or Gravity.TOP, 17f, 10f, 17f, 0f))
+        addView(textView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.START or Gravity.TOP, 17f, 10f, 17f, 0f))
 
         valueTextView = TextView(context)
         valueTextView.setTextColor(-0x757576)
@@ -42,7 +42,7 @@ class ValueDetailsCell(context: Context) : FrameLayout(context) {
         valueTextView.maxLines = 1
         valueTextView.setSingleLine(true)
         valueTextView.setPadding(0, 0, 0, 0)
-        addView(valueTextView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT.toFloat(), Gravity.START or Gravity.TOP, 17f, 35f, 17f, 0f))
+        addView(valueTextView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.START or Gravity.TOP, 17f, 35f, 17f, 0f))
     }
 
     fun setTextAndValue(text: String, value: String, divider: Boolean) {

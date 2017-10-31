@@ -5,11 +5,15 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.preference.PreferenceManager
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewConfiguration
+import android.widget.AdapterView
 import android.widget.SeekBar
+import android.widget.Spinner
 import android.widget.TextView
+import com.afollestad.materialdialogs.MaterialDialog
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.ContentViewEvent
 import com.github.mikephil.charting.data.Entry
@@ -18,14 +22,12 @@ import com.orm.dsl.Column
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.api.SpiaggiariAPI
-import com.sharpdroid.registroelettronico.database.entities.Grade
-import com.sharpdroid.registroelettronico.database.entities.Subject
-import com.sharpdroid.registroelettronico.database.entities.SubjectInfo
-import com.sharpdroid.registroelettronico.database.entities.Teacher
+import com.sharpdroid.registroelettronico.database.entities.*
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.MessaggioVoto
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.utils.or
+import com.sharpdroid.registroelettronico.views.subjectDetails.HypotheticalView
 import kotlinx.android.synthetic.main.activity_mark_subject_detail.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import java.util.*
@@ -40,7 +42,7 @@ import java.util.*
 // DONE: 14/12/2016 Lezioni recenti
 
 
-class MarkSubjectDetailActivity : AppCompatActivity() {
+class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.HypotheticalDelegate {
 
     data class AverageType(@Column(name = "AVG") val avg: Float, @Column(name = "TYPE") val type: String, @Column(name = "COUNT") val count: Int) {
         constructor() : this(-1f, "", 0)
@@ -92,6 +94,7 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
         initTarget()
         initLessons(subject.subject.id)
         initMarks(subject)
+        initHypothetical()
     }
 
     private fun initInfo(subject: SubjectInfo) {
@@ -191,7 +194,54 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
     }
 
     private fun initHypothetical() {
+        with(hypothetical) {
+            delegate = this@MarkSubjectDetailActivity
+            setRealData(avg)
+            setTarget(getTarget(subject))
+            setHypoGrades(SugarRecord.find(LocalGrade::class.java, "PROFILE=${Account.with(this@MarkSubjectDetailActivity).user} AND SUBJECT=${subject.subject.id} " + if (p != 0) "AND PERIOD=$p" else ""))
+        }
+    }
 
+    override fun hypotheticalAddListener() {
+        val view = LayoutInflater.from(this).inflate(R.layout.view_dialog_add_grade, null)
+        val grade = LocalGrade(0f, "", subject.subject.id, p, "Generale", Account.with(this).user)
+
+        view.findViewById<Spinner>(R.id.voto).onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(items: AdapterView<*>?, p1: View?, pos: Int, id: Long) {
+                grade.value_name = items?.getItemAtPosition(pos).toString()
+                grade.value = this@MarkSubjectDetailActivity.resources.getIntArray(R.array.marks_list_values)[pos] / 100f
+            }
+
+        }
+
+        MaterialDialog.Builder(this).title("Nuovo voto ipotetico")
+                .customView(view, true)
+                .positiveText("OK")
+                .neutralText("Annulla")
+                .onPositive { dialog, _ ->
+                    with(dialog.customView) {
+                        if (grade.value != 0f) {
+                            SugarRecord.save(grade)
+                            dialog.dismiss()
+                            hypothetical.setHypoGrades(SugarRecord.find(LocalGrade::class.java, "PROFILE=${Account.with(this@MarkSubjectDetailActivity).user} AND SUBJECT=${subject.subject.id} " + if (p != 0) "AND PERIOD=$p" else ""))
+                        }
+                    }
+                }.show()
+    }
+
+    override fun hypotheticalClickListener(grade: LocalGrade) {
+        MaterialDialog.Builder(this).title("Eliminare?")
+                .content("Sei sicuro di voler eliminare il voto ipotetico selezionato?")
+                .positiveText("SI")
+                .neutralText("Annulla")
+                .onPositive { _, _ ->
+                    SugarRecord.delete(grade)
+                    hypothetical.setHypoGrades(SugarRecord.find(LocalGrade::class.java, "PROFILE=${Account.with(this@MarkSubjectDetailActivity).user} AND SUBJECT=${subject.subject.id} " + if (p != 0) "AND PERIOD=$p" else ""))
+                }.show()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

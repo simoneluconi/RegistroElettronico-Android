@@ -31,7 +31,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#fafafa"
-        android:gravity="end">
+        android:gravity="end"
+        android:paddingEnd="8dp"
+        android:paddingRight="8dp">
 
         <Button
             android:id="@+id/load_more"
