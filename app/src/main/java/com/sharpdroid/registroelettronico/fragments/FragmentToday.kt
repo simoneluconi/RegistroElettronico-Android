@@ -196,7 +196,8 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
                 else -> false
             }
         }
-        week_empty.visibility = if (weekAdapter.events.isEmpty()) View.VISIBLE else View.GONE
+        week_card.visibility = if (weekAdapter.events.isEmpty()) View.VISIBLE else View.GONE
+        textView4.visibility = if (weekAdapter.events.isEmpty()) View.VISIBLE else View.GONE
     }
 
     override fun onStop() {

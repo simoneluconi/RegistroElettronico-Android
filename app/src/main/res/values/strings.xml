@@ -58,6 +58,7 @@
     <string name="aula">Aula</string>
     <string name="mostra_grafico">Mostra grafico</string>
     <string name="i_tuoi_voti">I tuoi voti</string>
+    <string name="i_tuoi_voti_ipotetici">I tuoi voti ipotetici</string>
 
     <plurals name="days">
         <item quantity="one">Assente tutto il giorno</item>
