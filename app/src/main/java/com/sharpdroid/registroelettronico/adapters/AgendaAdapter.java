@@ -12,7 +12,9 @@ import android.widget.TextView;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.adapters.Holders.HeaderHolder;
 import com.sharpdroid.registroelettronico.database.entities.LocalAgenda;
+import com.sharpdroid.registroelettronico.database.entities.Subject;
 import com.sharpdroid.registroelettronico.database.entities.SuperAgenda;
+import com.sharpdroid.registroelettronico.database.entities.Teacher;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -81,10 +83,12 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             eventHolder.date.setText(dateFormat.format(event.getDay()));
             String subject = "";
-            if (event.getTeacher() != null)
-                subject = capitalizeEach(event.getTeacher().getTeacherName(), true);
-            else if (event.getSubject() != null)
-                subject = capitalizeEach(event.getSubject().getDescription());
+            Teacher teacher;
+            Subject subject1;
+            if (event.getTeacher() != 0 && (teacher = Teacher.Companion.teacher(event.getTeacher())) != null)
+                subject = capitalizeEach(teacher.getTeacherName(), true);
+            else if (event.getSubject() != 0 && (subject1 = Subject.Companion.subject(event.getSubject())) != null)
+                subject = capitalizeEach(subject1.getDescription());
 
             eventHolder.subject.setText(subject);
             eventHolder.title.setText(title);

@@ -16,13 +16,13 @@ data class LocalAgenda(
         var content: String,
         var type: String,
         var day: Date,
-        var subject: Subject?,
-        var teacher: Teacher?,
+        var subject: Long,
+        var teacher: Long,
         var completed_date: Date?,
         var profile: Long,
         var archived: Boolean
 ) : SugarRecord() {
-    constructor() : this("", "", "", Date(), Subject(), Teacher(), null, -1L, false)
+    constructor() : this("", "", "", Date(), 0, 0, null, -1L, false)
 }
 
 /*

@@ -24,6 +24,7 @@ import com.sharpdroid.registroelettronico.database.entities.Teacher
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeFirst
+import com.sharpdroid.registroelettronico.utils.flat
 import com.sharpdroid.registroelettronico.utils.or
 import com.sharpdroid.registroelettronico.views.localEvent.OptionView
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
@@ -67,22 +68,19 @@ class AddEventActivity : AppCompatActivity() {
     private fun handleConfirm(type: String) {
         when (type.toLowerCase()) {
             "verifica" -> if (handleTitle() && handleSubject() && handleProfessor() && handleDate()) {
-                selectedDay = betterDate(selectedDay)
-                SugarRecord.save(LocalAgenda(layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay!!, selectedSubject!!.subject, selectedProfessor!!, null, Account.with(this).user, false))
+                SugarRecord.save(LocalAgenda(layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay?.flat()!!, selectedSubject?.subject?.id ?: 0, selectedProfessor?.id ?: 0, null, Account.with(this).user, false))
                 finish()
             } else {
                 vibrate()
             }
             "compiti" -> if (handleTitle() && handleSubject() && handleProfessor() && handleDate()) {
-                selectedDay = betterDate(selectedDay)
-                SugarRecord.save(LocalAgenda(layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay!!, selectedSubject!!.subject, selectedProfessor!!, null, Account.with(this).user, false))
+                SugarRecord.save(LocalAgenda(layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay?.flat()!!, selectedSubject!!.subject.id, selectedProfessor?.id ?: 0, null, Account.with(this).user, false))
                 finish()
             } else {
                 vibrate()
             }
             else -> if (handleTitle() && handleDate()) {
-                selectedDay = betterDate(selectedDay)
-                SugarRecord.save(LocalAgenda(layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay!!, selectedSubject?.subject ?: Subject(), selectedProfessor ?: Teacher(), null, Account.with(this).user, false))
+                SugarRecord.save(LocalAgenda(layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay?.flat()!!, selectedSubject?.subject?.id ?: 0L, selectedProfessor?.id ?: 0, null, Account.with(this).user, false))
                 finish()
             } else {
                 vibrate()
@@ -99,18 +97,6 @@ class AddEventActivity : AppCompatActivity() {
         }
     }
 
-    private fun betterDate(date: Date?): Date {
-        val cal = Calendar.getInstance()
-        cal.time = date
-
-        cal.set(Calendar.HOUR_OF_DAY, 0)
-        cal.set(Calendar.MINUTE, 0)
-        cal.set(Calendar.SECOND, 0)
-        cal.set(Calendar.MILLISECOND, 0)
-
-
-        return cal.time
-    }
 
     private fun initDefault() {
         options.addView(OptionView.Builder(this).title("Materia").content("Non impostata").image(R.drawable.event_subject).onClick { this.subjectDialog(it) }.build())

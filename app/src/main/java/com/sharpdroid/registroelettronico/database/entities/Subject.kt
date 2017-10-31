@@ -46,14 +46,18 @@ data class Subject(
 
         fun clearCache() = subjectCache.clear()
 
-        fun setupCache(account: Long) {
+        fun setupCache() {
+            if (SubjectTeacher.cache.isEmpty()) throw IllegalStateException("You need to inizialize SubjectTeacher's cache before Subject's")
+
             val subjects: List<Subject> = SugarRecord.find(Subject::class.java, "")!!
-            val subjectTeacher = SugarRecord.find(SubjectTeacher::class.java, "PROFILE=?", account.toString())
+            val subjectTeacher = SubjectTeacher.cache
 
             subjectTeacher.forEach {
                 subjectCache.put(it.subject.toInt(), subjects.first { subject -> it.subject == subject.id })
             }
         }
+
+        fun subject(id: Number) = subjectCache[id.toInt(), null]
     }
 }
 
