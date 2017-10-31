@@ -147,7 +147,7 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
 
     private fun initializeLessons(date: Date) {
         lessons.clear()
-        lessons.addAll(SugarRecord.findWithQuery(Lesson::class.java, "SELECT ID, M_ARGUMENT, M_AUTHOR_NAME, M_DATE, M_HOUR_POSITION, M_SUBJECT_DESCRIPTION, COUNT(ID) as M_DURATION FROM LESSON WHERE M_DATE = ${date.time} AND PROFILE=${Account.with(context).user} GROUP BY M_ARGUMENT, M_SUBJECT_ID ORDER BY M_HOUR_POSITION ASC "))
+        lessons.addAll(SugarRecord.findWithQuery(Lesson::class.java, "SELECT ID, M_ARGUMENT, M_AUTHOR_NAME, M_DATE, M_HOUR_POSITION, M_SUBJECT_DESCRIPTION, COUNT(ID) as `M_DURATION` FROM LESSON WHERE M_DATE = ${date.time} AND PROFILE=${Account.with(context).user} GROUP BY M_ARGUMENT, M_AUTHOR_NAME ORDER BY M_HOUR_POSITION ASC "))
         lessons_empty.visibility = if (lessons.isEmpty()) View.VISIBLE else View.GONE
         lessons_recycler.adapter.notifyDataSetChanged()
     }
