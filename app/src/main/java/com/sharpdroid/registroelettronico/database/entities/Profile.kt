@@ -17,16 +17,17 @@ data class Profile(
         var classe: String,
         @Unique var id: Long,
         var token: String,
-        var expire: Long
-
+        var expire: Long,
+        var ident: String,
+        var isMulti: Boolean
 ) {
 
-    constructor() : this("", "", "", "", 0, "", 0)
+    constructor() : this("", "", "", "", 0, "", 0, "", false)
 
     fun asIProfile(): IProfile<ProfileDrawerItem> {
         return ProfileDrawerItem()
                 .withName(name)
-                .withEmail(username)
+                .withEmail(ident)
                 .withNameShown(true)
                 .withIcon(AccountImage(name))
                 .withIdentifier(id)

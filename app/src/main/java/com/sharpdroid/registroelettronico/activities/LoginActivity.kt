@@ -111,7 +111,7 @@ class LoginActivity : AppCompatActivity() {
                         }
                     } else {
                         SugarRecord.save(Option(login.ident!!.substring(1, 8).toLong(), true, true, true, true, true))
-                        SugarRecord.save(Profile(login.ident, login.firstName + " " + login.lastName, mPassword, "", login.ident.substring(1, 8).toLong(), login.token!!, login.expire!!.time))
+                        SugarRecord.save(Profile(mEmail, login.firstName + " " + login.lastName, mPassword, "", login.ident.substring(1, 8).toLong(), login.token!!, login.expire!!.time, login.ident, false))
                         Account.with(this).user = login.ident.substring(1, 8).toLong()
                         fetchDataOfUser(this)
 
@@ -138,7 +138,7 @@ class LoginActivity : AppCompatActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ (ident1, firstName, lastName, token, expire) ->
                     SugarRecord.save(Option(ident1!!.substring(1, 8).toLong(), true, true, true, true, true))
-                    SugarRecord.save(Profile(ident1, firstName + " " + lastName, password, "", ident1.substring(1, 8).toLong(), token!!, expire!!.time))
+                    SugarRecord.save(Profile(email, firstName + " " + lastName, password, "", ident1.substring(1, 8).toLong(), token!!, expire!!.time, ident1, true))
                     Account.with(c).user = ident1.substring(1, 8).toLong()
                     fetchDataOfUser(c)
 

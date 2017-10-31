@@ -34,7 +34,7 @@ class APIClient {
                             .method("POST",
                                     RequestBody.create(
                                             MediaType.parse("application/json"),
-                                            LoginRequest(profile.password, profile.username, "").toString() //properly override to provide a json-like string
+                                            LoginRequest(profile.password, profile.username, profile.ident).toString() //properly override to provide a json-like string
                                     )
                             )
                             .header("User-Agent", "zorro/1.0")
