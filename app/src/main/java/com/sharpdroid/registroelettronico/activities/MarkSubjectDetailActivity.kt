@@ -190,6 +190,10 @@ class MarkSubjectDetailActivity : AppCompatActivity() {
         marks.setChart(filter)
     }
 
+    private fun initHypothetical() {
+
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // handle arrow click here
         if (item.itemId == android.R.id.home) {

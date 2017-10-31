@@ -31,4 +31,73 @@
         <item>6</item>
         <item>7</item>
     </string-array>
+
+    <string-array name="marks_list">
+        <item>4</item>
+        <item>4+</item>
+        <item>4½</item>
+        <item>5-</item>
+        <item>5</item>
+        <item>5+</item>
+        <item>5½</item>
+        <item>6-</item>
+        <item>6</item>
+        <item>6+</item>
+        <item>6½</item>
+        <item>7-</item>
+        <item>7</item>
+        <item>7+</item>
+        <item>7½</item>
+        <item>8-</item>
+        <item>8</item>
+        <item>8+</item>
+        <item>8½</item>
+        <item>9-</item>
+        <item>9</item>
+        <item>9+</item>
+        <item>9½</item>
+        <item>10-</item>
+        <item>10</item>
+    </string-array>
+    <string-array name="marks_list_values">
+        <item>4</item>
+        <item>4.25</item>
+        <item>4.5</item>
+        <item>4.75</item>
+        <item>5</item>
+        <item>5.25</item>
+        <item>5.5</item>
+        <item>5.75</item>
+        <item>6</item>
+        <item>6.25</item>
+        <item>6.5</item>
+        <item>6.75</item>
+        <item>7</item>
+        <item>7.25</item>
+        <item>7.5</item>
+        <item>7.75</item>
+        <item>8</item>
+        <item>8.25</item>
+        <item>8.5</item>
+        <item>8.75</item>
+        <item>9</item>
+        <item>9.25</item>
+        <item>9.5</item>
+        <item>9.75</item>
+        <item>10</item>
+    </string-array>
+
+    <string-array name="mark_type">
+        <item>Generale</item>
+        <item>Orale</item>
+        <item>Scritto/Grafico</item>
+        <item>Pratico</item>
+    </string-array>
+
+    <string-array name="period">
+        <item>1° Periodo</item>
+        <item>2° Periodo</item>
+        <item>Generale</item>
+    </string-array>
+
 </resources>
