@@ -52,9 +52,9 @@ data class Subject(
                 subjectCache.put(it.id.toInt(), it)
             }
         }
-    }
 
-    fun subject(id: Number) = subjectCache[id.toInt(), null]
+        fun subject(id: Number) = subjectCache[id.toInt(), null]
+    }
 }
 
 
