@@ -198,7 +198,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
             delegate = this@MarkSubjectDetailActivity
             setRealData(avg)
             setTarget(getTarget(subject))
-            setHypoGrades(SugarRecord.find(LocalGrade::class.java, "PROFILE=${Account.with(this@MarkSubjectDetailActivity).user} AND SUBJECT=${subject.subject.id} " + if (p != 0) "AND PERIOD=$p" else ""))
+            setHypoGrades(SugarRecord.find(LocalGrade::class.java, "PROFILE=${Account.with(this@MarkSubjectDetailActivity).user} AND SUBJECT=${subject.subject.id} " + if (p != -1) "AND PERIOD=$p" else ""))
         }
     }
 
@@ -227,7 +227,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
                         if (grade.value != 0f) {
                             SugarRecord.save(grade)
                             dialog.dismiss()
-                            hypothetical.setHypoGrades(SugarRecord.find(LocalGrade::class.java, "PROFILE=${Account.with(this@MarkSubjectDetailActivity).user} AND SUBJECT=${subject.subject.id} " + if (p != 0) "AND PERIOD=$p" else ""))
+                            hypothetical.setHypoGrades(SugarRecord.find(LocalGrade::class.java, "PROFILE=${Account.with(this@MarkSubjectDetailActivity).user} AND SUBJECT=${subject.subject.id} " + if (p != -1) "AND PERIOD=$p" else ""))
                         }
                     }
                 }.show()
@@ -240,7 +240,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
                 .neutralText("Annulla")
                 .onPositive { _, _ ->
                     SugarRecord.delete(grade)
-                    hypothetical.setHypoGrades(SugarRecord.find(LocalGrade::class.java, "PROFILE=${Account.with(this@MarkSubjectDetailActivity).user} AND SUBJECT=${subject.subject.id} " + if (p != 0) "AND PERIOD=$p" else ""))
+                    hypothetical.setHypoGrades(SugarRecord.find(LocalGrade::class.java, "PROFILE=${Account.with(this@MarkSubjectDetailActivity).user} AND SUBJECT=${subject.subject.id} " + if (p != -1) "AND PERIOD=$p" else ""))
                 }.show()
     }
 
