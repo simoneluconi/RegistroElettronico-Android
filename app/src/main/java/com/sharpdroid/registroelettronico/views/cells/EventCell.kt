@@ -57,7 +57,9 @@ class EventCell(context: Context, private val withDateDiff: Boolean) : FrameLayo
                 if (withDateDiff)
                     duration.text = "${(event.day.time - currentDate.time) / (24 * 3600000)}g"
                 //date.text = dateFormat.format(event.day)
-                date.text = capitalizeEach(event.teacher.teacherName, true)
+                date.text = capitalizeEach(event.teacher?.teacherName ?: event.subject?.description ?: "", true)
+                date.visibility = if (date.text.isEmpty()) View.GONE else View.VISIBLE
+
                 content.text = spannableString
                 //notes.text = event.content.trim({ it <= ' ' })
                 circleImageView2.setImageDrawable(ColorDrawable(ContextCompat.getColor(context, if (event.type.equals("verifica", true)) R.color.deep_orange else R.color.light_green)))

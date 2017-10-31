@@ -16,8 +16,8 @@ data class LocalAgenda(
         var content: String,
         var type: String,
         var day: Date,
-        var subject: Subject,
-        var teacher: Teacher,
+        var subject: Subject?,
+        var teacher: Teacher?,
         var completed_date: Date?,
         var profile: Long,
         var archived: Boolean
