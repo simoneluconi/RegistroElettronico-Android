@@ -80,11 +80,18 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             }
 
             eventHolder.date.setText(dateFormat.format(event.getDay()));
-            eventHolder.subject.setText(capitalizeEach(event.getTeacher().getTeacherName(), true));
+            String subject = "";
+            if (event.getTeacher() != null)
+                subject = capitalizeEach(event.getTeacher().getTeacherName(), true);
+            else if (event.getSubject() != null)
+                subject = capitalizeEach(event.getSubject().getDescription());
+
+            eventHolder.subject.setText(subject);
             eventHolder.title.setText(title);
             eventHolder.notes.setText(event.getContent().trim());
 
             eventHolder.notes.setVisibility(event.getContent().isEmpty() ? View.GONE : View.VISIBLE);
+            eventHolder.subject.setVisibility(subject.isEmpty() ? View.GONE : View.VISIBLE);
             eventHolder.divider.setVisibility(getItemViewType(position - 1) == R.layout.adapter_header ? View.INVISIBLE : View.VISIBLE);
 
             eventHolder.itemView.setOnClickListener((View v) -> {
