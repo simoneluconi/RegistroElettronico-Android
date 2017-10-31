@@ -115,6 +115,15 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
         if (savedInstanceState != null && savedInstanceState["scrollY"] != null) {
             nested_scroll_view.scrollY = savedInstanceState.getInt("scrollY")
         }
+
+        Teacher.clearCache()
+        Subject.clearCache()
+        SubjectTeacher.clearCache()
+
+        SubjectTeacher.setupCache(Account.with(context).user)
+        Subject.setupCache()
+        Teacher.setupCache()
+
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {

@@ -63,7 +63,7 @@ class AgendaBS : BottomSheetDialogFragment() {
                 itemView.image.setImageResource(image)
                 itemView.image.setColorFilter(tint ?: ContextCompat.getColor(activity.applicationContext, R.color.icon_on_white))
                 itemView.setOnClickListener {
-                    clickListener.onBottomSheetItemClicked(adapterPosition, event!!)
+                    clickListener.onBottomSheetItemClicked(adapterPosition, event ?: throw NullPointerException("event must not be null"))
                     dismiss()
                 }
             }

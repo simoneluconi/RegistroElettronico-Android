@@ -19,8 +19,12 @@ data class Teacher(
 
     companion object {
         private val teachersOfSubject = SparseArray<List<Teacher>>()
+        private val teacherWithID = SparseArray<Teacher>()
 
-        fun clearCache() = teachersOfSubject.clear()
+        fun clearCache() {
+            teachersOfSubject.clear()
+            teacherWithID.clear()
+        }
 
         fun setupCache() {
             if (SubjectTeacher.cache.isEmpty()) throw IllegalStateException("You need to inizialize SubjectTeacher's cache before Teacher's")
@@ -31,9 +35,14 @@ data class Teacher(
             subjectTeacher.forEach {
                 teachersOfSubject.put(it.subject.toInt(), teachers.filter { teacher -> it.teacher == teacher.id })
             }
+
+            teachers.forEach {
+                teacherWithID.put(it.id.toInt(), it)
+            }
         }
 
         fun professorsOfSubject(code: Number): List<Teacher> = teachersOfSubject[code.toInt(), emptyList()]
+        fun teacher(id: Number): Teacher? = teacherWithID[id.toInt(), null]
     }
 }
 

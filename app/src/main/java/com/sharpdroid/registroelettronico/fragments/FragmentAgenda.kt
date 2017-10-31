@@ -240,6 +240,14 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
     }
 
     private fun invalidateCache() {
+        SubjectTeacher.clearCache()
+        Teacher.clearCache()
+        Subject.clearCache()
+
+        SubjectTeacher.setupCache(Account.with(context).user)
+        Teacher.setupCache()
+        Subject.setupCache()
+
         RemoteAgenda.clearCache()
         RemoteAgenda.setupCache(Account.with(context).user)
     }
