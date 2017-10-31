@@ -37,15 +37,13 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
             UPDATE_LESSONS_START -> {
 
             }
-            UPDATE_LESSONS_KO,
             UPDATE_LESSONS_OK -> {
                 initializeLessons(Date().flat())
             }
             UPDATE_AGENDA_START -> {
 
             }
-            UPDATE_AGENDA_OK,
-            UPDATE_AGENDA_KO -> {
+            UPDATE_AGENDA_OK -> {
                 initializeEvents(Date().flat(), false)
             }
         }
@@ -74,12 +72,6 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        NotificationManager.instance.addObserver(this,
-                UPDATE_ABSENCES_KO, UPDATE_ABSENCES_OK, UPDATE_ABSENCES_START,
-                UPDATE_LESSONS_KO, UPDATE_LESSONS_OK, UPDATE_LESSONS_START,
-                UPDATE_AGENDA_KO, UPDATE_AGENDA_OK, UPDATE_AGENDA_START
-        )
-
         activity.title = "Oggi a scuola"
 
         with(absence_recycler) {
@@ -113,6 +105,11 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
         week_empty.setTextAndDrawable("Settimana libera", R.drawable.ic_event_available)
 
         initializeDay(Date().flat())
+        NotificationManager.instance.addObserver(this,
+                UPDATE_ABSENCES_KO, UPDATE_ABSENCES_OK, UPDATE_ABSENCES_START,
+                UPDATE_LESSONS_KO, UPDATE_LESSONS_OK, UPDATE_LESSONS_START,
+                UPDATE_AGENDA_KO, UPDATE_AGENDA_OK, UPDATE_AGENDA_START
+        )
         download()
 
         if (savedInstanceState != null && savedInstanceState["scrollY"] != null) {
