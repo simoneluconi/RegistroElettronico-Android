@@ -113,9 +113,9 @@ class HypotheticalView : CardView {
         updateHypoAvg()
         updatePercentage()
 
-        empty.visibility = if (grades.isEmpty()) View.VISIBLE else View.GONE
-        recycler.visibility = if (grades.isNotEmpty()) View.VISIBLE else View.GONE
-
+        empty.visibility = View.GONE
+        media_layout.visibility = View.VISIBLE
+        recycler.visibility = View.VISIBLE
     }
 
     fun remove(grade: LocalGrade) {
@@ -128,26 +128,22 @@ class HypotheticalView : CardView {
         hypoGradeSum = grades.foldRight(0f, { localGrade, acc -> acc + localGrade.value })
         hypoCount = grades.size
 
-        updateHypoAvg()
-        updatePercentage()
-
-        empty.visibility = if (grades.isEmpty()) View.VISIBLE else View.GONE
-        recycler.visibility = if (grades.isNotEmpty()) View.VISIBLE else View.GONE
-    }
-
-    private fun updateHypoAvg() {
-        if (hypoCount == 0 && realCount == 0) return
-
-        avg.text = String.format("%.2f", (realGradeSum + hypoGradeSum) / (realCount + hypoCount))
-    }
-
-    private fun updatePercentage() {
+        recycler.visibility = View.GONE
+        empty.visibility = View.VISIBLE
         if (realCount == 0 || hypoCount == 0) {
             media_layout.visibility = View.GONE
             return
         }
 
-        media_layout.visibility = View.VISIBLE
+        updateHypoAvg()
+        updatePercentage()
+    }
+
+    private fun updateHypoAvg() {
+        avg.text = String.format("%.2f", (realGradeSum + hypoGradeSum) / (realCount + hypoCount))
+    }
+
+    private fun updatePercentage() {
         val realAvg = realGradeSum / realCount
         val newAvg = (realGradeSum + hypoGradeSum) / (realCount + hypoCount)
         val toDisplay = ((newAvg * 100) / realAvg) - 100
