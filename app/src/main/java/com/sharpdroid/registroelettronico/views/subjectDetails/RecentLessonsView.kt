@@ -48,7 +48,7 @@ class RecentLessonsView : CardView {
 
     fun update(code: Int) {
         adapter.clear()
-        adapter.addAll(SugarRecord.find(Lesson::class.java, "M_SUBJECT_ID=? ORDER BY M_DATE DESC LIMIT 5", code.toString()))
+        adapter.addAll(SugarRecord.find(Lesson::class.java, "M_SUBJECT_ID=? GROUP BY M_ARGUMENT, M_AUTHOR_NAME, M_DATE ORDER BY M_DATE DESC LIMIT 5", code.toString()))
         load_more.setOnClickListener { mContext.startActivity(Intent(mContext, AllLessonsWithDownloadActivity::class.java).putExtra("code", code)) }
     }
 
