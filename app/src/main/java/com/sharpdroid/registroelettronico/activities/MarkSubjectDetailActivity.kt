@@ -173,6 +173,8 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
 
         target.postDelayed({ target.setTarget(avg.avg, getTarget(subject), true) }, ViewConfiguration.getTapTimeout().toLong())
         marks.setSubject(subject, avg.avg)
+
+        hypothetical.setTarget(getTarget(subject))
     }
 
     private fun initLessons(code: Long) {
