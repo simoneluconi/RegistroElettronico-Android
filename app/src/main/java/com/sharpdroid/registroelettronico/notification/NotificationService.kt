@@ -16,14 +16,18 @@ import android.preference.PreferenceManager
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
 import android.util.Log
+import com.crashlytics.android.answers.Answers
+import com.crashlytics.android.answers.CustomEvent
 import com.firebase.jobdispatcher.JobParameters
 import com.firebase.jobdispatcher.JobService
 import com.orm.SugarRecord
+import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.MainActivity
 import com.sharpdroid.registroelettronico.api.v2.APIClient
 import com.sharpdroid.registroelettronico.database.entities.*
 import com.sharpdroid.registroelettronico.utils.Metodi.getStartEnd
+import java.io.IOException
 
 class NotificationService : JobService() {
     override fun onStopJob(job: JobParameters?): Boolean {
@@ -101,8 +105,12 @@ class NotificationService : JobService() {
         val dates = getStartEnd("yyyyMMdd")
         val agenda: List<RemoteAgenda>
         agenda = try {
-            APIClient.with(profile).getAgenda(dates[0], dates[1]).blockingFirst()?.getAgenda(profile) ?: return 0
-        } catch (err: Error) {
+            val response = APIClient.with(profile).getAgendaBlocking(dates[0], dates[1]).execute()
+            if (response.isSuccessful) response.body()?.getAgenda(profile) ?: return 0 else return 0
+            //APIClient.with(profile).getAgenda(dates[0], dates[1]).blockingFirst()?.getAgenda(profile) ?: return 0
+        } catch (err: IOException) {
+            if (!BuildConfig.DEBUG)
+                Answers.getInstance().logCustom(CustomEvent("IOException getAgendaDiff").putCustomAttribute("stacktrace", err.localizedMessage))
             return 0
         }
         val diff = agenda.size - SugarRecord.count<RemoteAgenda>(RemoteAgenda::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
@@ -113,8 +121,12 @@ class NotificationService : JobService() {
 
     private fun getVotiDiff(profile: Profile): Int {
         val marks: List<Grade> = try {
-            APIClient.with(profile).getGrades().blockingFirst()?.getGrades(profile) ?: return 0
-        } catch (e: Error) {
+            //APIClient.with(profile).getGrades().blockingFirst()?.getGrades(profile) ?: return 0
+            val response = APIClient.with(profile).getGradesBlocking().execute()
+            if (response.isSuccessful) response.body()?.getGrades(profile) ?: return 0 else return 0
+        } catch (e: IOException) {
+            if (!BuildConfig.DEBUG)
+                Answers.getInstance().logCustom(CustomEvent("IOException getVotiDiff").putCustomAttribute("stacktrace", e.localizedMessage))
             return 0
         }
         val diff = marks.size - SugarRecord.count<Grade>(Grade::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
@@ -126,8 +138,12 @@ class NotificationService : JobService() {
 
     private fun getComunicazioniDiff(profile: Profile): Int {
         var comm: List<Communication> = try {
-            APIClient.with(profile).getBacheca().blockingFirst()?.getCommunications(profile) ?: return 0
-        } catch (e: Error) {
+            //APIClient.with(profile).getBacheca().blockingFirst()?.getCommunications(profile) ?: return 0
+            val response = APIClient.with(profile).getBachecaBlocking().execute()
+            if (response.isSuccessful) response.body()?.getCommunications(profile) ?: return 0 else return 0
+        } catch (e: IOException) {
+            if (!BuildConfig.DEBUG)
+                Answers.getInstance().logCustom(CustomEvent("IOException getComunicazioniDiff").putCustomAttribute("stacktrace", e.localizedMessage))
             return 0
         }
         comm = comm.filter { it.cntStatus == "deleted" }
@@ -139,8 +155,12 @@ class NotificationService : JobService() {
 
     private fun getNoteDiff(profile: Profile): Int {
         val note: List<Note> = try {
-            APIClient.with(profile).getNotes().blockingFirst()?.getNotes(profile) ?: return 0
-        } catch (e: Error) {
+            //APIClient.with(profile).getNotes().blockingFirst()?.getNotes(profile) ?: return 0
+            val response = APIClient.with(profile).getNotesBlocking().execute()
+            if (response.isSuccessful) response.body()?.getNotes(profile) ?: return 0 else return 0
+        } catch (e: IOException) {
+            if (!BuildConfig.DEBUG)
+                Answers.getInstance().logCustom(CustomEvent("IOException getNoteDiff").putCustomAttribute("stacktrace", e.localizedMessage))
             return 0
         }
         val diff = note.size - SugarRecord.count<Note>(Note::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
