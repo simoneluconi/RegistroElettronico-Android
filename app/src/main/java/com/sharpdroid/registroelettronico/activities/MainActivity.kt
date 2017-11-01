@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         setSupportActionBar(toolbar)
         params = toolbar.layoutParams as AppBarLayout.LayoutParams?
 
-        FirebaseMessaging.getInstance().subscribeToTopic("v489")
+        FirebaseMessaging.getInstance().subscribeToTopic("v490")
         if (BuildConfig.DEBUG)
             FirebaseMessaging.getInstance().subscribeToTopic("dev")
 
