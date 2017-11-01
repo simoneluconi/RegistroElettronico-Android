@@ -34,7 +34,7 @@ class HypotheticalView : CardView {
 
     interface HypotheticalDelegate {
         fun hypotheticalAddListener()
-        fun hypotheticalClickListener(grade: LocalGrade)
+        fun hypotheticalClickListener(grade: LocalGrade, position: Int)
     }
 
     private var target = 0f
@@ -57,6 +57,7 @@ class HypotheticalView : CardView {
         View.inflate(context, R.layout.view_hypothetical, this)
 
         with(recycler) {
+            itemAnimator = null
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = MarksAdapter()
             addItemDecoration(HorizontalDividerItemDecoration.Builder(context).margin(Metodi.dp(64), Metodi.dp(16)).colorResId(R.color.divider).build())
@@ -80,10 +81,52 @@ class HypotheticalView : CardView {
         hypoGradeSum = grades.foldRight(0f, { localGrade, acc -> acc + localGrade.value })
         hypoCount = grades.size
 
+        grades.forEachIndexed { index, localGrade ->
+            localGrade.index = index
+        }
+
         this.grades.clear()
         this.grades.addAll(grades)
 
         recycler.adapter.notifyDataSetChanged()
+
+        updateHypoAvg()
+        updatePercentage()
+
+        empty.visibility = if (grades.isEmpty()) View.VISIBLE else View.GONE
+        recycler.visibility = if (grades.isNotEmpty()) View.VISIBLE else View.GONE
+    }
+
+    fun add(grade: LocalGrade) {
+        if (grades.size != 0)
+            grade.index = grades.last().index + 1
+
+        grades.add(grades.lastIndex + 1, grade)
+        println(grades.toString())
+        val index = grades.indexOf(grade)
+        recycler.adapter.notifyItemInserted(index)
+
+        TransitionManager.beginDelayedTransition(rootView as ViewGroup)
+        hypoGradeSum = grades.foldRight(0f, { localGrade, acc -> acc + localGrade.value })
+        hypoCount = grades.size
+
+        updateHypoAvg()
+        updatePercentage()
+
+        empty.visibility = if (grades.isEmpty()) View.VISIBLE else View.GONE
+        recycler.visibility = if (grades.isNotEmpty()) View.VISIBLE else View.GONE
+
+    }
+
+    fun remove(grade: LocalGrade) {
+        val index = grades.indexOf(grade)
+        grades.removeAt(index)
+        println(grades.toString())
+        recycler.adapter.notifyItemRemoved(index)
+
+        TransitionManager.beginDelayedTransition(rootView as ViewGroup)
+        hypoGradeSum = grades.foldRight(0f, { localGrade, acc -> acc + localGrade.value })
+        hypoCount = grades.size
 
         updateHypoAvg()
         updatePercentage()
@@ -133,14 +176,14 @@ class HypotheticalView : CardView {
 
         @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(holder: Holder, position: Int) {
-            val grade = grades[position]
+            val grade = grades[holder.adapterPosition]
             with(holder.itemView!!) {
                 mark.text = grade.value_name
                 date.setText(R.string.generale)
-                content.text = "${position + 1}° voto ipotetico"
+                content.text = "${grade.index + 1}° voto ipotetico"
                 color.setImageDrawable(ColorDrawable(ContextCompat.getColor(context, getMarkColor(grade.value, target))))
                 setOnClickListener { v ->
-                    v.postDelayed({ delegate?.hypotheticalClickListener(grade) }, ViewConfiguration.getTapTimeout().toLong())
+                    v.postDelayed({ delegate?.hypotheticalClickListener(grade, holder.adapterPosition) }, ViewConfiguration.getTapTimeout().toLong())
                 }
             }
         }
