@@ -205,17 +205,18 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
     override fun hypotheticalAddListener() {
         val view = LayoutInflater.from(this).inflate(R.layout.view_dialog_add_grade, null)
         val grade = LocalGrade(0f, "", subject.subject.id, p, "Generale", Account.with(this).user)
+        val spinner = view.findViewById<Spinner>(R.id.voto)
 
-        view.findViewById<Spinner>(R.id.voto).onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(p0: AdapterView<*>?) {
 
             }
 
             override fun onItemSelected(items: AdapterView<*>?, p1: View?, pos: Int, id: Long) {
+                //spinner.post { spinner.setSelection(pos, true) }
                 grade.value_name = items?.getItemAtPosition(pos).toString()
                 grade.value = this@MarkSubjectDetailActivity.resources.getIntArray(R.array.marks_list_values)[pos] / 100f
             }
-
         }
 
         MaterialDialog.Builder(this).title("Nuovo voto ipotetico")
