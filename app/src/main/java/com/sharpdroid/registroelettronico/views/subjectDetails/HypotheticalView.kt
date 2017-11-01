@@ -94,6 +94,7 @@ class HypotheticalView : CardView {
         updatePercentage()
 
         empty.visibility = if (grades.isEmpty()) View.VISIBLE else View.GONE
+        media_layout.visibility = if (grades.isNotEmpty()) View.VISIBLE else View.GONE
         recycler.visibility = if (grades.isNotEmpty()) View.VISIBLE else View.GONE
     }
 
@@ -128,9 +129,9 @@ class HypotheticalView : CardView {
         hypoGradeSum = grades.foldRight(0f, { localGrade, acc -> acc + localGrade.value })
         hypoCount = grades.size
 
-        recycler.visibility = View.GONE
-        empty.visibility = View.VISIBLE
-        if (realCount == 0 || hypoCount == 0) {
+        recycler.visibility = if (grades.isNotEmpty()) View.VISIBLE else View.GONE
+        empty.visibility = if (grades.isEmpty()) View.VISIBLE else View.GONE
+        if (grades.isEmpty()) {
             media_layout.visibility = View.GONE
             return
         }
