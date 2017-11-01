@@ -26,6 +26,9 @@ interface SpaggiariREST {
     @GET("students/{studentId}/agenda/all/{begin}/{end}")
     fun getAgenda(@Path("begin") begin: String, @Path("end") end: String): Observable<AgendaAPI>
 
+    @GET("students/{studentId}/agenda/all/{begin}/{end}")
+    fun getAgendaBlocking(@Path("begin") begin: String, @Path("end") end: String): Call<AgendaAPI>
+
     /*
         @GET("students/{studentId}/agenda/{eventCode}/{begin}/{end}")
         fun getAgenda( @Path("eventCode") eventCode: String, @Path("begin") begin: String, @Path("end") end: String): Observable<List<Agenda>>
@@ -41,6 +44,9 @@ interface SpaggiariREST {
 
     @GET("students/{studentId}/noticeboard")
     fun getBacheca(): Observable<CommunicationAPI>
+
+    @GET("students/{studentId}/noticeboard")
+    fun getBachecaBlocking(): Call<CommunicationAPI>
 
     @GET("students/{studentId}/noticeboard/attach/{eventCode}/{pubId}/101")
     fun getBachecaAttachment(@Path("eventCode") eventCode: String, @Path("pubId") pubId: Long): Call<ResponseBody>
@@ -67,6 +73,9 @@ interface SpaggiariREST {
     @GET("students/{studentId}/grades")
     fun getGrades(): Observable<GradeAPI>
 
+    @GET("students/{studentId}/grades")
+    fun getGradesBlocking(): Call<GradeAPI>
+
     @GET("students/{studentId}/grades/subjects/{subjectInfo}")
     fun getGrades(@Path("subjectInfo") subject: Int): Observable<GradeAPI>
 
@@ -81,6 +90,9 @@ interface SpaggiariREST {
 
     @GET("students/{studentId}/notes/all/")
     fun getNotes(): Observable<NoteAPI>
+
+    @GET("students/{studentId}/notes/all/")
+    fun getNotesBlocking(): Call<NoteAPI>
 
     @GET("students/{studentId}/periods")
     fun getPeriods(): Observable<PeriodAPI>
