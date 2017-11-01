@@ -209,6 +209,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
         val grade = LocalGrade(0f, "", subject.subject.id, p, "Generale", Account.with(this).user, 0)
         val spinner = view.findViewById<Spinner>(R.id.voto)
 
+        spinner.setSelection(resources.getStringArray(R.array.marks_list).size / 2)
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(p0: AdapterView<*>?) {
 
