@@ -130,10 +130,10 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater!!.inflate(R.menu.communication_menu, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.search_menu, menu)
 
-        val searchView = menu?.getItem(0)?.actionView as SearchView
+        val searchView = menu.getItem(0).actionView as SearchView
 
         searchView.maxWidth = Integer.MAX_VALUE
         searchView.setOnQueryTextListener(this)
