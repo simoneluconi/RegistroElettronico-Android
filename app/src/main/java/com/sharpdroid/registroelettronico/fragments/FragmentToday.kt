@@ -20,6 +20,7 @@ import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.EventType.*
 import com.sharpdroid.registroelettronico.utils.Metodi
 import com.sharpdroid.registroelettronico.utils.Metodi.dp
+import com.sharpdroid.registroelettronico.utils.add
 import com.sharpdroid.registroelettronico.utils.flat
 import com.sharpdroid.registroelettronico.views.cells.AbsenceCell
 import com.sharpdroid.registroelettronico.views.cells.EventCell
@@ -175,14 +176,14 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
         events.sortWith(Comparator { t1: Any, t2: Any ->
             val date1 = (t1 as? SuperAgenda)?.agenda?.start ?: ((t1 as? LocalAgenda)?.day ?: Date(0))
             val date2 = (t2 as? SuperAgenda)?.agenda?.start ?: ((t2 as? LocalAgenda)?.day ?: Date(0))
-            return@Comparator date1.compareTo(date2)
+            return@Comparator date1.flat().compareTo(date2.flat())
         })
 
-        val tomorrow = Date(date.time + 86400000)
+        val tomorrow = date.add(Calendar.HOUR_OF_DAY, 24)
 
         tomorrowAdapter.events = events.filter {
             when (it) {
-                is SuperAgenda -> it.agenda.start == tomorrow
+                is SuperAgenda -> it.agenda.start.flat().time == tomorrow.time
                 is LocalAgenda -> it.day == tomorrow
                 else -> false
             }
@@ -196,7 +197,7 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
         weekAdapter.date = date
         weekAdapter.events = events.filter {
             when (it) {
-                is SuperAgenda -> it.agenda.start.after(tomorrow) && it.agenda.start.before(sevenDaysFromDate)
+                is SuperAgenda -> it.agenda.start.flat().after(tomorrow) && it.agenda.start.flat().before(sevenDaysFromDate)
                 is LocalAgenda -> it.day.after(tomorrow) && it.day.before(sevenDaysFromDate)
                 else -> false
             }
