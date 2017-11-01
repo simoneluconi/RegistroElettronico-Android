@@ -24,3 +24,10 @@ fun Date.flat(): Date {
     cal.set(Calendar.HOUR_OF_DAY, 0)
     return cal.time
 }
+
+fun Date.add(type: Int, value: Int): Date {
+    val cal = Calendar.getInstance()
+    cal.time = this
+    cal.add(type, value)
+    return cal.time
+}
