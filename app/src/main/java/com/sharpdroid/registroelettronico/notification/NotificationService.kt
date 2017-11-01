@@ -42,6 +42,15 @@ class NotificationService : JobService() {
         }
 
         val notificationsList = mutableMapOf<String, Int>()
+        if (profile.expire < System.currentTimeMillis()) {
+            val login = APIClient.with(profile).postLoginBlocking(LoginRequest(profile.password, profile.username, profile.ident)).blockingFirst()
+            if (!login.isSuccessful) return false
+
+            profile.token = login.body()?.token ?: throw IllegalStateException("token not in response body")
+            profile.expire = login.body()?.expire?.time ?: 0
+
+            SugarRecord.update(profile)
+        }
 
         if (option.notifyAgenda) {
             val diff = getAgendaDiff(profile)
@@ -105,7 +114,7 @@ class NotificationService : JobService() {
         val dates = getStartEnd("yyyyMMdd")
         val agenda: List<RemoteAgenda>
         agenda = try {
-            val response = APIClient.with(profile).getAgendaBlocking(dates[0], dates[1]).execute()
+            val response = APIClient.with(profile).getAgendaBlocking(dates[0], dates[1]).blockingFirst()
             if (response.isSuccessful) response.body()?.getAgenda(profile) ?: return 0 else return 0
             //APIClient.with(profile).getAgenda(dates[0], dates[1]).blockingFirst()?.getAgenda(profile) ?: return 0
         } catch (err: IOException) {
@@ -122,7 +131,7 @@ class NotificationService : JobService() {
     private fun getVotiDiff(profile: Profile): Int {
         val marks: List<Grade> = try {
             //APIClient.with(profile).getGrades().blockingFirst()?.getGrades(profile) ?: return 0
-            val response = APIClient.with(profile).getGradesBlocking().execute()
+            val response = APIClient.with(profile).getGradesBlocking().blockingFirst()
             if (response.isSuccessful) response.body()?.getGrades(profile) ?: return 0 else return 0
         } catch (e: IOException) {
             if (!BuildConfig.DEBUG)
@@ -139,7 +148,7 @@ class NotificationService : JobService() {
     private fun getComunicazioniDiff(profile: Profile): Int {
         var comm: List<Communication> = try {
             //APIClient.with(profile).getBacheca().blockingFirst()?.getCommunications(profile) ?: return 0
-            val response = APIClient.with(profile).getBachecaBlocking().execute()
+            val response = APIClient.with(profile).getBachecaBlocking().blockingFirst()
             if (response.isSuccessful) response.body()?.getCommunications(profile) ?: return 0 else return 0
         } catch (e: IOException) {
             if (!BuildConfig.DEBUG)
@@ -156,7 +165,7 @@ class NotificationService : JobService() {
     private fun getNoteDiff(profile: Profile): Int {
         val note: List<Note> = try {
             //APIClient.with(profile).getNotes().blockingFirst()?.getNotes(profile) ?: return 0
-            val response = APIClient.with(profile).getNotesBlocking().execute()
+            val response = APIClient.with(profile).getNotesBlocking().blockingFirst()
             if (response.isSuccessful) response.body()?.getNotes(profile) ?: return 0 else return 0
         } catch (e: IOException) {
             if (!BuildConfig.DEBUG)

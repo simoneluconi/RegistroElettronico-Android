@@ -9,6 +9,6 @@ data class LoginRequest(
         @Expose val ident: String
 ) {
     override fun toString(): String {
-        return String.format(Locale.getDefault(), "{ \"uid\": \"%s\", \"pass\": \"%s\"}", uid, pass)
+        return String.format(Locale.getDefault(), "{ \"uid\": \"%s\", \"pass\": \"%s\", \"ident\":\"%s\"}", uid, pass, ident)
     }
 }

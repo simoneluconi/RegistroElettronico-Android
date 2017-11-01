@@ -4,6 +4,7 @@ import com.sharpdroid.registroelettronico.database.entities.*
 import io.reactivex.Observable
 import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -13,6 +14,9 @@ import retrofit2.http.Path
 interface SpaggiariREST {
     @POST("auth/login")
     fun postLogin(@Body user: LoginRequest): Observable<LoginResponse>
+
+    @POST("auth/login")
+    fun postLoginBlocking(@Body user: LoginRequest): Observable<Response<LoginResponse>>
 
     @GET("students/{studentId}/absences/details")
     fun getAbsences(): Observable<AbsenceAPI>
@@ -27,7 +31,7 @@ interface SpaggiariREST {
     fun getAgenda(@Path("begin") begin: String, @Path("end") end: String): Observable<AgendaAPI>
 
     @GET("students/{studentId}/agenda/all/{begin}/{end}")
-    fun getAgendaBlocking(@Path("begin") begin: String, @Path("end") end: String): Call<AgendaAPI>
+    fun getAgendaBlocking(@Path("begin") begin: String, @Path("end") end: String): Observable<Response<AgendaAPI>>
 
     /*
         @GET("students/{studentId}/agenda/{eventCode}/{begin}/{end}")
@@ -46,7 +50,7 @@ interface SpaggiariREST {
     fun getBacheca(): Observable<CommunicationAPI>
 
     @GET("students/{studentId}/noticeboard")
-    fun getBachecaBlocking(): Call<CommunicationAPI>
+    fun getBachecaBlocking(): Observable<Response<CommunicationAPI>>
 
     @GET("students/{studentId}/noticeboard/attach/{eventCode}/{pubId}/101")
     fun getBachecaAttachment(@Path("eventCode") eventCode: String, @Path("pubId") pubId: Long): Call<ResponseBody>
@@ -74,7 +78,7 @@ interface SpaggiariREST {
     fun getGrades(): Observable<GradeAPI>
 
     @GET("students/{studentId}/grades")
-    fun getGradesBlocking(): Call<GradeAPI>
+    fun getGradesBlocking(): Observable<Response<GradeAPI>>
 
     @GET("students/{studentId}/grades/subjects/{subjectInfo}")
     fun getGrades(@Path("subjectInfo") subject: Int): Observable<GradeAPI>
@@ -92,7 +96,7 @@ interface SpaggiariREST {
     fun getNotes(): Observable<NoteAPI>
 
     @GET("students/{studentId}/notes/all/")
-    fun getNotesBlocking(): Call<NoteAPI>
+    fun getNotesBlocking(): Observable<Response<NoteAPI>>
 
     @GET("students/{studentId}/periods")
     fun getPeriods(): Observable<PeriodAPI>

@@ -51,14 +51,10 @@ class APIClient {
 
                         SugarRecord.update(profile)
 
-                        chain.proceed(original)
-                    } else {
-                        chain.proceed(original)
                     }
 
-                } else {
-                    chain.proceed(original)
                 }
+                chain.proceed(original)
             }
 
             val zorro = Interceptor { chain ->
