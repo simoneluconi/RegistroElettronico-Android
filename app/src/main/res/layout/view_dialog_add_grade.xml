@@ -8,17 +8,16 @@
 
     <Spinner
         android:id="@+id/voto"
+        style="@style/Widget.AppCompat.Spinner.DropDown"
         android:layout_width="72dp"
         android:layout_height="32dp"
         android:layout_marginBottom="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:background="#e10"
-
         android:dropDownWidth="72dp"
         android:entries="@array/marks_list"
         android:entryValues="@array/marks_list_values"
-        android:popupBackground="#e10"
+        android:theme="@style/AppTheme"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />

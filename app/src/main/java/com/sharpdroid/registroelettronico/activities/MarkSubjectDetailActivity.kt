@@ -37,7 +37,7 @@ import java.util.*
 // DONE: 03/12/2016 Obiettivo
 // TODO: 03/12/2016 Orario settimanale (in quali giorni)
 // TODO: 03/12/2016 Verifiche prossime
-// TODO: 19/01/2016 Media Ipotetica
+// DONE: 1/11/2017 Media Ipotetica
 // DONE: 03/12/2016 Voti recenti
 // DONE: 14/12/2016 Lezioni recenti
 
@@ -206,7 +206,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
 
     override fun hypotheticalAddListener() {
         val view = LayoutInflater.from(this).inflate(R.layout.view_dialog_add_grade, null)
-        val grade = LocalGrade(0f, "", subject.subject.id, p, "Generale", Account.with(this).user)
+        val grade = LocalGrade(0f, "", subject.subject.id, p, "Generale", Account.with(this).user, 0)
         val spinner = view.findViewById<Spinner>(R.id.voto)
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -228,22 +228,24 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
                 .onPositive { dialog, _ ->
                     with(dialog.customView) {
                         if (grade.value != 0f) {
-                            SugarRecord.save(grade)
+                            grade.id = SugarRecord.save(grade)
                             dialog.dismiss()
-                            hypothetical.setHypoGrades(SugarRecord.find(LocalGrade::class.java, "PROFILE=${Account.with(this@MarkSubjectDetailActivity).user} AND SUBJECT=${subject.subject.id} " + if (p != -1) "AND PERIOD=$p" else ""))
+                            hypothetical.add(grade)
+                            //hypothetical.setHypoGrades(SugarRecord.find(LocalGrade::class.java, "PROFILE=${Account.with(this@MarkSubjectDetailActivity).user} AND SUBJECT=${subject.subject.id} " + if (p != -1) "AND PERIOD=$p" else ""))
                         }
                     }
                 }.show()
     }
 
-    override fun hypotheticalClickListener(grade: LocalGrade) {
+    override fun hypotheticalClickListener(grade: LocalGrade, position: Int) {
         MaterialDialog.Builder(this).title("Eliminare?")
                 .content("Sei sicuro di voler eliminare il voto ipotetico selezionato?")
                 .positiveText("SI")
                 .neutralText("Annulla")
                 .onPositive { _, _ ->
                     SugarRecord.delete(grade)
-                    hypothetical.setHypoGrades(SugarRecord.find(LocalGrade::class.java, "PROFILE=${Account.with(this@MarkSubjectDetailActivity).user} AND SUBJECT=${subject.subject.id} " + if (p != -1) "AND PERIOD=$p" else ""))
+                    hypothetical.remove(grade)
+                    //hypothetical.setHypoGrades(SugarRecord.find(LocalGrade::class.java, "PROFILE=${Account.with(this@MarkSubjectDetailActivity).user} AND SUBJECT=${subject.subject.id} " + if (p != -1) "AND PERIOD=$p" else ""))
                 }.show()
     }
 
