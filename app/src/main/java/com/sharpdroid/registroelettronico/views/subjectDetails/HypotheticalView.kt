@@ -50,7 +50,7 @@ class HypotheticalView : CardView {
     var delegate: HypotheticalDelegate? = null
         set(value) {
             field = value
-            add_hypo.setOnClickListener { _ -> field?.hypotheticalAddListener() }
+            add_hypo.setOnClickListener { field?.hypotheticalAddListener() }
         }
 
     init {
@@ -103,9 +103,7 @@ class HypotheticalView : CardView {
             grade.index = grades.last().index + 1
 
         grades.add(grades.lastIndex + 1, grade)
-        println(grades.toString())
-        val index = grades.indexOf(grade)
-        recycler.adapter.notifyItemInserted(index)
+        recycler.adapter.notifyDataSetChanged()
 
         TransitionManager.beginDelayedTransition(rootView as ViewGroup)
         hypoGradeSum = grades.foldRight(0f, { localGrade, acc -> acc + localGrade.value })
@@ -122,7 +120,6 @@ class HypotheticalView : CardView {
     fun remove(grade: LocalGrade) {
         val index = grades.indexOf(grade)
         grades.removeAt(index)
-        println(grades.toString())
         recycler.adapter.notifyItemRemoved(index)
 
         TransitionManager.beginDelayedTransition(rootView as ViewGroup)
