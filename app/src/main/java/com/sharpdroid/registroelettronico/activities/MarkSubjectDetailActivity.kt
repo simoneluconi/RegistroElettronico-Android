@@ -215,7 +215,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
             override fun onItemSelected(items: AdapterView<*>?, p1: View?, pos: Int, id: Long) {
                 //spinner.post { spinner.setSelection(pos, true) }
                 grade.value_name = items?.getItemAtPosition(pos).toString()
-                grade.value = this@MarkSubjectDetailActivity.resources.getIntArray(R.array.marks_list_values)[pos] / 100f
+                grade.value = resources.getIntArray(R.array.marks_list_values)[pos] / 100f
             }
         }
 
