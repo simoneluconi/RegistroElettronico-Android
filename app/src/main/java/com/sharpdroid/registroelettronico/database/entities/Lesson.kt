@@ -1,7 +1,9 @@
 package com.sharpdroid.registroelettronico.database.entities
 
+import android.util.SparseArray
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.orm.SugarRecord
 import com.orm.dsl.Table
 import com.orm.dsl.Unique
 import java.util.*
@@ -28,7 +30,7 @@ import java.util.*
  */
 @Table
 data class Lesson(
-        @Expose @SerializedName("lessonArg") val mArgument: String,
+        @Expose @SerializedName("lessonArg") var mArgument: String,
         @Expose @SerializedName("authorName") val mAuthorName: String,
         @Expose @SerializedName("classDesc") val mClassDescription: String,
         @Expose @SerializedName("evtCode") val mCode: String,
@@ -43,6 +45,29 @@ data class Lesson(
         var profile: Long
 ) {
     constructor() : this("", "", "", "", Date(), 0, 0, 0, "", "", 0, "", -1)
+
+    companion object {
+        val lessonsOfSubject = SparseArray<List<Lesson>>()
+        val allLessons = mutableListOf<Lesson>()
+
+        fun setupCache(account: Long) {
+            if (allLessons.isNotEmpty()) return
+
+            val data = SugarRecord.find(Lesson::class.java, "PROFILE=$account")
+            allLessons.addAll(data)
+
+            val groupedBySubject = data.groupBy { it.mSubjectId }
+            groupedBySubject.keys.forEach {
+                lessonsOfSubject.put(it, groupedBySubject[it])
+            }
+        }
+
+        fun clearCache() {
+            lessonsOfSubject.clear()
+            allLessons.clear()
+        }
+    }
+
 }
 
 data class LessonAPI(@Expose @SerializedName("lessons") val lessons: List<Lesson>) {

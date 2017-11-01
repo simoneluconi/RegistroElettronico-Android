@@ -17,6 +17,7 @@ import com.sharpdroid.registroelettronico.adapters.AllLessonsAdapter
 import com.sharpdroid.registroelettronico.database.entities.Lesson
 import com.sharpdroid.registroelettronico.database.entities.Subject
 import com.sharpdroid.registroelettronico.database.entities.SubjectInfo
+import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.EventType
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.utils.Metodi.updateLessons
@@ -32,10 +33,13 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
             EventType.UPDATE_LESSONS_START -> {
                 swiperefresh.isRefreshing = true
             }
-            EventType.UPDATE_LESSONS_OK,
+            EventType.UPDATE_LESSONS_OK -> {
+                Lesson.clearCache()
+                Lesson.setupCache(Account.with(context).user)
+                load()
+            }
             EventType.UPDATE_LESSONS_KO -> {
                 swiperefresh.isRefreshing = false
-                load()
             }
         }
     }
@@ -57,6 +61,8 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Lesson.setupCache(Account.with(context).user)
+
         NotificationManager.instance.addObserver(this, EventType.UPDATE_LESSONS_KO, EventType.UPDATE_LESSONS_OK, EventType.UPDATE_LESSONS_START)
         code = arguments?.getInt("code") ?: savedInstanceState?.getInt("code") ?: -1
 
@@ -99,7 +105,7 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
             activity.title = capitalizeEach(subject?.description.or(subject?.subject?.description ?: ""))
         }
 
-        addLessons(SugarRecord.findWithQuery(Lesson::class.java, "select * from LESSON where M_SUBJECT_ID=? GROUP BY M_ARGUMENT, M_AUTHOR_NAME, M_DATE ORDER BY M_DATE DESC", code.toString()))
+        addLessons(if (Lesson.lessonsOfSubject[code ?: 0, emptyList()].isNotEmpty()) Lesson.lessonsOfSubject[code ?: 0] else SugarRecord.findWithQuery(Lesson::class.java, "select * from LESSON where M_SUBJECT_ID=? GROUP BY M_ARGUMENT, M_AUTHOR_NAME, M_DATE ORDER BY M_DATE DESC", code.toString()))
     }
 
     override fun onDestroyView() {
