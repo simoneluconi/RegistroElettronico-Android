@@ -64,7 +64,6 @@ class HypotheticalView : CardView {
         empty.setTextAndDrawable("Nessun voto ipotetico", R.drawable.ic_timeline)
     }
 
-
     fun setRealData(avg: MarkSubjectDetailActivity.AverageType) {
         realGradeSum = avg.avg * avg.count
         realCount = avg.count
@@ -101,11 +100,11 @@ class HypotheticalView : CardView {
 
     private fun updatePercentage() {
         if (realCount == 0 || hypoCount == 0) {
-            percentage.visibility = View.INVISIBLE
+            media_layout.visibility = View.GONE
             return
         }
-        percentage.visibility = View.VISIBLE
 
+        media_layout.visibility = View.VISIBLE
         val realAvg = realGradeSum / realCount
         val newAvg = (realGradeSum + hypoGradeSum) / (realCount + hypoCount)
         val toDisplay = ((newAvg * 100) / realAvg) - 100
@@ -147,6 +146,5 @@ class HypotheticalView : CardView {
         }
 
         override fun getItemCount() = grades.size
-
     }
 }
