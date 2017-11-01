@@ -142,6 +142,12 @@ class HypotheticalView : CardView {
     }
 
     private fun updatePercentage() {
+        if (realCount == 0) {
+            percentage.visibility = View.INVISIBLE
+            return
+        }
+        percentage.visibility = View.VISIBLE
+
         val realAvg = realGradeSum / realCount
         val newAvg = (realGradeSum + hypoGradeSum) / (realCount + hypoCount)
         val toDisplay = ((newAvg * 100) / realAvg) - 100
