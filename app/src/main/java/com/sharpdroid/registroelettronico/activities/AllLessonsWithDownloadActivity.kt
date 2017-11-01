@@ -70,7 +70,7 @@ class AllLessonsWithDownloadActivity : AppCompatActivity(), SwipeRefreshLayout.O
     }
 
     private fun bindLessonsCache() {
-        addLessons(SugarRecord.findWithQuery(Lesson::class.java, "select * from LESSON where M_SUBJECT_ID=? ORDER BY M_DATE DESC", code.toString()))
+        addLessons(SugarRecord.findWithQuery(Lesson::class.java, "select * from LESSON where M_SUBJECT_ID=? GROUP BY M_ARGUMENT, M_AUTHOR_NAME, M_DATE ORDER BY M_DATE DESC", code.toString()))
     }
 
     override fun onRefresh() {
