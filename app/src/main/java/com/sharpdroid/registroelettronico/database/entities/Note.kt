@@ -1,20 +1,23 @@
 package com.sharpdroid.registroelettronico.database.entities
 
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.orm.dsl.Table
 import java.util.*
 
 @Table
+@Entity(tableName = "NOTE")
 data class Note(
-        @Expose @SerializedName("authorName") val mAuthor: String,
-        @Expose @SerializedName("evtDate") val mDate: Date,
-        @Expose @SerializedName("evtId") val id: Long,
-        @Expose @SerializedName("readStatus") val mStatus: Boolean,
-        @Expose @SerializedName("evtText") val mText: String,
-        @Expose @SerializedName("warningType") val mWarning: String,
-        var mType: String,
-        var profile: Long
+        @ColumnInfo(name = "M_AUTHOR") @Expose @SerializedName("authorName") var mAuthor: String = "",
+        @ColumnInfo(name = "M_DATE") @Expose @SerializedName("evtDate") var mDate: Date = Date(0),
+        @ColumnInfo(name = "ID") @PrimaryKey @Unique @Expose @SerializedName("evtId") var id: Long = -1L,
+        @ColumnInfo(name = "M_STATUS") @Expose @SerializedName("readStatus") var mStatus: Boolean = false,
+        @ColumnInfo(name = "M_TEXT") @Expose @SerializedName("evtText") var mText: String = "",
+        @ColumnInfo(name = "M_WARNING") @Expose @SerializedName("warningType") var mWarning: String = "",
+        @ColumnInfo(name = "M_TYPE") var mType: String = "",
+        @ColumnInfo(name = "PROFILE") var profile: Long
 ) {
     constructor() : this("", Date(), 0, false, "", "", "", -1L)
 }

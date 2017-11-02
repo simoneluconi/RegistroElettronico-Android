@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.adapter_lessons_1.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Suppress("DEPRECATION")
 class LessonCellMini : FrameLayout {
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)

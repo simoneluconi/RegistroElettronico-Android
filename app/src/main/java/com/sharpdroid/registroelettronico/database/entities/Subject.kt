@@ -1,13 +1,12 @@
 package com.sharpdroid.registroelettronico.database.entities
 
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
 import android.content.Context
 import android.util.SparseArray
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.orm.SugarRecord
-import com.orm.dsl.Ignore
-import com.orm.dsl.Table
-import com.orm.dsl.Unique
 import com.sharpdroid.registroelettronico.utils.Account
 import java.io.Serializable
 
@@ -29,10 +28,11 @@ import java.io.Serializable
 }
  */
 @Table
+@Entity(tableName = "SUBJECT")
 data class Subject(
-        @Expose @SerializedName("id") @Unique val id: Long,
-        @Expose @SerializedName("description") var description: String,
-        @Expose @SerializedName("teachers") @Ignore var teachers: List<Teacher>
+        @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("id") @Unique var id: Long = -1L,
+        @ColumnInfo(name = "DESCRIPTION") @Expose @SerializedName("description") var description: String = "",
+        @android.arch.persistence.room.Ignore @Expose @SerializedName("teachers") @Ignore var teachers: List<Teacher>
 ) : Serializable {
     constructor() : this(0, "", emptyList())
 
@@ -60,11 +60,11 @@ data class Subject(
 
 @Table
 data class SubjectInfo(
-        @Unique var id: Long,
+        @Unique var id: Long = -1L,
         var target: Float,
-        var description: String,
-        var details: String,
-        var classroom: String,
+        var description: String = "",
+        var details: String = "",
+        var classroom: String = "",
         var subject: Subject,
         var profile: Long) {
     constructor() : this(0L, 0f, "", "", "", Subject(), -1L)

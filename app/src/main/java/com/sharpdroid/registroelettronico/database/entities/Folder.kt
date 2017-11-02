@@ -1,9 +1,10 @@
 package com.sharpdroid.registroelettronico.database.entities
 
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.orm.SugarRecord
-import com.orm.dsl.Ignore
 import java.io.Serializable
 import java.util.*
 
@@ -27,14 +28,19 @@ import java.util.*
     ]
 }
  */
-
+@Entity(tableName = "FOLDER")
 data class Folder(
-        @Expose @SerializedName("folderId") var folderId: Int,
-        @Expose @SerializedName("folderName") var name: String,
-        @Expose @SerializedName("lastShareDT") var lastUpdate: Date,
-        @Expose @SerializedName("contents") @Ignore var files: List<File>,
-        var teacher: Long,
-        var profile: Long
-) : SugarRecord(), Serializable {
+        @ColumnInfo(name = "TITLE") @Expose @SerializedName("folderId") var folderId: Int = -1,
+        @ColumnInfo(name = "NAME") @Expose @SerializedName("folderName") var name: String = "",
+        @ColumnInfo(name = "LAST_UPDATE") @Expose @SerializedName("lastShareDT") var lastUpdate: Date = Date(0),
+        @android.arch.persistence.room.Ignore @Expose @SerializedName("contents") @Ignore var files: List<File>,
+        @ColumnInfo(name = "TEACHER") var teacher: Long = -1L,
+        @ColumnInfo(name = "PROFILE") var profile: Long
+) : Serializable {
+    @ColumnInfo(name = "ID")
+    @PrimaryKey(autoGenerate = true)
+    @Ignore
+    var id = -1L
+
     constructor() : this(0, "", Date(), emptyList(), 0, -1)
 }

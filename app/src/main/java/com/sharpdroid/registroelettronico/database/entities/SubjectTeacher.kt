@@ -1,12 +1,20 @@
 package com.sharpdroid.registroelettronico.database.entities
 
-import com.orm.SugarRecord
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
 
+@Entity(tableName = "SUBJECT_TEACHER")
 data class SubjectTeacher(
-        val subject: Long,
-        val teacher: Long,
-        var profile: Long
-) : SugarRecord() {
+        @ColumnInfo(name = "SUBJECT") var subject: Long = -1L,
+        @ColumnInfo(name = "TEACHER") var teacher: Long = -1L,
+        @ColumnInfo(name = "PROFILE") var profile: Long
+) {
+    @PrimaryKey(autoGenerate = true)
+    @Ignore
+    @ColumnInfo(name = "ID")
+    var id = -1L
+
     constructor() : this(-1L, -1L, -1L)
 
     companion object {

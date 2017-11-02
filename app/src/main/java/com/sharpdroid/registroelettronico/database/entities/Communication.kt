@@ -1,10 +1,10 @@
 package com.sharpdroid.registroelettronico.database.entities
 
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.orm.dsl.Ignore
-import com.orm.dsl.Table
-import com.orm.dsl.Unique
 import java.util.*
 
 /*
@@ -32,22 +32,23 @@ import java.util.*
 }
  */
 @Table
+@Entity(tableName = "COMMUNICATION")
 data class Communication(
-        @Expose @SerializedName("pubId") @Unique val id: Long,
-        @Expose @SerializedName("pubDT") val date: Date,
-        @Expose @SerializedName("readStatus") var isRead: Boolean,
-        @Expose @SerializedName("evtCode") val evtCode: String,
-        @Expose @SerializedName("cntId") val myId: Long,
-        @Expose @SerializedName("cntTitle") val title: String,
-        @Expose @SerializedName("cntStatus") @Ignore val cntStatus: String,
-        @Expose @SerializedName("cntCategory") val category: String,
-        @Expose @SerializedName("cntHasAttach") val hasAttachment: Boolean,
-        var profile: Long
+        @PrimaryKey @ColumnInfo(name = "ID") @Expose @SerializedName("pubId") @Unique var id: Long = -1L,
+        @ColumnInfo(name = "DATE") @Expose @SerializedName("pubDT") var date: Date = Date(0),
+        @ColumnInfo(name = "IS_READ") @Expose @SerializedName("readStatus") var isRead: Boolean = false,
+        @ColumnInfo(name = "EVT_CODE") @Expose @SerializedName("evtCode") var evtCode: String = "",
+        @ColumnInfo(name = "MY_ID") @Expose @SerializedName("cntId") var myId: Long = -1L,
+        @ColumnInfo(name = "TITLE") @Expose @SerializedName("cntTitle") var title: String = "",
+        @android.arch.persistence.room.Ignore @Expose @SerializedName("cntStatus") @Ignore var cntStatus: String = "",
+        @ColumnInfo(name = "CATEGORY") @Expose @SerializedName("cntCategory") var category: String = "",
+        @ColumnInfo(name = "HAS_ATTACHMENT") @Expose @SerializedName("cntHasAttach") var hasAttachment: Boolean = false,
+        @ColumnInfo(name = "PROFILE") var profile: Long
 ) {
     constructor() : this(0, Date(), false, "", 0, "", "", "", false, -1)
 }
 
-data class CommunicationAPI(@Expose @SerializedName("items") private val communications: List<Communication>) {
+data class CommunicationAPI(@Expose @SerializedName("items") private var communications: List<Communication>) {
     fun getCommunications(profile: Profile): List<Communication> {
         val id = profile.id
         communications.forEach { it.profile = id }
@@ -69,11 +70,11 @@ data class CommunicationAPI(@Expose @SerializedName("items") private val communi
 }
  */
 @Table
-data class CommunicationInfo(@Unique var id: Long,
-                             @Expose @SerializedName("title") var title: String,
-                             @Expose @SerializedName("text") var content: String,
+data class CommunicationInfo(@Unique var id: Long = -1L,
+                             @Expose @SerializedName("title") var title: String = "",
+                             @Expose @SerializedName("text") var content: String = "",
                              var path: String) {
     constructor() : this(0L, "", "", "")
 }
 
-data class ReadResponse(@Expose @SerializedName("item") val item: CommunicationInfo)
+data class ReadResponse(@Expose @SerializedName("item") var item: CommunicationInfo)

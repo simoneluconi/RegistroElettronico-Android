@@ -1,8 +1,10 @@
 package com.sharpdroid.registroelettronico.database.entities
 
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.orm.SugarRecord
 import java.util.*
 
 /*
@@ -29,15 +31,21 @@ import java.util.*
     ]
 }
  */
+@Entity(tableName = "PERIOD")
 data class Period(
-        @Expose @SerializedName("periodCode") val mCode: String,
-        @Expose @SerializedName("periodDesc") val mDescription: String,
-        @Expose @SerializedName("dateEnd") val mEnd: Date,
-        @Expose @SerializedName("isFinal") val mFinal: Boolean,
-        @Expose @SerializedName("periodPos") val mPosition: Int,
-        @Expose @SerializedName("dateStart") val mStart: Date,
-        var profile: Long
-) : SugarRecord() {
+        @ColumnInfo(name = "M_CODE") @Expose @SerializedName("periodCode") var mCode: String = "",
+        @ColumnInfo(name = "M_DESCRIPTION") @Expose @SerializedName("periodDesc") var mDescription: String = "",
+        @ColumnInfo(name = "M_END") @Expose @SerializedName("dateEnd") var mEnd: Date = Date(0),
+        @ColumnInfo(name = "M_FINAL") @Expose @SerializedName("isFinal") var mFinal: Boolean = false,
+        @ColumnInfo(name = "M_POSITION") @Expose @SerializedName("periodPos") var mPosition: Int = -1,
+        @ColumnInfo(name = "M_START") @Expose @SerializedName("dateStart") var mStart: Date = Date(0),
+        @ColumnInfo(name = "PROFILE") var profile: Long
+) {
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "ID")
+    @Ignore
+    var id = -1L
+
     constructor() : this("", "", Date(), false, 0, Date(), -1L)
 }
 

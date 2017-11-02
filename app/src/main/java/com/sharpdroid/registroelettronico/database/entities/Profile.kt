@@ -1,25 +1,26 @@
 package com.sharpdroid.registroelettronico.database.entities
 
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
 import android.content.Context
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IProfile
-import com.orm.SugarRecord
-import com.orm.dsl.Table
-import com.orm.dsl.Unique
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.AccountImage
 
 @Table
+@Entity(tableName = "PROFILE")
 data class Profile(
-        var username: String,
-        var name: String,
-        var password: String,
-        var classe: String,
-        @Unique var id: Long,
-        var token: String,
-        var expire: Long,
-        var ident: String,
-        var isMulti: Boolean
+        @ColumnInfo(name = "USERNAME") var username: String = "",
+        @ColumnInfo(name = "NAME") var name: String = "",
+        @ColumnInfo(name = "PASSWORD") var password: String = "",
+        @ColumnInfo(name = "CLASSE") var classe: String = "",
+        @ColumnInfo(name = "ID") @PrimaryKey @Unique var id: Long = -1L,
+        @ColumnInfo(name = "TOKEN") var token: String = "",
+        @ColumnInfo(name = "EXPIRE") var expire: Long = -1L,
+        @ColumnInfo(name = "IDENT") var ident: String = "",
+        @ColumnInfo(name = "IS_MULTI") var isMulti: Boolean
 ) {
 
     constructor() : this("", "", "", "", 0, "", 0, "", false)
@@ -37,8 +38,8 @@ data class Profile(
         fun getIProfiles(): List<IProfile<ProfileDrawerItem>> {
             return SugarRecord.findWithQuery(Profile::class.java, "SELECT * FROM PROFILE")?.filter {
                 it != null
-            }?.map {
-                it?.asIProfile() ?: throw IllegalStateException("Profile cannot be null")
+            }.map {
+                it.asIProfile() ?: throw IllegalStateException("Profile cannot be null")
             } ?: emptyList()
         }
 

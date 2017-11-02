@@ -12,8 +12,8 @@ data class LoginResponse(@Expose val ident: String?,
 )
 
 data class Choice(
-        @Expose val cid: String,
-        @Expose val ident: String,
-        @Expose val name: String,
+        @Expose val cid: String = "",
+        @Expose val ident: String = "",
+        @Expose val name: String = "",
         @Expose val school: String
 )

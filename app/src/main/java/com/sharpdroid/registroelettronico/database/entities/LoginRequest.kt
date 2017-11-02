@@ -4,8 +4,8 @@ import com.google.gson.annotations.Expose
 import java.util.*
 
 data class LoginRequest(
-        @Expose private val pass: String,
-        @Expose private val uid: String,
+        @Expose private val pass: String = "",
+        @Expose private val uid: String = "",
         @Expose val ident: String
 ) {
     override fun toString(): String {

@@ -10,12 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.ContentViewEvent
-import com.orm.SugarRecord
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.Holders.Holder
 import com.sharpdroid.registroelettronico.database.entities.*
+import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.EventType.*
 import com.sharpdroid.registroelettronico.utils.Metodi
@@ -42,7 +42,7 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
 
             }
             UPDATE_LESSONS_OK -> {
-                initializeLessons(Date().flat())
+                //initializeLessons(Date().flat())
             }
             UPDATE_AGENDA_START -> {
 
@@ -78,7 +78,11 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
         super.onViewCreated(view, savedInstanceState)
         activity.title = "Oggi a scuola"
 
-        //DatabaseHelper.database.lessonsDao().loadProfile().
+        DatabaseHelper.database.lessonsDao().loadLessons(Account.with(context).user)
+                .observe(this, android.arch.lifecycle.Observer { t: MutableList<Lesson>? ->
+                    println("OBSERVED")
+                    initializeLessons(t ?: emptyList())
+                })
 
         with(absence_recycler) {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -148,7 +152,7 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
 
     private fun initializeDay(date: Date) {
         initializeAbsence(date)
-        initializeLessons(date)
+        //initializeLessons(date)
         initializeEvents(date, true)
     }
 
@@ -159,9 +163,15 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
         absence_recycler.adapter.notifyDataSetChanged()
     }
 
-    private fun initializeLessons(date: Date) {
+    /*private fun initializeLessons(date: Date) {
         lessons.clear()
         lessons.addAll(SugarRecord.findWithQuery(Lesson::class.java, "SELECT ID, M_ARGUMENT, M_AUTHOR_NAME, M_DATE, M_HOUR_POSITION, M_SUBJECT_DESCRIPTION, COUNT(ID) as `M_DURATION` FROM LESSON WHERE M_DATE = ${date.time} AND PROFILE=${Account.with(context).user} GROUP BY M_ARGUMENT, M_AUTHOR_NAME ORDER BY M_HOUR_POSITION ASC "))
+        lessons_empty.visibility = if (lessons.isEmpty()) View.VISIBLE else View.GONE
+        lessons_recycler.adapter.notifyDataSetChanged()
+    }*/
+    private fun initializeLessons(lesson: List<Lesson>) {
+        lessons.clear()
+        lessons.addAll(lesson)
         lessons_empty.visibility = if (lessons.isEmpty()) View.VISIBLE else View.GONE
         lessons_recycler.adapter.notifyDataSetChanged()
     }

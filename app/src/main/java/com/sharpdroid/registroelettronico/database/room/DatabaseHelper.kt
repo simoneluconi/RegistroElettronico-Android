@@ -23,7 +23,9 @@ object DatabaseHelper {
 
         isDatabaseCreated.value = false
 
-        Completable.fromAction({ database = Room.databaseBuilder(context, RoomDB::class.java, "registro.db").build() })
+        Completable.fromAction({
+            database = Room.databaseBuilder(context, RoomDB::class.java, "registro-room.db").build()
+        })
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {

@@ -1,19 +1,19 @@
 package com.sharpdroid.registroelettronico.database.entities
 
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
 import android.util.SparseArray
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.orm.SugarRecord
-import com.orm.dsl.Ignore
-import com.orm.dsl.Table
-import com.orm.dsl.Unique
 import java.io.Serializable
 
 @Table
+@Entity(tableName = "TEACHER")
 data class Teacher(
-        @Expose @Unique @SerializedName("teacherId") var id: Long,
-        @Expose var teacherName: String,
-        @Expose @Ignore var folders: List<Folder> //not present in /subjects
+        @ColumnInfo(name = "ID") @PrimaryKey @Expose @Unique @SerializedName("teacherId") var id: Long = -1L,
+        @ColumnInfo(name = "TEACHER_NAME") @Expose var teacherName: String = "",
+        @android.arch.persistence.room.Ignore @Expose @Ignore var folders: List<Folder> //not present in /subjects
 ) : Serializable {
     constructor() : this(0, "", emptyList())
 

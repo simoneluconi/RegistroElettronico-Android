@@ -1,27 +1,33 @@
 package com.sharpdroid.registroelettronico.database.entities
 
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
 import android.util.SparseArray
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.orm.SugarRecord
-import com.orm.dsl.Table
-import com.orm.dsl.Unique
 import com.sharpdroid.registroelettronico.utils.Metodi
 import java.util.*
 
-data class SuperAgenda(val agenda: RemoteAgenda, var completed: Boolean, var test: Boolean)
+data class SuperAgenda(val agenda: RemoteAgenda, var completed: Boolean = false, var test: Boolean)
 
+@Entity(tableName = "LOCAL_AGENDA")
 data class LocalAgenda(
-        var title: String,
-        var content: String,
-        var type: String,
-        var day: Date,
-        var subject: Long,
-        var teacher: Long,
-        var completed_date: Date?,
-        var profile: Long,
-        var archived: Boolean
-) : SugarRecord() {
+        @ColumnInfo(name = "TITLE") var title: String = "",
+        @ColumnInfo(name = "CONTENT") var content: String = "",
+        @ColumnInfo(name = "TYPE") var type: String = "",
+        @ColumnInfo(name = "DAY") var day: Date = Date(0),
+        @ColumnInfo(name = "SUBJECT") var subject: Long = -1L,
+        @ColumnInfo(name = "TEACHER") var teacher: Long = -1L,
+        @ColumnInfo(name = "COMPLETED_DATE") var completed_date: Date?,
+        @ColumnInfo(name = "PROFILE") var profile: Long = -1L,
+        @ColumnInfo(name = "ARCHIVED") var archived: Boolean
+) {
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "ID")
+    @Ignore
+    var id = -1L
+
     constructor() : this("", "", "", Date(), 0, 0, null, -1L, false)
 }
 
@@ -43,14 +49,15 @@ data class LocalAgenda(
 }
  */
 @Table
+@Entity(tableName = "REMOTE_AGENDA")
 data class RemoteAgenda(
-        @Expose @SerializedName("evtId") @Unique val id: Long,
-        @Expose @SerializedName("evtDatetimeBegin") val start: Date,
-        @Expose @SerializedName("evtDatetimeEnd") val end: Date,
-        @Expose @SerializedName("isFullDay") private val isFullDay: Boolean,
-        @Expose @SerializedName("notes") val notes: String,
-        @Expose @SerializedName("authorName") val author: String,
-        var profile: Long
+        @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("evtId") @Unique var id: Long = -1L,
+        @ColumnInfo(name = "START") @Expose @SerializedName("evtDatetimeBegin") var start: Date = Date(0),
+        @ColumnInfo(name = "END") @Expose @SerializedName("evtDatetimeEnd") var end: Date = Date(0),
+        @ColumnInfo(name = "IS_FULL_DAY") @Expose @SerializedName("isFullDay") var isFullDay: Boolean = false,
+        @ColumnInfo(name = "NOTES") @Expose @SerializedName("notes") var notes: String = "",
+        @ColumnInfo(name = "AUTHOR") @Expose @SerializedName("authorName") var author: String = "",
+        @ColumnInfo(name = "PROFILE") var profile: Long
 ) {
 
     constructor() : this(0, Date(), Date(), false, "", "", -1L)
@@ -90,7 +97,7 @@ data class RemoteAgenda(
             return events.filter { a -> !archived.any { it.id == a.id } }.map { agenda -> SuperAgenda(agenda, completed.any { it.id == agenda.id }, agenda.isTest()) }
         }
 
-        fun getSuperAgenda(id: Long, greaterThen: Date, withCompleted: Boolean): List<SuperAgenda> {
+        fun getSuperAgenda(id: Long = -1L, greaterThen: Date = Date(0), withCompleted: Boolean): List<SuperAgenda> {
             val completed: MutableList<RemoteAgendaInfo> = SugarRecord.find(RemoteAgendaInfo::class.java, "ARCHIVED=0 AND COMPLETED=1") ?: mutableListOf()
             val archived: MutableList<RemoteAgendaInfo> = SugarRecord.find(RemoteAgendaInfo::class.java, "ARCHIVED=1") ?: mutableListOf()
             var events = SugarRecord.find(RemoteAgenda::class.java, "PROFILE=? AND START>=${greaterThen.time} AND END>=${greaterThen.time}", id.toString())
@@ -129,11 +136,12 @@ data class AgendaAPI(@Expose @SerializedName("agenda") val agenda: List<RemoteAg
 }
 
 @Table
+@Entity(tableName = "REMOTE_AGENDA_INFO")
 data class RemoteAgendaInfo(
-        @Unique val id: Long,
-        var completed: Boolean,
-        var archived: Boolean,
-        var test: Boolean
+        @ColumnInfo(name = "ID") @PrimaryKey @Unique var id: Long = -1L,
+        @ColumnInfo(name = "COMPLETED") var completed: Boolean = false,
+        @ColumnInfo(name = "ARCHIVED") var archived: Boolean = false,
+        @ColumnInfo(name = "TEST") var test: Boolean
 ) {
     constructor() : this(0, false, false, false)
 }
