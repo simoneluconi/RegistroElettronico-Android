@@ -14,7 +14,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.github.sundeepk.compactcalendarview.domain.Event;
@@ -28,10 +27,8 @@ import com.sharpdroid.registroelettronico.database.entities.CommunicationInfo;
 import com.sharpdroid.registroelettronico.database.entities.FileInfo;
 import com.sharpdroid.registroelettronico.database.entities.Folder;
 import com.sharpdroid.registroelettronico.database.entities.Grade;
-import com.sharpdroid.registroelettronico.database.entities.Lesson;
 import com.sharpdroid.registroelettronico.database.entities.LocalAgenda;
 import com.sharpdroid.registroelettronico.database.entities.Note;
-import com.sharpdroid.registroelettronico.database.entities.Option;
 import com.sharpdroid.registroelettronico.database.entities.Period;
 import com.sharpdroid.registroelettronico.database.entities.Profile;
 import com.sharpdroid.registroelettronico.database.entities.RemoteAgenda;
@@ -273,18 +270,16 @@ public class Metodi {
         return list;
     }
 
-    public static void deleteUser(String account) {
-        SugarRecord.deleteAll(Profile.class, "ID=?", account);
-        SugarRecord.deleteAll(Absence.class, "PROFILE=?", account);
-        SugarRecord.deleteAll(Communication.class, "PROFILE=?", account);
-        SugarRecord.deleteAll(com.sharpdroid.registroelettronico.database.entities.File.class, "PROFILE=?", account);
-        SugarRecord.deleteAll(Folder.class, "PROFILE=?", account);
-        SugarRecord.deleteAll(Grade.class, "PROFILE=?", account);
-        SugarRecord.deleteAll(Lesson.class, "PROFILE=?", account);
-        SugarRecord.deleteAll(Option.class, "ID=?", account);
-        SugarRecord.deleteAll(Period.class, "PROFILE=?", account);
-        SugarRecord.deleteAll(RemoteAgenda.class, "PROFILE=?", account);
-        SugarRecord.deleteAll(SubjectTeacher.class, "PROFILE=?", account);
+    public static void deleteUser(long account) {
+        DatabaseHelper.database.profilesDao().delete(account);
+        DatabaseHelper.database.absencesDao().delete(account);
+        DatabaseHelper.database.communicationsDao().delete(account);
+        DatabaseHelper.database.foldersDao().deleteFiles(account);
+        DatabaseHelper.database.foldersDao().deleteFolders(account);
+        DatabaseHelper.database.gradesDao().delete(account);
+        DatabaseHelper.database.lessonsDao().delete(account);
+        DatabaseHelper.database.eventsDao().delete(account);
+        DatabaseHelper.database.subjectsDao().delete(account);
     }
 
     public static void fetchDataOfUser(@NotNull Context c) {
@@ -309,8 +304,8 @@ public class Metodi {
 
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_MARKS_START, null));
         APIClient.Companion.with(p).getGrades().subscribe(gradeAPI -> {
-            SugarRecord.deleteAll(Grade.class, "PROFILE=?", String.valueOf(p.getId()));
-            SugarRecord.saveInTx(gradeAPI.getGrades(p));
+            DatabaseHelper.database.gradesDao().delete(p.getId());
+            DatabaseHelper.database.gradesDao().insert(gradeAPI.getGrades(p));
             handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_MARKS_OK, null));
         }, throwable -> {
             handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_MARKS_KO, null));
@@ -331,7 +326,6 @@ public class Metodi {
         APIClient.Companion.with(p).getSubjects().subscribeOn(AndroidSchedulers.mainThread()).subscribe(subjectAPI -> {
             List<Teacher> allTeachers = new ArrayList<>();
 
-            Log.d("SugarOrm", "DELETING SUBJECTS");
             SugarRecord.deleteAll(Subject.class, "ID IN (SELECT SUBJECT FROM SUBJECT_TEACHER WHERE PROFILE=?)", String.valueOf(p.getId()));
 
             for (Subject subject : subjectAPI.getSubjects()) {
@@ -369,7 +363,7 @@ public class Metodi {
                 .subscribe(l -> {/*
                     SugarRecord.deleteAll(Lesson.class, "PROFILE=?", String.valueOf(p.getId()));
                     SugarRecord.saveInTx(l.getLessons(p));*/
-                    DatabaseHelper.database.lessonsDao().deleteLessons(p.getId());
+                    DatabaseHelper.database.lessonsDao().delete(p.getId());
                     DatabaseHelper.database.lessonsDao().insertLessons(l.getLessons(p));
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_LESSONS_OK, null));
                 }, throwable -> {

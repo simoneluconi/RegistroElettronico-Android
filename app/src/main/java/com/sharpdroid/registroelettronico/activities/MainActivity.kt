@@ -40,6 +40,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IProfile
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.database.entities.Profile
+import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.fragments.*
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.deleteUser
@@ -87,7 +88,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         var profile = Profile.getProfile(this)
 
         if (profile == null) {
-            profile = SugarRecord.first(Profile::class.java)
+            profile = DatabaseHelper.database.profilesDao().randomProfile
             onProfileChanged(null, profile.asIProfile(), false)
         }
 
@@ -428,7 +429,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
     override fun onProfileLongClick(view: View?, profile: IProfile<*>, current: Boolean): Boolean {
         if (profile.identifier != 1234L) {
             MaterialDialog.Builder(this).title("Eliminare il profilo?").content("Continuare con l'eliminazione di " + profile.email.text + " ?").positiveText("SI").negativeText("NO").onPositive { _, _ ->
-                deleteUser(profile.identifier.toString())
+                deleteUser(profile.identifier)
 
                 drawer?.closeDrawer()
                 initDrawer(savedInstanceState)
@@ -436,7 +437,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                 headerResult?.removeProfileByIdentifier(profile.identifier)
                 drawer?.headerAdapter?.notifyDataSetChanged()
 
-                val p = SugarRecord.first(Profile::class.java)
+                val p = DatabaseHelper.database.profilesDao().randomProfile
                 if (p != null) {
                     Account.with(this).user = p.id
                     headerResult?.setActiveProfile(p.id, true)

@@ -15,17 +15,14 @@ import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.MainActivity
-import com.sharpdroid.registroelettronico.database.entities.Average
 import com.sharpdroid.registroelettronico.database.entities.Grade
-import com.sharpdroid.registroelettronico.database.entities.Lesson
+import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.fragments.bottomSheet.OrderMedieBS
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.EventType
-import com.sharpdroid.registroelettronico.utils.Metodi.CalculateScholasticCredits
 import com.sharpdroid.registroelettronico.utils.Metodi.updateMarks
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.fragment_medie_pager.*
-import java.util.*
 
 /**
  * A simple [Fragment] subclass.
@@ -134,7 +131,7 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
         updateMarks(context)
     }
 
-    private fun getSnackBarMessage(pos: Int): String {
+    private fun getSnackBarMessage(pos: Int): String {/*
         val p = if (pos == 0) 3 else if (pos == 1) 1 else 0
         val average = SugarRecord.findWithQuery(Average::class.java, "SELECT 0 as ID, AVG(M_VALUE) as AVG FROM GRADE WHERE PROFILE=? AND M_VALUE!=0 AND M_PERIOD!=?", Account.with(activity).user.toString(), p.toString())[0].avg.toDouble()
         var className: String? = SugarRecord.find(Lesson::class.java, "PROFILE=?", arrayOf(Account.with(activity).user.toString()), "M_CLASS_DESCRIPTION", null, "1").getOrNull(0).mClassDescription
@@ -152,8 +149,8 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
                 String.format(Locale.getDefault(), "Media Totale: %.2f | Crediti: %2\$d + %3\$d", average, CalculateScholasticCredits(classyear, average), 1)
             else
                 "Media totale: " + String.format(Locale.getDefault(), "%.2f", average)
-        } else
-            return ""
+        } else*/
+        return ""
     }
 
     private fun load() {
@@ -162,18 +159,21 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
         Grade.clearSubjectCache()
         Grade.setupSubjectCache(Account.with(context).user)
 
-        grades.clear()
-        grades.addAll(SugarRecord.find(Grade::class.java, "PROFILE = ?", Account.with(context).user.toString()))
+        DatabaseHelper.database.gradesDao().getGrades(Account.with(context).user).observe(this, android.arch.lifecycle.Observer {
 
-        var fragment: FragmentMedie
-        for (i in 0..pagerAdapter.count) {
-            fragment = pagerAdapter.instantiateItem(view_pager, i) as FragmentMedie
-            when (i) {
-                0 -> fragment.addSubjects(Grade.getAverages(grades.filter { it.mPeriod == 1 }, order), 1)
-                1 -> fragment.addSubjects(Grade.getAverages(grades.filter { it.mPeriod != 1 }, order), 3)
-                2 -> fragment.addSubjects(Grade.getAverages(grades, order), -1)
+            grades.clear()
+            grades.addAll(it ?: emptyList())
+
+            var fragment: FragmentMedie
+            for (i in 0..pagerAdapter.count) {
+                fragment = pagerAdapter.instantiateItem(view_pager, i) as FragmentMedie
+                when (i) {
+                    0 -> fragment.addSubjects(Grade.getAverages(grades.filter { it.mPeriod == 1 }, order), 1)
+                    1 -> fragment.addSubjects(Grade.getAverages(grades.filter { it.mPeriod != 1 }, order), 3)
+                    2 -> fragment.addSubjects(Grade.getAverages(grades, order), -1)
+                }
             }
-        }
+        })
     }
 
     override fun onStop() {

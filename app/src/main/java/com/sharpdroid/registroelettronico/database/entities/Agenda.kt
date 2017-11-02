@@ -17,18 +17,17 @@ data class LocalAgenda(
         @ColumnInfo(name = "CONTENT") var content: String = "",
         @ColumnInfo(name = "TYPE") var type: String = "",
         @ColumnInfo(name = "DAY") var day: Date = Date(0),
-        @ColumnInfo(name = "SUBJECT") var subject: Long = -1L,
-        @ColumnInfo(name = "TEACHER") var teacher: Long = -1L,
+        @ColumnInfo(name = "SUBJECT") var subject: Long = 0L,
+        @ColumnInfo(name = "TEACHER") var teacher: Long = 0L,
         @ColumnInfo(name = "COMPLETED_DATE") var completed_date: Date?,
-        @ColumnInfo(name = "PROFILE") var profile: Long = -1L,
+        @ColumnInfo(name = "PROFILE") var profile: Long = 0L,
         @ColumnInfo(name = "ARCHIVED") var archived: Boolean
 ) {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "ID")
-    @Ignore
-    var id = -1L
+    var id = 0L
 
-    constructor() : this("", "", "", Date(), 0, 0, null, -1L, false)
+    constructor() : this("", "", "", Date(), 0, 0, null, 0L, false)
 }
 
 /*
@@ -48,10 +47,9 @@ data class LocalAgenda(
     ]
 }
  */
-@Table
 @Entity(tableName = "REMOTE_AGENDA")
 data class RemoteAgenda(
-        @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("evtId") @Unique var id: Long = -1L,
+        @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("evtId") var id: Long = 0L,
         @ColumnInfo(name = "START") @Expose @SerializedName("evtDatetimeBegin") var start: Date = Date(0),
         @ColumnInfo(name = "END") @Expose @SerializedName("evtDatetimeEnd") var end: Date = Date(0),
         @ColumnInfo(name = "IS_FULL_DAY") @Expose @SerializedName("isFullDay") var isFullDay: Boolean = false,
@@ -60,13 +58,14 @@ data class RemoteAgenda(
         @ColumnInfo(name = "PROFILE") var profile: Long
 ) {
 
-    constructor() : this(0, Date(), Date(), false, "", "", -1L)
+    constructor() : this(0, Date(), Date(), false, "", "", 0L)
 
     fun getInfo(): RemoteAgendaInfo? {
+        return null/*
         if (infoCache.indexOfKey(id.toInt()) >= 0)
             return infoCache[id.toInt()]
 
-        return SugarRecord.findById(RemoteAgendaInfo::class.java, id)
+        return SugarRecord.findById(RemoteAgendaInfo::class.java, id)*/
     }
 
     fun isTest(): Boolean {
@@ -84,20 +83,21 @@ data class RemoteAgenda(
             infoCache.clear()
         }
 
-        fun setupCache(account: Long) {
+        fun setupCache(account: Long) {/*
             val infos = SugarRecord.find<RemoteAgendaInfo>(RemoteAgendaInfo::class.java, "ID IN (SELECT ID FROM REMOTE_AGENDA WHERE PROFILE=?)", account.toString())
-            infos.forEach { infoCache.put(it.id.toInt(), it) }
+            infos.forEach { infoCache.put(it.id.toInt(), it) }*/
         }
 
-        fun getSuperAgenda(id: Long): List<SuperAgenda> {
+        fun getSuperAgenda(id: Long): List<SuperAgenda> {/*
             val completed: MutableList<RemoteAgendaInfo> = SugarRecord.find(RemoteAgendaInfo::class.java, "ARCHIVED=0 AND COMPLETED=1") ?: mutableListOf()
             val archived: MutableList<RemoteAgendaInfo> = SugarRecord.find(RemoteAgendaInfo::class.java, "ARCHIVED=1") ?: mutableListOf()
             val events = SugarRecord.find(RemoteAgenda::class.java, "PROFILE=? ", id.toString())
 
-            return events.filter { a -> !archived.any { it.id == a.id } }.map { agenda -> SuperAgenda(agenda, completed.any { it.id == agenda.id }, agenda.isTest()) }
+            return events.filter { a -> !archived.any { it.id == a.id } }.map { agenda -> SuperAgenda(agenda, completed.any { it.id == agenda.id }, agenda.isTest()) }*/
+            return emptyList()
         }
 
-        fun getSuperAgenda(id: Long = -1L, greaterThen: Date = Date(0), withCompleted: Boolean): List<SuperAgenda> {
+        fun getSuperAgenda(id: Long = 0L, greaterThen: Date = Date(0), withCompleted: Boolean): List<SuperAgenda> {/*
             val completed: MutableList<RemoteAgendaInfo> = SugarRecord.find(RemoteAgendaInfo::class.java, "ARCHIVED=0 AND COMPLETED=1") ?: mutableListOf()
             val archived: MutableList<RemoteAgendaInfo> = SugarRecord.find(RemoteAgendaInfo::class.java, "ARCHIVED=1") ?: mutableListOf()
             var events = SugarRecord.find(RemoteAgenda::class.java, "PROFILE=? AND START>=${greaterThen.time} AND END>=${greaterThen.time}", id.toString())
@@ -106,7 +106,8 @@ data class RemoteAgenda(
             if (!withCompleted) {
                 events.filter { a -> !completed.any { it.id == a.id } }
             }
-            return events.map { agenda -> SuperAgenda(agenda, completed.any { it.id == agenda.id }, agenda.isTest()) }
+            return events.map { agenda -> SuperAgenda(agenda, completed.any { it.id == agenda.id }, agenda.isTest()) }*/
+            return emptyList()
         }
     }
 
@@ -135,13 +136,10 @@ data class AgendaAPI(@Expose @SerializedName("agenda") val agenda: List<RemoteAg
     }
 }
 
-@Table
 @Entity(tableName = "REMOTE_AGENDA_INFO")
 data class RemoteAgendaInfo(
-        @ColumnInfo(name = "ID") @PrimaryKey @Unique var id: Long = -1L,
+        @ColumnInfo(name = "ID") @PrimaryKey var id: Long = 0L,
         @ColumnInfo(name = "COMPLETED") var completed: Boolean = false,
         @ColumnInfo(name = "ARCHIVED") var archived: Boolean = false,
-        @ColumnInfo(name = "TEST") var test: Boolean
-) {
-    constructor() : this(0, false, false, false)
-}
+        @ColumnInfo(name = "TEST") var test: Boolean = false
+)

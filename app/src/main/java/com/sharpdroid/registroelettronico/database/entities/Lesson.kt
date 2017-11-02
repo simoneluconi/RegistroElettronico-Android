@@ -37,7 +37,7 @@ data class Lesson(
         @ColumnInfo(name = "M_DATE") @Expose @SerializedName("evtDate") var mDate: Date = Date(0),
         @ColumnInfo(name = "M_DURATION") @Expose @SerializedName("evtDuration") var mDuration: Int = -1,
         @ColumnInfo(name = "M_HOUR_POSITION") @Expose @SerializedName("evtHPos") var mHourPosition: Int = -1,
-        @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("evtId") @Unique var id: Long = -1L,
+        @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("evtId") var id: Long = 0L,
         @ColumnInfo(name = "M_SUBJECT_CODE") @Expose @SerializedName("subjectCode") var mSubjectCode: String = "",
         @ColumnInfo(name = "M_SUBJECT_DESCRIPTION") @Expose @SerializedName("subjectDesc") var mSubjectDescription: String = "",
         @ColumnInfo(name = "M_SUBJECT_ID") @Expose @SerializedName("subjectId") var mSubjectId: Int = -1,
@@ -50,7 +50,7 @@ data class Lesson(
         val lessonsOfSubject = SparseArray<List<Lesson>>()
         val allLessons = mutableListOf<Lesson>()
 
-        fun setupCache(account: Long) {
+        fun setupCache(account: Long) {/*
             if (allLessons.isNotEmpty()) return
 
             val data = SugarRecord.find(Lesson::class.java, "PROFILE=$account")
@@ -59,7 +59,7 @@ data class Lesson(
             val groupedBySubject = data.groupBy { it.mSubjectId }
             groupedBySubject.keys.forEach {
                 lessonsOfSubject.put(it, groupedBySubject[it])
-            }
+            }*/
         }
 
         fun clearCache() {

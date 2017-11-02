@@ -12,21 +12,18 @@ import android.media.AudioManager
 import android.media.RingtoneManager
 import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
+import android.support.v7.preference.PreferenceManager
 import android.util.Log
-import com.crashlytics.android.answers.Answers
-import com.crashlytics.android.answers.CustomEvent
 import com.firebase.jobdispatcher.JobParameters
 import com.firebase.jobdispatcher.JobService
-import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.MainActivity
 import com.sharpdroid.registroelettronico.api.v2.APIClient
-import com.sharpdroid.registroelettronico.database.entities.*
-import com.sharpdroid.registroelettronico.utils.Metodi.getStartEnd
-import java.io.IOException
+import com.sharpdroid.registroelettronico.database.entities.LoginRequest
+import com.sharpdroid.registroelettronico.database.entities.Profile
+import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 
 class NotificationService : JobService() {
     override fun onStopJob(job: JobParameters?): Boolean {
@@ -35,11 +32,6 @@ class NotificationService : JobService() {
 
     override fun onStartJob(job: JobParameters?): Boolean {
         val profile = Profile.getProfile(applicationContext) ?: return false
-        val option: Option = SugarRecord.findById(Option::class.java, profile.id) ?: return false
-        with(option) {
-            if (!notify || !(notifyAgenda || notifyVoti || notifyComunicazioni || notifyNote)) return false
-        }
-
         val notificationsList = mutableMapOf<String, Int>()
         if (profile.expire < System.currentTimeMillis()) {
             val login = APIClient.with(profile).postLoginBlocking(LoginRequest(profile.password, profile.username, profile.ident)).blockingFirst()
@@ -48,33 +40,30 @@ class NotificationService : JobService() {
             profile.token = login.body()?.token ?: throw IllegalStateException("token not in response body")
             profile.expire = login.body()?.expire?.time ?: 0
 
-            SugarRecord.update(profile)
+            DatabaseHelper.database.profilesDao().update(profile)
         }
 
-        if (option.notifyAgenda) {
-            val diff = getAgendaDiff(profile)
-            if (diff != 0)
-                notificationsList.put("agenda", diff)
-            Log.d("NOTIFICATION", "AGENDA - $diff")
-        }
-        if (option.notifyVoti) {
-            val diff = getVotiDiff(profile)
-            if (diff != 0)
-                notificationsList.put("voti", diff)
-            Log.d("NOTIFICATION", "VOTI - $diff")
-        }
-        if (option.notifyComunicazioni) {
-            val diff = getComunicazioniDiff(profile)
-            if (diff != 0)
-                notificationsList.put("comunicazioni", diff)
-            Log.d("NOTIFICATION", "COMUNICAZIONI - $diff")
-        }
-        if (option.notifyNote) {
-            val diff = getNoteDiff(profile)
-            if (diff != 0)
-                notificationsList.put("note", diff)
-            Log.d("NOTIFICATION", "NOTE - $diff")
-        }
+        var diff = getAgendaDiff(profile)
+        if (diff != 0)
+            notificationsList.put("agenda", diff)
+        Log.d("NOTIFICATION", "AGENDA - $diff")
+
+        diff = getVotiDiff(profile)
+        if (diff != 0)
+            notificationsList.put("voti", diff)
+        Log.d("NOTIFICATION", "VOTI - $diff")
+
+
+        diff = getComunicazioniDiff(profile)
+        if (diff != 0)
+            notificationsList.put("comunicazioni", diff)
+        Log.d("NOTIFICATION", "COMUNICAZIONI - $diff")
+
+        diff = getNoteDiff(profile)
+        if (diff != 0)
+            notificationsList.put("note", diff)
+        Log.d("NOTIFICATION", "NOTE - $diff")
+
 
         notify(notificationsList, PreferenceManager.getDefaultSharedPreferences(this))
 
@@ -109,7 +98,7 @@ class NotificationService : JobService() {
         }
     }
 
-    private fun getAgendaDiff(profile: Profile): Int {
+    private fun getAgendaDiff(profile: Profile): Int {/*
         val dates = getStartEnd("yyyyMMdd")
         val agenda: List<RemoteAgenda>
         agenda = try {
@@ -124,10 +113,11 @@ class NotificationService : JobService() {
         val diff = agenda.size - SugarRecord.count<RemoteAgenda>(RemoteAgenda::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
         SugarRecord.deleteAll(RemoteAgenda::class.java, "PROFILE=?", profile.id.toString())
         SugarRecord.saveInTx(agenda)
-        return if (diff < 0) 0 else diff
+        return if (diff < 0) 0 else diff*/
+        return 0
     }
 
-    private fun getVotiDiff(profile: Profile): Int {
+    private fun getVotiDiff(profile: Profile): Int {/*
         val marks: List<Grade> = try {
             //APIClient.with(profile).getGrades().blockingFirst()?.getGrades(profile) ?: return 0
             val response = APIClient.with(profile).getGradesBlocking().blockingFirst()
@@ -141,10 +131,11 @@ class NotificationService : JobService() {
         SugarRecord.deleteAll(Grade::class.java, "PROFILE=?", profile.id.toString())
         marks.forEach { it.profile = profile.id }
         SugarRecord.saveInTx(marks)
-        return if (diff < 0) 0 else diff
+        return if (diff < 0) 0 else diff*/
+        return 0
     }
 
-    private fun getComunicazioniDiff(profile: Profile): Int {
+    private fun getComunicazioniDiff(profile: Profile): Int {/*
         var comm: List<Communication> = try {
             //APIClient.with(profile).getBacheca().blockingFirst()?.getCommunications(profile) ?: return 0
             val response = APIClient.with(profile).getBachecaBlocking().blockingFirst()
@@ -158,10 +149,11 @@ class NotificationService : JobService() {
         val diff = comm.size - SugarRecord.count<Communication>(Communication::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
         SugarRecord.deleteAll(Communication::class.java, "PROFILE=?", profile.id.toString())
         SugarRecord.saveInTx(comm)
-        return if (diff < 0) 0 else diff
+        return if (diff < 0) 0 else diff*/
+        return 0
     }
 
-    private fun getNoteDiff(profile: Profile): Int {
+    private fun getNoteDiff(profile: Profile): Int {/*
         val note: List<Note> = try {
             //APIClient.with(profile).getNotes().blockingFirst()?.getNotes(profile) ?: return 0
             val response = APIClient.with(profile).getNotesBlocking().blockingFirst()
@@ -174,7 +166,8 @@ class NotificationService : JobService() {
         val diff = note.size - SugarRecord.count<Note>(Note::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
         SugarRecord.deleteAll(Note::class.java, "PROFILE=?", profile.id.toString())
         SugarRecord.saveInTx(note)
-        return if (diff < 0) 0 else diff
+        return if (diff < 0) 0 else diff*/
+        return 0
     }
 
     private fun pushNotification(title: String, content: String?, sound: Boolean, vibrate: Boolean, tabToOpen: Long?) {

@@ -2,6 +2,7 @@ package com.sharpdroid.registroelettronico.database.entities
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
+import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -31,16 +32,15 @@ import java.util.*
     ]
 }
  */
-@Table
 @Entity(tableName = "COMMUNICATION")
 data class Communication(
-        @PrimaryKey @ColumnInfo(name = "ID") @Expose @SerializedName("pubId") @Unique var id: Long = -1L,
+        @PrimaryKey @ColumnInfo(name = "ID") @Expose @SerializedName("pubId") var id: Long = 0L,
         @ColumnInfo(name = "DATE") @Expose @SerializedName("pubDT") var date: Date = Date(0),
         @ColumnInfo(name = "IS_READ") @Expose @SerializedName("readStatus") var isRead: Boolean = false,
         @ColumnInfo(name = "EVT_CODE") @Expose @SerializedName("evtCode") var evtCode: String = "",
-        @ColumnInfo(name = "MY_ID") @Expose @SerializedName("cntId") var myId: Long = -1L,
+        @ColumnInfo(name = "MY_ID") @Expose @SerializedName("cntId") var myId: Long = 0L,
         @ColumnInfo(name = "TITLE") @Expose @SerializedName("cntTitle") var title: String = "",
-        @android.arch.persistence.room.Ignore @Expose @SerializedName("cntStatus") @Ignore var cntStatus: String = "",
+        @Ignore @Expose @SerializedName("cntStatus") var cntStatus: String = "",
         @ColumnInfo(name = "CATEGORY") @Expose @SerializedName("cntCategory") var category: String = "",
         @ColumnInfo(name = "HAS_ATTACHMENT") @Expose @SerializedName("cntHasAttach") var hasAttachment: Boolean = false,
         @ColumnInfo(name = "PROFILE") var profile: Long
@@ -69,11 +69,11 @@ data class CommunicationAPI(@Expose @SerializedName("items") private var communi
     }
 }
  */
-@Table
-data class CommunicationInfo(@Unique var id: Long = -1L,
-                             @Expose @SerializedName("title") var title: String = "",
-                             @Expose @SerializedName("text") var content: String = "",
-                             var path: String) {
+@Entity(tableName = "COMMUNICATION_INFO")
+data class CommunicationInfo(@ColumnInfo(name = "ID") @PrimaryKey(autoGenerate = true) var id: Long = 0L,
+                             @ColumnInfo(name = "TITLE") @Expose @SerializedName("title") var title: String = "",
+                             @ColumnInfo(name = "CONTENT") @Expose @SerializedName("text") var content: String = "",
+                             @ColumnInfo(name = "PATH") var path: String) {
     constructor() : this(0L, "", "", "")
 }
 

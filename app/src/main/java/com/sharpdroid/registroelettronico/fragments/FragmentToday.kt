@@ -157,10 +157,12 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
     }
 
     private fun initializeAbsence(date: Date) {
-        absences.clear()
-        absences.addAll(SugarRecord.find(Absence::class.java, "DATE = ${date.time} AND PROFILE=${Account.with(context).user}"))
-        absence_card.visibility = if (absences.isNotEmpty()) View.VISIBLE else View.GONE
-        absence_recycler.adapter.notifyDataSetChanged()
+        DatabaseHelper.database.absencesDao().getAbsences(date, Account.with(context).user).observe(this, android.arch.lifecycle.Observer { t: MutableList<Absence>? ->
+            absences.clear()
+            absences.addAll(t ?: emptyList())
+            absence_card.visibility = if (absences.isNotEmpty()) View.VISIBLE else View.GONE
+            absence_recycler.adapter.notifyDataSetChanged()
+        })
     }
 
     /*private fun initializeLessons(date: Date) {
@@ -184,7 +186,7 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
 
         events.clear()
         events.addAll(RemoteAgenda.getSuperAgenda(Account.with(context).user, date, true))
-        events.addAll(SugarRecord.find(LocalAgenda::class.java, "PROFILE=? AND ARCHIVED=0 AND DAY>=${date.time}", Account.with(context).user.toString()))
+        //events.addAll(SugarRecord.find(LocalAgenda::class.java, "PROFILE=? AND ARCHIVED=0 AND DAY>=${date.time}", Account.with(context).user.toString()))
         events.sortWith(Comparator { t1: Any, t2: Any ->
             val date1 = (t1 as? SuperAgenda)?.agenda?.start ?: ((t1 as? LocalAgenda)?.day ?: Date(0))
             val date2 = (t2 as? SuperAgenda)?.agenda?.start ?: ((t2 as? LocalAgenda)?.day ?: Date(0))

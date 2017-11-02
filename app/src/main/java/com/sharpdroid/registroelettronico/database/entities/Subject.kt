@@ -2,12 +2,12 @@ package com.sharpdroid.registroelettronico.database.entities
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
+import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
 import android.content.Context
 import android.util.SparseArray
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.sharpdroid.registroelettronico.utils.Account
 import java.io.Serializable
 
 /*
@@ -27,18 +27,18 @@ import java.io.Serializable
     ]
 }
  */
-@Table
 @Entity(tableName = "SUBJECT")
 data class Subject(
-        @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("id") @Unique var id: Long = -1L,
+        @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("id") var id: Long = 0L,
         @ColumnInfo(name = "DESCRIPTION") @Expose @SerializedName("description") var description: String = "",
-        @android.arch.persistence.room.Ignore @Expose @SerializedName("teachers") @Ignore var teachers: List<Teacher>
+        @Ignore @Expose @SerializedName("teachers") var teachers: List<Teacher>
 ) : Serializable {
     constructor() : this(0, "", emptyList())
 
     fun getInfo(c: Context): SubjectInfo {
-        return SugarRecord.find(SubjectInfo::class.java, "ID=? LIMIT 1", Account.with(c).user.toString() + id.toString()).getOrNull(0) ?:
-                SubjectInfo((Account.with(c).user.toString() + "" + id.toString()).toLong(), 0f, "", "", "", this, Account.with(c).user)
+        throw IllegalStateException("use proper DAO")
+        //return SugarRecord.find(SubjectInfo::class.java, "ID=? LIMIT 1", Account.with(c).user.toString() + id.toString()).getOrNull(0) ?:
+        //      SubjectInfo((Account.with(c).user.toString() + "" + id.toString()).toLong(), 0f, "", "", "", this, Account.with(c).user)
     }
 
     companion object {
@@ -47,10 +47,12 @@ data class Subject(
         fun clearCache() = subjectCache.clear()
 
         fun setupCache() {
+            throw IllegalStateException("use proper DAO")
+            /*
             val subjects: Iterator<Subject> = SugarRecord.findAll(Subject::class.java)!!
             subjects.forEach {
                 subjectCache.put(it.id.toInt(), it)
-            }
+            }*/
         }
 
         fun subject(id: Number) = subjectCache[id.toInt(), null]
@@ -58,16 +60,14 @@ data class Subject(
 }
 
 
-@Table
+@Entity
 data class SubjectInfo(
-        @Unique var id: Long = -1L,
-        var target: Float,
-        var description: String = "",
-        var details: String = "",
-        var classroom: String = "",
-        var subject: Subject,
-        var profile: Long) {
-    constructor() : this(0L, 0f, "", "", "", Subject(), -1L)
-}
+        @ColumnInfo(name = "ID") @PrimaryKey(autoGenerate = true) var id: Long = 0L,
+        @ColumnInfo(name = "TARGET") var target: Float,
+        @ColumnInfo(name = "DESCRIPTION") var description: String = "",
+        @ColumnInfo(name = "DETAILS") var details: String = "",
+        @ColumnInfo(name = "CLASSROOM") var classroom: String = "",
+        @ColumnInfo(name = "SUBJECT") var subject: Subject,
+        @ColumnInfo(name = "PROFILE") var profile: Long)
 
 data class SubjectAPI(@Expose @SerializedName("subjects") val subjects: List<Subject>)

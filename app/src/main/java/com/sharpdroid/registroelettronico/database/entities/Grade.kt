@@ -7,17 +7,15 @@ import android.content.Context
 import android.util.SparseArray
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.sharpdroid.registroelettronico.utils.Account
 import java.util.*
 
-@Table
 @Entity(tableName = "GRADE")
 data class Grade(
         @ColumnInfo(name = "M_CODE") @Expose @SerializedName("evtCode") var mCode: String = "",
         @ColumnInfo(name = "M_COMPONENT_POS") @Expose @SerializedName("componentPos") var mComponentPos: Int = -1,
         @ColumnInfo(name = "M_DATE") @Expose @SerializedName("evtDate") var mDate: Date = Date(0),
         @ColumnInfo(name = "M_DESCRIPTION") @Expose @SerializedName("subjectDesc") var mDescription: String = "",
-        @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("evtId") @Unique var id: Long = -1L,
+        @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("evtId") var id: Long = 0L,
         @ColumnInfo(name = "M_NOTES") @Expose @SerializedName("notesForFamily") var mNotes: String = "",
         @ColumnInfo(name = "M_PERIOD") @Expose @SerializedName("periodPos") var mPeriod: Int = -1,
         @ColumnInfo(name = "M_PERIOD_NAME") @Expose @SerializedName("periodDesc") var mPeriodName: String = "",
@@ -29,7 +27,7 @@ data class Grade(
         @ColumnInfo(name = "M_WEIGHT_FACTOR") @Expose @SerializedName("weightFactor") var mWeightFactor: Double,
         @ColumnInfo(name = "PROFILE") var profile: Long
 ) {
-    constructor() : this("", 0, Date(), "", 0, "", 0, "", "", 0, "", false, 0f, 0.0, -1L)
+    constructor() : this("", 0, Date(), "", 0, "", 0, "", "", 0, "", false, 0f, 0.0, 0L)
 
     companion object {
         private val subjectCache = SparseArray<Subject>()
@@ -42,11 +40,11 @@ data class Grade(
             subjectOriginalNames.clear()
         }
 
-        fun setupSubjectCache(account: Long) {
+        fun setupSubjectCache(account: Long) {/*
             val subjects = SugarRecord.find(Subject::class.java, "SUBJECT.ID IN (SELECT SUBJECT_TEACHER.SUBJECT FROM SUBJECT_TEACHER WHERE SUBJECT_TEACHER.PROFILE=?)", account.toString())
             val subjectInfos = SugarRecord.find(SubjectInfo::class.java, "SUBJECT_INFO.SUBJECT IN (SELECT SUBJECT.ID FROM SUBJECT) AND SUBJECT_INFO.PROFILE=?", account.toString())
             subjects.forEach { subjectCache.put(it.id.toInt(), it) }
-            subjectInfos.forEach { subjectInfoCache.put(it.subject.id.toInt(), it) }
+            subjectInfos.forEach { subjectInfoCache.put(it.subject.id.toInt(), it) }*/
         }
 
         fun getAverages(grades: List<Grade>, order: String): List<Average> {
@@ -112,7 +110,7 @@ data class Grade(
         }
 
         fun hasMarksSecondPeriod(context: Context): Boolean {
-            return SugarRecord.count<Grade>(Grade::class.java, "M_PERIOD!=1 AND PROFILE=?", arrayOf(Account.with(context).user.toString())) > 0
+            return false//SugarRecord.count<Grade>(Grade::class.java, "M_PERIOD!=1 AND PROFILE=?", arrayOf(Account.with(context).user.toString())) > 0
         }
     }
 }

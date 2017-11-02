@@ -27,24 +27,26 @@ import java.util.*
 }
 
  */
-@Table
 @Entity(tableName = "FILE")
 data class File(
-        @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("contentId") @Unique var id: Long = -1L,
+        @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("contentId") var id: Long = 0L,
         @ColumnInfo(name = "CONTENT_NAME") @Expose @SerializedName("contentName") var contentName: String = "",
-        @ColumnInfo(name = "OBJECT_ID") @Expose @SerializedName("objectId") var objectId: Long = -1L,
+        @ColumnInfo(name = "OBJECT_ID") @Expose @SerializedName("objectId") var objectId: Long = 0L,
         @ColumnInfo(name = "TYPE") @Expose @SerializedName("objectType") var type: String = "",
         @ColumnInfo(name = "DATE") @Expose @SerializedName("shareDT") var date: Date = Date(0),
-        @ColumnInfo(name = "FOLDER") var folder: Long = -1L,
-        @ColumnInfo(name = "TEACHER") var teacher: Long = -1L,
+        @ColumnInfo(name = "FOLDER") var folder: Long = 0L,
+        @ColumnInfo(name = "TEACHER") var teacher: Long = 0L,
         @ColumnInfo(name = "PROFILE") var profile: Long
 ) {
     constructor() : this(0, "", 0, "", Date(), 0, 0, 0)
 }
 
-@Table
-data class FileInfo(@Unique val id: Long = -1L, var path: String) {
-    constructor() : this(-1L, "")
+
+@Entity
+data class FileInfo(
+        @ColumnInfo(name = "ID") @PrimaryKey var id: Long = 0L,
+        @ColumnInfo(name = "PATH") var path: String) {
+    constructor() : this(0L, "")
 }
 
 data class DownloadURL(@Expose @SerializedName("link") val link: String)

@@ -6,16 +6,15 @@ import android.arch.persistence.room.PrimaryKey
 
 @Entity(tableName = "SUBJECT_TEACHER")
 data class SubjectTeacher(
-        @ColumnInfo(name = "SUBJECT") var subject: Long = -1L,
-        @ColumnInfo(name = "TEACHER") var teacher: Long = -1L,
+        @ColumnInfo(name = "SUBJECT") var subject: Long = 0L,
+        @ColumnInfo(name = "TEACHER") var teacher: Long = 0L,
         @ColumnInfo(name = "PROFILE") var profile: Long
 ) {
     @PrimaryKey(autoGenerate = true)
-    @Ignore
     @ColumnInfo(name = "ID")
-    var id = -1L
+    var id = 0L
 
-    constructor() : this(-1L, -1L, -1L)
+    constructor() : this(0L, 0L, 0L)
 
     companion object {
         val cache = ArrayList<SubjectTeacher>()
@@ -25,10 +24,11 @@ data class SubjectTeacher(
         }
 
         fun setupCache(account: Long) {
-            val subjectsTeachers = SugarRecord.find(SubjectTeacher::class.java, "PROFILE=$account")
+            throw IllegalStateException("use proper DAO")
+            /*val subjectsTeachers = SugarRecord.find(SubjectTeacher::class.java, "PROFILE=$account")
             subjectsTeachers.forEach {
                 cache.add(it)
-            }
+            }*/
         }
 
     }
