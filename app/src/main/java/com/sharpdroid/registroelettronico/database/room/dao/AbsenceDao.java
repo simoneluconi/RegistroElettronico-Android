@@ -18,6 +18,9 @@ public interface AbsenceDao {
     @Query("SELECT * FROM ABSENCE WHERE PROFILE=:profile AND TYPE='ABA0' ORDER BY DATE DESC")
     List<Absence> getAbsences(long profile);
 
+    @Query("SELECT * FROM ABSENCE WHERE PROFILE=:profile AND TYPE!='ABA0' ORDER BY DATE DESC")
+    List<Absence> getNoAbsences(long profile);
+
     @Query("DELETE FROM ABSENCE WHERE PROFILE=:profile")
     void delete(long profile);
 }

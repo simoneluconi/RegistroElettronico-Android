@@ -19,6 +19,9 @@ public interface LessonDao {
     @Query("SELECT * FROM LESSON WHERE M_SUBJECT_ID=:code GROUP BY M_ARGUMENT, M_AUTHOR_NAME, M_DATE ORDER BY M_DATE DESC LIMIT 5")
     List<Lesson> loadLastLessons(long code);
 
+    @Query("SELECT * FROM LESSON WHERE M_SUBJECT_ID=:code GROUP BY M_ARGUMENT, M_AUTHOR_NAME, M_DATE ORDER BY M_DATE DESC LIMIT 5")
+    LiveData<List<Lesson>> loadLessonsGrouped(long code);
+
     @Insert
     void insertLessons(List<Lesson> lessons);
 

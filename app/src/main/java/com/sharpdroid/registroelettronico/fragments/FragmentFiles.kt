@@ -1,5 +1,6 @@
 package com.sharpdroid.registroelettronico.fragments
 
+import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
@@ -19,6 +20,7 @@ import com.sharpdroid.registroelettronico.adapters.FileAdapter
 import com.sharpdroid.registroelettronico.database.entities.File
 import com.sharpdroid.registroelettronico.database.entities.FileInfo
 import com.sharpdroid.registroelettronico.database.entities.Folder
+import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.EventType
 import com.sharpdroid.registroelettronico.utils.Metodi.*
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
@@ -32,7 +34,7 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
                 Snackbar.make(layout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE).show()
             }
             EventType.DOWNLOAD_FILE_OK -> {
-                val file: java.io.File = java.io.File(SugarRecord.findById(FileInfo::class.java, args[0] as Long).path)
+                val file: java.io.File = java.io.File(DatabaseHelper.database.foldersDao().getInfo(args[0] as Long).path)
                 Snackbar.make(layout, String.format(getString(R.string.file_downloaded), file.name), Snackbar.LENGTH_SHORT)
                         .setAction(R.string.open) { openFile(context, file, Snackbar.make(layout, context.resources.getString(R.string.missing_app, file.name), Snackbar.LENGTH_SHORT)) }
                         .show()
@@ -92,7 +94,7 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
     }
 
     override fun onFileClick(file: File) {
-        val info = SugarRecord.findById(FileInfo::class.java, file.objectId) ?: FileInfo()
+        val info = DatabaseHelper.database.foldersDao().getInfo(file.objectId) ?: FileInfo()
         when (file.type) {
             "file" -> {
                 if (info.path.isEmpty() || !java.io.File(info.path).exists()) {
@@ -116,13 +118,11 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
 
     private fun addSubjects(folder: Folder) {
         println(folder.toString())
-        mRVAdapter.clear()
-        val files = fetch(folder)
-        mRVAdapter.addAll(files)
-    }
-
-    private fun fetch(folder: Folder): List<File> {
-        return SugarRecord.find(File::class.java, "FILE.TEACHER='${folder.teacher}' AND FILE.FOLDER='${folder.folderId}'")
+        DatabaseHelper.database.foldersDao().getFiles(folder.teacher, folder.id)
+                .observe(this, Observer {
+                    mRVAdapter.clear()
+                    mRVAdapter.addAll(it)
+                })
     }
 
     override fun onDestroyView() {

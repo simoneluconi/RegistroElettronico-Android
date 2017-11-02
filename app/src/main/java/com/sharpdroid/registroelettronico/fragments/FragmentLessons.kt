@@ -1,5 +1,6 @@
 package com.sharpdroid.registroelettronico.fragments
 
+import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
@@ -14,8 +15,8 @@ import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.AllLessonsAdapter
 import com.sharpdroid.registroelettronico.database.entities.Lesson
-import com.sharpdroid.registroelettronico.database.entities.Subject
 import com.sharpdroid.registroelettronico.database.entities.SubjectInfo
+import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.EventType
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
@@ -100,11 +101,13 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
 
     private fun load() {
         if (subject == null) {
-            subject = SugarRecord.findById(Subject::class.java, code).getInfo(activity)
+            subject = DatabaseHelper.database.subjectsDao().getSubject(code?.toLong() ?: 0).getInfo(activity)
             activity.title = capitalizeEach(subject?.description.or(subject?.subject?.description ?: ""))
         }
-
-        addLessons(if (Lesson.lessonsOfSubject[code ?: 0, emptyList()].isNotEmpty()) Lesson.lessonsOfSubject[code ?: 0] else SugarRecord.findWithQuery(Lesson::class.java, "select * from LESSON where M_SUBJECT_ID=? GROUP BY M_ARGUMENT, M_AUTHOR_NAME, M_DATE ORDER BY M_DATE DESC", code.toString()))
+        DatabaseHelper.database.lessonsDao().loadLessonsGrouped(code?.toLong() ?: 0)
+                .observe(this, Observer {
+                    addLessons(it ?: emptyList())
+                })
     }
 
     override fun onDestroyView() {

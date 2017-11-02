@@ -7,6 +7,7 @@ import android.arch.persistence.room.Update;
 
 import com.sharpdroid.registroelettronico.database.entities.Subject;
 import com.sharpdroid.registroelettronico.database.entities.SubjectInfo;
+import com.sharpdroid.registroelettronico.database.entities.Teacher;
 
 import java.util.List;
 
@@ -27,4 +28,7 @@ public interface SubjectDao {
 
     @Query("DELETE FROM SUBJECT_TEACHER WHERE PROFILE = :profile")
     void delete(long profile);
+
+    @Query("select * from TEACHER where TEACHER.ID IN (select TEACHER FROM FOLDER WHERE FOLDER.PROFILE=:profile)")
+    List<Teacher> getTeacherObservable(long profile);
 }

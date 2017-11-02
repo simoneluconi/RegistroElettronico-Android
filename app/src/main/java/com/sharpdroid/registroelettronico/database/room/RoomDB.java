@@ -38,7 +38,6 @@ import com.sharpdroid.registroelettronico.database.room.dao.SubjectDao;
         RemoteAgenda.class,
         RemoteAgendaInfo.class,
         LocalAgenda.class,
-        RemoteAgendaInfo.class,
         Communication.class,
         CommunicationInfo.class,
         File.class,

@@ -18,6 +18,7 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.FolderAdapter
 import com.sharpdroid.registroelettronico.database.entities.Folder
 import com.sharpdroid.registroelettronico.database.entities.Teacher
+import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.EventType
 import com.sharpdroid.registroelettronico.utils.Metodi.updateFolders
@@ -109,9 +110,8 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
     }
 
     private fun load() {
-        val teachers = SugarRecord.findWithQuery(Teacher::class.java, "select * from TEACHER where TEACHER.ID IN (select TEACHER FROM FOLDER WHERE FOLDER.PROFILE=?)", Account.with(activity).user.toString())
-        teachers.forEach { it.folders = SugarRecord.find(Folder::class.java, "TEACHER=? AND PROFILE=?", it.id.toString(), Account.with(activity).user.toString()) }
-
+        val teachers = DatabaseHelper.database.subjectsDao().getTeacherObservable(Account.with(context).user)
+        teachers.forEach { it.folders = DatabaseHelper.database.foldersDao().getFolders(it.id, Account.with(activity).user) }
         addFiles(teachers)
     }
 

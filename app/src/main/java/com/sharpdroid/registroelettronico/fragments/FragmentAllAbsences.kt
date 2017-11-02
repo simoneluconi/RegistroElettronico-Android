@@ -15,7 +15,7 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.AllAbsencesAdapter
 import com.sharpdroid.registroelettronico.database.entities.Absence
 import com.sharpdroid.registroelettronico.database.entities.MyAbsence
-import com.sharpdroid.registroelettronico.database.entities.Profile
+import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.EventType
 import com.sharpdroid.registroelettronico.utils.Metodi.updateAbsence
@@ -84,8 +84,8 @@ class FragmentAllAbsences : Fragment(), SwipeRefreshLayout.OnRefreshListener, No
     }
 
     private fun load() {
-        val absencesAndDurations = Absence.getAbsences(Profile.getProfile(context)!!)
-        val list: MutableList<in Any> = SugarRecord.find(Absence::class.java, "PROFILE=? AND TYPE!='ABA0'", Account.with(context).user.toString()).toMutableList()
+        val absencesAndDurations = Absence.getAbsences(Account.with(context).user)
+        val list: MutableList<in Any> = DatabaseHelper.database.absencesDao().getNoAbsences(Account.with(context).user).toMutableList()
         list.addAll(absencesAndDurations.map { MyAbsence(it.key, it.value) })
         addAbsence(list.toTypedArray())
     }

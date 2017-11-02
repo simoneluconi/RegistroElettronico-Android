@@ -24,13 +24,13 @@ public interface AgendaDao {
     void insert(@NotNull RemoteAgendaInfo event);
 
     @Update
-    long update(@NotNull LocalAgenda event);
+    int update(@NotNull LocalAgenda event);
 
     @Update
-    long update(@NotNull RemoteAgenda event);
+    int update(@NotNull RemoteAgenda event);
 
     @Update
-    long update(@NotNull RemoteAgendaInfo event);
+    int update(@NotNull RemoteAgendaInfo event);
 
     @Query("DELETE FROM REMOTE_AGENDA WHERE PROFILE = :profile")
     void delete(long profile);
