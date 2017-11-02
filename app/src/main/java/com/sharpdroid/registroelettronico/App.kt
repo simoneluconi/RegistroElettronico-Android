@@ -7,6 +7,7 @@ import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.answers.Answers
 import com.google.firebase.FirebaseApp
 import com.orm.SugarContext
+import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import io.fabric.sdk.android.Fabric
 
 class App : MultiDexApplication() {
@@ -16,6 +17,7 @@ class App : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
         SugarContext.init(this)
+        DatabaseHelper.createDb(this)
         FirebaseApp.initializeApp(this)
 
         // Install a hook to Crashlytics and Answers (only in production releases)
