@@ -27,5 +27,5 @@ public interface GradeDao {
     void deleteGrade(LocalGrade grade);
 
     @Query("DELETE FROM GRADE WHERE PROFILE = :profile")
-    void delete(long account);
+    void delete(long profile);
 }

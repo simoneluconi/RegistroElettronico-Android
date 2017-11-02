@@ -1,5 +1,6 @@
 package com.sharpdroid.registroelettronico.fragments
 
+import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -15,7 +16,7 @@ import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.CommunicationAdapter
 import com.sharpdroid.registroelettronico.database.entities.Communication
-import com.sharpdroid.registroelettronico.database.entities.CommunicationInfo
+import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.EventType
 import com.sharpdroid.registroelettronico.utils.Metodi.*
@@ -46,7 +47,7 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
                 snackbar.show()
             }
             EventType.DOWNLOAD_FILE_OK -> {
-                val file = File(SugarRecord.findById(CommunicationInfo::class.java, args[0] as Long).path)
+                val file = File(DatabaseHelper.database.communicationsDao().getInfo(args[0] as Long).path)
                 with(snackbar) {
                     setText(activity.getString(R.string.file_downloaded, file.name))
                     setAction(R.string.open) { openFile(activity, file, Snackbar.make(coordinator_layout, context.resources.getString(R.string.missing_app, file.name), Snackbar.LENGTH_SHORT)) }
@@ -109,7 +110,7 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
     }
 
     override fun onCommunicationClick(communication: Communication) {
-        with(SugarRecord.findById(CommunicationInfo::class.java, communication.myId) ?: return) {
+        with(DatabaseHelper.database.communicationsDao().getInfo(communication.myId) ?: return) {
             val builder = MaterialDialog.Builder(activity).title(title).content(content.trim())
 
             if (communication.hasAttachment) {
@@ -151,7 +152,9 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
     }
 
     private fun load() {
-        addCommunications(SugarRecord.find(Communication::class.java, "PROFILE=? order by DATE desc", Account.with(activity).user.toString()))
+        DatabaseHelper.database.communicationsDao().loadCommunications(Account.with(context).user).observe(this, Observer {
+            addCommunications(it ?: emptyList())
+        })
     }
 
     private fun download() {

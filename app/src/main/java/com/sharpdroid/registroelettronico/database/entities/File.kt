@@ -42,7 +42,7 @@ data class File(
 }
 
 
-@Entity
+@Entity(tableName = "TABLE_NAME")
 data class FileInfo(
         @ColumnInfo(name = "ID") @PrimaryKey var id: Long = 0L,
         @ColumnInfo(name = "PATH") var path: String) {

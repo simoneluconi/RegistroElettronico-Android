@@ -57,10 +57,10 @@ data class Absence(
 
 
     companion object {
-        fun getAbsences(p: Profile): HashMap<Absence, Int> /*<ABSENCE, N_DAYS>*/ {
+        fun getAbsences(p: Long): HashMap<Absence, Int> /*<ABSENCE, N_DAYS>*/ {
             val map = HashMap<Absence, Int>()
 
-            val absencesInSchoolDays = DatabaseHelper.database.absencesDao().getAbsences(p.id)
+            val absencesInSchoolDays = DatabaseHelper.database.absencesDao().getAbsences(p)
             var startAbsence: Absence? = null
             var days = 0
 

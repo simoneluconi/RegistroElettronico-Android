@@ -1,17 +1,17 @@
 package com.sharpdroid.registroelettronico.database.entities;
 
-import com.orm.dsl.Column;
+import android.arch.persistence.room.ColumnInfo;
 
 public class Average {
-    @Column(name = "NAME")
+    @ColumnInfo(name = "NAME")
     public String name = "";
-    @Column(name = "CODE")
+    @ColumnInfo(name = "CODE")
     public int code = 0;
-    @Column(name = "AVG")
+    @ColumnInfo(name = "AVG")
     public float avg = 0f;
-    @Column(name = "TARGET")
+    @ColumnInfo(name = "TARGET")
     public float target = 0f;
-    @Column(name = "COUNT")
+    @ColumnInfo(name = "COUNT")
     public int count = 0;
 
     public Average(String name, int code, float avg, int count, float target) {

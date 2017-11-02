@@ -1,11 +1,23 @@
 package com.sharpdroid.registroelettronico.database.room.dao;
 
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Query;
 
+import com.sharpdroid.registroelettronico.database.entities.Communication;
+import com.sharpdroid.registroelettronico.database.entities.CommunicationInfo;
+
+import java.util.List;
+
 @Dao
 public interface CommunicationDao {
+
+    @Query("SELECT * FROM COMMUNICATION_INFO WHERE ID = :id")
+    CommunicationInfo getInfo(long id);
+
+    @Query("SELECT * FROM COMMUNICATION WHERE PROFILE = :profile ORDER BY DATE DESC")
+    LiveData<List<Communication>> loadCommunications(long profile);
 
     @Query("DELETE FROM COMMUNICATION WHERE PROFILE=:profile")
     void delete(long profile);
