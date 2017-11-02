@@ -37,7 +37,6 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IProfile
-import com.orm.SugarRecord
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.database.entities.Profile
@@ -89,7 +88,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
         if (profile == null) {
             profile = SugarRecord.first(Profile::class.java)
-            onProfileChanged(null, profile?.asIProfile(), false)
+            onProfileChanged(null, profile.asIProfile(), false)
         }
 
         when {

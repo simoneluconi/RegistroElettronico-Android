@@ -7,7 +7,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.util.AttributeSet
 import android.view.View
 import butterknife.ButterKnife
-import com.orm.SugarRecord
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.AllLessonsWithDownloadActivity
 import com.sharpdroid.registroelettronico.adapters.LessonsAdapter

@@ -6,7 +6,6 @@ import android.util.Log
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.answers.Answers
 import com.google.firebase.FirebaseApp
-import com.orm.SugarContext
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import io.fabric.sdk.android.Fabric
 
