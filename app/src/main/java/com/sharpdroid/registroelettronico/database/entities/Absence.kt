@@ -1,10 +1,10 @@
 package com.sharpdroid.registroelettronico.database.entities
 
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.orm.SugarRecord
-import com.orm.dsl.Table
-import com.orm.dsl.Unique
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -41,16 +41,17 @@ evtCode:
 
  */
 @Table
+@Entity(tableName = "ABSENCE")
 data class Absence(
-        @Expose @SerializedName("evtId") @Unique val id: Long,
-        @Expose @SerializedName("evtCode") val type: String,
-        @Expose @SerializedName("evtDate") val date: Date,
-        @Expose @SerializedName("isJustified") val justified: Boolean,
-        @Expose @SerializedName("justifReasonCode") val reasonCode: String,
-        @Expose @SerializedName("justifReasonDesc") val reasonDesc: String,
-        var profile: Long,
-        @Expose @SerializedName("evtHPos") val hPos: Int,
-        @Expose @SerializedName("evtValue") val value: Int
+        @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("evtId") @Unique var id: Long = -1L,
+        @ColumnInfo(name = "TYPE") @Expose @SerializedName("evtCode") var type: String = "",
+        @ColumnInfo(name = "DATE") @Expose @SerializedName("evtDate") var date: Date = Date(0),
+        @ColumnInfo(name = "JUSTIFIED") @Expose @SerializedName("isJustified") var justified: Boolean = false,
+        @ColumnInfo(name = "REASON_CODE") @Expose @SerializedName("justifReasonCode") var reasonCode: String = "",
+        @ColumnInfo(name = "REASON_DESC") @Expose @SerializedName("justifReasonDesc") var reasonDesc: String = "",
+        @ColumnInfo(name = "PROFILE") var profile: Long = -1L,
+        @ColumnInfo(name = "H_POS") @Expose @SerializedName("evtHPos") var hPos: Int = -1,
+        @ColumnInfo(name = "VALUE") @Expose @SerializedName("evtValue") var value: Int
 ) {
     constructor() : this(0, "", Date(0), false, "", "", -1, 0, 0)
 
@@ -83,7 +84,7 @@ data class Absence(
                 when {
                     timeDifference > 72 -> {
                         //SPLIT absences
-                        map.put(startAbsence!!, days)
+                        map.put(startAbsence, days)
                         startAbsence = null
                         continue@loop
                     }
@@ -92,7 +93,7 @@ data class Absence(
                         if (current.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY && next.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
                             days++
                         } else {
-                            map.put(startAbsence!!, days)
+                            map.put(startAbsence, days)
                             startAbsence = null
                             continue@loop
                         }
@@ -102,7 +103,7 @@ data class Absence(
                         if (current.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY && next.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
                             days++
                         } else {
-                            map.put(startAbsence!!, days)
+                            map.put(startAbsence, days)
                             startAbsence = null
                             continue@loop
                         }
@@ -113,7 +114,7 @@ data class Absence(
                     }
                 }
                 if (i == absencesInSchoolDays.size - 2) {
-                    map.put(startAbsence!!, days)
+                    map.put(startAbsence, days)
                     startAbsence = null
                 }
             }

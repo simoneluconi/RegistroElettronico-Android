@@ -1,9 +1,10 @@
 package com.sharpdroid.registroelettronico.database.entities
 
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.orm.dsl.Table
-import com.orm.dsl.Unique
 import java.util.*
 
 /*
@@ -27,21 +28,22 @@ import java.util.*
 
  */
 @Table
+@Entity(tableName = "FILE")
 data class File(
-        @Expose @SerializedName("contentId") @Unique val id: Long,
-        @Expose @SerializedName("contentName") val contentName: String,
-        @Expose @SerializedName("objectId") val objectId: Long,
-        @Expose @SerializedName("objectType") val type: String,
-        @Expose @SerializedName("shareDT") val date: Date,
-        var folder: Long,
-        var teacher: Long,
-        var profile: Long
+        @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("contentId") @Unique var id: Long = -1L,
+        @ColumnInfo(name = "CONTENT_NAME") @Expose @SerializedName("contentName") var contentName: String = "",
+        @ColumnInfo(name = "OBJECT_ID") @Expose @SerializedName("objectId") var objectId: Long = -1L,
+        @ColumnInfo(name = "TYPE") @Expose @SerializedName("objectType") var type: String = "",
+        @ColumnInfo(name = "DATE") @Expose @SerializedName("shareDT") var date: Date = Date(0),
+        @ColumnInfo(name = "FOLDER") var folder: Long = -1L,
+        @ColumnInfo(name = "TEACHER") var teacher: Long = -1L,
+        @ColumnInfo(name = "PROFILE") var profile: Long
 ) {
     constructor() : this(0, "", 0, "", Date(), 0, 0, 0)
 }
 
 @Table
-data class FileInfo(@Unique val id: Long, var path: String) {
+data class FileInfo(@Unique val id: Long = -1L, var path: String) {
     constructor() : this(-1L, "")
 }
 

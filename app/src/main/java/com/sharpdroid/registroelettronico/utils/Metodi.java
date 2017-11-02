@@ -39,6 +39,7 @@ import com.sharpdroid.registroelettronico.database.entities.Subject;
 import com.sharpdroid.registroelettronico.database.entities.SubjectTeacher;
 import com.sharpdroid.registroelettronico.database.entities.SuperAgenda;
 import com.sharpdroid.registroelettronico.database.entities.Teacher;
+import com.sharpdroid.registroelettronico.database.room.DatabaseHelper;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -365,9 +366,11 @@ public class Metodi {
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_LESSONS_START, null));
         APIClient.Companion.with(p).getLessons(dates[0], dates[1])
-                .subscribe(l -> {
+                .subscribe(l -> {/*
                     SugarRecord.deleteAll(Lesson.class, "PROFILE=?", String.valueOf(p.getId()));
-                    SugarRecord.saveInTx(l.getLessons(p));
+                    SugarRecord.saveInTx(l.getLessons(p));*/
+                    DatabaseHelper.database.lessonsDao().deleteLessons(p.getId());
+                    DatabaseHelper.database.lessonsDao().insertLessons(l.getLessons(p));
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_LESSONS_OK, null));
                 }, throwable -> {
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_LESSONS_KO, null));

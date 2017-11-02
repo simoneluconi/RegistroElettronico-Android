@@ -1,11 +1,11 @@
 package com.sharpdroid.registroelettronico.database.entities
 
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
 import android.util.SparseArray
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.orm.SugarRecord
-import com.orm.dsl.Table
-import com.orm.dsl.Unique
 import java.util.*
 
 /*
@@ -28,21 +28,21 @@ import java.util.*
     ]
 }
  */
-@Table
+@Entity(tableName = "LESSON")
 data class Lesson(
-        @Expose @SerializedName("lessonArg") var mArgument: String,
-        @Expose @SerializedName("authorName") val mAuthorName: String,
-        @Expose @SerializedName("classDesc") val mClassDescription: String,
-        @Expose @SerializedName("evtCode") val mCode: String,
-        @Expose @SerializedName("evtDate") val mDate: Date,
-        @Expose @SerializedName("evtDuration") val mDuration: Int,
-        @Expose @SerializedName("evtHPos") val mHourPosition: Int,
-        @Expose @SerializedName("evtId") @Unique val id: Long,
-        @Expose @SerializedName("subjectCode") val mSubjectCode: String,
-        @Expose @SerializedName("subjectDesc") val mSubjectDescription: String,
-        @Expose @SerializedName("subjectId") val mSubjectId: Int,
-        @Expose @SerializedName("lessonType") val mType: String,
-        var profile: Long
+        @ColumnInfo(name = "M_ARGUMENT") @Expose @SerializedName("lessonArg") var mArgument: String = "",
+        @ColumnInfo(name = "M_AUTHOR_NAME") @Expose @SerializedName("authorName") var mAuthorName: String = "",
+        @ColumnInfo(name = "M_CLASS_DESCRIPTION") @Expose @SerializedName("classDesc") var mClassDescription: String = "",
+        @ColumnInfo(name = "M_CODE") @Expose @SerializedName("evtCode") var mCode: String = "",
+        @ColumnInfo(name = "M_DATE") @Expose @SerializedName("evtDate") var mDate: Date = Date(0),
+        @ColumnInfo(name = "M_DURATION") @Expose @SerializedName("evtDuration") var mDuration: Int = -1,
+        @ColumnInfo(name = "M_HOUR_POSITION") @Expose @SerializedName("evtHPos") var mHourPosition: Int = -1,
+        @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("evtId") @Unique var id: Long = -1L,
+        @ColumnInfo(name = "M_SUBJECT_CODE") @Expose @SerializedName("subjectCode") var mSubjectCode: String = "",
+        @ColumnInfo(name = "M_SUBJECT_DESCRIPTION") @Expose @SerializedName("subjectDesc") var mSubjectDescription: String = "",
+        @ColumnInfo(name = "M_SUBJECT_ID") @Expose @SerializedName("subjectId") var mSubjectId: Int = -1,
+        @ColumnInfo(name = "M_TYPE") @Expose @SerializedName("lessonType") var mType: String = "",
+        @ColumnInfo(name = "PROFILE") var profile: Long
 ) {
     constructor() : this("", "", "", "", Date(), 0, 0, 0, "", "", 0, "", -1)
 

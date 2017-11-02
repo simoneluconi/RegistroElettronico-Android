@@ -127,7 +127,6 @@ dependencies {
         transitive = true
     }
 
-    implementation 'com.github.satyan:sugar:1.5'
     implementation 'com.afollestad.material-dialogs:core:0.9.4.7'
     implementation 'com.akexorcist:RoundCornerProgressBar:2.0.3'
     implementation 'com.andkulikov:transitionseverywhere:1.7.6'

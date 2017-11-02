@@ -9,6 +9,7 @@ import android.view.View
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.utils.Metodi
 
+@Suppress("DEPRECATION")
 class ShadowCell(context: Context) : View(context) {
 
     private var size = 12

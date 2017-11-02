@@ -1,31 +1,33 @@
 package com.sharpdroid.registroelettronico.database.entities
 
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
 import android.content.Context
 import android.util.SparseArray
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.orm.SugarRecord
-import com.orm.dsl.Table
-import com.orm.dsl.Unique
 import com.sharpdroid.registroelettronico.utils.Account
 import java.util.*
 
 @Table
-data class Grade(@Expose @SerializedName("evtCode") val mCode: String,
-                 @Expose @SerializedName("componentPos") val mComponentPos: Int,
-                 @Expose @SerializedName("evtDate") val mDate: Date,
-                 @Expose @SerializedName("subjectDesc") val mDescription: String,
-                 @Expose @SerializedName("evtId") @Unique val id: Long,
-                 @Expose @SerializedName("notesForFamily") val mNotes: String,
-                 @Expose @SerializedName("periodPos") val mPeriod: Int,
-                 @Expose @SerializedName("periodDesc") val mPeriodName: String,
-                 @Expose @SerializedName("displayValue") val mStringValue: String,
-                 @Expose @SerializedName("subjectId") val mSubjectId: Int,
-                 @Expose @SerializedName("componentDesc") val mType: String,
-                 @Expose @SerializedName("underlined") val mUnderlined: Boolean,
-                 @Expose @SerializedName("decimalValue") val mValue: Float,
-                 @Expose @SerializedName("weightFactor") val mWeightFactor: Double,
-                 var profile: Long
+@Entity(tableName = "GRADE")
+data class Grade(
+        @ColumnInfo(name = "M_CODE") @Expose @SerializedName("evtCode") var mCode: String = "",
+        @ColumnInfo(name = "M_COMPONENT_POS") @Expose @SerializedName("componentPos") var mComponentPos: Int = -1,
+        @ColumnInfo(name = "M_DATE") @Expose @SerializedName("evtDate") var mDate: Date = Date(0),
+        @ColumnInfo(name = "M_DESCRIPTION") @Expose @SerializedName("subjectDesc") var mDescription: String = "",
+        @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("evtId") @Unique var id: Long = -1L,
+        @ColumnInfo(name = "M_NOTES") @Expose @SerializedName("notesForFamily") var mNotes: String = "",
+        @ColumnInfo(name = "M_PERIOD") @Expose @SerializedName("periodPos") var mPeriod: Int = -1,
+        @ColumnInfo(name = "M_PERIOD_NAME") @Expose @SerializedName("periodDesc") var mPeriodName: String = "",
+        @ColumnInfo(name = "M_STRING_VALUE") @Expose @SerializedName("displayValue") var mStringValue: String = "",
+        @ColumnInfo(name = "M_SUBJECT_ID") @Expose @SerializedName("subjectId") var mSubjectId: Int = -1,
+        @ColumnInfo(name = "M_TYPE") @Expose @SerializedName("componentDesc") var mType: String = "",
+        @ColumnInfo(name = "M_UNDERLINED") @Expose @SerializedName("underlined") var mUnderlined: Boolean = false,
+        @ColumnInfo(name = "M_VALUE") @Expose @SerializedName("decimalValue") var mValue: Float,
+        @ColumnInfo(name = "M_WEIGHT_FACTOR") @Expose @SerializedName("weightFactor") var mWeightFactor: Double,
+        @ColumnInfo(name = "PROFILE") var profile: Long
 ) {
     constructor() : this("", 0, Date(), "", 0, "", 0, "", "", 0, "", false, 0f, 0.0, -1L)
 
