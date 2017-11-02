@@ -43,10 +43,9 @@ data class Period(
 ) {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "ID")
-    @Ignore
-    var id = -1L
+    var id = 0L
 
-    constructor() : this("", "", Date(), false, 0, Date(), -1L)
+    constructor() : this("", "", Date(), false, 0, Date(), 0L)
 }
 
 data class PeriodAPI(@Expose @SerializedName("periods") private val periods: List<Period>) {

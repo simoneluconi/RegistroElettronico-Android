@@ -9,7 +9,6 @@ import android.view.View
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.AllLessonsAdapter
 import com.sharpdroid.registroelettronico.database.entities.Lesson
-import com.sharpdroid.registroelettronico.database.entities.Subject
 import com.sharpdroid.registroelettronico.utils.Metodi
 import kotlinx.android.synthetic.main.activity_recycler_refresh_scrollbar.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -29,7 +28,7 @@ class AllLessonsWithDownloadActivity : AppCompatActivity(), SwipeRefreshLayout.O
             supportActionBar!!.setDisplayShowHomeEnabled(true)
         }
 
-        title = Metodi.capitalizeEach(SugarRecord.findById(Subject::class.java, code).description)
+        title = Metodi.capitalizeEach("")//SugarRecord.findById(Subject::class.java, code).description)
 
         mRVAdapter = AllLessonsAdapter(this)
 
@@ -69,7 +68,7 @@ class AllLessonsWithDownloadActivity : AppCompatActivity(), SwipeRefreshLayout.O
     }
 
     private fun bindLessonsCache() {
-        addLessons(SugarRecord.findWithQuery(Lesson::class.java, "select * from LESSON where M_SUBJECT_ID=? GROUP BY M_ARGUMENT, M_AUTHOR_NAME, M_DATE ORDER BY M_DATE DESC", code.toString()))
+        addLessons(emptyList())//SugarRecord.findWithQuery(Lesson::class.java, "select * from LESSON where M_SUBJECT_ID=? GROUP BY M_ARGUMENT, M_AUTHOR_NAME, M_DATE ORDER BY M_DATE DESC", code.toString()))
     }
 
     override fun onRefresh() {

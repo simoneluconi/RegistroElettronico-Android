@@ -10,7 +10,7 @@ import butterknife.ButterKnife
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.AllLessonsWithDownloadActivity
 import com.sharpdroid.registroelettronico.adapters.LessonsAdapter
-import com.sharpdroid.registroelettronico.database.entities.Lesson
+import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Metodi
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import kotlinx.android.synthetic.main.view_recent_lessons.view.*
@@ -47,7 +47,7 @@ class RecentLessonsView : CardView {
 
     fun update(code: Int) {
         adapter.clear()
-        adapter.addAll(SugarRecord.find(Lesson::class.java, "M_SUBJECT_ID=? GROUP BY M_ARGUMENT, M_AUTHOR_NAME, M_DATE ORDER BY M_DATE DESC LIMIT 5", code.toString()))
+        adapter.addAll(DatabaseHelper.database.lessonsDao().loadLastLessons(code.toLong()))
         load_more.setOnClickListener { mContext.startActivity(Intent(mContext, AllLessonsWithDownloadActivity::class.java).putExtra("code", code)) }
     }
 

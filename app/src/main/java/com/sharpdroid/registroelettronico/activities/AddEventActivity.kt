@@ -17,9 +17,9 @@ import com.crashlytics.android.answers.ContentViewEvent
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.database.entities.LocalAgenda
-import com.sharpdroid.registroelettronico.database.entities.Subject
 import com.sharpdroid.registroelettronico.database.entities.SubjectInfo
 import com.sharpdroid.registroelettronico.database.entities.Teacher
+import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeFirst
@@ -67,19 +67,19 @@ class AddEventActivity : AppCompatActivity() {
     private fun handleConfirm(type: String) {
         when (type.toLowerCase()) {
             "verifica" -> if (handleTitle() && handleSubject() && handleProfessor() && handleDate()) {
-                SugarRecord.save(LocalAgenda(layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay?.flat()!!, selectedSubject?.subject?.id ?: 0, selectedProfessor?.id ?: 0, null, Account.with(this).user, false))
+                DatabaseHelper.database.eventsDao().insert(LocalAgenda(layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay?.flat()!!, selectedSubject?.subject?.id ?: 0, selectedProfessor?.id ?: 0, null, Account.with(this).user, false))
                 finish()
             } else {
                 vibrate()
             }
             "compiti" -> if (handleTitle() && handleSubject() && handleProfessor() && handleDate()) {
-                SugarRecord.save(LocalAgenda(layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay?.flat()!!, selectedSubject!!.subject.id, selectedProfessor?.id ?: 0, null, Account.with(this).user, false))
+                DatabaseHelper.database.eventsDao().insert(LocalAgenda(layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay?.flat()!!, selectedSubject!!.subject.id, selectedProfessor?.id ?: 0, null, Account.with(this).user, false))
                 finish()
             } else {
                 vibrate()
             }
             else -> if (handleTitle() && handleDate()) {
-                SugarRecord.save(LocalAgenda(layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay?.flat()!!, selectedSubject?.subject?.id ?: 0L, selectedProfessor?.id ?: 0, null, Account.with(this).user, false))
+                DatabaseHelper.database.eventsDao().insert(LocalAgenda(layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay?.flat()!!, selectedSubject?.subject?.id ?: 0L, selectedProfessor?.id ?: 0, null, Account.with(this).user, false))
                 finish()
             } else {
                 vibrate()
@@ -104,7 +104,7 @@ class AddEventActivity : AppCompatActivity() {
     }
 
     private fun subjectDialog(v: View) {
-        val subjectList: List<SubjectInfo> = SugarRecord.findWithQuery(Subject::class.java, "SELECT * FROM SUBJECT WHERE ID IN (SELECT SUBJECT_TEACHER.SUBJECT FROM SUBJECT_TEACHER WHERE SUBJECT_TEACHER.PROFILE=?) ORDER BY DESCRIPTION ASC", Account.with(this).user.toString()).map { it.getInfo(this) }
+        val subjectList: List<SubjectInfo> = emptyList()//SugarRecord.findWithQuery(Subject::class.java, "SELECT * FROM SUBJECT WHERE ID IN (SELECT SUBJECT_TEACHER.SUBJECT FROM SUBJECT_TEACHER WHERE SUBJECT_TEACHER.PROFILE=?) ORDER BY DESCRIPTION ASC", Account.with(this).user.toString()).map { it.getInfo(this) }
 
         MaterialDialog.Builder(this)
                 .title("Seleziona una materia")
@@ -118,7 +118,7 @@ class AddEventActivity : AppCompatActivity() {
     }
 
     private fun professorDialog(v: View) {
-        val professors = SugarRecord.findWithQuery(Teacher::class.java, "SELECT * FROM TEACHER WHERE ID IN (SELECT SUBJECT_TEACHER.TEACHER FROM SUBJECT_TEACHER WHERE SUBJECT_TEACHER.PROFILE=?) ORDER BY TEACHER_NAME ASC", Account.with(this).user.toString())
+        val professors = emptyList<Teacher>()//SugarRecord.findWithQuery(Teacher::class.java, "SELECT * FROM TEACHER WHERE ID IN (SELECT SUBJECT_TEACHER.TEACHER FROM SUBJECT_TEACHER WHERE SUBJECT_TEACHER.PROFILE=?) ORDER BY TEACHER_NAME ASC", Account.with(this).user.toString())
 
         MaterialDialog.Builder(this)
                 .title("Seleziona un professore")

@@ -19,8 +19,8 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.LoginAdapter
 import com.sharpdroid.registroelettronico.api.v2.APIClient
 import com.sharpdroid.registroelettronico.database.entities.LoginRequest
-import com.sharpdroid.registroelettronico.database.entities.Option
 import com.sharpdroid.registroelettronico.database.entities.Profile
+import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.fetchDataOfUser
 import com.sharpdroid.registroelettronico.utils.Metodi.loginFeedback
@@ -70,7 +70,7 @@ class LoginActivity : AppCompatActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ login ->
                     if (login.choices != null) {
-                        val it = SugarRecord.findAll(Profile::class.java)
+                        val it = DatabaseHelper.database.profilesDao().profilesSync.iterator()
                         while (it.hasNext()) {
                             val (_, _, _, _, id) = it.next()
                             val toRemove = login.choices.filter { it.ident.substring(1, 8) == id.toString() }
@@ -109,8 +109,7 @@ class LoginActivity : AppCompatActivity() {
                             super.onBackPressed()
                         }
                     } else {
-                        SugarRecord.save(Option(login.ident!!.substring(1, 8).toLong(), true, true, true, true, true))
-                        SugarRecord.save(Profile(mEmail, login.firstName + " " + login.lastName, mPassword, "", login.ident.substring(1, 8).toLong(), login.token!!, login.expire!!.time, login.ident, false))
+                        DatabaseHelper.database.profilesDao().insert(Profile(mEmail, login.firstName + " " + login.lastName, mPassword, "", login.ident!!.substring(1, 8).toLong(), login.token!!, login.expire!!.time, login.ident, false))
                         Account.with(this).user = login.ident.substring(1, 8).toLong()
                         fetchDataOfUser(this)
 
@@ -136,8 +135,7 @@ class LoginActivity : AppCompatActivity() {
         APIClient.with(null).postLogin(LoginRequest(password, email, ident))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ (ident1, firstName, lastName, token, expire) ->
-                    SugarRecord.save(Option(ident1!!.substring(1, 8).toLong(), true, true, true, true, true))
-                    SugarRecord.save(Profile(email, firstName + " " + lastName, password, "", ident1.substring(1, 8).toLong(), token!!, expire!!.time, ident1, true))
+                    DatabaseHelper.database.profilesDao().insert(Profile(email, firstName + " " + lastName, password, "", ident1!!.substring(1, 8).toLong(), token!!, expire!!.time, ident1, true))
                     Account.with(c).user = ident1.substring(1, 8).toLong()
                     fetchDataOfUser(c)
 

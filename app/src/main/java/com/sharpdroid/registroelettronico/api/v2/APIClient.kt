@@ -9,6 +9,7 @@ import com.sharpdroid.registroelettronico.api.v2.deserializer.LongDeserializer
 import com.sharpdroid.registroelettronico.database.entities.LoginRequest
 import com.sharpdroid.registroelettronico.database.entities.LoginResponse
 import com.sharpdroid.registroelettronico.database.entities.Profile
+import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import io.reactivex.schedulers.Schedulers
 import okhttp3.Interceptor
 import okhttp3.MediaType
@@ -48,7 +49,7 @@ class APIClient {
                         profile.expire = loginResponse.expire?.time ?: throw IllegalStateException("Cannot achieve expire.time from:\n${loginRes.body()?.string()}")
                         profile.token = loginResponse.token ?: throw IllegalStateException("Cannot achieve token from:\n${loginRes.body()?.string()}")
 
-                        SugarRecord.update(profile)
+                        DatabaseHelper.database.profilesDao().update(profile)
 
                     }
 

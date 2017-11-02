@@ -6,25 +6,20 @@ import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.*
-import com.afollestad.materialdialogs.MaterialDialog
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.ContentViewEvent
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.Holders.Holder
-import com.sharpdroid.registroelettronico.database.entities.Subject
 import com.sharpdroid.registroelettronico.database.entities.SubjectInfo
-import com.sharpdroid.registroelettronico.database.entities.Teacher
 import com.sharpdroid.registroelettronico.utils.Metodi
 import com.sharpdroid.registroelettronico.utils.or
 import com.sharpdroid.registroelettronico.views.cells.HeaderCell
 import com.sharpdroid.registroelettronico.views.cells.ShadowCell
 import com.sharpdroid.registroelettronico.views.cells.ValueDetailsCell
-import kotlinx.android.synthetic.main.activity_edit_subject_details.*
 
 class EditSubjectDetailsActivity : AppCompatActivity() {
 
@@ -60,9 +55,11 @@ class EditSubjectDetailsActivity : AppCompatActivity() {
 
     internal fun init(code: Long) {
         if (code == -1L) return
-        val temp = SugarRecord.findById(Subject::class.java, code)
-        subjectInfo = temp.getInfo(this)
-        subjectInfo?.subject?.teachers = SugarRecord.findWithQuery(Teacher::class.java, "select * from TEACHER where TEACHER.ID IN (select SUBJECT_TEACHER.TEACHER from SUBJECT_TEACHER where SUBJECT_TEACHER.SUBJECT=$code)")
+        val temp = ""
+        /*
+        //SugarRecord.findById(Subject::class.java, code)
+        //subjectInfo = temp.getInfo(this)
+        subjectInfo?.subject?.teachers = emptyList()//SugarRecord.findWithQuery(Teacher::class.java, "select * from TEACHER where TEACHER.ID IN (select SUBJECT_TEACHER.TEACHER from SUBJECT_TEACHER where SUBJECT_TEACHER.SUBJECT=$code)")
         title = Metodi.capitalizeEach(subjectInfo?.description.or(subjectInfo?.subject?.description!!))
 
         rowCount = 0
@@ -106,11 +103,11 @@ class EditSubjectDetailsActivity : AppCompatActivity() {
         }
         recycler.adapter = adapter
         recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-
+*/
     }
 
     internal fun apply() {
-        SugarRecord.update(subjectInfo)
+        //SugarRecord.update(subjectInfo)
         super.onBackPressed()
     }
 

@@ -6,19 +6,19 @@ import android.arch.persistence.room.PrimaryKey
 import android.content.Context
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IProfile
+import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.AccountImage
 
-@Table
 @Entity(tableName = "PROFILE")
 data class Profile(
         @ColumnInfo(name = "USERNAME") var username: String = "",
         @ColumnInfo(name = "NAME") var name: String = "",
         @ColumnInfo(name = "PASSWORD") var password: String = "",
         @ColumnInfo(name = "CLASSE") var classe: String = "",
-        @ColumnInfo(name = "ID") @PrimaryKey @Unique var id: Long = -1L,
+        @ColumnInfo(name = "ID") @PrimaryKey var id: Long = 0L,
         @ColumnInfo(name = "TOKEN") var token: String = "",
-        @ColumnInfo(name = "EXPIRE") var expire: Long = -1L,
+        @ColumnInfo(name = "EXPIRE") var expire: Long = 0L,
         @ColumnInfo(name = "IDENT") var ident: String = "",
         @ColumnInfo(name = "IS_MULTI") var isMulti: Boolean
 ) {
@@ -36,15 +36,15 @@ data class Profile(
 
     companion object {
         fun getIProfiles(): List<IProfile<ProfileDrawerItem>> {
-            return SugarRecord.findWithQuery(Profile::class.java, "SELECT * FROM PROFILE").filter {
+            return DatabaseHelper.database.profilesDao().profilesSync.filter {
                 it != null
             }.map {
-                it.asIProfile() ?: throw IllegalStateException("Profile cannot be null")
-            } ?: emptyList()
+                it.asIProfile()
+            }
         }
 
         fun getProfile(context: Context): Profile? {
-            return SugarRecord.findById(Profile::class.java, Account.with(context).user)
+            return DatabaseHelper.database.profilesDao().getProfile(Account.with(context).user)
         }
     }
 }

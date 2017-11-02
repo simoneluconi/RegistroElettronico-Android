@@ -7,19 +7,18 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import java.util.*
 
-@Table
 @Entity(tableName = "NOTE")
 data class Note(
         @ColumnInfo(name = "M_AUTHOR") @Expose @SerializedName("authorName") var mAuthor: String = "",
         @ColumnInfo(name = "M_DATE") @Expose @SerializedName("evtDate") var mDate: Date = Date(0),
-        @ColumnInfo(name = "ID") @PrimaryKey @Unique @Expose @SerializedName("evtId") var id: Long = -1L,
+        @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("evtId") var id: Long = 0L,
         @ColumnInfo(name = "M_STATUS") @Expose @SerializedName("readStatus") var mStatus: Boolean = false,
         @ColumnInfo(name = "M_TEXT") @Expose @SerializedName("evtText") var mText: String = "",
         @ColumnInfo(name = "M_WARNING") @Expose @SerializedName("warningType") var mWarning: String = "",
         @ColumnInfo(name = "M_TYPE") var mType: String = "",
         @ColumnInfo(name = "PROFILE") var profile: Long
 ) {
-    constructor() : this("", Date(), 0, false, "", "", "", -1L)
+    constructor() : this("", Date(), 0, false, "", "", "", 0L)
 }
 
 data class NoteAPI(

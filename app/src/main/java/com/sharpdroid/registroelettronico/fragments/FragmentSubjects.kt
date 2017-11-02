@@ -1,6 +1,7 @@
 package com.sharpdroid.registroelettronico.fragments
 
 
+import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -19,6 +20,7 @@ import com.sharpdroid.registroelettronico.activities.EditSubjectDetailsActivity
 import com.sharpdroid.registroelettronico.adapters.Holders.Holder
 import com.sharpdroid.registroelettronico.adapters.SubjectsAdapter
 import com.sharpdroid.registroelettronico.database.entities.*
+import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.EventType
 import com.sharpdroid.registroelettronico.utils.Metodi.updateLessons
@@ -65,7 +67,7 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
 
         val bundle = arguments
         if (bundle != null && bundle.getInt("lessons", -1) != -1) {
-            onSubjectClick(SugarRecord.findById(Subject::class.java, arguments?.getInt("lessons")))
+            onSubjectClick(DatabaseHelper.database.subjectsDao().getSubject(arguments?.getInt("lessons")?.toLong() ?: -1))
         }
 
         if (savedInstanceState != null) {
@@ -136,8 +138,10 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
     }
 
     private fun load() {
+        DatabaseHelper.database.subjectsDao().getSubjects(Account.with(context).user).observe(this, Observer {
 
-        setAdapterData(fetch())
+            setAdapterData(it?.map { it.getInfo(context) } ?: emptyList())
+        })
     }
 
     private fun download() {
@@ -160,10 +164,6 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
         println("setAdapterData")
         adapter.clear()
         adapter.addAll(data)
-    }
-
-    private fun fetch(): List<SubjectInfo> {
-        return SugarRecord.findWithQuery(Subject::class.java, "select * from SUBJECT where SUBJECT.ID IN (SELECT  SUBJECT_TEACHER.SUBJECT from SUBJECT_TEACHER WHERE SUBJECT_TEACHER.PROFILE=${Account.with(activity).user}) ORDER BY DESCRIPTION ASC").map { it.getInfo(activity) }
     }
 
     override fun onSubjectClick(subject: Subject) {

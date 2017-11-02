@@ -14,6 +14,7 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.AddEventActivity
 import com.sharpdroid.registroelettronico.adapters.AgendaAdapter
 import com.sharpdroid.registroelettronico.database.entities.*
+import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.fragments.bottomSheet.AgendaBS
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.EventType
@@ -164,11 +165,11 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
     }
 
     private fun load(invalidate: Boolean) {
-        if (invalidate) invalidateCache()
+        //if (invalidate) invalidateCache()
 
         events.clear()
         events.addAll(RemoteAgenda.getSuperAgenda(Account.with(activity).user))
-        events.addAll(SugarRecord.find(LocalAgenda::class.java, "PROFILE=? AND ARCHIVED=0", Account.with(activity).user.toString()))
+        //events.addAll(SugarRecord.find(LocalAgenda::class.java, "PROFILE=? AND ARCHIVED=0", Account.with(activity).user.toString()))
     }
 
     private fun updateAdapter() {
@@ -239,7 +240,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
     }
 
     private fun invalidateCache() {
-        SubjectTeacher.clearCache()
+        /*SubjectTeacher.clearCache()
         Teacher.clearCache()
         Subject.clearCache()
 
@@ -248,7 +249,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         Subject.setupCache()
 
         RemoteAgenda.clearCache()
-        RemoteAgenda.setupCache(Account.with(context).user)
+        RemoteAgenda.setupCache(Account.with(context).user)*/
     }
 
     override fun onBottomSheetItemClicked(position: Int, e: Any) {
@@ -258,9 +259,9 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                     val found: RemoteAgendaInfo? = e.agenda.getInfo()
                     if (found != null) {
                         found.completed = !found.completed
-                        SugarRecord.update(found)
+                        DatabaseHelper.database.eventsDao().update(found)
                     } else {
-                        SugarRecord.save(RemoteAgendaInfo(e.agenda.id, true, false, isEventTest(e)))
+                        DatabaseHelper.database.eventsDao().insert(RemoteAgendaInfo(e.agenda.id, true, false, isEventTest(e)))
                     }
 
                     e.completed = !e.completed
@@ -271,9 +272,9 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                     val found = e.agenda.getInfo()
                     if (found != null) {
                         found.test = !found.test
-                        SugarRecord.update(found)
+                        DatabaseHelper.database.eventsDao().update(found)
                     } else {
-                        SugarRecord.save(RemoteAgendaInfo(e.agenda.id, false, false, !isEventTest(e)))
+                        DatabaseHelper.database.eventsDao().insert(RemoteAgendaInfo(e.agenda.id, false, false, !isEventTest(e)))
                     }
 
                     load(true)
@@ -291,9 +292,9 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                     val found: RemoteAgendaInfo? = e.agenda.getInfo()
                     if (found != null) {
                         found.archived = true
-                        SugarRecord.update(found)
+                        DatabaseHelper.database.eventsDao().update(found)
                     } else {
-                        SugarRecord.save(RemoteAgendaInfo(e.agenda.id, false, true, isEventTest(e)))
+                        DatabaseHelper.database.eventsDao().insert(RemoteAgendaInfo(e.agenda.id, false, true, isEventTest(e)))
                     }
 
                     load(true)
@@ -305,14 +306,14 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
             when (position) {
                 0 -> {
                     e.completed_date = if (e.completed_date != null) null else Date()
-                    SugarRecord.save(e)
+                    DatabaseHelper.database.eventsDao().insert(e)
 
                     load(false)
                     updateAdapter()
                 }
                 1 -> {
                     e.type = if (e.type == "verifica") "altro" else "verifica"
-                    SugarRecord.save(e)
+                    DatabaseHelper.database.eventsDao().insert(e)
 
                     load(false)
                     updateAdapter()
@@ -327,7 +328,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                 }
                 3 -> {
                     e.archived = !e.archived
-                    SugarRecord.save(e)
+                    DatabaseHelper.database.eventsDao().insert(e)
 
                     load(false)
                     updateAdapter()

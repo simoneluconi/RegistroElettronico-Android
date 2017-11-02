@@ -1,5 +1,6 @@
 package com.sharpdroid.registroelettronico.activities
 
+import android.arch.persistence.room.ColumnInfo
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
@@ -20,7 +21,11 @@ import com.github.mikephil.charting.data.Entry
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.api.SpiaggiariAPI
-import com.sharpdroid.registroelettronico.database.entities.*
+import com.sharpdroid.registroelettronico.database.entities.Grade
+import com.sharpdroid.registroelettronico.database.entities.LocalGrade
+import com.sharpdroid.registroelettronico.database.entities.Subject
+import com.sharpdroid.registroelettronico.database.entities.SubjectInfo
+import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.MessaggioVoto
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
@@ -42,7 +47,7 @@ import java.util.*
 
 class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.HypotheticalDelegate {
 
-    data class AverageType(@Column(name = "AVG") val avg: Float, @Column(name = "TYPE") val type: String, @Column(name = "COUNT") val count: Int) {
+    data class AverageType(@ColumnInfo(name = "AVG") val avg: Float, @ColumnInfo(name = "TYPE") val type: String, @ColumnInfo(name = "COUNT") val count: Int) {
         constructor() : this(-1f, "", 0)
     }
 
@@ -74,17 +79,17 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
 
     override fun onResume() {
         super.onResume()
-        val temp = SugarRecord.findById(Subject::class.java, intent.getIntExtra("subject_id", -1))
+        val temp = DatabaseHelper.database.subjectsDao().getSubject(intent.getIntExtra("subject_id", -1).toLong())
         if (temp == null) {
             onBackPressed()
             return
         }
 
-        subject = temp.getInfo(this)
+        subject = temp.getInfo(this)/*
         subject.subject.teachers = SugarRecord.findWithQuery(Teacher::class.java, "SELECT * FROM TEACHER WHERE TEACHER.ID IN (SELECT SUBJECT_TEACHER.TEACHER FROM SUBJECT_TEACHER WHERE SUBJECT_TEACHER.SUBJECT=?)", subject.subject.id.toString())
         p = intent.getIntExtra("period", 0)
         avg = SugarRecord.findWithQuery(AverageType::class.java, "SELECT ID, AVG(M_VALUE) as `AVG` , 'Generale' as `TYPE`, COUNT(M_VALUE) as `COUNT`  FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=?", subject.subject.id.toString())[0]
-
+*/
         title = capitalizeEach(subject.description.or(subject.subject.description))
 
         initInfo(subject)
@@ -101,7 +106,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
     }
 
     private fun initOverall(subject: Subject) {
-        val avgTypes: List<AverageType> = SugarRecord.findWithQuery(AverageType::class.java, "SELECT ID, AVG(M_VALUE) as `AVG` ,M_TYPE as `TYPE`, COUNT(M_VALUE) as `COUNT`  FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=? GROUP BY TYPE", subject.id.toString())
+        val avgTypes: List<AverageType> = emptyList()//SugarRecord.findWithQuery(AverageType::class.java, "SELECT ID, AVG(M_VALUE) as `AVG` ,M_TYPE as `TYPE`, COUNT(M_VALUE) as `COUNT`  FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=? GROUP BY TYPE", subject.id.toString())
         overall.setOrale(avgTypes.filter { it.type.equals(SpiaggiariAPI.ORALE, false) }.getOrNull(0)?.avg)
         overall.setScritto(avgTypes.filter { it.type.equals(SpiaggiariAPI.SCRITTO, false) }.getOrNull(0)?.avg)
         overall.setPratico(avgTypes.filter { it.type.equals(SpiaggiariAPI.PRATICO, false) }.getOrNull(0)?.avg)
@@ -167,7 +172,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
 
     private fun updateTarget(new_target: Float) {
         subject.target = new_target
-        SugarRecord.save(subject)
+        DatabaseHelper.database.subjectsDao().updateSubjectInfo(subject)
 
         target.postDelayed({ target.setTarget(avg.avg, getTarget(subject), true) }, ViewConfiguration.getTapTimeout().toLong())
         marks.setSubject(subject, avg.avg)
@@ -183,7 +188,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
         val subject = subject_info.subject
         marks.setSubject(subject_info, avg.avg)
 
-        val data = SugarRecord.find(Grade::class.java, (if (p != -1) "M_PERIOD='$p' AND" else "") + " PROFILE=? AND M_SUBJECT_ID=? ORDER BY M_DATE DESC", Account.with(this).user.toString(), subject.id.toString())!!
+        val data = emptyList<Grade>()//SugarRecord.find(Grade::class.java, (if (p != -1) "M_PERIOD='$p' AND" else "") + " PROFILE=? AND M_SUBJECT_ID=? ORDER BY M_DATE DESC", Account.with(this).user.toString(), subject.id.toString())!!
         val filter = data.filter { it.mValue != 0f }.map { Entry(it.mDate.time.toFloat(), it.mValue) }.sortedWith(kotlin.Comparator { n1, n2 ->
             return@Comparator n1.x.compareTo(n2.x)
         }).toMutableList()
@@ -198,7 +203,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
             delegate = this@MarkSubjectDetailActivity
             setRealData(avg)
             setTarget(getTarget(subject))
-            setHypoGrades(SugarRecord.find(LocalGrade::class.java, "PROFILE=${Account.with(this@MarkSubjectDetailActivity).user} AND SUBJECT=${subject.subject.id} " + if (p != -1) "AND PERIOD=$p" else ""))
+            setHypoGrades(emptyList())//SugarRecord.find(LocalGrade::class.java, "PROFILE=${Account.with(this@MarkSubjectDetailActivity).user} AND SUBJECT=${subject.subject.id} " + if (p != -1) "AND PERIOD=$p" else ""))
         }
     }
 
@@ -227,7 +232,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
                 .onPositive { dialog, _ ->
                     with(dialog.customView) {
                         if (grade.value != 0f) {
-                            grade.id = SugarRecord.save(grade)
+                            grade.id = DatabaseHelper.database.gradesDao().insertGrade(grade)
                             dialog.dismiss()
                             hypothetical.add(grade)
                             //hypothetical.setHypoGrades(SugarRecord.find(LocalGrade::class.java, "PROFILE=${Account.with(this@MarkSubjectDetailActivity).user} AND SUBJECT=${subject.subject.id} " + if (p != -1) "AND PERIOD=$p" else ""))
@@ -242,7 +247,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
                 .positiveText("SI")
                 .neutralText("Annulla")
                 .onPositive { _, _ ->
-                    SugarRecord.delete(grade)
+                    DatabaseHelper.database.gradesDao().deleteGrade(grade)
                     hypothetical.remove(grade)
                     //hypothetical.setHypoGrades(SugarRecord.find(LocalGrade::class.java, "PROFILE=${Account.with(this@MarkSubjectDetailActivity).user} AND SUBJECT=${subject.subject.id} " + if (p != -1) "AND PERIOD=$p" else ""))
                 }.show()

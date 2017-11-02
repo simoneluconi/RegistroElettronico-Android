@@ -16,10 +16,13 @@ public interface LessonDao {
     @NonNull
     LiveData<List<Lesson>> loadLessons(Long profile);
 
+    @Query("SELECT * FROM LESSON WHERE M_SUBJECT_ID=:code GROUP BY M_ARGUMENT, M_AUTHOR_NAME, M_DATE ORDER BY M_DATE DESC LIMIT 5")
+    List<Lesson> loadLastLessons(long code);
+
     @Insert
     void insertLessons(List<Lesson> lessons);
 
     @Query("DELETE FROM LESSON WHERE PROFILE = :profile")
-    void deleteLessons(Long profile);
+    void delete(long profile);
 
 }

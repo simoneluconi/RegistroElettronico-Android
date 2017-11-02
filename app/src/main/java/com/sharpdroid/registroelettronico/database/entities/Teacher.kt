@@ -2,18 +2,18 @@ package com.sharpdroid.registroelettronico.database.entities
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
+import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
 import android.util.SparseArray
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-@Table
 @Entity(tableName = "TEACHER")
 data class Teacher(
-        @ColumnInfo(name = "ID") @PrimaryKey @Expose @Unique @SerializedName("teacherId") var id: Long = -1L,
+        @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("teacherId") var id: Long = 0L,
         @ColumnInfo(name = "TEACHER_NAME") @Expose var teacherName: String = "",
-        @android.arch.persistence.room.Ignore @Expose @Ignore var folders: List<Folder> //not present in /subjects
+        @Ignore @Expose var folders: List<Folder> //not present in /subjects
 ) : Serializable {
     constructor() : this(0, "", emptyList())
 
@@ -26,7 +26,7 @@ data class Teacher(
             teacherWithID.clear()
         }
 
-        fun setupCache() {
+        fun setupCache() {/*
             val teachers: List<Teacher> = SugarRecord.find(Teacher::class.java, "")!!
             val subjectTeacher = SubjectTeacher.cache
 
@@ -36,7 +36,7 @@ data class Teacher(
 
             teachers.forEach {
                 teacherWithID.put(it.id.toInt(), it)
-            }
+            }*/
         }
 
         fun professorsOfSubject(code: Number): List<Teacher> = teachersOfSubject[code.toInt(), emptyList()]

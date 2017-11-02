@@ -15,7 +15,6 @@ class App : MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()
-        SugarContext.init(this)
         DatabaseHelper.createDb(this)
         FirebaseApp.initializeApp(this)
 
