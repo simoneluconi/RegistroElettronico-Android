@@ -3,7 +3,6 @@ package com.sharpdroid.registroelettronico.api.v2
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.orm.SugarRecord
 import com.sharpdroid.registroelettronico.Info.API_URL
 import com.sharpdroid.registroelettronico.api.v2.deserializer.DateDeserializer
 import com.sharpdroid.registroelettronico.api.v2.deserializer.LongDeserializer

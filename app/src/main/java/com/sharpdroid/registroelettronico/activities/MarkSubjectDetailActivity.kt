@@ -17,8 +17,6 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.ContentViewEvent
 import com.github.mikephil.charting.data.Entry
-import com.orm.SugarRecord
-import com.orm.dsl.Column
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.api.SpiaggiariAPI
