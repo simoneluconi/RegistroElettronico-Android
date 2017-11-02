@@ -78,6 +78,8 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
         super.onViewCreated(view, savedInstanceState)
         activity.title = "Oggi a scuola"
 
+        //DatabaseHelper.database.lessonsDao().loadProfile().
+
         with(absence_recycler) {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             isNestedScrollingEnabled = false
