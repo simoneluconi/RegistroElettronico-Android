@@ -2,12 +2,10 @@ package com.sharpdroid.registroelettronico.database.room.entities
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
-import android.arch.persistence.room.ForeignKey
 import android.arch.persistence.room.PrimaryKey
-import com.sharpdroid.registroelettronico.database.entities.Profile
 import java.util.*
 
-@Entity(tableName = "LESSON", foreignKeys = arrayOf(ForeignKey(entity = Profile::class, parentColumns = arrayOf(" id"), childColumns = arrayOf("user_id"))))
+@Entity(tableName = "LESSON")
 data class Lesson(
         @ColumnInfo(name = "M_ARGUMENT") var mArgument: String,
         @ColumnInfo(name = "M_AUTHOR_NAME") val mAuthorName: String,
@@ -22,4 +20,6 @@ data class Lesson(
         @ColumnInfo(name = "M_SUBJECT_ID") val mSubjectId: Int,
         @ColumnInfo(name = "M_TYPE") val mType: String,
         @ColumnInfo(name = "PROFILE") var profile: Long
-)
+) {
+    constructor() : this("", "", "", "", Date(), 0, 0, 0, "", "", 0, "", -1)
+}
