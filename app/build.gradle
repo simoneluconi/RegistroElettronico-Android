@@ -155,6 +155,16 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.1.6'
     implementation 'org.apache.commons:commons-lang3:3.6'
 
+    //room
+    implementation "android.arch.persistence.room:runtime:1.0.0-rc1"
+    annotationProcessor "android.arch.persistence.room:compiler:1.0.0-rc1"
+    //LiveData & ViewModel
+    implementation "android.arch.lifecycle:extensions:1.0.0-rc1"
+    //implementation "android.arch.lifecycle:runtime:1.0.3" // not necessary if you are using lifecycle:extensions or lifecycle:common-java8
+    annotationProcessor "android.arch.lifecycle:compiler:1.0.0-rc1" // not needed if you are using the DefaultLifecycleObserver from common-java8 artifact.
+    //For Lifecycles Java8 Lanaguage support, add:
+    implementation "android.arch.lifecycle:common-java8:1.0.0-rc1"
+
 
     implementation 'com.google.firebase:firebase-messaging:11.4.2'
     implementation 'com.firebase:firebase-jobdispatcher:0.8.4'
