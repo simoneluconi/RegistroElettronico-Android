@@ -33,9 +33,9 @@ import java.util.*
 }
  */
 @Entity(tableName = "COMMUNICATION")
-data class Communication(
+class Communication(
         @PrimaryKey @ColumnInfo(name = "ID") @Expose @SerializedName("pubId") var id: Long = 0L,
-        @ColumnInfo(name = "DATE") @Expose @SerializedName("pubDT") var date: Date = Date(0),
+        @ColumnInfo(name = "DATE") @Expose @SerializedName("pubDT") var date: Date,
         @ColumnInfo(name = "IS_READ") @Expose @SerializedName("readStatus") var isRead: Boolean = false,
         @ColumnInfo(name = "EVT_CODE") @Expose @SerializedName("evtCode") var evtCode: String = "",
         @ColumnInfo(name = "MY_ID") @Expose @SerializedName("cntId") var myId: Long = 0L,
@@ -45,10 +45,10 @@ data class Communication(
         @ColumnInfo(name = "HAS_ATTACHMENT") @Expose @SerializedName("cntHasAttach") var hasAttachment: Boolean = false,
         @ColumnInfo(name = "PROFILE") var profile: Long
 ) {
-    constructor() : this(0, Date(), false, "", 0, "", "", "", false, -1)
+    constructor() : this(0, Date(0), false, "", 0, "", "", "", false, -1)
 }
 
-data class CommunicationAPI(@Expose @SerializedName("items") private var communications: List<Communication>) {
+class CommunicationAPI(@Expose @SerializedName("items") private var communications: List<Communication>) {
     fun getCommunications(profile: Profile): List<Communication> {
         val id = profile.id
         communications.forEach { it.profile = id }
@@ -70,11 +70,11 @@ data class CommunicationAPI(@Expose @SerializedName("items") private var communi
 }
  */
 @Entity(tableName = "COMMUNICATION_INFO")
-data class CommunicationInfo(@ColumnInfo(name = "ID") @PrimaryKey(autoGenerate = true) var id: Long = 0L,
-                             @ColumnInfo(name = "TITLE") @Expose @SerializedName("title") var title: String = "",
-                             @ColumnInfo(name = "CONTENT") @Expose @SerializedName("text") var content: String = "",
-                             @ColumnInfo(name = "PATH") var path: String) {
+class CommunicationInfo(@ColumnInfo(name = "ID") @PrimaryKey(autoGenerate = true) var id: Long = 0L,
+                        @ColumnInfo(name = "TITLE") @Expose @SerializedName("title") var title: String = "",
+                        @ColumnInfo(name = "CONTENT") @Expose @SerializedName("text") var content: String = "",
+                        @ColumnInfo(name = "PATH") var path: String) {
     constructor() : this(0L, "", "", "")
 }
 
-data class ReadResponse(@Expose @SerializedName("item") var item: CommunicationInfo)
+class ReadResponse(@Expose @SerializedName("item") var item: CommunicationInfo)

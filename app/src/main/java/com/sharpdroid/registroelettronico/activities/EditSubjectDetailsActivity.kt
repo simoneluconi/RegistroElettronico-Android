@@ -144,10 +144,16 @@ class EditSubjectDetailsActivity : AppCompatActivity() {
             when (getItemViewType(position)) {
                 0 -> (holder.itemView as HeaderCell).setText(if (position == rowInfo) "Informazioni" else "Professori")
                 1 -> when (position) {
-                    rowTitle -> (holder.itemView as ValueDetailsCell).setTextAndValue(Metodi.capitalizeEach(subjectInfo!!.description.or(subjectInfo!!.subject.description)).or("Senza nome"), "Nome", true)
+
+                //TODO query subject and get description
+                /*subjectInfo!!.subject.description)*/
+                    rowTitle -> (holder.itemView as ValueDetailsCell).setTextAndValue(Metodi.capitalizeEach(subjectInfo!!.description.or("").or("Senza nome")), "Nome", true)
                     rowNotes -> (holder.itemView as ValueDetailsCell).setTextAndValue(Metodi.capitalizeEach(subjectInfo!!.details).or("Aggiungi dettagli"), "Dettagli", true)
                     rowClassroom -> (holder.itemView as ValueDetailsCell).setTextAndValue(Metodi.capitalizeEach(subjectInfo!!.classroom).or("Aggiungi aula"), "Aula", true)
-                    else -> (holder.itemView as ValueDetailsCell).setText(Metodi.capitalizeEach(subjectInfo!!.subject.teachers[position - rowTeachers - 1].teacherName), true)
+                    else -> (holder.itemView as ValueDetailsCell).setText(Metodi.capitalizeEach(
+                            //TODO query subject and get description
+                            /*subjectInfo!!.subject.teachers[position - rowTeachers - 1].teacherName*/
+                            ""), true)
                 }
             }
             if (getItemViewType(position) == 1 && position in rowTitle..rowClassroom) {

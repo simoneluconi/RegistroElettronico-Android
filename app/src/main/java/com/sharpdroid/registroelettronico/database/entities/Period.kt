@@ -32,23 +32,24 @@ import java.util.*
 }
  */
 @Entity(tableName = "PERIOD")
-data class Period(
+class Period(
         @ColumnInfo(name = "M_CODE") @Expose @SerializedName("periodCode") var mCode: String = "",
         @ColumnInfo(name = "M_DESCRIPTION") @Expose @SerializedName("periodDesc") var mDescription: String = "",
-        @ColumnInfo(name = "M_END") @Expose @SerializedName("dateEnd") var mEnd: Date = Date(0),
+        @ColumnInfo(name = "M_END") @Expose @SerializedName("dateEnd") var mEnd: Date,
         @ColumnInfo(name = "M_FINAL") @Expose @SerializedName("isFinal") var mFinal: Boolean = false,
         @ColumnInfo(name = "M_POSITION") @Expose @SerializedName("periodPos") var mPosition: Int = -1,
-        @ColumnInfo(name = "M_START") @Expose @SerializedName("dateStart") var mStart: Date = Date(0),
+        @ColumnInfo(name = "M_START") @Expose @SerializedName("dateStart") var mStart: Date,
         @ColumnInfo(name = "PROFILE") var profile: Long
 ) {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "ID")
     var id = 0L
 
-    constructor() : this("", "", Date(), false, 0, Date(), 0L)
+    constructor() : this("", "", Date(0), false, 0, Date(0), 0L)
+
 }
 
-data class PeriodAPI(@Expose @SerializedName("periods") private val periods: List<Period>) {
+class PeriodAPI(@Expose @SerializedName("periods") private val periods: List<Period>) {
     fun getPeriods(profile: Profile): List<Period> {
         val id = profile.id
         periods.forEach { it.profile = id }

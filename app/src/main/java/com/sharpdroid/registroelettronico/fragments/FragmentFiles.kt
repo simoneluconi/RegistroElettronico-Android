@@ -94,7 +94,7 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
     }
 
     override fun onFileClick(file: File) {
-        val info = DatabaseHelper.database.foldersDao().getInfo(file.objectId) ?: FileInfo()
+        val info = DatabaseHelper.database.foldersDao().getInfo(file.objectId) ?: FileInfo(0, "")
         when (file.type) {
             "file" -> {
                 if (info.path.isEmpty() || !java.io.File(info.path).exists()) {

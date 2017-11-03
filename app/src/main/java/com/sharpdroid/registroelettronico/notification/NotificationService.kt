@@ -24,6 +24,7 @@ import com.sharpdroid.registroelettronico.api.v2.APIClient
 import com.sharpdroid.registroelettronico.database.entities.LoginRequest
 import com.sharpdroid.registroelettronico.database.entities.Profile
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
+import java.util.*
 
 class NotificationService : JobService() {
     override fun onStopJob(job: JobParameters?): Boolean {
@@ -33,12 +34,12 @@ class NotificationService : JobService() {
     override fun onStartJob(job: JobParameters?): Boolean {
         val profile = Profile.getProfile(applicationContext) ?: return false
         val notificationsList = mutableMapOf<String, Int>()
-        if (profile.expire < System.currentTimeMillis()) {
+        if (profile.expire.time < System.currentTimeMillis()) {
             val login = APIClient.with(profile).postLoginBlocking(LoginRequest(profile.password, profile.username, profile.ident)).blockingFirst()
             if (!login.isSuccessful) return false
 
             profile.token = login.body()?.token ?: throw IllegalStateException("token not in response body")
-            profile.expire = login.body()?.expire?.time ?: 0
+            profile.expire = login.body()?.expire ?: Date(0)
 
             DatabaseHelper.database.profilesDao().update(profile)
         }

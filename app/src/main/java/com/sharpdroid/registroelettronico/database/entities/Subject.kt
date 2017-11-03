@@ -28,7 +28,7 @@ import java.io.Serializable
 }
  */
 @Entity(tableName = "SUBJECT")
-data class Subject(
+class Subject(
         @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("id") var id: Long = 0L,
         @ColumnInfo(name = "DESCRIPTION") @Expose @SerializedName("description") var description: String = "",
         @Ignore @Expose @SerializedName("teachers") var teachers: List<Teacher>
@@ -60,14 +60,16 @@ data class Subject(
 }
 
 
-@Entity
-data class SubjectInfo(
+@Entity(tableName = "SUBJECT_INFO")
+class SubjectInfo(
         @ColumnInfo(name = "ID") @PrimaryKey(autoGenerate = true) var id: Long = 0L,
         @ColumnInfo(name = "TARGET") var target: Float,
         @ColumnInfo(name = "DESCRIPTION") var description: String = "",
         @ColumnInfo(name = "DETAILS") var details: String = "",
         @ColumnInfo(name = "CLASSROOM") var classroom: String = "",
-        @ColumnInfo(name = "SUBJECT") var subject: Subject,
-        @ColumnInfo(name = "PROFILE") var profile: Long)
+        @ColumnInfo(name = "SUBJECT") var subject: Long,
+        @ColumnInfo(name = "PROFILE") var profile: Long) {
+    constructor() : this(0, 0f, "", "", "", 0, 0)
+}
 
-data class SubjectAPI(@Expose @SerializedName("subjects") val subjects: List<Subject>)
+class SubjectAPI(@Expose @SerializedName("subjects") val subjects: List<Subject>)

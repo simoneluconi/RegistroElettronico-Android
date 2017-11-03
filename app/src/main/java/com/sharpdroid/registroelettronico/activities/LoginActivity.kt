@@ -72,8 +72,8 @@ class LoginActivity : AppCompatActivity() {
                     if (login.choices != null) {
                         val it = DatabaseHelper.database.profilesDao().profilesSync.iterator()
                         while (it.hasNext()) {
-                            val (_, _, _, _, id) = it.next()
-                            val toRemove = login.choices.filter { it.ident.substring(1, 8) == id.toString() }
+                            val profile = it.next()
+                            val toRemove = login.choices.filter { it.ident.substring(1, 8) == profile.id.toString() }
                             //remove already logged in profiles
                             login.choices.removeAll(toRemove)
                         }
@@ -109,7 +109,7 @@ class LoginActivity : AppCompatActivity() {
                             super.onBackPressed()
                         }
                     } else {
-                        DatabaseHelper.database.profilesDao().insert(Profile(mEmail, login.firstName + " " + login.lastName, mPassword, "", login.ident!!.substring(1, 8).toLong(), login.token!!, login.expire!!.time, login.ident, false))
+                        DatabaseHelper.database.profilesDao().insert(Profile(mEmail, login.firstName + " " + login.lastName, mPassword, "", login.ident!!.substring(1, 8).toLong(), login.token!!, login.expire!!, login.ident, false))
                         Account.with(this).user = login.ident.substring(1, 8).toLong()
                         fetchDataOfUser(this)
 
@@ -134,9 +134,9 @@ class LoginActivity : AppCompatActivity() {
         val c = this
         APIClient.with(null).postLogin(LoginRequest(password, email, ident))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ (ident1, firstName, lastName, token, expire) ->
-                    DatabaseHelper.database.profilesDao().insert(Profile(email, firstName + " " + lastName, password, "", ident1!!.substring(1, 8).toLong(), token!!, expire!!.time, ident1, true))
-                    Account.with(c).user = ident1.substring(1, 8).toLong()
+                .subscribe({ t ->
+                    DatabaseHelper.database.profilesDao().insert(Profile(email, t.firstName + " " + t.lastName, password, "", t.ident!!.substring(1, 8).toLong(), t.token!!, t.expire!!, t.ident, true))
+                    Account.with(c).user = t.ident.substring(1, 8).toLong()
                     fetchDataOfUser(c)
 
                     PreferenceManager.getDefaultSharedPreferences(c).edit().putBoolean("first_run", false).apply()

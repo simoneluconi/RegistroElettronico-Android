@@ -9,21 +9,22 @@ import com.mikepenz.materialdrawer.model.interfaces.IProfile
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.AccountImage
+import java.util.*
 
 @Entity(tableName = "PROFILE")
-data class Profile(
+class Profile(
         @ColumnInfo(name = "USERNAME") var username: String = "",
         @ColumnInfo(name = "NAME") var name: String = "",
         @ColumnInfo(name = "PASSWORD") var password: String = "",
         @ColumnInfo(name = "CLASSE") var classe: String = "",
         @ColumnInfo(name = "ID") @PrimaryKey var id: Long = 0L,
         @ColumnInfo(name = "TOKEN") var token: String = "",
-        @ColumnInfo(name = "EXPIRE") var expire: Long = 0L,
+        @ColumnInfo(name = "EXPIRE") var expire: Date,
         @ColumnInfo(name = "IDENT") var ident: String = "",
         @ColumnInfo(name = "IS_MULTI") var isMulti: Boolean
 ) {
 
-    constructor() : this("", "", "", "", 0, "", 0, "", false)
+    constructor() : this("", "", "", "", 0, "", Date(0), "", false)
 
     fun asIProfile(): IProfile<ProfileDrawerItem> {
         return ProfileDrawerItem()

@@ -6,7 +6,7 @@ import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
 
 @Entity(tableName = "LOCAL_GRADE")
-data class LocalGrade(
+class LocalGrade(
         @ColumnInfo(name = "VALUE") var value: Float,
         @ColumnInfo(name = "VALUE_NAME") var value_name: String = "",
         @ColumnInfo(name = "SUBJECT") var subject: Long = 0L,

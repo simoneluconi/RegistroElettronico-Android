@@ -42,10 +42,10 @@ evtCode:
 
  */
 @Entity(tableName = "ABSENCE")
-data class Absence(
+class Absence(
         @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("evtId") var id: Long = 0L,
         @ColumnInfo(name = "TYPE") @Expose @SerializedName("evtCode") var type: String = "",
-        @ColumnInfo(name = "DATE") @Expose @SerializedName("evtDate") var date: Date = Date(0),
+        @ColumnInfo(name = "DATE") @Expose @SerializedName("evtDate") var date: Date,
         @ColumnInfo(name = "JUSTIFIED") @Expose @SerializedName("isJustified") var justified: Boolean = false,
         @ColumnInfo(name = "REASON_CODE") @Expose @SerializedName("justifReasonCode") var reasonCode: String = "",
         @ColumnInfo(name = "REASON_DESC") @Expose @SerializedName("justifReasonDesc") var reasonDesc: String = "",
@@ -125,7 +125,7 @@ data class Absence(
     }
 }
 
-data class AbsenceAPI(@Expose @SerializedName("events") private val events: List<Absence>) {
+class AbsenceAPI(@Expose @SerializedName("events") private val events: List<Absence>) {
     fun getEvents(profile: Profile): List<Absence> {
         val id = profile.id
         events.forEach { it.profile = id }
@@ -133,4 +133,4 @@ data class AbsenceAPI(@Expose @SerializedName("events") private val events: List
     }
 }
 
-data class MyAbsence(val absence: Absence, val days: Int)
+class MyAbsence(val absence: Absence, val days: Int)

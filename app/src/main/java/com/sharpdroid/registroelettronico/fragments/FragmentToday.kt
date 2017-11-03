@@ -125,7 +125,7 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
         if (savedInstanceState != null && savedInstanceState["scrollY"] != null) {
             nested_scroll_view.scrollY = savedInstanceState.getInt("scrollY")
         }
-
+/*
         Teacher.clearCache()
         Subject.clearCache()
         SubjectTeacher.clearCache()
@@ -133,7 +133,7 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
         SubjectTeacher.setupCache(Account.with(context).user)
         Subject.setupCache()
         Teacher.setupCache()
-
+*/
         if (!BuildConfig.DEBUG)
             Answers.getInstance().logContentView(ContentViewEvent().putContentId("Panoramica"))
     }
@@ -188,17 +188,17 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
         events.addAll(RemoteAgenda.getSuperAgenda(Account.with(context).user, date, true))
         //events.addAll(SugarRecord.find(LocalAgenda::class.java, "PROFILE=? AND ARCHIVED=0 AND DAY>=${date.time}", Account.with(context).user.toString()))
         events.sortWith(Comparator { t1: Any, t2: Any ->
-            val date1 = (t1 as? SuperAgenda)?.agenda?.start ?: ((t1 as? LocalAgenda)?.day ?: Date(0))
-            val date2 = (t2 as? SuperAgenda)?.agenda?.start ?: ((t2 as? LocalAgenda)?.day ?: Date(0))
-            return@Comparator date1.flat().compareTo(date2.flat())
+            val date1 = (t1 as? SuperAgenda)?.agenda?.start ?: ((t1 as? LocalAgenda)?.day ?: 0)
+            val date2 = (t2 as? SuperAgenda)?.agenda?.start ?: ((t2 as? LocalAgenda)?.day ?: 0)
+            return@Comparator Date(date1).flat().compareTo(Date(date2).flat())
         })
 
         val tomorrow = date.add(Calendar.HOUR_OF_DAY, 24)
 
         tomorrowAdapter.events = events.filter {
             when (it) {
-                is SuperAgenda -> it.agenda.start.flat().time == tomorrow.time
-                is LocalAgenda -> it.day == tomorrow
+                is SuperAgenda -> Date(it.agenda.start).flat().time == tomorrow.time
+                is LocalAgenda -> it.day == tomorrow.time
                 else -> false
             }
         }
@@ -211,8 +211,8 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
         weekAdapter.date = date
         weekAdapter.events = events.filter {
             when (it) {
-                is SuperAgenda -> it.agenda.start.flat().after(tomorrow) && it.agenda.start.flat().before(sevenDaysFromDate)
-                is LocalAgenda -> it.day.after(tomorrow) && it.day.before(sevenDaysFromDate)
+                is SuperAgenda -> Date(it.agenda.start).flat().after(tomorrow) && Date(it.agenda.start).flat().before(sevenDaysFromDate)
+                is LocalAgenda -> Date(it.day).after(tomorrow) && Date(it.day).before(sevenDaysFromDate)
                 else -> false
             }
         }

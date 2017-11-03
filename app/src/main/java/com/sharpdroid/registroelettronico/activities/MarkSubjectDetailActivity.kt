@@ -23,7 +23,6 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.api.SpiaggiariAPI
 import com.sharpdroid.registroelettronico.database.entities.Grade
 import com.sharpdroid.registroelettronico.database.entities.LocalGrade
-import com.sharpdroid.registroelettronico.database.entities.Subject
 import com.sharpdroid.registroelettronico.database.entities.SubjectInfo
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
@@ -90,22 +89,22 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
         p = intent.getIntExtra("period", 0)
         avg = SugarRecord.findWithQuery(AverageType::class.java, "SELECT ID, AVG(M_VALUE) as `AVG` , 'Generale' as `TYPE`, COUNT(M_VALUE) as `COUNT`  FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=?", subject.subject.id.toString())[0]
 */
-        title = capitalizeEach(subject.description.or(subject.subject.description))
+        title = capitalizeEach(subject.description.or(temp.description))
 
         initInfo(subject)
         initOverall(subject.subject)
         initTarget()
-        initLessons(subject.subject.id)
+        initLessons(subject.subject)
         initMarks(subject)
         initHypothetical()
     }
 
     private fun initInfo(subject: SubjectInfo) {
         info.setSubjectDetails(subject)
-        info.setEditListener { _ -> startActivity(Intent(this, EditSubjectDetailsActivity::class.java).putExtra("code", subject.subject.id)) }
+        info.setEditListener { _ -> startActivity(Intent(this, EditSubjectDetailsActivity::class.java).putExtra("code", subject.subject)) }
     }
 
-    private fun initOverall(subject: Subject) {
+    private fun initOverall(subject: Long) {
         val avgTypes: List<AverageType> = emptyList()//SugarRecord.findWithQuery(AverageType::class.java, "SELECT ID, AVG(M_VALUE) as `AVG` ,M_TYPE as `TYPE`, COUNT(M_VALUE) as `COUNT`  FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=? GROUP BY TYPE", subject.id.toString())
         overall.setOrale(avgTypes.filter { it.type.equals(SpiaggiariAPI.ORALE, false) }.getOrNull(0)?.avg)
         overall.setScritto(avgTypes.filter { it.type.equals(SpiaggiariAPI.SCRITTO, false) }.getOrNull(0)?.avg)
@@ -209,7 +208,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
 
     override fun hypotheticalAddListener() {
         val view = LayoutInflater.from(this).inflate(R.layout.view_dialog_add_grade, null)
-        val grade = LocalGrade(0f, "", subject.subject.id, p, "Generale", Account.with(this).user, 0)
+        val grade = LocalGrade(0f, "", subject.subject, p, "Generale", Account.with(this).user, 0)
         val spinner = view.findViewById<Spinner>(R.id.voto)
 
         spinner.setSelection(resources.getStringArray(R.array.marks_list).size / 2)

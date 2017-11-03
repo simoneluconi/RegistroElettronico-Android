@@ -258,9 +258,9 @@ public class Metodi {
         List<com.github.sundeepk.compactcalendarview.domain.Event> list = new ArrayList<>();
         for (Object event : events) {
             if (event instanceof SuperAgenda)
-                list.add(new Event(((SuperAgenda) event).getTest() ? Color.parseColor("#FF9800") : Color.WHITE, ((SuperAgenda) event).getAgenda().getStart().getTime()));
+                list.add(new Event(((SuperAgenda) event).getTest() ? Color.parseColor("#FF9800") : Color.WHITE, ((SuperAgenda) event).getAgenda().getStart()));
             else if (event instanceof LocalAgenda) {
-                list.add(new Event(((LocalAgenda) event).getType().equalsIgnoreCase("verifica") ? Color.parseColor("#FF9800") : Color.WHITE, ((LocalAgenda) event).getDay().getTime()));
+                list.add(new Event(((LocalAgenda) event).getType().equalsIgnoreCase("verifica") ? Color.parseColor("#FF9800") : Color.WHITE, ((LocalAgenda) event).getDay()));
             }
         }
         return list;

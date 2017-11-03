@@ -5,7 +5,7 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
 
 @Entity(tableName = "SUBJECT_TEACHER")
-data class SubjectTeacher(
+class SubjectTeacher(
         @ColumnInfo(name = "SUBJECT") var subject: Long = 0L,
         @ColumnInfo(name = "TEACHER") var teacher: Long = 0L,
         @ColumnInfo(name = "PROFILE") var profile: Long
@@ -24,7 +24,8 @@ data class SubjectTeacher(
         }
 
         fun setupCache(account: Long) {
-            throw IllegalStateException("use proper DAO")
+            //TODO do proper thangs
+            //throw IllegalStateException("use proper DAO")
             /*val subjectsTeachers = SugarRecord.find(SubjectTeacher::class.java, "PROFILE=$account")
             subjectsTeachers.forEach {
                 cache.add(it)

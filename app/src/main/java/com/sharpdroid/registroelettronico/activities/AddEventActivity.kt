@@ -67,19 +67,19 @@ class AddEventActivity : AppCompatActivity() {
     private fun handleConfirm(type: String) {
         when (type.toLowerCase()) {
             "verifica" -> if (handleTitle() && handleSubject() && handleProfessor() && handleDate()) {
-                DatabaseHelper.database.eventsDao().insert(LocalAgenda(layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay?.flat()!!, selectedSubject?.subject?.id ?: 0, selectedProfessor?.id ?: 0, null, Account.with(this).user, false))
+                DatabaseHelper.database.eventsDao().insert(LocalAgenda(layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay?.flat()!!.time, selectedSubject?.subject ?: 0, selectedProfessor?.id ?: 0, null, Account.with(this).user, false))
                 finish()
             } else {
                 vibrate()
             }
             "compiti" -> if (handleTitle() && handleSubject() && handleProfessor() && handleDate()) {
-                DatabaseHelper.database.eventsDao().insert(LocalAgenda(layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay?.flat()!!, selectedSubject!!.subject.id, selectedProfessor?.id ?: 0, null, Account.with(this).user, false))
+                DatabaseHelper.database.eventsDao().insert(LocalAgenda(layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay?.flat()!!.time, selectedSubject!!.subject, selectedProfessor?.id ?: 0, null, Account.with(this).user, false))
                 finish()
             } else {
                 vibrate()
             }
             else -> if (handleTitle() && handleDate()) {
-                DatabaseHelper.database.eventsDao().insert(LocalAgenda(layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay?.flat()!!, selectedSubject?.subject?.id ?: 0L, selectedProfessor?.id ?: 0, null, Account.with(this).user, false))
+                DatabaseHelper.database.eventsDao().insert(LocalAgenda(layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay?.flat()!!.time, selectedSubject?.subject ?: 0L, selectedProfessor?.id ?: 0, null, Account.with(this).user, false))
                 finish()
             } else {
                 vibrate()
@@ -108,7 +108,8 @@ class AddEventActivity : AppCompatActivity() {
 
         MaterialDialog.Builder(this)
                 .title("Seleziona una materia")
-                .items(subjectList.map { capitalizeEach(it.description.or(it.subject.description), false) })
+                //TODO query subject
+                .items(subjectList.map { capitalizeEach(it.description.or(/*it.subject.description*/""), false) })
                 .itemsCallbackSingleChoice(subjectList.indexOf(selectedSubject)) { _, _, which, text ->
                     selectedSubject = subjectList[which]
                     v.findViewById<TextView>(R.id.content).text = text

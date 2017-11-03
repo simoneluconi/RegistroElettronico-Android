@@ -85,7 +85,7 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putInt("code", subject?.subject?.id?.toInt()!!)
+        outState.putInt("code", subject?.subject?.toInt()!!)
     }
 
     override fun onRefresh() {
@@ -101,8 +101,9 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
 
     private fun load() {
         if (subject == null) {
-            subject = DatabaseHelper.database.subjectsDao().getSubject(code?.toLong() ?: 0).getInfo(activity)
-            activity.title = capitalizeEach(subject?.description.or(subject?.subject?.description ?: ""))
+            val info = DatabaseHelper.database.subjectsDao().getSubject(code?.toLong() ?: 0)
+            subject = info?.getInfo(context)
+            activity.title = capitalizeEach(info.description.or(subject?.description ?: ""))
         }
         DatabaseHelper.database.lessonsDao().loadLessonsGrouped(code?.toLong() ?: 0)
                 .observe(this, Observer {

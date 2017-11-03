@@ -9,14 +9,14 @@ import com.google.gson.annotations.SerializedName
 import com.sharpdroid.registroelettronico.utils.Metodi
 import java.util.*
 
-data class SuperAgenda(val agenda: RemoteAgenda, var completed: Boolean = false, var test: Boolean)
+class SuperAgenda(val agenda: RemoteAgenda, var completed: Boolean = false, var test: Boolean)
 
 @Entity(tableName = "LOCAL_AGENDA")
-data class LocalAgenda(
+class LocalAgenda(
         @ColumnInfo(name = "TITLE") var title: String = "",
         @ColumnInfo(name = "CONTENT") var content: String = "",
         @ColumnInfo(name = "TYPE") var type: String = "",
-        @ColumnInfo(name = "DAY") var day: Date = Date(0),
+        @ColumnInfo(name = "DAY") var day: Long = 0,
         @ColumnInfo(name = "SUBJECT") var subject: Long = 0L,
         @ColumnInfo(name = "TEACHER") var teacher: Long = 0L,
         @ColumnInfo(name = "COMPLETED_DATE") var completed_date: Date?,
@@ -27,7 +27,7 @@ data class LocalAgenda(
     @ColumnInfo(name = "ID")
     var id = 0L
 
-    constructor() : this("", "", "", Date(), 0, 0, null, 0L, false)
+    constructor() : this("", "", "", 0, 0, 0, null, 0L, false)
 }
 
 /*
@@ -48,17 +48,17 @@ data class LocalAgenda(
 }
  */
 @Entity(tableName = "REMOTE_AGENDA")
-data class RemoteAgenda(
+class RemoteAgenda(
         @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("evtId") var id: Long = 0L,
-        @ColumnInfo(name = "START") @Expose @SerializedName("evtDatetimeBegin") var start: Date = Date(0),
-        @ColumnInfo(name = "END") @Expose @SerializedName("evtDatetimeEnd") var end: Date = Date(0),
+        @ColumnInfo(name = "START") @Expose @SerializedName("evtDatetimeBegin") var start: Long = 0,
+        @ColumnInfo(name = "END") @Expose @SerializedName("evtDatetimeEnd") var end: Long = 0,
         @ColumnInfo(name = "IS_FULL_DAY") @Expose @SerializedName("isFullDay") var isFullDay: Boolean = false,
         @ColumnInfo(name = "NOTES") @Expose @SerializedName("notes") var notes: String = "",
         @ColumnInfo(name = "AUTHOR") @Expose @SerializedName("authorName") var author: String = "",
         @ColumnInfo(name = "PROFILE") var profile: Long
 ) {
 
-    constructor() : this(0, Date(), Date(), false, "", "", 0L)
+    constructor() : this(0, 0, 0, false, "", "", 0L)
 
     fun getInfo(): RemoteAgendaInfo? {
         return null/*
@@ -128,7 +128,7 @@ data class RemoteAgenda(
     }
 }
 
-data class AgendaAPI(@Expose @SerializedName("agenda") val agenda: List<RemoteAgenda>) {
+class AgendaAPI(@Expose @SerializedName("agenda") val agenda: List<RemoteAgenda>) {
     fun getAgenda(profile: Profile): List<RemoteAgenda> {
         val id = profile.id
         agenda.forEach { it.profile = id }
@@ -137,9 +137,11 @@ data class AgendaAPI(@Expose @SerializedName("agenda") val agenda: List<RemoteAg
 }
 
 @Entity(tableName = "REMOTE_AGENDA_INFO")
-data class RemoteAgendaInfo(
+class RemoteAgendaInfo(
         @ColumnInfo(name = "ID") @PrimaryKey var id: Long = 0L,
         @ColumnInfo(name = "COMPLETED") var completed: Boolean = false,
         @ColumnInfo(name = "ARCHIVED") var archived: Boolean = false,
         @ColumnInfo(name = "TEST") var test: Boolean = false
-)
+) {
+    constructor() : this(0, false, false, false)
+}
