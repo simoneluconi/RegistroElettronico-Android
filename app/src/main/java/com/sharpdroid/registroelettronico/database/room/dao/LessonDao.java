@@ -23,7 +23,7 @@ public interface LessonDao {
     LiveData<List<Lesson>> loadLessonsGrouped(long code);
 
     @Insert
-    void insertLessons(List<Lesson> lessons);
+    void insert(List<Lesson> lessons);
 
     @Query("DELETE FROM LESSON WHERE PROFILE = :profile")
     void delete(long profile);

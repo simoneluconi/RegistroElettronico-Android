@@ -110,7 +110,7 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
     }
 
     private fun load() {
-        val teachers = DatabaseHelper.database.subjectsDao().getTeacherObservable(Account.with(context).user)
+        val teachers = DatabaseHelper.database.subjectsDao().getTeachers(Account.with(context).user)
         teachers.forEach { it.folders = DatabaseHelper.database.foldersDao().getFolders(it.id, Account.with(activity).user) }
         addFiles(teachers)
     }
