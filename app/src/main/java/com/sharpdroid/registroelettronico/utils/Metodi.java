@@ -26,8 +26,6 @@ import com.sharpdroid.registroelettronico.database.entities.FileInfo;
 import com.sharpdroid.registroelettronico.database.entities.Folder;
 import com.sharpdroid.registroelettronico.database.entities.Grade;
 import com.sharpdroid.registroelettronico.database.entities.LocalAgenda;
-import com.sharpdroid.registroelettronico.database.entities.Note;
-import com.sharpdroid.registroelettronico.database.entities.Period;
 import com.sharpdroid.registroelettronico.database.entities.Profile;
 import com.sharpdroid.registroelettronico.database.entities.RemoteAgenda;
 import com.sharpdroid.registroelettronico.database.entities.Subject;
@@ -402,7 +400,7 @@ public class Metodi {
 
                     DatabaseHelper.database.foldersDao().deleteFolders(p.getId());
                     DatabaseHelper.database.foldersDao().deleteFiles(p.getId());
-                    DatabaseHelper.database.subjectsDao().insert(didacticAPI.getDidactics());
+                    DatabaseHelper.database.subjectsDao().insert((Teacher[]) didacticAPI.getDidactics().toArray());
                     DatabaseHelper.database.foldersDao().insert(folders);
                     DatabaseHelper.database.foldersDao().insertFiles(files); //update otherwise will clean any additional info (path...)
 
@@ -478,12 +476,12 @@ public class Metodi {
                             continue;
                         }
 
-                        @Nullable CommunicationInfo info = SugarRecord.findById(CommunicationInfo.class, communication.getMyId());
+                        @Nullable CommunicationInfo info = DatabaseHelper.database.communicationsDao().getInfo(communication.getMyId());
                         if (info == null || !communication.isRead() || info.getContent().isEmpty()) {
                             System.out.println("REQUEST - " + communication.getTitle());
                             APIClient.Companion.with(p).readBacheca(communication.getEvtCode(), communication.getId()).subscribe(readResponse -> {
                                 communication.setRead(true);
-                                SugarRecord.save(communication);
+                                DatabaseHelper.database.communicationsDao().insert(communication);
 
                                 CommunicationInfo downloadedInfo = readResponse.getItem();
                                 downloadedInfo.setId(communication.getMyId());
@@ -492,14 +490,14 @@ public class Metodi {
                                                 ((info != null) ?
                                                         info.getContent() : "") :
                                                 downloadedInfo.getContent());
-                                SugarRecord.save(downloadedInfo);
+                                DatabaseHelper.database.communicationsDao().insert(downloadedInfo);
                             });
                         }
                     }
                     list.removeAll(toRemove);
 
-                    SugarRecord.deleteAll(Communication.class, "PROFILE=?", String.valueOf(p.getId()));
-                    SugarRecord.saveInTx(list);
+                    DatabaseHelper.database.communicationsDao().delete(p.getId());
+                    DatabaseHelper.database.communicationsDao().insert((Communication[]) list.toArray());
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_BACHECA_OK, null));
                 }, throwable -> {
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_BACHECA_KO, null));
@@ -516,8 +514,8 @@ public class Metodi {
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_NOTES_START, null));
         APIClient.Companion.with(p).getNotes()
                 .subscribe(notes -> {
-                    SugarRecord.deleteAll(Note.class, "PROFILE=?", String.valueOf(p.getId()));
-                    SugarRecord.saveInTx(notes.getNotes(p));
+                    DatabaseHelper.database.notesDao().delete(p.getId());
+                    DatabaseHelper.database.notesDao().insert(notes.getNotes(p));
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_NOTES_OK, null));
                 }, throwable -> {
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_NOTES_KO, null));
@@ -529,7 +527,8 @@ public class Metodi {
         updatePeriods(Profile.Companion.getProfile(c));
     }
 
-    public static void updatePeriods(Profile p) {
+
+    public static void updatePeriods(Profile p) {/*
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_PERIODS_START, null));
         APIClient.Companion.with(p).getPeriods()
@@ -540,7 +539,7 @@ public class Metodi {
                 }, throwable -> {
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_PERIODS_KO, null));
                     throwable.printStackTrace();
-                });
+                });*/
     }
 
     public static void downloadAttachment(@NotNull Context c, Communication communication) {
@@ -563,17 +562,17 @@ public class Metodi {
                         if (!dir.exists()) dir.mkdirs();
                         File fileDir = new File(dir, filename);
 
-                        CommunicationInfo communicationInfo = SugarRecord.findById(CommunicationInfo.class, communication.getMyId());
+                        CommunicationInfo communicationInfo = DatabaseHelper.database.communicationsDao().getInfo(communication.getMyId());
                         if (communicationInfo == null) communicationInfo = new CommunicationInfo();
                         communicationInfo.setId(communication.getMyId());
 
                         if (fileDir.exists()) {      //File esistente ma non salvato nel db
                             communicationInfo.setPath(fileDir.getAbsolutePath());
-                            SugarRecord.update(communicationInfo);
+                            DatabaseHelper.database.communicationsDao().update(communicationInfo);
                             handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_OK, new Long[]{communication.getMyId()}));
                         } else if (writeResponseBodyToDisk(response.body(), fileDir)) {
                             communicationInfo.setPath(fileDir.getAbsolutePath());
-                            SugarRecord.update(communicationInfo);
+                            DatabaseHelper.database.communicationsDao().update(communicationInfo);
                             handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_OK, new Long[]{communication.getMyId()}));
                         } else {
                             handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_KO, new Long[]{communication.getMyId()}));
@@ -611,7 +610,7 @@ public class Metodi {
                         File fileDir = new File(dir, filename);
 
                         FileInfo info = new FileInfo(f.getObjectId(), fileDir.getAbsolutePath());
-                        if (SugarRecord.update(info) > 0 && writeResponseBodyToDisk(response.body(), fileDir))
+                        if (DatabaseHelper.database.foldersDao().update(info) > 0 && writeResponseBodyToDisk(response.body(), fileDir))
                             handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_OK, new Long[]{f.getObjectId()}));
                         else
                             handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_KO, new Long[]{f.getObjectId()}));

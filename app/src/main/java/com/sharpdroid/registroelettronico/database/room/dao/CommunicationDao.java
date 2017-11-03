@@ -3,6 +3,7 @@ package com.sharpdroid.registroelettronico.database.room.dao;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
@@ -20,6 +21,12 @@ public interface CommunicationDao {
 
     @Query("SELECT * FROM COMMUNICATION WHERE PROFILE = :profile ORDER BY DATE DESC")
     LiveData<List<Communication>> loadCommunications(long profile);
+
+    @Insert
+    void insert(Communication... communications);
+
+    @Insert
+    void insert(CommunicationInfo... communications);
 
     @Query("DELETE FROM COMMUNICATION WHERE PROFILE=:profile")
     void delete(long profile);
