@@ -2,6 +2,7 @@ package com.sharpdroid.registroelettronico.database.room.dao;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
@@ -11,6 +12,8 @@ import com.sharpdroid.registroelettronico.database.entities.RemoteAgendaInfo;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 @Dao
 public interface AgendaDao {
 
@@ -18,20 +21,20 @@ public interface AgendaDao {
     void insert(@NotNull LocalAgenda event);
 
     @Insert
-    void insert(@NotNull RemoteAgenda event);
+    void insert(@NotNull List<RemoteAgenda> event);
 
     @Insert
     void insert(@NotNull RemoteAgendaInfo event);
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     int update(@NotNull LocalAgenda event);
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     int update(@NotNull RemoteAgenda event);
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     int update(@NotNull RemoteAgendaInfo event);
 
     @Query("DELETE FROM REMOTE_AGENDA WHERE PROFILE = :profile")
-    void delete(long profile);
+    void deleteRemote(long profile);
 }

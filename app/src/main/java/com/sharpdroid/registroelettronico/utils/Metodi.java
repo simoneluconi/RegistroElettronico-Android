@@ -17,11 +17,9 @@ import android.support.v4.content.FileProvider;
 import android.widget.Toast;
 
 import com.github.sundeepk.compactcalendarview.domain.Event;
-import com.orm.SugarRecord;
 import com.sharpdroid.registroelettronico.NotificationManager;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.api.v2.APIClient;
-import com.sharpdroid.registroelettronico.database.entities.Absence;
 import com.sharpdroid.registroelettronico.database.entities.Communication;
 import com.sharpdroid.registroelettronico.database.entities.CommunicationInfo;
 import com.sharpdroid.registroelettronico.database.entities.FileInfo;
@@ -278,7 +276,7 @@ public class Metodi {
         DatabaseHelper.database.foldersDao().deleteFolders(account);
         DatabaseHelper.database.gradesDao().delete(account);
         DatabaseHelper.database.lessonsDao().delete(account);
-        DatabaseHelper.database.eventsDao().delete(account);
+        DatabaseHelper.database.eventsDao().deleteRemote(account);
         DatabaseHelper.database.subjectsDao().delete(account);
     }
 
@@ -325,24 +323,23 @@ public class Metodi {
         });
         APIClient.Companion.with(p).getSubjects().subscribeOn(AndroidSchedulers.mainThread()).subscribe(subjectAPI -> {
             List<Teacher> allTeachers = new ArrayList<>();
-
-            SugarRecord.deleteAll(Subject.class, "ID IN (SELECT SUBJECT FROM SUBJECT_TEACHER WHERE PROFILE=?)", String.valueOf(p.getId()));
+            DatabaseHelper.database.subjectsDao().deleteSubjects(p.getId());
 
             for (Subject subject : subjectAPI.getSubjects()) {
                 allTeachers.addAll(subject.getTeachers());
                 for (Teacher t : subject.getTeachers()) {
                     SubjectTeacher obj = new SubjectTeacher(subject.getId(), t.getId(), p.getId());
-                    SugarRecord.deleteAll(SubjectTeacher.class, "PROFILE=? AND SUBJECT=? AND TEACHER=?", String.valueOf(p.getId()), String.valueOf(subject.getId()), String.valueOf(t.getId()));
-                    SugarRecord.save(obj);
+                    DatabaseHelper.database.subjectsDao().deleteSingle(p.getId(), subject.getId(), t.getId());
+                    DatabaseHelper.database.subjectsDao().insert(obj);
                 }
             }
 
-            SugarRecord.saveInTx(allTeachers);
-            SugarRecord.saveInTx(subjectAPI.getSubjects());
+            DatabaseHelper.database.subjectsDao().insert((Teacher[]) allTeachers.toArray());
+            DatabaseHelper.database.subjectsDao().insert(subjectAPI.getSubjects());
 
             handler.post(() -> {
-                NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_SUBJECTS_OK, new Object[]{subjectAPI.getSubjects()});
-                NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_TEACHERS_OK, new Object[]{subjectAPI.getSubjects()});
+                NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_SUBJECTS_OK, null);
+                NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_TEACHERS_OK, null);
             });
         }, throwable -> {
             handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_TEACHERS_KO, null));
@@ -360,11 +357,9 @@ public class Metodi {
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_LESSONS_START, null));
         APIClient.Companion.with(p).getLessons(dates[0], dates[1])
-                .subscribe(l -> {/*
-                    SugarRecord.deleteAll(Lesson.class, "PROFILE=?", String.valueOf(p.getId()));
-                    SugarRecord.saveInTx(l.getLessons(p));*/
+                .subscribe(l -> {
                     DatabaseHelper.database.lessonsDao().delete(p.getId());
-                    DatabaseHelper.database.lessonsDao().insertLessons(l.getLessons(p));
+                    DatabaseHelper.database.lessonsDao().insert(l.getLessons(p));
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_LESSONS_OK, null));
                 }, throwable -> {
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_LESSONS_KO, null));
@@ -405,19 +400,19 @@ public class Metodi {
                         }
                     }
 
-                    SugarRecord.deleteAll(Folder.class, "PROFILE=?", String.valueOf(p.getId()));
-                    SugarRecord.deleteAll(File.class, "PROFILE=?", String.valueOf(p.getId()));
-                    SugarRecord.saveInTx(didacticAPI.getDidactics());
-                    SugarRecord.saveInTx(folders);
-                    SugarRecord.saveInTx(files); //update otherwise will clean any additional info (path...)
+                    DatabaseHelper.database.foldersDao().deleteFolders(p.getId());
+                    DatabaseHelper.database.foldersDao().deleteFiles(p.getId());
+                    DatabaseHelper.database.subjectsDao().insert(didacticAPI.getDidactics());
+                    DatabaseHelper.database.foldersDao().insert(folders);
+                    DatabaseHelper.database.foldersDao().insertFiles(files); //update otherwise will clean any additional info (path...)
 
 
                     //Download informations if not file
-                    for (com.sharpdroid.registroelettronico.database.entities.File f : SugarRecord.find(com.sharpdroid.registroelettronico.database.entities.File.class, "PROFILE=? AND TYPE!='file' AND ID NOT IN (SELECT ID FROM FILE_INFO)", new String[]{String.valueOf(p.getId())})) {
+                    for (com.sharpdroid.registroelettronico.database.entities.File f : DatabaseHelper.database.foldersDao().getNoFiles(p.getId())) {
                         if (f.getType().equals("link"))
-                            APIClient.Companion.with(p).getAttachmentUrl(f.getId()).subscribe(downloadURL -> SugarRecord.save(new FileInfo(f.getObjectId(), downloadURL.getItem().getLink())), Throwable::printStackTrace);
+                            APIClient.Companion.with(p).getAttachmentUrl(f.getId()).subscribe(downloadURL -> DatabaseHelper.database.foldersDao().insert(new FileInfo(f.getObjectId(), downloadURL.getItem().getLink())), Throwable::printStackTrace);
                         else
-                            APIClient.Companion.with(p).getAttachmentTxt(f.getId()).subscribe(downloadTXT -> SugarRecord.save(new FileInfo(f.getObjectId(), downloadTXT.getItem().getText())));
+                            APIClient.Companion.with(p).getAttachmentTxt(f.getId()).subscribe(downloadTXT -> DatabaseHelper.database.foldersDao().insert(new FileInfo(f.getObjectId(), downloadTXT.getItem().getText())));
                     }
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_FOLDERS_OK, null));
                 }, throwable -> {
@@ -438,8 +433,8 @@ public class Metodi {
         APIClient.Companion.with(p).getAgenda(dates[0], dates[1])
                 .subscribe(agendaAPI -> {
                     List<RemoteAgenda> apiAgenda = agendaAPI.getAgenda(p);
-                    SugarRecord.deleteAll(RemoteAgenda.class, "PROFILE=?", String.valueOf(p.getId()));
-                    SugarRecord.saveInTx(apiAgenda);
+                    DatabaseHelper.database.eventsDao().deleteRemote(p.getId());
+                    DatabaseHelper.database.eventsDao().insert(apiAgenda);
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_AGENDA_OK, null));
                 }, throwable -> {
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_AGENDA_KO, null));
@@ -456,8 +451,8 @@ public class Metodi {
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_ABSENCES_START, null));
         APIClient.Companion.with(p).getAbsences()
                 .subscribe(absenceAPI -> {
-                    SugarRecord.deleteAll(Absence.class, "PROFILE=?", String.valueOf(p.getId()));
-                    SugarRecord.saveInTx(absenceAPI.getEvents(p));
+                    DatabaseHelper.database.absencesDao().delete(p.getId());
+                    DatabaseHelper.database.absencesDao().insert(absenceAPI.getEvents(p));
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_ABSENCES_OK, null));
                 }, throwable -> {
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_ABSENCES_KO, null));
