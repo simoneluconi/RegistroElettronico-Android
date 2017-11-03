@@ -10,10 +10,10 @@ import com.google.gson.annotations.SerializedName
 import java.util.*
 
 @Entity(tableName = "GRADE")
-data class Grade(
+class Grade(
         @ColumnInfo(name = "M_CODE") @Expose @SerializedName("evtCode") var mCode: String = "",
         @ColumnInfo(name = "M_COMPONENT_POS") @Expose @SerializedName("componentPos") var mComponentPos: Int = -1,
-        @ColumnInfo(name = "M_DATE") @Expose @SerializedName("evtDate") var mDate: Date = Date(0),
+        @ColumnInfo(name = "M_DATE") @Expose @SerializedName("evtDate") var mDate: Date,
         @ColumnInfo(name = "M_DESCRIPTION") @Expose @SerializedName("subjectDesc") var mDescription: String = "",
         @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("evtId") var id: Long = 0L,
         @ColumnInfo(name = "M_NOTES") @Expose @SerializedName("notesForFamily") var mNotes: String = "",
@@ -27,7 +27,7 @@ data class Grade(
         @ColumnInfo(name = "M_WEIGHT_FACTOR") @Expose @SerializedName("weightFactor") var mWeightFactor: Double,
         @ColumnInfo(name = "PROFILE") var profile: Long
 ) {
-    constructor() : this("", 0, Date(), "", 0, "", 0, "", "", 0, "", false, 0f, 0.0, 0L)
+    constructor() : this("", 0, Date(0), "", 0, "", 0, "", "", 0, "", false, 0f, 0.0, 0L)
 
     companion object {
         private val subjectCache = SparseArray<Subject>()
@@ -115,7 +115,7 @@ data class Grade(
     }
 }
 
-data class GradeAPI(@Expose @SerializedName("grades") private val grades: List<Grade>) {
+class GradeAPI(@Expose @SerializedName("grades") private val grades: List<Grade>) {
     fun getGrades(profile: Profile): List<Grade> {
         val id = profile.id
         grades.forEach { it.profile = id }

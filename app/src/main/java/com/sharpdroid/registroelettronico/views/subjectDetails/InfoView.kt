@@ -91,14 +91,12 @@ class InfoView : CardView {
             list.add(Pair(R.drawable.ic_title,
                     capitalizeEach(
                             if (data.description.isEmpty())
-                                data.subject.description
+                            /*data.subject.description*/ ""
                             else
                                 data.description)))
-            if (!data.subject.teachers.isEmpty()) {
+            if (!/*data.subject.teachers.isEmpty()*/ true) {
                 val prof = ArrayList<String>()
-                for ((_, teacherName) in data.subject.teachers) {
-                    prof.add(teacherName)
-                }
+                //data.subject.teachers.mapTo(prof) { it.teacherName }
                 list.add(Pair(R.drawable.ic_person, capitalizeEach(TextUtils.join(" - ", prof), true)))
             }
             if (!TextUtils.isEmpty(data.classroom))

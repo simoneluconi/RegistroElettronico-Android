@@ -199,7 +199,7 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
                     it.mArgument = it.mArgument.replace(Regex(query, RegexOption.IGNORE_CASE), "<b>$0</b>")
                     println(it.mArgument)
                     it
-                }?.sortedByDescending { it.mDate.time } ?: emptyList())
+                }?.sortedByDescending { it.mDate } ?: emptyList())
             }
 
             notifyDataSetChanged()

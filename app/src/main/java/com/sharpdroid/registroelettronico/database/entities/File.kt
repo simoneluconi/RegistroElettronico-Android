@@ -28,28 +28,28 @@ import java.util.*
 
  */
 @Entity(tableName = "FILE")
-data class File(
+class File(
         @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("contentId") var id: Long = 0L,
         @ColumnInfo(name = "CONTENT_NAME") @Expose @SerializedName("contentName") var contentName: String = "",
         @ColumnInfo(name = "OBJECT_ID") @Expose @SerializedName("objectId") var objectId: Long = 0L,
         @ColumnInfo(name = "TYPE") @Expose @SerializedName("objectType") var type: String = "",
-        @ColumnInfo(name = "DATE") @Expose @SerializedName("shareDT") var date: Date = Date(0),
+        @ColumnInfo(name = "DATE") @Expose @SerializedName("shareDT") var date: Date,
         @ColumnInfo(name = "FOLDER") var folder: Long = 0L,
         @ColumnInfo(name = "TEACHER") var teacher: Long = 0L,
         @ColumnInfo(name = "PROFILE") var profile: Long
 ) {
-    constructor() : this(0, "", 0, "", Date(), 0, 0, 0)
+    constructor() : this(0, "", 0, "", Date(0), 0, 0, 0)
 }
 
 
-@Entity(tableName = "TABLE_NAME")
-data class FileInfo(
+@Entity(tableName = "FILE_INFO")
+class FileInfo(
         @ColumnInfo(name = "ID") @PrimaryKey var id: Long = 0L,
         @ColumnInfo(name = "PATH") var path: String) {
     constructor() : this(0L, "")
 }
 
-data class DownloadURL(@Expose @SerializedName("link") val link: String)
-data class DownloadUrlAPI(@Expose @SerializedName("item") val item: DownloadURL)
-data class DownloadTXT(@Expose @SerializedName("text") val text: String)
-data class DownloadTxtAPI(@Expose @SerializedName("item") val item: DownloadTXT)
+class DownloadURL(@Expose @SerializedName("link") val link: String)
+class DownloadUrlAPI(@Expose @SerializedName("item") val item: DownloadURL)
+class DownloadTXT(@Expose @SerializedName("text") val text: String)
+class DownloadTxtAPI(@Expose @SerializedName("item") val item: DownloadTXT)

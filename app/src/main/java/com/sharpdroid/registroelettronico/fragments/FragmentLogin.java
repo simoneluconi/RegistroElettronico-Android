@@ -136,7 +136,7 @@ public class FragmentLogin extends SlideFragment {
                                 });
                         builder.show();
                     } else {
-                        DatabaseHelper.database.profilesDao().insert(new Profile(mEmail, login.getFirstName() + " " + login.getLastName(), mPassword, "", Long.valueOf(login.getIdent().substring(1, 8)), login.getToken(), login.getExpire().getTime(), login.getIdent(), false));
+                        DatabaseHelper.database.profilesDao().insert(new Profile(mEmail, login.getFirstName() + " " + login.getLastName(), mPassword, "", Long.valueOf(login.getIdent().substring(1, 8)), login.getToken(), login.getExpire(), login.getIdent(), false));
 
                         Account.Companion.with(getActivity()).setUser(Long.valueOf(login.getIdent().substring(1, 8)));
                         fetchDataOfUser(getActivity());
@@ -174,7 +174,7 @@ public class FragmentLogin extends SlideFragment {
         APIClient.Companion.with(null).postLogin(new LoginRequest(password, email, ident))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(login_nested -> {
-                    DatabaseHelper.database.profilesDao().insert(new Profile(email, login_nested.getFirstName() + " " + login_nested.getLastName(), password, "", Long.valueOf(login_nested.getIdent().substring(1, 8)), login_nested.getToken(), login_nested.getExpire().getTime(), login_nested.getIdent(), true));
+                    DatabaseHelper.database.profilesDao().insert(new Profile(email, login_nested.getFirstName() + " " + login_nested.getLastName(), password, "", Long.valueOf(login_nested.getIdent().substring(1, 8)), login_nested.getToken(), login_nested.getExpire(), login_nested.getIdent(), true));
                     Account.Companion.with(c).setUser(Long.valueOf(login_nested.getIdent().substring(1, 8)));
                     fetchDataOfUser(c);
 

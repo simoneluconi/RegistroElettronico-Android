@@ -26,7 +26,7 @@ class APIClient {
         fun with(profile: Profile?): SpaggiariREST {
             val loginInterceptor = Interceptor { chain ->
                 val original = chain.request()
-                if (profile != null && original.url().toString() != API_URL + "auth/login" && profile.expire < System.currentTimeMillis()) {
+                if (profile != null && original.url().toString() != API_URL + "auth/login" && profile.expire.time < System.currentTimeMillis()) {
                     Log.d("LOGIN INTERCEPTOR", "TOKEN EXPIRED, REQUESTING NEW TOKEN")
 
                     val loginRes = chain.proceed(original.newBuilder()
@@ -46,7 +46,7 @@ class APIClient {
 
                         Log.d("LOGIN INTERCEPTOR", "UPDATE TOKEN: " + loginResponse.token)
 
-                        profile.expire = loginResponse.expire?.time ?: throw IllegalStateException("Cannot achieve expire.time from:\n${loginRes.body()?.string()}")
+                        profile.expire = loginResponse.expire ?: throw IllegalStateException("Cannot achieve expire.time from:\n${loginRes.body()?.string()}")
                         profile.token = loginResponse.token ?: throw IllegalStateException("Cannot achieve token from:\n${loginRes.body()?.string()}")
 
                         DatabaseHelper.database.profilesDao().update(profile)

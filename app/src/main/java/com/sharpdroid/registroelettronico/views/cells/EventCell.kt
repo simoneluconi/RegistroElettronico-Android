@@ -44,7 +44,7 @@ class EventCell(context: Context, private val withDateDiff: Boolean) : FrameLayo
                     spannableString.setSpan(StrikethroughSpan(), 0, event.agenda.notes.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
                 if (withDateDiff)
-                    duration.text = "${(event.agenda.start.time - currentDate.time) / (24 * 3600000)}g"
+                    duration.text = "${(event.agenda.start - currentDate.time) / (24 * 3600000)}g"
                 //date.text = dateFormat.format(event.agenda.start)
                 date.text = capitalizeEach(event.agenda.author, true)
                 content.text = spannableString
@@ -57,7 +57,7 @@ class EventCell(context: Context, private val withDateDiff: Boolean) : FrameLayo
                 }
 
                 if (withDateDiff)
-                    duration.text = "${(event.day.time - currentDate.time) / (24 * 3600000)}g"
+                    duration.text = "${(event.day - currentDate.time) / (24 * 3600000)}g"
                 //date.text = dateFormat.format(event.day)
                 date.text = capitalizeEach(Teacher.teacher(event.teacher)?.teacherName ?: Subject.subject(event.subject)?.description ?: "", true)
                 date.visibility = if (date.text.isEmpty()) View.GONE else View.VISIBLE

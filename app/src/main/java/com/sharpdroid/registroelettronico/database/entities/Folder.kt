@@ -30,10 +30,10 @@ import java.util.*
 }
  */
 @Entity(tableName = "FOLDER")
-data class Folder(
+class Folder(
         @ColumnInfo(name = "TITLE") @Expose @SerializedName("folderId") var folderId: Int = -1,
         @ColumnInfo(name = "NAME") @Expose @SerializedName("folderName") var name: String = "",
-        @ColumnInfo(name = "LAST_UPDATE") @Expose @SerializedName("lastShareDT") var lastUpdate: Date = Date(0),
+        @ColumnInfo(name = "LAST_UPDATE") @Expose @SerializedName("lastShareDT") var lastUpdate: Date,
         @Ignore @Expose @SerializedName("contents") var files: List<File>,
         @ColumnInfo(name = "TEACHER") var teacher: Long = 0L,
         @ColumnInfo(name = "PROFILE") var profile: Long
@@ -42,5 +42,5 @@ data class Folder(
     @PrimaryKey(autoGenerate = true)
     var id = 0L
 
-    constructor() : this(0, "", Date(), emptyList(), 0, -1)
+    constructor() : this(0, "", Date(0), emptyList(), 0, -1)
 }

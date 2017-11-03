@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 @Entity(tableName = "TEACHER")
-data class Teacher(
+class Teacher(
         @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("teacherId") var id: Long = 0L,
         @ColumnInfo(name = "TEACHER_NAME") @Expose var teacherName: String = "",
         @Ignore @Expose var folders: List<Folder> //not present in /subjects
@@ -44,4 +44,4 @@ data class Teacher(
     }
 }
 
-data class DidacticAPI(@Expose @SerializedName("didacticts") val didactics: List<Teacher>)
+class DidacticAPI(@Expose @SerializedName("didacticts") val didactics: List<Teacher>)

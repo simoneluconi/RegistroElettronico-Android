@@ -8,9 +8,9 @@ import com.google.gson.annotations.SerializedName
 import java.util.*
 
 @Entity(tableName = "NOTE")
-data class Note(
+class Note(
         @ColumnInfo(name = "M_AUTHOR") @Expose @SerializedName("authorName") var mAuthor: String = "",
-        @ColumnInfo(name = "M_DATE") @Expose @SerializedName("evtDate") var mDate: Date = Date(0),
+        @ColumnInfo(name = "M_DATE") @Expose @SerializedName("evtDate") var mDate: Date,
         @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("evtId") var id: Long = 0L,
         @ColumnInfo(name = "M_STATUS") @Expose @SerializedName("readStatus") var mStatus: Boolean = false,
         @ColumnInfo(name = "M_TEXT") @Expose @SerializedName("evtText") var mText: String = "",
@@ -18,10 +18,10 @@ data class Note(
         @ColumnInfo(name = "M_TYPE") var mType: String = "",
         @ColumnInfo(name = "PROFILE") var profile: Long
 ) {
-    constructor() : this("", Date(), 0, false, "", "", "", 0L)
+    constructor() : this("", Date(0), 0, false, "", "", "", 0L)
 }
 
-data class NoteAPI(
+class NoteAPI(
         @Expose @SerializedName("NTTE") private val ntte: List<Note>,
         @Expose @SerializedName("NTCL") private val ntcl: List<Note>,
         @Expose @SerializedName("NTWN") private val ntwn: List<Note>,

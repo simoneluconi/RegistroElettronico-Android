@@ -3,7 +3,7 @@ package com.sharpdroid.registroelettronico.database.entities
 import com.google.gson.annotations.Expose
 import java.util.*
 
-data class LoginRequest(
+class LoginRequest(
         @Expose private val pass: String = "",
         @Expose private val uid: String = "",
         @Expose val ident: String

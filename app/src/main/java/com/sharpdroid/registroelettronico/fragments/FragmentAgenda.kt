@@ -155,9 +155,9 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         return if (currentDate == true)
             events.filter {
                 if (it is SuperAgenda) {
-                    return@filter it.agenda.end.time in mDate.time until mDate.time + 86400000 && it.agenda.start.time in mDate.time until mDate.time + 86400000
+                    return@filter it.agenda.end in mDate.time until mDate.time + 86400000 && it.agenda.start in mDate.time until mDate.time + 86400000
                 } else if (it is LocalAgenda) {
-                    return@filter it.day.time in mDate.time until mDate.time + 86400000
+                    return@filter it.day in mDate.time until mDate.time + 86400000
                 }
                 true
             }

@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
         if (profile == null) {
             profile = DatabaseHelper.database.profilesDao().randomProfile
-            onProfileChanged(null, profile.asIProfile(), false)
+            onProfileChanged(null, profile?.asIProfile(), false)
         }
 
         when {
@@ -411,8 +411,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
     }
 
     override fun onProfileChanged(view: View?, profile: IProfile<*>?, current: Boolean): Boolean {
-        if (profile == null) return false
-        if (profile.identifier == 1234L) {
+        if (profile == null || profile.identifier == 1234L) {
             startActivityForResult(Intent(this, LoginActivity::class.java), 2)
         } else if (!current) {
 

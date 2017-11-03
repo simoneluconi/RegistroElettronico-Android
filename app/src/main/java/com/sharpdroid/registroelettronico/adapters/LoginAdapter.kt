@@ -29,23 +29,23 @@ class LoginAdapter(choiceList: List<Choice>, private val c: Context, private val
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val (_, ident, name) = choices[position]
+        val choice = choices[position]
         if (holder.itemView is ValueDetailsCheckboxCell) {
             val checkboxCell = (holder.itemView as ValueDetailsCheckboxCell)
-            checkboxCell.setTextAndValue(name, ident, position != itemCount - 1)
+            checkboxCell.setTextAndValue(choice.name, choice.ident, position != itemCount - 1)
             checkboxCell.setOnClickListener { _ ->
                 checkboxCell.isChecked = !checkboxCell.isChecked
                 if (checkboxCell.isChecked)
-                    checked.add(ident)
+                    checked.add(choice.ident)
                 else
-                    checked.remove(ident)
+                    checked.remove(choice.ident)
                 listener.invoke(checked)
             }
             checkboxCell.setCheckBoxListener(View.OnClickListener { _ ->
                 if (checkboxCell.isChecked)
-                    checked.add(ident)
+                    checked.add(choice.ident)
                 else
-                    checked.remove(ident)
+                    checked.remove(choice.ident)
                 listener.invoke(checked)
             })
         }
