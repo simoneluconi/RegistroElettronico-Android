@@ -37,4 +37,10 @@ public interface AgendaDao {
 
     @Query("DELETE FROM REMOTE_AGENDA WHERE PROFILE = :profile")
     void deleteRemote(long profile);
+
+    @Query("DELETE FROM REMOTE_AGENDA_INFO")
+    void deleteRemoteInfo();
+
+    @Query("UPDATE LOCAL_AGENDA SET ARCHIVED=0 WHERE ARCHIVED!=0")
+    void setNotArchived();
 }

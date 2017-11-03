@@ -15,10 +15,9 @@ import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.mikepenz.aboutlibraries.LibsConfiguration;
-import com.orm.SugarRecord;
 import com.sharpdroid.registroelettronico.BuildConfig;
 import com.sharpdroid.registroelettronico.R;
-import com.sharpdroid.registroelettronico.database.entities.RemoteAgendaInfo;
+import com.sharpdroid.registroelettronico.database.room.DatabaseHelper;
 
 /**
  * shows the settings option for choosing the movie categories in ListPreference.
@@ -42,8 +41,8 @@ public class FragmentSettings extends PreferenceFragmentCompat implements Shared
 
         Preference button = findPreference("clear_archive");
         button.setOnPreferenceClickListener(preference -> {
-            SugarRecord.deleteAll(RemoteAgendaInfo.class);
-            SugarRecord.executeQuery("UPDATE LOCAL_AGENDA SET ARCHIVED=0 WHERE ARCHIVED!=0");
+            DatabaseHelper.database.eventsDao().deleteRemoteInfo();
+            DatabaseHelper.database.eventsDao().setNotArchived();
             return true;
         });
 

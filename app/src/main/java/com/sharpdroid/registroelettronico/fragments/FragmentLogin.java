@@ -21,13 +21,13 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.LoginEvent;
 import com.heinrichreimersoftware.materialintro.app.SlideFragment;
-import com.orm.SugarRecord;
 import com.sharpdroid.registroelettronico.BuildConfig;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.adapters.LoginAdapter;
 import com.sharpdroid.registroelettronico.api.v2.APIClient;
 import com.sharpdroid.registroelettronico.database.entities.LoginRequest;
 import com.sharpdroid.registroelettronico.database.entities.Profile;
+import com.sharpdroid.registroelettronico.database.room.DatabaseHelper;
 import com.sharpdroid.registroelettronico.utils.Account;
 
 import java.util.ArrayList;
@@ -136,8 +136,7 @@ public class FragmentLogin extends SlideFragment {
                                 });
                         builder.show();
                     } else {
-                        SugarRecord.save(new Option(Long.valueOf(login.getIdent().substring(1, 8)), true, true, true, true, true));
-                        SugarRecord.save(new Profile(mEmail, login.getFirstName() + " " + login.getLastName(), mPassword, "", Long.valueOf(login.getIdent().substring(1, 8)), login.getToken(), login.getExpire().getTime(), login.getIdent(), false));
+                        DatabaseHelper.database.profilesDao().insert(new Profile(mEmail, login.getFirstName() + " " + login.getLastName(), mPassword, "", Long.valueOf(login.getIdent().substring(1, 8)), login.getToken(), login.getExpire().getTime(), login.getIdent(), false));
 
                         Account.Companion.with(getActivity()).setUser(Long.valueOf(login.getIdent().substring(1, 8)));
                         fetchDataOfUser(getActivity());
@@ -175,8 +174,7 @@ public class FragmentLogin extends SlideFragment {
         APIClient.Companion.with(null).postLogin(new LoginRequest(password, email, ident))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(login_nested -> {
-                    SugarRecord.save(new Option(Long.valueOf(login_nested.getIdent().substring(1, 8)), true, true, true, true, true));
-                    SugarRecord.save(new Profile(email, login_nested.getFirstName() + " " + login_nested.getLastName(), password, "", Long.valueOf(login_nested.getIdent().substring(1, 8)), login_nested.getToken(), login_nested.getExpire().getTime(), login_nested.getIdent(), true));
+                    DatabaseHelper.database.profilesDao().insert(new Profile(email, login_nested.getFirstName() + " " + login_nested.getLastName(), password, "", Long.valueOf(login_nested.getIdent().substring(1, 8)), login_nested.getToken(), login_nested.getExpire().getTime(), login_nested.getIdent(), true));
                     Account.Companion.with(c).setUser(Long.valueOf(login_nested.getIdent().substring(1, 8)));
                     fetchDataOfUser(c);
 
