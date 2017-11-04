@@ -9,7 +9,9 @@ import android.view.View
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.AllLessonsAdapter
 import com.sharpdroid.registroelettronico.database.pojos.LessonMini
+import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Metodi
+import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_recycler_refresh_scrollbar.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
@@ -27,9 +29,6 @@ class AllLessonsWithDownloadActivity : AppCompatActivity(), SwipeRefreshLayout.O
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_black_24dp)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-
-        title = Metodi.capitalizeEach("")//SugarRecord.findById(Subject::class.java, code).description)
-
         mRVAdapter = AllLessonsAdapter()
 
         with(recycler) {
@@ -46,13 +45,13 @@ class AllLessonsWithDownloadActivity : AppCompatActivity(), SwipeRefreshLayout.O
                     R.color.greenmaterial,
                     R.color.orangematerial)
         }
-        //UpdateLessons();
-    }
 
-    override fun onResume() {
-        super.onResume()
+        DatabaseHelper.database.lessonsDao().loadLessons(code.toLong()).observeOn(AndroidSchedulers.mainThread()).subscribe {
+            if (it.isNotEmpty()) {
+                addLessons(it)
+            }
+        }
 
-        bindLessonsCache()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -65,12 +64,8 @@ class AllLessonsWithDownloadActivity : AppCompatActivity(), SwipeRefreshLayout.O
         mRVAdapter.addAll(lessons)
     }
 
-    private fun bindLessonsCache() {
-        addLessons(emptyList())//SugarRecord.findWithQuery(Lesson::class.java, "select * from LESSON where M_SUBJECT_ID=? GROUP BY M_ARGUMENT, M_AUTHOR_NAME, M_DATE ORDER BY M_DATE DESC", code.toString()))
-    }
-
     override fun onRefresh() {
-        swiperefresh.isRefreshing = false
+        Metodi.updateLessons(this)
     }
 
 }

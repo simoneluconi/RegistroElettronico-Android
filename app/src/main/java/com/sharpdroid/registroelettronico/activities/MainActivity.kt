@@ -85,17 +85,22 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
     override fun onResume() {
         super.onResume()
-        var profile = Profile.getProfile(this)
-
-        if (profile == null) {
-            profile = DatabaseHelper.database.profilesDao().randomProfile
-            onProfileChanged(null, profile?.asIProfile(), false)
-        }
+        val profile = Profile.getProfile(this)
 
         when {
             PreferenceManager.getDefaultSharedPreferences(this).getBoolean("first_run", true) -> // first time task
                 startActivityForResult(Intent(this, Intro::class.java), 1)
-            profile == null -> startActivityForResult(Intent(this, LoginActivity::class.java), 2)
+
+            profile == null -> {
+                val otherProfile = DatabaseHelper.database.profilesDao().randomProfile
+
+                //Found another user logged in
+                if (otherProfile != null) {
+                    onProfileChanged(null, otherProfile.asIProfile(), false)
+                } else {
+                    startActivityForResult(Intent(this, LoginActivity::class.java), 2)
+                }
+            }
             else -> {
                 headerResult?.setActiveProfile(profile.id, true)
                 ifHuaweiAlert()

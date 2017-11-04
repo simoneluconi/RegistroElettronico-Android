@@ -619,7 +619,7 @@ public class Metodi {
                         File fileDir = new File(dir, filename);
 
                         FileInfo info = new FileInfo(f.getObjectId(), fileDir.getAbsolutePath());
-                        if (DatabaseHelper.database.foldersDao().update(info) > 0 && writeResponseBodyToDisk(response.body(), fileDir))
+                        if (DatabaseHelper.database.foldersDao().insert(info) > 0 && writeResponseBodyToDisk(response.body(), fileDir))
                             handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_OK, new Long[]{f.getObjectId()}));
                         else
                             handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_KO, new Long[]{f.getObjectId()}));
