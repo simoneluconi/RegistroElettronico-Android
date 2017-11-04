@@ -10,13 +10,11 @@ import com.sharpdroid.registroelettronico.database.entities.Communication
 import com.sharpdroid.registroelettronico.fragments.FragmentCommunications
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.CopyOnWriteArrayList
 
 class CommunicationAdapter(fragmentCommunications: FragmentCommunications) : RecyclerView.Adapter<CommunicationHolder>(), Filterable {
-    private val CVDataList = CopyOnWriteArrayList<Communication>()
-    private val filtered = CopyOnWriteArrayList<Communication>()
+    private val CVDataList = mutableListOf<Communication>()
+    private val filtered = mutableListOf<Communication>()
     private val formatter = SimpleDateFormat("d MMM", Locale.ITALIAN)
-    private val mFilter = ItemFilter()
     private val listener: DownloadListener
 
     init {
@@ -37,15 +35,13 @@ class CommunicationAdapter(fragmentCommunications: FragmentCommunications) : Rec
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = CommunicationHolder(parent)
 
-
-    override fun onBindViewHolder(holder: CommunicationHolder, i: Int) {
-        holder.bindTo(filtered[i], formatter, listener)
+    override fun onBindViewHolder(holder: CommunicationHolder, position: Int) {
+        holder.bindTo(filtered[position], formatter, listener)
     }
 
     override fun getItemCount() = filtered.size
 
-
-    override fun getFilter() = mFilter
+    override fun getFilter() = ItemFilter()
 
     interface DownloadListener {
         fun onCommunicationClick(communication: Communication)
