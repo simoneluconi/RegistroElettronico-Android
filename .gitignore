@@ -11,3 +11,4 @@ keystore.properties
 app/fabric.properties
 google-services.json
 src/main/res/drawable-v21/
+app/schemas
