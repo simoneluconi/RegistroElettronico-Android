@@ -1,6 +1,7 @@
 package com.sharpdroid.registroelettronico.fragments
 
 import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
@@ -15,7 +16,7 @@ import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.NoteAdapter
 import com.sharpdroid.registroelettronico.database.entities.Note
-import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
+import com.sharpdroid.registroelettronico.database.viewModels.NoteViewModel
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.EventType
 import com.sharpdroid.registroelettronico.utils.Metodi.dp
@@ -32,10 +33,7 @@ class FragmentNote : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notificat
             EventType.UPDATE_NOTES_START -> {
                 if (!swiperefresh.isRefreshing) swiperefresh.isRefreshing = true
             }
-            EventType.UPDATE_NOTES_OK -> {
-                load()
-                if (swiperefresh.isRefreshing) swiperefresh.isRefreshing = false
-            }
+            EventType.UPDATE_NOTES_OK,
             EventType.UPDATE_NOTES_KO -> {
                 if (swiperefresh.isRefreshing) swiperefresh.isRefreshing = false
             }
@@ -78,8 +76,16 @@ class FragmentNote : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notificat
             adapter = mRVAdapter
         }
 
-        load()
-        download()
+
+        if (savedInstanceState == null) {
+            download()
+        }
+
+        ViewModelProviders.of(this)[NoteViewModel::class.java].getNotes(Account.with(context).user).observe(this, Observer {
+            addNotes(it ?: emptyList())
+        })
+
+
         if (!BuildConfig.DEBUG)
             Answers.getInstance().logContentView(ContentViewEvent().putContentId("Note"))
     }
@@ -91,16 +97,12 @@ class FragmentNote : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notificat
         emptyHolder.visibility = if (notes.isEmpty()) View.VISIBLE else View.GONE
     }
 
-    private fun load() {
-        DatabaseHelper.database.notesDao().getNotes(Account.with(context).user).observe(this, Observer { addNotes(it ?: emptyList()) })
-    }
-
     override fun onRefresh() {
         download()
     }
 
     private fun download() {
-        updateNote(activity)
+        updateNote(context)
     }
 
     override fun onDestroyView() {
