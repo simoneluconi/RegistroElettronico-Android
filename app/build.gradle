@@ -174,7 +174,6 @@ dependencies {
     //For Lifecycles Java8 Lanaguage support, add:
     implementation "android.arch.lifecycle:common-java8:1.0.0-rc1"
 
-
     implementation 'com.google.firebase:firebase-messaging:11.4.2'
     implementation 'com.firebase:firebase-jobdispatcher:0.8.4'
 
