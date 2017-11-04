@@ -1,7 +1,6 @@
 package com.sharpdroid.registroelettronico.adapters
 
 import android.support.v7.widget.RecyclerView
-import android.text.TextUtils
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
@@ -49,10 +48,10 @@ class CommunicationAdapter(fragmentCommunications: FragmentCommunications) : Rec
 
     inner class ItemFilter : Filter() {
         override fun performFiltering(constraint: CharSequence): Filter.FilterResults {
-            val list = ArrayList<Communication>()
+            val list = arrayListOf<Communication>()
             val filterResults = Filter.FilterResults()
 
-            if (!TextUtils.isEmpty(constraint)) {
+            if (constraint.isNotBlank()) {
                 CVDataList.filterTo(list) {
                     it.title.toLowerCase().contains(constraint.toString().toLowerCase())
                 }
