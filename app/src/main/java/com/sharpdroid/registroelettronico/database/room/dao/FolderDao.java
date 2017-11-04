@@ -40,7 +40,7 @@ public interface FolderDao {
     @Insert
     void insertFiles(List<File> files);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(FileInfo... fileInfo);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)

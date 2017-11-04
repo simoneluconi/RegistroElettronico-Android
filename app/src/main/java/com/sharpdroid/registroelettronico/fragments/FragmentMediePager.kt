@@ -1,5 +1,7 @@
 package com.sharpdroid.registroelettronico.fragments
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.design.widget.AppBarLayout
@@ -16,7 +18,7 @@ import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.MainActivity
 import com.sharpdroid.registroelettronico.database.entities.Grade
-import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
+import com.sharpdroid.registroelettronico.database.viewModels.GradesViewModel
 import com.sharpdroid.registroelettronico.fragments.bottomSheet.OrderMedieBS
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.EventType
@@ -34,13 +36,13 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
             EventType.UPDATE_MARKS_OK,
             EventType.UPDATE_MARKS_KO,
             EventType.UPDATE_SUBJECTS_OK -> {
-                load()
                 if (swiperefresh.isRefreshing) swiperefresh.isRefreshing = false
             }
         }
     }
 
     private lateinit var pagerAdapter: PagerAdapter
+    private lateinit var viewModel: GradesViewModel
 
     private var pagerSelected: Boolean = false
     private val grades = mutableListOf<Grade>()
@@ -82,16 +84,38 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
             pagerSelected = true
         }
 
-        //load()
-        //download()
+        val observer = Observer<List<Grade>> {
+            val order = viewModel.getOrder().value ?: PreferenceManager.getDefaultSharedPreferences(context).getString("order", "")
+
+            grades.clear()
+            grades.addAll(it ?: emptyList())
+
+            var fragment: FragmentMedie
+            for (i in 0..pagerAdapter.count) {
+                fragment = pagerAdapter.instantiateItem(view_pager, i) as FragmentMedie
+                when (i) {
+                    0 -> fragment.addSubjects(Grade.getAverages(grades.filter { it.mPeriod == 1 }, order), 1)
+                    1 -> fragment.addSubjects(Grade.getAverages(grades.filter { it.mPeriod != 1 }, order), 3)
+                    2 -> fragment.addSubjects(Grade.getAverages(grades, order), -1)
+                }
+            }
+        }
+
+        viewModel = ViewModelProviders.of(this)[GradesViewModel::class.java]
+
+        //Observe remote data changes
+        viewModel.getGrades(Account.with(context).user).observe(this, observer)
+
+        //Observe order change
+        viewModel.getOrder().observe(this, Observer {
+            observer.onChanged(ArrayList(grades))
+        })
+
+        if (savedInstanceState == null) {
+            download()
+        }
         if (!BuildConfig.DEBUG)
             Answers.getInstance().logContentView(ContentViewEvent().putContentId("Medie"))
-    }
-
-    override fun onResume() {
-        super.onResume()
-        load()
-        download()
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -119,12 +143,17 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
     Listener for Bottom Sheet
      */
     override fun onItemClicked(position: Int) {
-        when (position) {
-            0 -> PreferenceManager.getDefaultSharedPreferences(context).edit().putString("order", "name").apply()
-            1 -> PreferenceManager.getDefaultSharedPreferences(context).edit().putString("order", "avg").apply()
-            2 -> PreferenceManager.getDefaultSharedPreferences(context).edit().putString("order", "count").apply()
+        val pref = PreferenceManager.getDefaultSharedPreferences(context)
+
+        val order = when (position) {
+            0 -> "name"
+            1 -> "avg"
+            2 -> "count"
+            else -> ""
         }
-        load()
+
+        pref.edit().putString("order", order).apply()
+        viewModel.setOrder(order)
     }
 
     private fun download() {
@@ -151,29 +180,6 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
                 "Media totale: " + String.format(Locale.getDefault(), "%.2f", average)
         } else*/
         return ""
-    }
-
-    private fun load() {
-        val order = PreferenceManager.getDefaultSharedPreferences(context).getString("order", "")
-
-        Grade.clearSubjectCache()
-        Grade.setupSubjectCache(Account.with(context).user)
-
-        DatabaseHelper.database.gradesDao().getGrades(Account.with(context).user).observe(this, android.arch.lifecycle.Observer {
-
-            grades.clear()
-            grades.addAll(it ?: emptyList())
-
-            var fragment: FragmentMedie
-            for (i in 0..pagerAdapter.count) {
-                fragment = pagerAdapter.instantiateItem(view_pager, i) as FragmentMedie
-                when (i) {
-                    0 -> fragment.addSubjects(Grade.getAverages(grades.filter { it.mPeriod == 1 }, order), 1)
-                    1 -> fragment.addSubjects(Grade.getAverages(grades.filter { it.mPeriod != 1 }, order), 3)
-                    2 -> fragment.addSubjects(Grade.getAverages(grades, order), -1)
-                }
-            }
-        })
     }
 
     override fun onStop() {
