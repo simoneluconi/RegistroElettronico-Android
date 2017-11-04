@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,7 +19,6 @@ import com.sharpdroid.registroelettronico.database.entities.Average;
 import com.sharpdroid.registroelettronico.views.CircleProgressBar;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -42,10 +42,33 @@ public class MedieAdapter extends RecyclerView.Adapter<MedieAdapter.MedieHolder>
         this.mContext = context;
     }
 
-    public void addAll(Collection<Average> list, int p) {
+    public void addAll(List<Average> list, int p) {
+
+        DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return CVDataList.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return list.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                return CVDataList.get(oldItemPosition).name.equals(list.get(newItemPosition).name);
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                return CVDataList.get(oldItemPosition).name.equals(list.get(newItemPosition).name) && CVDataList.get(oldItemPosition).avg == list.get(newItemPosition).avg;
+            }
+        }, true).dispatchUpdatesTo(this);
+        CVDataList.clear();
         CVDataList.addAll(list);
         this.period = p;
-        notifyDataSetChanged();
+        //notifyDataSetChanged();
     }
 
     public void clear() {

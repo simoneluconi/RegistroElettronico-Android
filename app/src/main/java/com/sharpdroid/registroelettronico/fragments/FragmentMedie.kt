@@ -49,7 +49,6 @@ class FragmentMedie : Fragment() {
     }
 
     fun addSubjects(markSubjects: List<Average>, p: Int) {
-        mRVAdapter.clear()
         mRVAdapter.addAll(markSubjects, p)
 
         emptyHolder?.visibility = if (markSubjects.isEmpty()) View.VISIBLE else View.GONE

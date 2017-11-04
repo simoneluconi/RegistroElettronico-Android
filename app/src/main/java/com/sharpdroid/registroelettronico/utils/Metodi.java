@@ -333,7 +333,7 @@ public class Metodi {
                 }
             }
 
-            DatabaseHelper.database.subjectsDao().insert((Teacher[]) allTeachers.toArray());
+            DatabaseHelper.database.subjectsDao().insert(allTeachers);
             DatabaseHelper.database.subjectsDao().insert(subjectAPI.getSubjects());
 
             handler.post(() -> {
@@ -374,6 +374,7 @@ public class Metodi {
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_FOLDERS_START, null));
         APIClient.Companion.with(p).getDidactics()
+                .observeOn(Schedulers.computation())
                 .subscribe(didacticAPI -> {
                     List<com.sharpdroid.registroelettronico.database.entities.File> files = new LinkedList<>();
                     List<Folder> folders = new LinkedList<>();
@@ -401,7 +402,7 @@ public class Metodi {
 
                     DatabaseHelper.database.foldersDao().deleteFolders(p.getId());
                     DatabaseHelper.database.foldersDao().deleteFiles(p.getId());
-                    DatabaseHelper.database.subjectsDao().insert((Teacher[]) didacticAPI.getDidactics().toArray());
+                    DatabaseHelper.database.subjectsDao().insert(didacticAPI.getDidactics());
                     DatabaseHelper.database.foldersDao().insert(folders);
                     DatabaseHelper.database.foldersDao().insertFiles(files); //update otherwise will clean any additional info (path...)
 
@@ -409,9 +410,13 @@ public class Metodi {
                     //Download informations if not file
                     for (com.sharpdroid.registroelettronico.database.entities.File f : DatabaseHelper.database.foldersDao().getNoFiles(p.getId())) {
                         if (f.getType().equals("link"))
-                            APIClient.Companion.with(p).getAttachmentUrl(f.getId()).subscribe(downloadURL -> DatabaseHelper.database.foldersDao().insert(new FileInfo(f.getObjectId(), downloadURL.getItem().getLink())), Throwable::printStackTrace);
+                            APIClient.Companion.with(p).getAttachmentUrl(f.getId())
+                                    .observeOn(Schedulers.computation())
+                                    .subscribe(downloadURL -> DatabaseHelper.database.foldersDao().insert(new FileInfo(f.getObjectId(), downloadURL.getItem().getLink())), Throwable::printStackTrace);
                         else
-                            APIClient.Companion.with(p).getAttachmentTxt(f.getId()).subscribe(downloadTXT -> DatabaseHelper.database.foldersDao().insert(new FileInfo(f.getObjectId(), downloadTXT.getItem().getText())));
+                            APIClient.Companion.with(p).getAttachmentTxt(f.getId())
+                                    .observeOn(Schedulers.computation())
+                                    .subscribe(downloadTXT -> DatabaseHelper.database.foldersDao().insert(new FileInfo(f.getObjectId(), downloadTXT.getItem().getText())));
                     }
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_FOLDERS_OK, null));
                 }, throwable -> {
@@ -467,7 +472,7 @@ public class Metodi {
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_BACHECA_START, null));
         APIClient.Companion.with(p).getBacheca()
-                .observeOn(Schedulers.io())
+                .observeOn(Schedulers.computation())
                 .subscribe(communicationAPI -> {
                     List<Communication> list = communicationAPI.getCommunications(p);
                     List<Communication> toRemove = new ArrayList<>();
@@ -481,7 +486,10 @@ public class Metodi {
                         @Nullable CommunicationInfo info = DatabaseHelper.database.communicationsDao().getInfo(communication.getMyId());
                         if (info == null || !communication.isRead() || info.getContent().isEmpty()) {
                             System.out.println("REQUEST - " + communication.getTitle());
-                            APIClient.Companion.with(p).readBacheca(communication.getEvtCode(), communication.getId()).observeOn(Schedulers.io()).subscribe(readResponse -> {
+                            APIClient.Companion.with(p)
+                                    .readBacheca(communication.getEvtCode(), communication.getId())
+                                    .observeOn(Schedulers.computation())
+                                    .subscribe(readResponse -> {
                                 communication.setRead(true);
                                 DatabaseHelper.database.communicationsDao().insert(communication);
 

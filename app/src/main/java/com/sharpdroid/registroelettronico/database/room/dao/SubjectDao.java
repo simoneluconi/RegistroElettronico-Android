@@ -12,6 +12,7 @@ import com.sharpdroid.registroelettronico.database.entities.SubjectInfo;
 import com.sharpdroid.registroelettronico.database.entities.SubjectTeacher;
 import com.sharpdroid.registroelettronico.database.entities.Teacher;
 
+import java.util.Collection;
 import java.util.List;
 
 @Dao
@@ -38,8 +39,8 @@ public interface SubjectDao {
     @Insert
     void insert(SubjectTeacher... info);
 
-    @Insert
-    void insert(Teacher... info);
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    void insert(Collection<Teacher> teachers);
 
     @Update
     void updateSubjectInfo(SubjectInfo subject);
