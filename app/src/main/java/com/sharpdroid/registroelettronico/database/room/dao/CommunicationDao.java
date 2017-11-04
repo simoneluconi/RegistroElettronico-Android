@@ -22,10 +22,10 @@ public interface CommunicationDao {
     @Query("SELECT * FROM COMMUNICATION WHERE PROFILE = :profile ORDER BY DATE DESC")
     LiveData<List<Communication>> loadCommunications(long profile);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(List<Communication> communications);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(CommunicationInfo communications);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

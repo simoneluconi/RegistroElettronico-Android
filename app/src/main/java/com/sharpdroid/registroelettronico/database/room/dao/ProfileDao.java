@@ -22,7 +22,7 @@ public interface ProfileDao {
     @Query("SELECT * FROM PROFILE WHERE ID = :profile LIMIT 1")
     Profile getProfile(long profile);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(@NotNull Profile profile);
 
     @Query("SELECT * FROM PROFILE LIMIT 1")
