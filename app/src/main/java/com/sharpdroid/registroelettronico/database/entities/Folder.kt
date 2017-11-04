@@ -31,7 +31,7 @@ import java.util.*
  */
 @Entity(tableName = "FOLDER")
 class Folder(
-        @ColumnInfo(name = "TITLE") @Expose @SerializedName("folderId") var folderId: Int = -1,
+        @ColumnInfo(name = "FOLDER_ID") @Expose @SerializedName("folderId") var folderId: Int = -1,
         @ColumnInfo(name = "NAME") @Expose @SerializedName("folderName") var name: String = "",
         @ColumnInfo(name = "LAST_UPDATE") @Expose @SerializedName("lastShareDT") var lastUpdate: Date,
         @Ignore @Expose @SerializedName("contents") var files: List<File>,

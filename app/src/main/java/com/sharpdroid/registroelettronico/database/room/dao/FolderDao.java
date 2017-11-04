@@ -10,6 +10,7 @@ import android.arch.persistence.room.Update;
 import com.sharpdroid.registroelettronico.database.entities.File;
 import com.sharpdroid.registroelettronico.database.entities.FileInfo;
 import com.sharpdroid.registroelettronico.database.entities.Folder;
+import com.sharpdroid.registroelettronico.database.pojos.TeacherDidacticPOJO;
 
 import java.util.List;
 
@@ -36,6 +37,13 @@ public interface FolderDao {
 
     @Insert
     void insert(List<Folder> folders);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    long insert(Folder... folders);
+
+    @Query("SELECT * FROM TEACHER WHERE ID IN (SELECT FOLDER.TEACHER FROM FOLDER WHERE PROFILE=:profile GROUP BY FOLDER.TEACHER)")
+    LiveData<List<TeacherDidacticPOJO>> getDidattica(long profile);
+
 
     @Insert
     void insertFiles(List<File> files);
