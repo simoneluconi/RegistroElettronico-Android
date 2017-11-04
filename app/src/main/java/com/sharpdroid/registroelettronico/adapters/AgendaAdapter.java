@@ -52,7 +52,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         Object entry = CVDataList.get(position);
         if (entry instanceof String) {
-            ((HeaderHolder) holder).content.setText(((String) entry));
+            ((HeaderHolder) holder).getContent().setText(((String) entry));
         } else if (entry instanceof SuperAgenda) {
             EventHolder eventHolder = (EventHolder) holder;
             SuperAgenda event = ((SuperAgenda) entry);
@@ -87,7 +87,9 @@ public class AgendaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             Subject subject1;
             if (event.getTeacher() != 0 && (teacher = Teacher.Companion.teacher(event.getTeacher())) != null)
                 subject = capitalizeEach(teacher.getTeacherName(), true);
-            else if (event.getSubject() != 0 && (subject1 = Subject.Companion.subject(event.getSubject())) != null)
+                //TODO query subject
+            else //noinspection ConstantConditions
+                if (event.getSubject() != 0 && (subject1 = null/*Subject.Companion.subject(event.getSubject())*/) != null)
                 subject = capitalizeEach(subject1.getDescription());
 
             eventHolder.subject.setText(subject);

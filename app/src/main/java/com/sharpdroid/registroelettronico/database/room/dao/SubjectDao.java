@@ -5,18 +5,24 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Transaction;
 import android.arch.persistence.room.Update;
 
 import com.sharpdroid.registroelettronico.database.entities.Subject;
 import com.sharpdroid.registroelettronico.database.entities.SubjectInfo;
 import com.sharpdroid.registroelettronico.database.entities.SubjectTeacher;
 import com.sharpdroid.registroelettronico.database.entities.Teacher;
+import com.sharpdroid.registroelettronico.database.pojos.SubjectWithLessons;
 
 import java.util.Collection;
 import java.util.List;
 
 @Dao
 public interface SubjectDao {
+
+    @Transaction
+    @Query("select * from SUBJECT where ID in (SELECT SUBJECT_TEACHER.SUBJECT FROM SUBJECT_TEACHER WHERE SUBJECT_TEACHER.PROFILE=:profile)")
+    LiveData<List<SubjectWithLessons>> getSubjectWithLessons(long profile);
 
     @Query("SELECT * FROM SUBJECT WHERE ID = :id LIMIT 1")
     Subject getSubject(long id);
@@ -50,8 +56,4 @@ public interface SubjectDao {
 
     @Query("DELETE FROM SUBJECT_TEACHER WHERE PROFILE=:profile AND SUBJECT=:subject AND TEACHER=:teacher")
     void deleteSingle(long profile, long subject, long teacher);
-
-    @Query("select * from TEACHER where TEACHER.ID IN (select TEACHER FROM FOLDER WHERE FOLDER.PROFILE=:profile)")
-    List<Teacher> getTeachers(long profile);
-
 }

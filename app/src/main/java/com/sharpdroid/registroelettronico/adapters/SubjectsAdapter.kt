@@ -1,28 +1,22 @@
 package com.sharpdroid.registroelettronico.adapters
 
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.widget.TextView
 import com.sharpdroid.registroelettronico.R
-import com.sharpdroid.registroelettronico.database.entities.Subject
-import com.sharpdroid.registroelettronico.database.entities.SubjectInfo
+import com.sharpdroid.registroelettronico.database.pojos.SubjectWithLessons
 import com.sharpdroid.registroelettronico.fragments.FragmentSubjects
+import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
+import com.sharpdroid.registroelettronico.utils.or
 import kotlinx.android.synthetic.main.adapter_subject.view.*
-import java.util.*
 
-class SubjectsAdapter(fragmentAgenda: FragmentSubjects?) : RecyclerView.Adapter<SubjectsAdapter.SubjectHolder>() {
-    private var CVDataList: MutableList<SubjectInfo> = mutableListOf()
-    private var subjectListener: SubjectListener? = null
-
-    init {
-        CVDataList = LinkedList()
-        if (fragmentAgenda != null) {
-            this.subjectListener = fragmentAgenda
-        }
-    }
+class SubjectsAdapter(fragmentAgenda: FragmentSubjects) : RecyclerView.Adapter<SubjectsAdapter.SubjectHolder>() {
+    private var CVDataList: MutableList<SubjectWithLessons> = mutableListOf()
+    private var subjectListener: SubjectListener = fragmentAgenda
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubjectHolder {
         return SubjectHolder(LayoutInflater.from(parent.context).inflate(R.layout.adapter_subject, parent, false))
@@ -30,25 +24,20 @@ class SubjectsAdapter(fragmentAgenda: FragmentSubjects?) : RecyclerView.Adapter<
 
     override fun onBindViewHolder(holder: SubjectHolder, position: Int) {
         val item = CVDataList[position]
-        //TODO query subject and get description
-        /*
-        val teachers = item.subject.teachers.map { it.teacherName }
-        holder.subject.text = capitalizeEach(item.description.or(item.subject.description))
+
+        val temp = item.lessons.map { it.mAuthorName }.groupBy { it }
+        val teachers = if (temp.keys.size >= 2) temp.filter { it.value.size >= 2 }.keys else temp.keys
+
+        holder.subject.text = capitalizeEach(item.subjectInfo.getOrNull(0)?.description.or(item.subject.description))
 
         holder.prof.visibility = View.VISIBLE
         holder.prof.text = capitalizeEach(TextUtils.join(", ", teachers), true)
-*/
+
         holder.layout.setOnClickListener { view ->
-            if (subjectListener != null) {
-                //TODO query subject
-                view.layout.postDelayed({ subjectListener!!.onSubjectClick(Subject()/*item.subject*/) }, ViewConfiguration.getTapTimeout().toLong())
-            }
+            view.layout.postDelayed({ subjectListener.onSubjectClick(item) }, ViewConfiguration.getTapTimeout().toLong())
         }
         holder.layout.setOnLongClickListener { view ->
-            if (subjectListener != null) {
-                //TODO query subject
-                view.layout.postDelayed({ subjectListener!!.onSubjectLongClick(Subject()/*item.subject*/) }, 0)
-            }
+            view.layout.postDelayed({ subjectListener.onSubjectLongClick(item) }, 0)
             return@setOnLongClickListener true
         }
     }
@@ -57,14 +46,8 @@ class SubjectsAdapter(fragmentAgenda: FragmentSubjects?) : RecyclerView.Adapter<
         return CVDataList.size
     }
 
-    fun addAll(subjects: List<SubjectInfo>) {
+    fun addAll(subjects: List<SubjectWithLessons>) {
         CVDataList.addAll(subjects)
-        //TODO query subject and get description
-        /*
-        Collections.sort(CVDataList) { subject, t1 -> (subject.description.or(subject.subject.description)).compareTo(t1.description.or(t1.subject.description), true) }
-        for (s in subjects) {
-            s.subject.teachers = Teacher.professorsOfSubject(s.subject.id)
-        }*/
         notifyDataSetChanged()
     }
 
@@ -74,8 +57,8 @@ class SubjectsAdapter(fragmentAgenda: FragmentSubjects?) : RecyclerView.Adapter<
     }
 
     interface SubjectListener {
-        fun onSubjectClick(subject: Subject)
-        fun onSubjectLongClick(subject: Subject)
+        fun onSubjectClick(subject: SubjectWithLessons)
+        fun onSubjectLongClick(subject: SubjectWithLessons)
     }
 
     inner class SubjectHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

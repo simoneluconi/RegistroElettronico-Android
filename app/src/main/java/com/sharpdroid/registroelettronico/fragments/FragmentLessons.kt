@@ -1,6 +1,7 @@
 package com.sharpdroid.registroelettronico.fragments
 
 import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
@@ -14,14 +15,11 @@ import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.AllLessonsAdapter
-import com.sharpdroid.registroelettronico.database.entities.Lesson
-import com.sharpdroid.registroelettronico.database.entities.SubjectInfo
-import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
-import com.sharpdroid.registroelettronico.utils.Account
+import com.sharpdroid.registroelettronico.database.pojos.LessonMini
+import com.sharpdroid.registroelettronico.database.viewModels.LessonsViewModel
 import com.sharpdroid.registroelettronico.utils.EventType
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.utils.Metodi.updateLessons
-import com.sharpdroid.registroelettronico.utils.or
 import com.sharpdroid.registroelettronico.views.EmptyFragment
 import kotlinx.android.synthetic.main.coordinator_swipe_recycler.view.*
 import kotlinx.android.synthetic.main.fragment_recycler_refresh_scrollbar.*
@@ -33,11 +31,7 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
             EventType.UPDATE_LESSONS_START -> {
                 swiperefresh.isRefreshing = true
             }
-            EventType.UPDATE_LESSONS_OK -> {
-                Lesson.clearCache()
-                Lesson.setupCache(Account.with(context).user)
-                load()
-            }
+            EventType.UPDATE_LESSONS_OK,
             EventType.UPDATE_LESSONS_KO -> {
                 swiperefresh.isRefreshing = false
             }
@@ -46,8 +40,6 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
 
     private lateinit var mRVAdapter: AllLessonsAdapter
     private lateinit var emptyHolder: EmptyFragment
-    var subject: SubjectInfo? = null
-    var code: Int? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -61,12 +53,10 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Lesson.setupCache(Account.with(context).user)
 
         NotificationManager.instance.addObserver(this, EventType.UPDATE_LESSONS_KO, EventType.UPDATE_LESSONS_OK, EventType.UPDATE_LESSONS_START)
-        code = arguments?.getInt("code") ?: savedInstanceState?.getInt("code") ?: -1
 
-        mRVAdapter = AllLessonsAdapter(context)
+        mRVAdapter = AllLessonsAdapter()
         recycler.layoutManager = LinearLayoutManager(context)
         recycler.adapter = mRVAdapter
 
@@ -76,53 +66,31 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
                 R.color.redmaterial,
                 R.color.greenmaterial,
                 R.color.orangematerial)
-        load()
+
+
+        ViewModelProviders.of(activity)[LessonsViewModel::class.java].selected.observe(this, Observer {
+            activity.title = capitalizeEach(it?.subjectInfo?.getOrNull(0)?.description ?: it?.subject?.description ?: "")
+            addLessons(it?.lessons.orEmpty())
+        })
 
         //onRefresh()
         if (!BuildConfig.DEBUG)
             Answers.getInstance().logContentView(ContentViewEvent().putContentId("Lezioni").putContentType("Lezioni"))
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt("code", subject?.subject?.toInt()!!)
-    }
-
     override fun onRefresh() {
         updateLessons(context)
     }
 
-    private fun addLessons(lessons: List<Lesson>) {
+    private fun addLessons(lessons: List<LessonMini>) {
         mRVAdapter.clear()
         mRVAdapter.addAll(lessons)
 
         emptyHolder.visibility = if (lessons.isEmpty()) View.VISIBLE else View.GONE
     }
 
-    private fun load() {
-        if (subject == null) {
-            val info = DatabaseHelper.database.subjectsDao().getSubject(code?.toLong() ?: 0)
-            subject = info?.getInfo(context)
-            activity.title = capitalizeEach(info.description.or(subject?.description ?: ""))
-        }
-        DatabaseHelper.database.lessonsDao().loadLessonsGrouped(code?.toLong() ?: 0)
-                .observe(this, Observer {
-                    addLessons(it ?: emptyList())
-                })
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         NotificationManager.instance.removeObserver(this, EventType.UPDATE_LESSONS_KO, EventType.UPDATE_LESSONS_OK, EventType.UPDATE_LESSONS_START)
-    }
-
-    companion object {
-        fun newInstance(code: Int): FragmentLessons {
-            val fragment = FragmentLessons()
-            val b = Bundle()
-            b.putInt("code", code)
-            fragment.arguments = b
-            return fragment
-        }
     }
 }

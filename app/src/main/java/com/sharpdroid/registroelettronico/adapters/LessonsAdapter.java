@@ -34,8 +34,8 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonHolder> {
     @Override
     public void onBindViewHolder(LessonHolder holder, int position) {
         Lesson lesson = lessons.get(position);
-        holder.content.setText(lesson.getMArgument().trim());
-        holder.date.setText(formatter.format(lesson.getMDate()));
+        holder.getContent().setText(lesson.getMArgument().trim());
+        holder.getDate().setText(formatter.format(lesson.getMDate()));
     }
 
     public void addAll(Collection<Lesson> list) {

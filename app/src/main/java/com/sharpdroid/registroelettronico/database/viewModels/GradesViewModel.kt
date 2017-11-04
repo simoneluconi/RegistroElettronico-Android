@@ -25,6 +25,6 @@ class GradesViewModel : ViewModel() {
     }
 
     fun setOrder(value: String) {
-        order?.value = value
+        order?.postValue(value)
     }
 }

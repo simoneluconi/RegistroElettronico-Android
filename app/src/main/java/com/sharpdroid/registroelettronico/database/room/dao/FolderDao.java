@@ -5,6 +5,7 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Transaction;
 import android.arch.persistence.room.Update;
 
 import com.sharpdroid.registroelettronico.database.entities.File;
@@ -41,6 +42,7 @@ public interface FolderDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(Folder folders);
 
+    @Transaction
     @Query("SELECT * FROM TEACHER WHERE ID IN (SELECT FOLDER.TEACHER FROM FOLDER WHERE PROFILE=:profile GROUP BY FOLDER.TEACHER)")
     LiveData<List<TeacherDidacticPOJO>> getDidattica(long profile);
 

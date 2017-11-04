@@ -8,7 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.AllLessonsAdapter
-import com.sharpdroid.registroelettronico.database.entities.Lesson
+import com.sharpdroid.registroelettronico.database.pojos.LessonMini
 import com.sharpdroid.registroelettronico.utils.Metodi
 import kotlinx.android.synthetic.main.activity_recycler_refresh_scrollbar.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -20,17 +20,17 @@ class AllLessonsWithDownloadActivity : AppCompatActivity(), SwipeRefreshLayout.O
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recycler_refresh_scrollbar)
 
-        code = intent.getIntExtra("code", -1)
+        val code = intent.getIntExtra("code", -1)
+
         setSupportActionBar(toolbar)
-        if (supportActionBar != null) {
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_close_black_24dp)
-            supportActionBar!!.setDisplayShowHomeEnabled(true)
-        }
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_black_24dp)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+
 
         title = Metodi.capitalizeEach("")//SugarRecord.findById(Subject::class.java, code).description)
 
-        mRVAdapter = AllLessonsAdapter(this)
+        mRVAdapter = AllLessonsAdapter()
 
         with(recycler) {
             layoutManager = LinearLayoutManager(this@AllLessonsWithDownloadActivity)
@@ -60,11 +60,9 @@ class AllLessonsWithDownloadActivity : AppCompatActivity(), SwipeRefreshLayout.O
         return super.onOptionsItemSelected(item)
     }
 
-    private fun addLessons(lessons: List<Lesson>) {
-        if (!lessons.isEmpty()) {
-            mRVAdapter.clear()
-            mRVAdapter.addAll(lessons)
-        }
+    private fun addLessons(lessons: List<LessonMini>) {
+        mRVAdapter.clear()
+        mRVAdapter.addAll(lessons)
     }
 
     private fun bindLessonsCache() {
@@ -75,7 +73,4 @@ class AllLessonsWithDownloadActivity : AppCompatActivity(), SwipeRefreshLayout.O
         swiperefresh.isRefreshing = false
     }
 
-    companion object {
-        internal var code: Int = 0
-    }
 }

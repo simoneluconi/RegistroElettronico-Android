@@ -16,7 +16,7 @@ class DidatticaViewModel : ViewModel() {
         if (didattica == null || this.profile.value != profile) {
             didattica = DatabaseHelper.database.foldersDao().getDidattica(profile)
         }
-        this.profile.value = profile
+        this.profile.postValue(profile)
         return didattica ?: throw NullPointerException("Didattica's livedata not yet initialized")
     }
 }
