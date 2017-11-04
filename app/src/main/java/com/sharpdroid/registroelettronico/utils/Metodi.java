@@ -377,24 +377,23 @@ public class Metodi {
                 .observeOn(Schedulers.computation())
                 .subscribe(didacticAPI -> {
                     List<com.sharpdroid.registroelettronico.database.entities.File> files = new LinkedList<>();
-                    List<Folder> folders = new LinkedList<>();
 
                     //collect folders and files
                     for (Teacher teacher : didacticAPI.getDidactics()) {
                         if (teacher != null) {
                             for (Folder folder : teacher.getFolders()) {
                                 folder.setTeacher(teacher.getId());
+                                folder.setProfile(p.getId());
+                                if (folder.getName().equals("Uncategorized"))
+                                    folder.setName("Altri materiali");
+                                folder.setId(DatabaseHelper.database.foldersDao().insert(folder));
+
                                 for (com.sharpdroid.registroelettronico.database.entities.File file : folder.getFiles()) {
-                                    file.setFolder(folder.getFolderId());
+                                    file.setFolder(folder.getId());
                                     file.setTeacher(teacher.getId());
                                     file.setProfile(p.getId());
                                     files.add(file);
                                 }
-                                folder.setFiles(Collections.emptyList());
-                                folder.setProfile(p.getId());
-                                if (folder.getName().equals("Uncategorized"))
-                                    folder.setName("Altri materiali");
-                                folders.add(folder);
                             }
                             teacher.setFolders(Collections.emptyList());
                         }
@@ -403,7 +402,6 @@ public class Metodi {
                     DatabaseHelper.database.foldersDao().deleteFolders(p.getId());
                     DatabaseHelper.database.foldersDao().deleteFiles(p.getId());
                     DatabaseHelper.database.subjectsDao().insert(didacticAPI.getDidactics());
-                    DatabaseHelper.database.foldersDao().insert(folders);
                     DatabaseHelper.database.foldersDao().insertFiles(files); //update otherwise will clean any additional info (path...)
 
 
