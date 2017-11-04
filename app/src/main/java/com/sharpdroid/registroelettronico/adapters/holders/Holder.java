@@ -1,4 +1,4 @@
-package com.sharpdroid.registroelettronico.adapters.Holders;
+package com.sharpdroid.registroelettronico.adapters.holders;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

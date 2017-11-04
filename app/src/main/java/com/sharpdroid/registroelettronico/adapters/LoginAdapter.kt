@@ -9,7 +9,7 @@ import android.os.Build
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
-import com.sharpdroid.registroelettronico.adapters.Holders.Holder
+import com.sharpdroid.registroelettronico.adapters.holders.Holder
 import com.sharpdroid.registroelettronico.database.entities.Choice
 import com.sharpdroid.registroelettronico.views.cells.ValueDetailsCheckboxCell
 import java.util.*

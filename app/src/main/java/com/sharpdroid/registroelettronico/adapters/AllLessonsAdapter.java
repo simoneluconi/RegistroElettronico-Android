@@ -7,8 +7,8 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.sharpdroid.registroelettronico.R;
-import com.sharpdroid.registroelettronico.adapters.Holders.HeaderHolder;
-import com.sharpdroid.registroelettronico.adapters.Holders.LessonHolder;
+import com.sharpdroid.registroelettronico.adapters.holders.HeaderHolder;
+import com.sharpdroid.registroelettronico.adapters.holders.LessonHolder;
 import com.sharpdroid.registroelettronico.database.entities.Lesson;
 
 import java.text.SimpleDateFormat;
