@@ -25,6 +25,7 @@ import com.sharpdroid.registroelettronico.database.viewModels.DidatticaViewModel
 import com.sharpdroid.registroelettronico.utils.EventType
 import com.sharpdroid.registroelettronico.utils.Metodi.*
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
+import java.io.File as JavaFile
 
 class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, FileAdapter.DownloadListener {
     lateinit var layout: CoordinatorLayout
@@ -35,7 +36,7 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
                 Snackbar.make(layout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE).show()
             }
             EventType.DOWNLOAD_FILE_OK -> {
-                val file: java.io.File = java.io.File(DatabaseHelper.database.foldersDao().getInfo(args[0] as Long).path)
+                val file = JavaFile(DatabaseHelper.database.foldersDao().getInfo(args[0] as Long).path)
                 Snackbar.make(layout, String.format(getString(R.string.file_downloaded), file.name), Snackbar.LENGTH_SHORT)
                         .setAction(R.string.open) { openFile(context, file, Snackbar.make(layout, context.resources.getString(R.string.missing_app, file.name), Snackbar.LENGTH_SHORT)) }
                         .show()
@@ -45,9 +46,9 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
             }
         }
     }
+
     private lateinit var mRVAdapter: FileAdapter
     private lateinit var viewModel: DidatticaViewModel
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -94,10 +95,10 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
         val info = DatabaseHelper.database.foldersDao().getInfo(file.objectId) ?: FileInfo(0, "")
         when (file.type) {
             "file" -> {
-                if (info.path.isEmpty() || !java.io.File(info.path).exists()) {
+                if (info.path.isEmpty() || JavaFile(info.path).exists()) {
                     downloadFile(context, file)
                 } else {
-                    openFile(context, java.io.File(info.path), Snackbar.make(layout, context.resources.getString(R.string.missing_app, java.io.File(info.path).name), Snackbar.LENGTH_SHORT))
+                    openFile(context, JavaFile(info.path), Snackbar.make(layout, context.resources.getString(R.string.missing_app, JavaFile(info.path).name), Snackbar.LENGTH_SHORT))
                 }
             }
             "link" -> {

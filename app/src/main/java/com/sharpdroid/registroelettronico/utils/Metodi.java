@@ -671,7 +671,7 @@ public class Metodi {
         }
     }
 
-    public static void openFile(Context context, java.io.File file, Snackbar bar) {
+    public static void openFile(Context context, File file, Snackbar bar) {
         String mime = URLConnection.guessContentTypeFromName(file.toString());
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(FileProvider.getUriForFile(context, context.getPackageName() + ".fileprovider", file), mime);

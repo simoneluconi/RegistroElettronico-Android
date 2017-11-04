@@ -123,10 +123,10 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
             val builder = MaterialDialog.Builder(activity).title(title).content(content.trim())
 
             if (communication.hasAttachment) {
-                builder.neutralText(if (path.isEmpty() || !java.io.File(path).exists()) "SCARICA" else "APRI")
+                builder.neutralText(if (path.isEmpty() || !File(path).exists()) "SCARICA" else "APRI")
                 builder.onNeutral { _, _ ->
-                    if (path.isNotEmpty() && java.io.File(path).exists()) {
-                        openFile(activity, File(path), Snackbar.make(coordinator_layout, context.resources.getString(R.string.missing_app, java.io.File(path).name), Snackbar.LENGTH_SHORT))
+                    if (path.isNotEmpty() && File(path).exists()) {
+                        openFile(activity, File(path), Snackbar.make(coordinator_layout, context.resources.getString(R.string.missing_app, File(path).name), Snackbar.LENGTH_SHORT))
                     } else {
                         downloadAttachment(activity, communication)
                     }
@@ -146,7 +146,6 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
 
         searchView.maxWidth = Integer.MAX_VALUE
         searchView.setOnQueryTextListener(this)
-
     }
 
     private fun addCommunications(communications: List<Communication>) {
