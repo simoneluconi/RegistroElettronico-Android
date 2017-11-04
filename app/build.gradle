@@ -46,7 +46,7 @@ android {
     }
 
     dataBinding {
-        enabled = true
+        enabled true
     }
 
     compileOptions {
@@ -133,6 +133,7 @@ dependencies {
     implementation('com.mikepenz:aboutlibraries:5.9.7@aar') {
         transitive = true
     }
+    kapt 'com.android.databinding:compiler:3.0.0'
 
     implementation 'com.afollestad.material-dialogs:core:0.9.4.7'
     implementation 'com.akexorcist:RoundCornerProgressBar:2.0.3'
