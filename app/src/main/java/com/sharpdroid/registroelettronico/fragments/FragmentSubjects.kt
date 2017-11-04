@@ -17,7 +17,7 @@ import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.EditSubjectDetailsActivity
-import com.sharpdroid.registroelettronico.adapters.Holders.Holder
+import com.sharpdroid.registroelettronico.adapters.holders.Holder
 import com.sharpdroid.registroelettronico.adapters.SubjectsAdapter
 import com.sharpdroid.registroelettronico.database.entities.*
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper

@@ -8,8 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.sharpdroid.registroelettronico.R
-import com.sharpdroid.registroelettronico.adapters.Holders.AbsencesHolder
-import com.sharpdroid.registroelettronico.adapters.Holders.HeaderHolder
+import com.sharpdroid.registroelettronico.adapters.holders.AbsencesHolder
+import com.sharpdroid.registroelettronico.adapters.holders.HeaderHolder
 import com.sharpdroid.registroelettronico.database.entities.Absence
 import com.sharpdroid.registroelettronico.database.entities.MyAbsence
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeFirst

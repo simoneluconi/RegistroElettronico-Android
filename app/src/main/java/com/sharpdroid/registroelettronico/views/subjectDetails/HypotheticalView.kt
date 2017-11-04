@@ -18,7 +18,7 @@ import android.view.ViewConfiguration
 import android.view.ViewGroup
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.MarkSubjectDetailActivity
-import com.sharpdroid.registroelettronico.adapters.Holders.Holder
+import com.sharpdroid.registroelettronico.adapters.holders.Holder
 import com.sharpdroid.registroelettronico.database.entities.LocalGrade
 import com.sharpdroid.registroelettronico.utils.Metodi
 import com.sharpdroid.registroelettronico.utils.Metodi.getMarkColor

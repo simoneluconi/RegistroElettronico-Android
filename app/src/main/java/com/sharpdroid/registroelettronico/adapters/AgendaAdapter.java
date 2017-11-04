@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.sharpdroid.registroelettronico.R;
-import com.sharpdroid.registroelettronico.adapters.Holders.HeaderHolder;
+import com.sharpdroid.registroelettronico.adapters.holders.HeaderHolder;
 import com.sharpdroid.registroelettronico.database.entities.LocalAgenda;
 import com.sharpdroid.registroelettronico.database.entities.Subject;
 import com.sharpdroid.registroelettronico.database.entities.SuperAgenda;
