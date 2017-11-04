@@ -74,7 +74,8 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
         mRVAdapter = FolderAdapter(this)
         recycler.adapter = mRVAdapter
 
-        download()
+        if (savedInstanceState == null)
+            download()
 
         viewModel.getDidattica(Account.with(context).user).observe(this, Observer {
             println("OBSERVED")
