@@ -50,15 +50,15 @@ class LocalAgenda(
 @Entity(tableName = "REMOTE_AGENDA")
 class RemoteAgenda(
         @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("evtId") var id: Long = 0L,
-        @ColumnInfo(name = "START") @Expose @SerializedName("evtDatetimeBegin") var start: Long = 0,
-        @ColumnInfo(name = "END") @Expose @SerializedName("evtDatetimeEnd") var end: Long = 0,
+        @ColumnInfo(name = "START") @Expose @SerializedName("evtDatetimeBegin") var start: Date,
+        @ColumnInfo(name = "END") @Expose @SerializedName("evtDatetimeEnd") var end: Date,
         @ColumnInfo(name = "IS_FULL_DAY") @Expose @SerializedName("isFullDay") var isFullDay: Boolean = false,
         @ColumnInfo(name = "NOTES") @Expose @SerializedName("notes") var notes: String = "",
         @ColumnInfo(name = "AUTHOR") @Expose @SerializedName("authorName") var author: String = "",
         @ColumnInfo(name = "PROFILE") var profile: Long
 ) {
 
-    constructor() : this(0, 0, 0, false, "", "", 0L)
+    constructor() : this(0, Date(0), Date(0), false, "", "", 0L)
 
     fun getInfo(): RemoteAgendaInfo? {
         return null/*

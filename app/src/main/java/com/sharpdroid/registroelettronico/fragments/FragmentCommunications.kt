@@ -1,6 +1,7 @@
 package com.sharpdroid.registroelettronico.fragments
 
 import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -17,6 +18,7 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.CommunicationAdapter
 import com.sharpdroid.registroelettronico.database.entities.Communication
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
+import com.sharpdroid.registroelettronico.database.viewModels.CommunicationViewModel
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.EventType
 import com.sharpdroid.registroelettronico.utils.Metodi.*
@@ -37,7 +39,6 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
                 if (!swiperefresh.isRefreshing) swiperefresh.isRefreshing = true
             }
             EventType.UPDATE_BACHECA_OK -> {
-                load()
                 if (swiperefresh.isRefreshing) swiperefresh.isRefreshing = false
             }
             EventType.UPDATE_BACHECA_KO -> {
@@ -103,8 +104,16 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
             adapter = mRVAdapter
         }
 
-        load()
-        download()
+        if (savedInstanceState == null)
+            download()
+
+        ViewModelProviders.of(this)[CommunicationViewModel::class.java]
+                .getCommunications(Account.with(context).user)
+                .observe(this, Observer {
+                    println("OBSERVED")
+                    addCommunications(it ?: emptyList())
+                })
+
         if (!BuildConfig.DEBUG)
             Answers.getInstance().logContentView(ContentViewEvent().putContentId("Comunicazioni"))
     }
@@ -149,12 +158,6 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
 
     override fun onRefresh() {
         download()
-    }
-
-    private fun load() {
-        DatabaseHelper.database.communicationsDao().loadCommunications(Account.with(context).user).observe(this, Observer {
-            addCommunications(it ?: emptyList())
-        })
     }
 
     private fun download() {
