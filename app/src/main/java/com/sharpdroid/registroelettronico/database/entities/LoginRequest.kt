@@ -1,7 +1,7 @@
 package com.sharpdroid.registroelettronico.database.entities
 
+import com.google.gson.Gson
 import com.google.gson.annotations.Expose
-import java.util.*
 
 class LoginRequest(
         @Expose private val pass: String = "",
@@ -9,6 +9,6 @@ class LoginRequest(
         @Expose val ident: String
 ) {
     override fun toString(): String {
-        return String.format(Locale.getDefault(), "{ \"uid\": \"%s\", \"pass\": \"%s\", \"ident\":\"%s\"}", uid, pass, ident)
+        return Gson().toJson(this)
     }
 }

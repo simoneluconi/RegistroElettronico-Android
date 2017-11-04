@@ -42,7 +42,8 @@ class File(
 @Entity(tableName = "FILE_INFO")
 class FileInfo(
         @ColumnInfo(name = "ID") @PrimaryKey var id: Long = 0L,
-        @ColumnInfo(name = "PATH") var path: String = "")
+        @ColumnInfo(name = "PATH") var path: String = ""
+)
 
 class DownloadURL(@Expose @SerializedName("link") val link: String)
 class DownloadUrlAPI(@Expose @SerializedName("item") val item: DownloadURL)
