@@ -35,18 +35,15 @@ import java.util.*
 class Period(
         @ColumnInfo(name = "M_CODE") @Expose @SerializedName("periodCode") var mCode: String = "",
         @ColumnInfo(name = "M_DESCRIPTION") @Expose @SerializedName("periodDesc") var mDescription: String = "",
-        @ColumnInfo(name = "M_END") @Expose @SerializedName("dateEnd") var mEnd: Date,
+        @ColumnInfo(name = "M_END") @Expose @SerializedName("dateEnd") var mEnd: Date = Date(0),
         @ColumnInfo(name = "M_FINAL") @Expose @SerializedName("isFinal") var mFinal: Boolean = false,
         @ColumnInfo(name = "M_POSITION") @Expose @SerializedName("periodPos") var mPosition: Int = -1,
-        @ColumnInfo(name = "M_START") @Expose @SerializedName("dateStart") var mStart: Date,
-        @ColumnInfo(name = "PROFILE") var profile: Long
+        @ColumnInfo(name = "M_START") @Expose @SerializedName("dateStart") var mStart: Date = Date(0),
+        @ColumnInfo(name = "PROFILE") var profile: Long = 0L
 ) {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "ID")
     var id = 0L
-
-    constructor() : this("", "", Date(0), false, 0, Date(0), 0L)
-
 }
 
 class PeriodAPI(@Expose @SerializedName("periods") private val periods: List<Period>) {

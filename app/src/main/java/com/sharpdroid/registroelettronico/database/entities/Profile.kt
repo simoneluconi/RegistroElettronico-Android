@@ -19,13 +19,10 @@ class Profile(
         @ColumnInfo(name = "CLASSE") var classe: String = "",
         @ColumnInfo(name = "ID") @PrimaryKey var id: Long = 0L,
         @ColumnInfo(name = "TOKEN") var token: String = "",
-        @ColumnInfo(name = "EXPIRE") var expire: Date,
+        @ColumnInfo(name = "EXPIRE") var expire: Date = Date(0),
         @ColumnInfo(name = "IDENT") var ident: String = "",
-        @ColumnInfo(name = "IS_MULTI") var isMulti: Boolean
+        @ColumnInfo(name = "IS_MULTI") var isMulti: Boolean = false
 ) {
-
-    constructor() : this("", "", "", "", 0, "", Date(0), "", false)
-
     fun asIProfile(): IProfile<ProfileDrawerItem> {
         return ProfileDrawerItem()
                 .withName(name)

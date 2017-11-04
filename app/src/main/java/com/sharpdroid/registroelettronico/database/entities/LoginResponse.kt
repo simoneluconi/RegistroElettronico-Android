@@ -3,12 +3,13 @@ package com.sharpdroid.registroelettronico.database.entities
 import com.google.gson.annotations.Expose
 import java.util.*
 
-class LoginResponse(@Expose val ident: String?,
-                    @Expose val firstName: String?,
-                    @Expose val lastName: String?,
-                    @Expose val token: String?,
-                    @Expose val expire: Date?,
-                    @Expose val choices: MutableList<Choice>?
+class LoginResponse(
+        @Expose val ident: String?,
+        @Expose val firstName: String?,
+        @Expose val lastName: String?,
+        @Expose val token: String?,
+        @Expose val expire: Date?,
+        @Expose val choices: MutableList<Choice>?
 )
 
 class Choice(

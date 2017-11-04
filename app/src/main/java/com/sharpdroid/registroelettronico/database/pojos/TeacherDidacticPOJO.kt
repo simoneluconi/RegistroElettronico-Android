@@ -10,20 +10,16 @@ import com.sharpdroid.registroelettronico.database.entities.Teacher
 import java.util.*
 
 data class TeacherDidacticPOJO(
-        @Embedded var teacher: Teacher,
+        @Embedded var teacher: Teacher = Teacher(),
         @Relation(entityColumn = "TEACHER", parentColumn = "ID", entity = Folder::class) var folders: List<FolderPOJO> = emptyList()
-) {
-    constructor() : this(Teacher(), emptyList())
-}
+)
 
 data class FolderPOJO(
         @ColumnInfo(name = "ID") @PrimaryKey(autoGenerate = true) var id: Long = 0L,
         @ColumnInfo(name = "FOLDER_ID") var folderId: Int = -1,
         @ColumnInfo(name = "NAME") var name: String = "",
-        @ColumnInfo(name = "LAST_UPDATE") var lastUpdate: Date,
-        @Relation(parentColumn = "ID", entityColumn = "FOLDER") var files: List<File>,
+        @ColumnInfo(name = "LAST_UPDATE") var lastUpdate: Date = Date(0),
+        @Relation(parentColumn = "ID", entityColumn = "FOLDER") var files: List<File> = emptyList(),
         @ColumnInfo(name = "TEACHER") var teacher: Long = 0L,
-        @ColumnInfo(name = "PROFILE") var profile: Long
-) {
-    constructor() : this(0, -1, "", Date(0), emptyList(), 0, 0)
-}
+        @ColumnInfo(name = "PROFILE") var profile: Long = -1L
+)
