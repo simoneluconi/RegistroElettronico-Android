@@ -12,9 +12,9 @@ import java.util.List;
 
 @Dao
 public interface LessonDao {
-    @Query("SELECT * FROM LESSON WHERE PROFILE = :profile")
+    @Query("SELECT ID, M_ARGUMENT, M_AUTHOR_NAME, M_DATE, M_HOUR_POSITION, M_SUBJECT_DESCRIPTION, COUNT(ID) as `M_DURATION`, M_CLASS_DESCRIPTION, M_CODE, M_SUBJECT_CODE, M_SUBJECT_ID, M_TYPE, PROFILE FROM LESSON WHERE M_DATE = :date AND PROFILE=:profile GROUP BY M_ARGUMENT, M_AUTHOR_NAME ORDER BY M_HOUR_POSITION ASC")
     @NonNull
-    LiveData<List<Lesson>> loadLessons(Long profile);
+    LiveData<List<Lesson>> loadLessons(long profile, long date);
 
     @Query("SELECT * FROM LESSON WHERE M_SUBJECT_ID=:code GROUP BY M_ARGUMENT, M_AUTHOR_NAME, M_DATE ORDER BY M_DATE DESC LIMIT 5")
     List<Lesson> loadLastLessons(long code);

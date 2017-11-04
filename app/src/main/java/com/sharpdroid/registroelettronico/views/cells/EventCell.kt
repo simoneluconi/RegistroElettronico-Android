@@ -44,7 +44,7 @@ class EventCell(context: Context, private val withDateDiff: Boolean) : FrameLayo
                     spannableString.setSpan(StrikethroughSpan(), 0, event.agenda.notes.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
                 if (withDateDiff)
-                    duration.text = "${(event.agenda.start - currentDate.time) / (24 * 3600000)}g"
+                    duration.text = "${(event.agenda.start.time - currentDate.time) / (24 * 3600000)}g"
                 //date.text = dateFormat.format(event.agenda.start)
                 date.text = capitalizeEach(event.agenda.author, true)
                 content.text = spannableString

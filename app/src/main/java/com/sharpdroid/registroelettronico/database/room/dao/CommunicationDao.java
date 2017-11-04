@@ -23,10 +23,13 @@ public interface CommunicationDao {
     LiveData<List<Communication>> loadCommunications(long profile);
 
     @Insert
-    void insert(Communication... communications);
+    void insert(List<Communication> communications);
 
     @Insert
-    void insert(CommunicationInfo... communications);
+    void insert(CommunicationInfo communications);
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    void insert(Communication communications);
 
     @Query("DELETE FROM COMMUNICATION WHERE PROFILE=:profile")
     void delete(long profile);

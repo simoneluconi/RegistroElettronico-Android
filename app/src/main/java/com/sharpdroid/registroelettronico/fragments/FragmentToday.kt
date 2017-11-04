@@ -78,11 +78,6 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
         super.onViewCreated(view, savedInstanceState)
         activity.title = "Oggi a scuola"
 
-        DatabaseHelper.database.lessonsDao().loadLessons(Account.with(context).user)
-                .observe(this, android.arch.lifecycle.Observer { t: MutableList<Lesson>? ->
-                    println("OBSERVED")
-                    initializeLessons(t ?: emptyList())
-                })
 
         with(absence_recycler) {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -115,6 +110,14 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
         week_empty.setTextAndDrawable("Settimana libera", R.drawable.ic_event_available)
 
         initializeDay(Date().flat())
+
+
+        DatabaseHelper.database.lessonsDao().loadLessons(Account.with(context).user, Date().flat().time)
+                .observe(this, android.arch.lifecycle.Observer { t: MutableList<Lesson>? ->
+                    println("OBSERVED")
+                    initializeLessons(t ?: emptyList())
+                })
+
         NotificationManager.instance.addObserver(this,
                 UPDATE_ABSENCES_KO, UPDATE_ABSENCES_OK, UPDATE_ABSENCES_START,
                 UPDATE_LESSONS_KO, UPDATE_LESSONS_OK, UPDATE_LESSONS_START,
@@ -188,16 +191,16 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
         events.addAll(RemoteAgenda.getSuperAgenda(Account.with(context).user, date, true))
         //events.addAll(SugarRecord.find(LocalAgenda::class.java, "PROFILE=? AND ARCHIVED=0 AND DAY>=${date.time}", Account.with(context).user.toString()))
         events.sortWith(Comparator { t1: Any, t2: Any ->
-            val date1 = (t1 as? SuperAgenda)?.agenda?.start ?: ((t1 as? LocalAgenda)?.day ?: 0)
-            val date2 = (t2 as? SuperAgenda)?.agenda?.start ?: ((t2 as? LocalAgenda)?.day ?: 0)
-            return@Comparator Date(date1).flat().compareTo(Date(date2).flat())
+            val date1 = (t1 as? SuperAgenda)?.agenda?.start ?: Date((t1 as? LocalAgenda)?.day ?: 0)
+            val date2 = (t2 as? SuperAgenda)?.agenda?.start ?: Date((t2 as? LocalAgenda)?.day ?: 0)
+            return@Comparator date1.flat().compareTo(date2.flat())
         })
 
         val tomorrow = date.add(Calendar.HOUR_OF_DAY, 24)
 
         tomorrowAdapter.events = events.filter {
             when (it) {
-                is SuperAgenda -> Date(it.agenda.start).flat().time == tomorrow.time
+                is SuperAgenda -> it.agenda.start.flat().time == tomorrow.time
                 is LocalAgenda -> it.day == tomorrow.time
                 else -> false
             }
@@ -211,7 +214,7 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
         weekAdapter.date = date
         weekAdapter.events = events.filter {
             when (it) {
-                is SuperAgenda -> Date(it.agenda.start).flat().after(tomorrow) && Date(it.agenda.start).flat().before(sevenDaysFromDate)
+                is SuperAgenda -> it.agenda.start.flat().after(tomorrow) && it.agenda.start.flat().before(sevenDaysFromDate)
                 is LocalAgenda -> Date(it.day).after(tomorrow) && Date(it.day).before(sevenDaysFromDate)
                 else -> false
             }

@@ -39,7 +39,7 @@ public interface SubjectDao {
     void insert(SubjectTeacher... info);
 
     @Insert
-    void insert(Teacher[] info);
+    void insert(Teacher... info);
 
     @Update
     void updateSubjectInfo(SubjectInfo subject);

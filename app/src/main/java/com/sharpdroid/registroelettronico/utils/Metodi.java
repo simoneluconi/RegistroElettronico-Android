@@ -53,6 +53,7 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import kotlin.text.Regex;
 import okhttp3.Headers;
 import okhttp3.ResponseBody;
@@ -258,7 +259,7 @@ public class Metodi {
         List<com.github.sundeepk.compactcalendarview.domain.Event> list = new ArrayList<>();
         for (Object event : events) {
             if (event instanceof SuperAgenda)
-                list.add(new Event(((SuperAgenda) event).getTest() ? Color.parseColor("#FF9800") : Color.WHITE, ((SuperAgenda) event).getAgenda().getStart()));
+                list.add(new Event(((SuperAgenda) event).getTest() ? Color.parseColor("#FF9800") : Color.WHITE, ((SuperAgenda) event).getAgenda().getStart().getTime()));
             else if (event instanceof LocalAgenda) {
                 list.add(new Event(((LocalAgenda) event).getType().equalsIgnoreCase("verifica") ? Color.parseColor("#FF9800") : Color.WHITE, ((LocalAgenda) event).getDay()));
             }
@@ -466,6 +467,7 @@ public class Metodi {
         if (p == null) return;
         handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_BACHECA_START, null));
         APIClient.Companion.with(p).getBacheca()
+                .observeOn(Schedulers.io())
                 .subscribe(communicationAPI -> {
                     List<Communication> list = communicationAPI.getCommunications(p);
                     List<Communication> toRemove = new ArrayList<>();
@@ -479,7 +481,7 @@ public class Metodi {
                         @Nullable CommunicationInfo info = DatabaseHelper.database.communicationsDao().getInfo(communication.getMyId());
                         if (info == null || !communication.isRead() || info.getContent().isEmpty()) {
                             System.out.println("REQUEST - " + communication.getTitle());
-                            APIClient.Companion.with(p).readBacheca(communication.getEvtCode(), communication.getId()).subscribe(readResponse -> {
+                            APIClient.Companion.with(p).readBacheca(communication.getEvtCode(), communication.getId()).observeOn(Schedulers.io()).subscribe(readResponse -> {
                                 communication.setRead(true);
                                 DatabaseHelper.database.communicationsDao().insert(communication);
 
@@ -497,7 +499,7 @@ public class Metodi {
                     list.removeAll(toRemove);
 
                     DatabaseHelper.database.communicationsDao().delete(p.getId());
-                    DatabaseHelper.database.communicationsDao().insert((Communication[]) list.toArray());
+                    DatabaseHelper.database.communicationsDao().insert(list);
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_BACHECA_OK, null));
                 }, throwable -> {
                     handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_BACHECA_KO, null));
