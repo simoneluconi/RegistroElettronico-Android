@@ -19,7 +19,7 @@ class LocalAgenda(
         @ColumnInfo(name = "DAY") var day: Long = 0,
         @ColumnInfo(name = "SUBJECT") var subject: Long = 0L,
         @ColumnInfo(name = "TEACHER") var teacher: Long = 0L,
-        @ColumnInfo(name = "COMPLETED_DATE") var completed_date: Date? = null,
+        @ColumnInfo(name = "COMPLETED_DATE") var completed_date: Date = Date(0),
         @ColumnInfo(name = "PROFILE") var profile: Long = 0L,
         @ColumnInfo(name = "ARCHIVED") var archived: Boolean = false
 ) {
@@ -48,8 +48,8 @@ class LocalAgenda(
 @Entity(tableName = "REMOTE_AGENDA")
 class RemoteAgenda(
         @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("evtId") var id: Long = 0L,
-        @ColumnInfo(name = "START") @Expose @SerializedName("evtDatetimeBegin") var start: Date,
-        @ColumnInfo(name = "END") @Expose @SerializedName("evtDatetimeEnd") var end: Date,
+        @ColumnInfo(name = "START") @Expose @SerializedName("evtDatetimeBegin") var start: Date = Date(0),
+        @ColumnInfo(name = "END") @Expose @SerializedName("evtDatetimeEnd") var end: Date = Date(0),
         @ColumnInfo(name = "IS_FULL_DAY") @Expose @SerializedName("isFullDay") var isFullDay: Boolean = false,
         @ColumnInfo(name = "NOTES") @Expose @SerializedName("notes") var notes: String = "",
         @ColumnInfo(name = "AUTHOR") @Expose @SerializedName("authorName") var author: String = "",
