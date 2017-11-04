@@ -27,8 +27,6 @@ import com.sharpdroid.registroelettronico.database.entities.SubjectInfo
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.MessaggioVoto
-import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
-import com.sharpdroid.registroelettronico.utils.or
 import com.sharpdroid.registroelettronico.views.subjectDetails.HypotheticalView
 import kotlinx.android.synthetic.main.activity_mark_subject_detail.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -83,7 +81,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
             onBackPressed()
             return
         }
-
+/*
         subject = temp.getInfo(this)/*
         subject.subject.teachers = SugarRecord.findWithQuery(Teacher::class.java, "SELECT * FROM TEACHER WHERE TEACHER.ID IN (SELECT SUBJECT_TEACHER.TEACHER FROM SUBJECT_TEACHER WHERE SUBJECT_TEACHER.SUBJECT=?)", subject.subject.id.toString())
         p = intent.getIntExtra("period", 0)
@@ -97,6 +95,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
         initLessons(subject.subject)
         initMarks(subject)
         initHypothetical()
+  */
     }
 
     private fun initInfo(subject: SubjectInfo) {

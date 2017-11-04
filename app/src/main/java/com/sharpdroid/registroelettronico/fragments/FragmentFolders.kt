@@ -88,7 +88,7 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
 
     override fun onResume() {
         super.onResume()
-        viewModel.selectedFolder.value = null
+        viewModel.selectedFolder.postValue(null)
     }
 
     private fun addFiles(teachers: List<TeacherDidacticPOJO>) {
@@ -113,7 +113,7 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
     }
 
     override fun onFolderClick(f: FolderPOJO) {
-        viewModel.selectedFolder.value = f
+        viewModel.selectedFolder.postValue(f)
         val transaction = activity.supportFragmentManager.beginTransaction()
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)/*setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)*/.replace(R.id.fragment_container, FragmentFiles()).addToBackStack(null)
         transaction.commit()
