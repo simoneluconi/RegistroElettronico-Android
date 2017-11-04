@@ -13,6 +13,7 @@ import com.sharpdroid.registroelettronico.adapters.LessonsAdapter
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Metodi
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
+import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.view_recent_lessons.view.*
 
 class RecentLessonsView : CardView {
@@ -46,8 +47,12 @@ class RecentLessonsView : CardView {
     }
 
     fun update(code: Int) {
-        adapter.clear()
-        adapter.addAll(DatabaseHelper.database.lessonsDao().loadLastLessons(code.toLong()))
+        DatabaseHelper.database.lessonsDao().loadLastLessons(code.toLong()).observeOn(AndroidSchedulers.mainThread()).subscribe {
+            if (it.isNotEmpty()) {
+                adapter.clear()
+                adapter.addAll(it)
+            }
+        }
         load_more.setOnClickListener { mContext.startActivity(Intent(mContext, AllLessonsWithDownloadActivity::class.java).putExtra("code", code)) }
     }
 
