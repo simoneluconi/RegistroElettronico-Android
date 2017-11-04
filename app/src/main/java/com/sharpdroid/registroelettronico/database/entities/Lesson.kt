@@ -33,7 +33,7 @@ class Lesson(
         @ColumnInfo(name = "M_AUTHOR_NAME") @Expose @SerializedName("authorName") var mAuthorName: String = "",
         @ColumnInfo(name = "M_CLASS_DESCRIPTION") @Expose @SerializedName("classDesc") var mClassDescription: String = "",
         @ColumnInfo(name = "M_CODE") @Expose @SerializedName("evtCode") var mCode: String = "",
-        @ColumnInfo(name = "M_DATE") @Expose @SerializedName("evtDate") var mDate: Date,
+        @ColumnInfo(name = "M_DATE") @Expose @SerializedName("evtDate") var mDate: Date = Date(0),
         @ColumnInfo(name = "M_DURATION") @Expose @SerializedName("evtDuration") var mDuration: Int = -1,
         @ColumnInfo(name = "M_HOUR_POSITION") @Expose @SerializedName("evtHPos") var mHourPosition: Int = -1,
         @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("evtId") var id: Long = 0L,
@@ -41,10 +41,8 @@ class Lesson(
         @ColumnInfo(name = "M_SUBJECT_DESCRIPTION") @Expose @SerializedName("subjectDesc") var mSubjectDescription: String = "",
         @ColumnInfo(name = "M_SUBJECT_ID") @Expose @SerializedName("subjectId") var mSubjectId: Int = -1,
         @ColumnInfo(name = "M_TYPE") @Expose @SerializedName("lessonType") var mType: String = "",
-        @ColumnInfo(name = "PROFILE") var profile: Long
-) {
-    constructor() : this("", "", "", "", Date(0), 0, 0, 0, "", "", 0, "", -1)
-}
+        @ColumnInfo(name = "PROFILE") var profile: Long = -1L
+)
 
 class LessonAPI(@Expose @SerializedName("lessons") val lessons: List<Lesson>) {
     fun getLessons(profile: Profile): List<Lesson> {

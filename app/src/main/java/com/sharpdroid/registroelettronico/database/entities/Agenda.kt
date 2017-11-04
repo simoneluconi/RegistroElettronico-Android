@@ -19,15 +19,13 @@ class LocalAgenda(
         @ColumnInfo(name = "DAY") var day: Long = 0,
         @ColumnInfo(name = "SUBJECT") var subject: Long = 0L,
         @ColumnInfo(name = "TEACHER") var teacher: Long = 0L,
-        @ColumnInfo(name = "COMPLETED_DATE") var completed_date: Date?,
+        @ColumnInfo(name = "COMPLETED_DATE") var completed_date: Date? = null,
         @ColumnInfo(name = "PROFILE") var profile: Long = 0L,
-        @ColumnInfo(name = "ARCHIVED") var archived: Boolean
+        @ColumnInfo(name = "ARCHIVED") var archived: Boolean = false
 ) {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "ID")
     var id = 0L
-
-    constructor() : this("", "", "", 0, 0, 0, null, 0L, false)
 }
 
 /*
@@ -55,10 +53,8 @@ class RemoteAgenda(
         @ColumnInfo(name = "IS_FULL_DAY") @Expose @SerializedName("isFullDay") var isFullDay: Boolean = false,
         @ColumnInfo(name = "NOTES") @Expose @SerializedName("notes") var notes: String = "",
         @ColumnInfo(name = "AUTHOR") @Expose @SerializedName("authorName") var author: String = "",
-        @ColumnInfo(name = "PROFILE") var profile: Long
+        @ColumnInfo(name = "PROFILE") var profile: Long = -1L
 ) {
-
-    constructor() : this(0, Date(0), Date(0), false, "", "", 0L)
 
     fun getInfo(): RemoteAgendaInfo? {
         return null/*
@@ -142,6 +138,4 @@ class RemoteAgendaInfo(
         @ColumnInfo(name = "COMPLETED") var completed: Boolean = false,
         @ColumnInfo(name = "ARCHIVED") var archived: Boolean = false,
         @ColumnInfo(name = "TEST") var test: Boolean = false
-) {
-    constructor() : this(0, false, false, false)
-}
+)

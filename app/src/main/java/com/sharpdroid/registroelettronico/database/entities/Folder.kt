@@ -31,16 +31,14 @@ import java.util.*
  */
 @Entity(tableName = "FOLDER")
 class Folder(
-        @ColumnInfo(name = "FOLDER_ID") @Expose @SerializedName("folderId") var folderId: Int = -1,
+        @ColumnInfo(name = "FOLDER_ID") @Expose @SerializedName("folderId") var folderId: Int = 0,
         @ColumnInfo(name = "NAME") @Expose @SerializedName("folderName") var name: String = "",
-        @ColumnInfo(name = "LAST_UPDATE") @Expose @SerializedName("lastShareDT") var lastUpdate: Date,
-        @Ignore @Expose @SerializedName("contents") var files: List<File>,
+        @ColumnInfo(name = "LAST_UPDATE") @Expose @SerializedName("lastShareDT") var lastUpdate: Date = Date(0),
+        @Ignore @Expose @SerializedName("contents") var files: List<File> = emptyList(),
         @ColumnInfo(name = "TEACHER") var teacher: Long = 0L,
-        @ColumnInfo(name = "PROFILE") var profile: Long
+        @ColumnInfo(name = "PROFILE") var profile: Long = -1L
 ) : Serializable {
     @ColumnInfo(name = "ID")
     @PrimaryKey(autoGenerate = true)
     var id = 0L
-
-    constructor() : this(0, "", Date(0), emptyList(), 0, -1)
 }

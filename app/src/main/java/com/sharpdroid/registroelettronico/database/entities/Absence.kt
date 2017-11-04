@@ -45,17 +45,14 @@ evtCode:
 class Absence(
         @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("evtId") var id: Long = 0L,
         @ColumnInfo(name = "TYPE") @Expose @SerializedName("evtCode") var type: String = "",
-        @ColumnInfo(name = "DATE") @Expose @SerializedName("evtDate") var date: Date,
+        @ColumnInfo(name = "DATE") @Expose @SerializedName("evtDate") var date: Date = Date(0),
         @ColumnInfo(name = "JUSTIFIED") @Expose @SerializedName("isJustified") var justified: Boolean = false,
         @ColumnInfo(name = "REASON_CODE") @Expose @SerializedName("justifReasonCode") var reasonCode: String = "",
         @ColumnInfo(name = "REASON_DESC") @Expose @SerializedName("justifReasonDesc") var reasonDesc: String = "",
-        @ColumnInfo(name = "PROFILE") var profile: Long = 0L,
-        @ColumnInfo(name = "H_POS") @Expose @SerializedName("evtHPos") var hPos: Int = -1,
-        @ColumnInfo(name = "VALUE") @Expose @SerializedName("evtValue") var value: Int
+        @ColumnInfo(name = "PROFILE") var profile: Long = -1L,
+        @ColumnInfo(name = "H_POS") @Expose @SerializedName("evtHPos") var hPos: Int = 0,
+        @ColumnInfo(name = "VALUE") @Expose @SerializedName("evtValue") var value: Int = 0
 ) {
-    constructor() : this(0, "", Date(0), false, "", "", -1, 0, 0)
-
-
     companion object {
         fun getAbsences(p: Long): HashMap<Absence, Int> /*<ABSENCE, N_DAYS>*/ {
             val map = HashMap<Absence, Int>()

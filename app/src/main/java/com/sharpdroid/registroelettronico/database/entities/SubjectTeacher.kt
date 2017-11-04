@@ -8,13 +8,11 @@ import android.arch.persistence.room.PrimaryKey
 class SubjectTeacher(
         @ColumnInfo(name = "SUBJECT") var subject: Long = 0L,
         @ColumnInfo(name = "TEACHER") var teacher: Long = 0L,
-        @ColumnInfo(name = "PROFILE") var profile: Long
+        @ColumnInfo(name = "PROFILE") var profile: Long = 0L
 ) {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "ID")
     var id = 0L
-
-    constructor() : this(0L, 0L, 0L)
 
     companion object {
         val cache = ArrayList<SubjectTeacher>()

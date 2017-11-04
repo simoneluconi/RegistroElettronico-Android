@@ -13,7 +13,7 @@ import java.util.*
 class Grade(
         @ColumnInfo(name = "M_CODE") @Expose @SerializedName("evtCode") var mCode: String = "",
         @ColumnInfo(name = "M_COMPONENT_POS") @Expose @SerializedName("componentPos") var mComponentPos: Int = -1,
-        @ColumnInfo(name = "M_DATE") @Expose @SerializedName("evtDate") var mDate: Date,
+        @ColumnInfo(name = "M_DATE") @Expose @SerializedName("evtDate") var mDate: Date = Date(0),
         @ColumnInfo(name = "M_DESCRIPTION") @Expose @SerializedName("subjectDesc") var mDescription: String = "",
         @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("evtId") var id: Long = 0L,
         @ColumnInfo(name = "M_NOTES") @Expose @SerializedName("notesForFamily") var mNotes: String = "",
@@ -23,12 +23,10 @@ class Grade(
         @ColumnInfo(name = "M_SUBJECT_ID") @Expose @SerializedName("subjectId") var mSubjectId: Int = -1,
         @ColumnInfo(name = "M_TYPE") @Expose @SerializedName("componentDesc") var mType: String = "",
         @ColumnInfo(name = "M_UNDERLINED") @Expose @SerializedName("underlined") var mUnderlined: Boolean = false,
-        @ColumnInfo(name = "M_VALUE") @Expose @SerializedName("decimalValue") var mValue: Float,
-        @ColumnInfo(name = "M_WEIGHT_FACTOR") @Expose @SerializedName("weightFactor") var mWeightFactor: Double,
-        @ColumnInfo(name = "PROFILE") var profile: Long
+        @ColumnInfo(name = "M_VALUE") @Expose @SerializedName("decimalValue") var mValue: Float = 0f,
+        @ColumnInfo(name = "M_WEIGHT_FACTOR") @Expose @SerializedName("weightFactor") var mWeightFactor: Double = 0.0,
+        @ColumnInfo(name = "PROFILE") var profile: Long = -1L
 ) {
-    constructor() : this("", 0, Date(0), "", 0, "", 0, "", "", 0, "", false, 0f, 0.0, 0L)
-
     companion object {
         private val subjectCache = SparseArray<Subject>()
         private val subjectInfoCache = SparseArray<SubjectInfo>()
@@ -89,9 +87,9 @@ class Grade(
                     average.avg /= average.count
 
                 //add additional informations
-                average.setCode(it)
-                average.setTarget(target)
-                average.setName(title)
+                average.code = it
+                average.target = target
+                average.name = title
                 return@map average
             }
 

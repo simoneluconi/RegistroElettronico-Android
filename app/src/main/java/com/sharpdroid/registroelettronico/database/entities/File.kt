@@ -33,21 +33,16 @@ class File(
         @ColumnInfo(name = "CONTENT_NAME") @Expose @SerializedName("contentName") var contentName: String = "",
         @ColumnInfo(name = "OBJECT_ID") @Expose @SerializedName("objectId") var objectId: Long = 0L,
         @ColumnInfo(name = "TYPE") @Expose @SerializedName("objectType") var type: String = "",
-        @ColumnInfo(name = "DATE") @Expose @SerializedName("shareDT") var date: Date,
+        @ColumnInfo(name = "DATE") @Expose @SerializedName("shareDT") var date: Date = Date(0),
         @ColumnInfo(name = "FOLDER") var folder: Long = 0L,
         @ColumnInfo(name = "TEACHER") var teacher: Long = 0L,
-        @ColumnInfo(name = "PROFILE") var profile: Long
-) {
-    constructor() : this(0, "", 0, "", Date(0), 0, 0, 0)
-}
-
+        @ColumnInfo(name = "PROFILE") var profile: Long = -1L
+)
 
 @Entity(tableName = "FILE_INFO")
 class FileInfo(
         @ColumnInfo(name = "ID") @PrimaryKey var id: Long = 0L,
-        @ColumnInfo(name = "PATH") var path: String) {
-    constructor() : this(0L, "")
-}
+        @ColumnInfo(name = "PATH") var path: String = "")
 
 class DownloadURL(@Expose @SerializedName("link") val link: String)
 class DownloadUrlAPI(@Expose @SerializedName("item") val item: DownloadURL)

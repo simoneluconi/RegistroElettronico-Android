@@ -13,10 +13,8 @@ import java.io.Serializable
 class Teacher(
         @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("teacherId") var id: Long = 0L,
         @ColumnInfo(name = "TEACHER_NAME") @Expose var teacherName: String = "",
-        @Ignore @Expose var folders: List<Folder> //not present in /subjects
+        @Ignore @Expose var folders: List<Folder> = emptyList()
 ) : Serializable {
-    constructor() : this(0, "", emptyList())
-
     companion object {
         private val teachersOfSubject = SparseArray<List<Teacher>>()
         private val teacherWithID = SparseArray<Teacher>()
