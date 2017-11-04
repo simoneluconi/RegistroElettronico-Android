@@ -17,13 +17,13 @@ import java.util.List;
 @Dao
 public interface AgendaDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(@NotNull LocalAgenda event);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(@NotNull List<RemoteAgenda> event);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(@NotNull RemoteAgendaInfo event);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)

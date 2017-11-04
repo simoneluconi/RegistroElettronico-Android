@@ -1,6 +1,7 @@
 package com.sharpdroid.registroelettronico.fragments
 
 import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
@@ -19,8 +20,8 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.FileAdapter
 import com.sharpdroid.registroelettronico.database.entities.File
 import com.sharpdroid.registroelettronico.database.entities.FileInfo
-import com.sharpdroid.registroelettronico.database.entities.Folder
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
+import com.sharpdroid.registroelettronico.database.viewModels.DidatticaViewModel
 import com.sharpdroid.registroelettronico.utils.EventType
 import com.sharpdroid.registroelettronico.utils.Metodi.*
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
@@ -44,13 +45,9 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
             }
         }
     }
-
-    private var data: Folder? = null
     private lateinit var mRVAdapter: FileAdapter
+    private lateinit var viewModel: DidatticaViewModel
 
-    fun setData(data: Folder) {
-        this.data = data
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -69,14 +66,11 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         NotificationManager.instance.addObserver(this, EventType.DOWNLOAD_FILE_START, EventType.DOWNLOAD_FILE_OK, EventType.DOWNLOAD_FILE_KO)
-        val mRecyclerView = view.findViewById<RecyclerView>(R.id.recycler)
         mRVAdapter = FileAdapter(this)
 
-        if (data == null)
-            data = savedInstanceState?.getSerializable("data") as Folder
-        addSubjects(data ?: throw NullPointerException("data==null"))
-        setTitle(data?.name?.trim { it <= ' ' } ?: throw NullPointerException("data==null"))
+        viewModel = ViewModelProviders.of(activity)[DidatticaViewModel::class.java]
 
+        val mRecyclerView = view.findViewById<RecyclerView>(R.id.recycler)
         with(mRecyclerView) {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
@@ -84,13 +78,16 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
             itemAnimator = null
             adapter = mRVAdapter
         }
+
+        viewModel.selectedFolder.observe(this, Observer {
+            setTitle(it?.name?.trim { it <= ' ' } ?: throw NullPointerException("data==null"))
+
+            mRVAdapter.clear()
+            mRVAdapter.addAll(it.files)
+        })
+
         if (!BuildConfig.DEBUG)
             Answers.getInstance().logContentView(ContentViewEvent().putContentId("Didattica").putContentType("File"))
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putSerializable("data", data)
     }
 
     override fun onFileClick(file: File) {
@@ -116,25 +113,8 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
         activity.title = title
     }
 
-    private fun addSubjects(folder: Folder) {
-        println(folder.toString())
-        DatabaseHelper.database.foldersDao().getFiles(folder.teacher, folder.id)
-                .observe(this, Observer {
-                    mRVAdapter.clear()
-                    mRVAdapter.addAll(it)
-                })
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         NotificationManager.instance.removeObserver(this, EventType.DOWNLOAD_FILE_START, EventType.DOWNLOAD_FILE_OK, EventType.DOWNLOAD_FILE_KO)
-    }
-
-    companion object {
-        fun newInstance(data: Folder): FragmentFiles {
-            val fragment = FragmentFiles()
-            fragment.setData(data)
-            return fragment
-        }
     }
 }

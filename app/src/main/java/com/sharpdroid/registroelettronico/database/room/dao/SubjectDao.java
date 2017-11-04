@@ -30,13 +30,13 @@ public interface SubjectDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateSubject(Subject subject);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(List<Subject> info);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(SubjectInfo... info);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(SubjectTeacher... info);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

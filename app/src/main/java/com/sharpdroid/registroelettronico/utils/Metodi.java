@@ -378,6 +378,9 @@ public class Metodi {
                 .subscribe(didacticAPI -> {
                     List<com.sharpdroid.registroelettronico.database.entities.File> files = new LinkedList<>();
 
+                    DatabaseHelper.database.foldersDao().deleteFiles(p.getId());
+                    DatabaseHelper.database.foldersDao().deleteFolders(p.getId());
+
                     //collect folders and files
                     for (Teacher teacher : didacticAPI.getDidactics()) {
                         if (teacher != null) {
@@ -399,8 +402,6 @@ public class Metodi {
                         }
                     }
 
-                    DatabaseHelper.database.foldersDao().deleteFolders(p.getId());
-                    DatabaseHelper.database.foldersDao().deleteFiles(p.getId());
                     DatabaseHelper.database.subjectsDao().insert(didacticAPI.getDidactics());
                     DatabaseHelper.database.foldersDao().insertFiles(files); //update otherwise will clean any additional info (path...)
 

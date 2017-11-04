@@ -35,17 +35,17 @@ public interface FolderDao {
     @Query("DELETE FROM FOLDER WHERE PROFILE=:profile")
     void deleteFolders(long profile);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(List<Folder> folders);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long insert(Folder... folders);
+    long insert(Folder folders);
 
     @Query("SELECT * FROM TEACHER WHERE ID IN (SELECT FOLDER.TEACHER FROM FOLDER WHERE PROFILE=:profile GROUP BY FOLDER.TEACHER)")
     LiveData<List<TeacherDidacticPOJO>> getDidattica(long profile);
 
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertFiles(List<File> files);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

@@ -1,12 +1,13 @@
 package com.sharpdroid.registroelettronico.fragments
 
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,9 +17,9 @@ import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.FolderAdapter
-import com.sharpdroid.registroelettronico.database.entities.Folder
-import com.sharpdroid.registroelettronico.database.entities.Teacher
-import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
+import com.sharpdroid.registroelettronico.database.pojos.FolderPOJO
+import com.sharpdroid.registroelettronico.database.pojos.TeacherDidacticPOJO
+import com.sharpdroid.registroelettronico.database.viewModels.DidatticaViewModel
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.EventType
 import com.sharpdroid.registroelettronico.utils.Metodi.updateFolders
@@ -27,8 +28,6 @@ import kotlinx.android.synthetic.main.coordinator_swipe_recycler.*
 import kotlinx.android.synthetic.main.coordinator_swipe_recycler.view.*
 
 class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, FolderAdapter.Listener, NotificationManager.NotificationReceiver {
-    private var selectedFolder: Folder? = null
-
     override fun didReceiveNotification(code: Int, args: Array<in Any>) {
         when (code) {
             EventType.UPDATE_FOLDERS_START -> {
@@ -37,13 +36,13 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
             EventType.UPDATE_FOLDERS_OK,
             EventType.UPDATE_FOLDERS_KO -> {
                 if (swiperefresh.isRefreshing) swiperefresh.isRefreshing = false
-                load()
             }
         }
     }
 
     private lateinit var mRVAdapter: FolderAdapter
     lateinit private var emptyHolder: EmptyFragment
+    lateinit private var viewModel: DidatticaViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -65,6 +64,7 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
                 R.color.greenmaterial,
                 R.color.orangematerial)
 
+        viewModel = ViewModelProviders.of(activity)[DidatticaViewModel::class.java]
 
         activity.title = getString(R.string.files)
         recycler.setHasFixedSize(true)
@@ -74,30 +74,23 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
         mRVAdapter = FolderAdapter(this)
         recycler.adapter = mRVAdapter
 
-        load()
         download()
 
-        if (savedInstanceState != null) {
-            selectedFolder = savedInstanceState.getSerializable("folder") as Folder?
-        }
+        viewModel.getDidattica(Account.with(context).user).observe(this, Observer {
+            println("OBSERVED")
+            addFiles(it ?: emptyList())
+        })
+
         if (!BuildConfig.DEBUG)
             Answers.getInstance().logContentView(ContentViewEvent().putContentId("Didattica").putContentType("Cartelle"))
     }
 
     override fun onResume() {
         super.onResume()
-        selectedFolder = null
+        viewModel.selectedFolder.value = null
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        if (selectedFolder != null) {
-            Log.d("FragmentFolders", "SAVE STATE")
-            outState.putSerializable("folder", selectedFolder)
-        }
-    }
-
-    private fun addFiles(teachers: List<Teacher>) {
+    private fun addFiles(teachers: List<TeacherDidacticPOJO>) {
         if (!teachers.isEmpty()) {
             mRVAdapter.setTeacherFolder(teachers)
         } else {
@@ -109,12 +102,6 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
         download()
     }
 
-    private fun load() {
-        val teachers = DatabaseHelper.database.subjectsDao().getTeachers(Account.with(context).user)
-        teachers.forEach { it.folders = DatabaseHelper.database.foldersDao().getFolders(it.id, Account.with(activity).user) }
-        addFiles(teachers)
-    }
-
     private fun download() {
         updateFolders(activity)
     }
@@ -124,10 +111,10 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
         NotificationManager.instance.removeObserver(this, EventType.UPDATE_FOLDERS_START, EventType.UPDATE_FOLDERS_OK, EventType.UPDATE_FOLDERS_KO)
     }
 
-    override fun onFolderClick(f: Folder) {
-        selectedFolder = f
+    override fun onFolderClick(f: FolderPOJO) {
+        viewModel.selectedFolder.value = f
         val transaction = activity.supportFragmentManager.beginTransaction()
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)/*setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)*/.replace(R.id.fragment_container, FragmentFiles.newInstance(f)).addToBackStack(null)
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)/*setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)*/.replace(R.id.fragment_container, FragmentFiles()).addToBackStack(null)
         transaction.commit()
     }
 }
