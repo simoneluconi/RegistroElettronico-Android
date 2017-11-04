@@ -1,4 +1,4 @@
-package com.sharpdroid.registroelettronico.database.room.dao;
+package com.sharpdroid.registroelettronico.database.dao;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
@@ -9,6 +9,7 @@ import android.arch.persistence.room.Transaction;
 import android.support.annotation.NonNull;
 
 import com.sharpdroid.registroelettronico.database.entities.Lesson;
+import com.sharpdroid.registroelettronico.database.pojos.LessonMini;
 
 import java.util.List;
 
@@ -21,10 +22,11 @@ public interface LessonDao {
     LiveData<List<Lesson>> loadLessons(long profile, long date);
 
     @Query("SELECT * FROM LESSON WHERE M_SUBJECT_ID=:code GROUP BY M_ARGUMENT, M_AUTHOR_NAME, M_DATE ORDER BY M_DATE DESC LIMIT 5")
-    List<Lesson> loadLastLessons(long code);
+    Flowable<List<Lesson>> loadLastLessons(long code);
 
-    @Query("SELECT * FROM LESSON WHERE M_SUBJECT_ID=:code GROUP BY M_ARGUMENT, M_AUTHOR_NAME, M_DATE ORDER BY M_DATE DESC LIMIT 5")
-    LiveData<List<Lesson>> loadLessonsGrouped(long code);
+
+    @Query("SELECT * FROM LESSON WHERE M_SUBJECT_ID=:code GROUP BY M_ARGUMENT, M_AUTHOR_NAME, M_DATE ORDER BY M_DATE DESC")
+    Flowable<List<LessonMini>> loadLessons(long code);
 
     @Transaction
     @Query("SELECT * FROM LESSON WHERE PROFILE=:profile AND (M_ARGUMENT LIKE :query OR M_SUBJECT_DESCRIPTION LIKE :query)")

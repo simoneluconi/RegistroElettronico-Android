@@ -1,4 +1,4 @@
-package com.sharpdroid.registroelettronico.database.room.dao;
+package com.sharpdroid.registroelettronico.database.dao;
 
 
 import android.arch.persistence.room.Dao;
@@ -10,6 +10,7 @@ import android.arch.persistence.room.Update;
 import com.sharpdroid.registroelettronico.database.entities.Profile;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ public interface ProfileDao {
     void insert(@NotNull Profile profile);
 
     @Query("SELECT * FROM PROFILE LIMIT 1")
+    @Nullable
     Profile getRandomProfile();
 
     @Update(onConflict = OnConflictStrategy.REPLACE)

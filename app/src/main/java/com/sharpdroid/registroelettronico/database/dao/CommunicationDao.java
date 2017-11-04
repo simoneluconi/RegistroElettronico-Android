@@ -1,4 +1,4 @@
-package com.sharpdroid.registroelettronico.database.room.dao;
+package com.sharpdroid.registroelettronico.database.dao;
 
 
 import android.arch.lifecycle.LiveData;

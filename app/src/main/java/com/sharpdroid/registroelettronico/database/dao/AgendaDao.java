@@ -1,4 +1,4 @@
-package com.sharpdroid.registroelettronico.database.room.dao;
+package com.sharpdroid.registroelettronico.database.dao;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;

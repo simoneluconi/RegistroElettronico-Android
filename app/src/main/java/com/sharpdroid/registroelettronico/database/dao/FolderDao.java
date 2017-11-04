@@ -1,4 +1,4 @@
-package com.sharpdroid.registroelettronico.database.room.dao;
+package com.sharpdroid.registroelettronico.database.dao;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
@@ -55,4 +55,7 @@ public interface FolderDao {
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     int update(FileInfo info);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    long insert(FileInfo info);
 }

@@ -4,6 +4,15 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 
+import com.sharpdroid.registroelettronico.database.dao.AbsenceDao;
+import com.sharpdroid.registroelettronico.database.dao.AgendaDao;
+import com.sharpdroid.registroelettronico.database.dao.CommunicationDao;
+import com.sharpdroid.registroelettronico.database.dao.FolderDao;
+import com.sharpdroid.registroelettronico.database.dao.GradeDao;
+import com.sharpdroid.registroelettronico.database.dao.LessonDao;
+import com.sharpdroid.registroelettronico.database.dao.NoteDao;
+import com.sharpdroid.registroelettronico.database.dao.ProfileDao;
+import com.sharpdroid.registroelettronico.database.dao.SubjectDao;
 import com.sharpdroid.registroelettronico.database.entities.Absence;
 import com.sharpdroid.registroelettronico.database.entities.Communication;
 import com.sharpdroid.registroelettronico.database.entities.CommunicationInfo;
@@ -23,15 +32,6 @@ import com.sharpdroid.registroelettronico.database.entities.Subject;
 import com.sharpdroid.registroelettronico.database.entities.SubjectInfo;
 import com.sharpdroid.registroelettronico.database.entities.SubjectTeacher;
 import com.sharpdroid.registroelettronico.database.entities.Teacher;
-import com.sharpdroid.registroelettronico.database.room.dao.AbsenceDao;
-import com.sharpdroid.registroelettronico.database.room.dao.AgendaDao;
-import com.sharpdroid.registroelettronico.database.room.dao.CommunicationDao;
-import com.sharpdroid.registroelettronico.database.room.dao.FolderDao;
-import com.sharpdroid.registroelettronico.database.room.dao.GradeDao;
-import com.sharpdroid.registroelettronico.database.room.dao.LessonDao;
-import com.sharpdroid.registroelettronico.database.room.dao.NoteDao;
-import com.sharpdroid.registroelettronico.database.room.dao.ProfileDao;
-import com.sharpdroid.registroelettronico.database.room.dao.SubjectDao;
 
 @Database(entities = {
         Absence.class,
