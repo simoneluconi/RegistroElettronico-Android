@@ -1,5 +1,7 @@
 package com.sharpdroid.registroelettronico.fragments
 
+import android.arch.lifecycle.MediatorLiveData
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -13,13 +15,18 @@ import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.AddEventActivity
 import com.sharpdroid.registroelettronico.adapters.AgendaAdapter
-import com.sharpdroid.registroelettronico.database.entities.*
+import com.sharpdroid.registroelettronico.database.entities.LocalAgenda
+import com.sharpdroid.registroelettronico.database.entities.RemoteAgenda
+import com.sharpdroid.registroelettronico.database.entities.RemoteAgendaInfo
+import com.sharpdroid.registroelettronico.database.entities.SuperAgenda
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
+import com.sharpdroid.registroelettronico.database.viewModels.AgendaViewModel
 import com.sharpdroid.registroelettronico.fragments.bottomSheet.AgendaBS
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.EventType
 import com.sharpdroid.registroelettronico.utils.Metodi
 import com.sharpdroid.registroelettronico.utils.Metodi.*
+import com.sharpdroid.registroelettronico.utils.add
 import com.transitionseverywhere.ChangeText
 import com.transitionseverywhere.TransitionManager
 import kotlinx.android.synthetic.main.activity_main.*
@@ -27,6 +34,7 @@ import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.fragment_agenda.*
 import java.text.SimpleDateFormat
 import java.util.*
+import android.arch.lifecycle.Observer as CoolObserver
 
 
 // DONE: 19/01/2017 Aggiungere eventi all'agenda
@@ -35,17 +43,6 @@ import java.util.*
 class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListener, AgendaAdapter.AgendaClickListener, AgendaBS.Listener, NotificationManager.NotificationReceiver {
 
     override fun didReceiveNotification(code: Int, args: Array<in Any>) {
-        when (code) {
-            EventType.UPDATE_AGENDA_START -> {
-
-            }
-            EventType.UPDATE_AGENDA_OK,
-            EventType.UPDATE_AGENDA_KO -> {
-                load(true)
-                updateCalendar()
-                updateAdapter()
-            }
-        }
     }
 
     private var month = SimpleDateFormat("MMMM", Locale.getDefault())
@@ -55,6 +52,8 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
     private lateinit var adapter: AgendaAdapter
     private var mDate: Date = Date()
     private val events = ArrayList<Any>()
+    private val local = ArrayList<LocalAgenda>()
+    private val remote = ArrayList<RemoteAgenda>()
 
     private var active: Boolean = false //avoid updating views if fragment is gone
 
@@ -98,16 +97,47 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         recycler.layoutManager = LinearLayoutManager(context)
         recycler.adapter = adapter
 
+        if (savedInstanceState == null)
+            download()
+
+        val viewModel = ViewModelProviders.of(this)[AgendaViewModel::class.java]
+
+        val mediator = MediatorLiveData<List<Any>>()
+
+        mediator.addSource(viewModel.getLocal(Account.with(context).user), {
+            local.clear()
+            local.addAll(it.orEmpty())
+
+            events.clear()
+            events.addAll(local)
+            events.addAll(remote)
+            println("LOCAL OBSERVED total:" + events.size)
+            mediator.postValue(events)
+        })
+
+        mediator.addSource(viewModel.getRemote(Account.with(context).user), {
+            remote.clear()
+            remote.addAll(it.orEmpty())
+
+            events.clear()
+            events.addAll(local)
+            events.addAll(remote)
+            println("REMOTE OBSERVED total:" + events.size)
+            mediator.postValue(events)
+        })
+
+        mediator.observe(this, CoolObserver {
+            println("ALL OBSERVED " + events.size)
+            updateAdapter()
+            updateCalendar()
+        })
+
         if (!BuildConfig.DEBUG)
             Answers.getInstance().logContentView(ContentViewEvent().putContentId("Agenda"))
-
-        download()
     }
 
     private fun download() {
-        val p = Profile.getProfile(context)
-        updateAgenda(p)
-        updatePeriods(p)
+        updateAgenda(context)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -117,11 +147,8 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
 
     override fun onResume() {
         super.onResume()
-        load(true)
         activity.calendar.visibility = View.VISIBLE
         setTitleSubtitle(mDate)
-        updateCalendar()
-        updateAdapter()
     }
 
     override fun onDestroyView() {
@@ -155,32 +182,26 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         return if (currentDate == true)
             events.filter {
                 if (it is SuperAgenda) {
-                    return@filter it.agenda.end.time in mDate.time until mDate.time + 86400000 && it.agenda.start.time in mDate.time until mDate.time + 86400000
+                    return@filter it.agenda.end.time in mDate.time until mDate.add(Calendar.HOUR_OF_DAY, 24).time && it.agenda.start.time in mDate.time until mDate.add(Calendar.HOUR_OF_DAY, 24).time
                 } else if (it is LocalAgenda) {
-                    return@filter it.day in mDate.time until mDate.time + 86400000
+                    return@filter it.day in mDate.time until mDate.add(Calendar.HOUR_OF_DAY, 24).time
                 }
                 true
             }
         else events
     }
 
-    private fun load(invalidate: Boolean) {
-        //if (invalidate) invalidateCache()
-
-        events.clear()
-        events.addAll(RemoteAgenda.getSuperAgenda(Account.with(activity).user))
-        //events.addAll(SugarRecord.find(LocalAgenda::class.java, "PROFILE=? AND ARCHIVED=0", Account.with(activity).user.toString()))
-    }
-
     private fun updateAdapter() {
+        println("updateAdapter total:" + events.size)
         setAdapterEvents(fetch(true))
     }
 
     private fun updateCalendar() {
-        activity.calendar.removeAllEvents()
-        activity.calendar.addEvents(convertEvents(events))
-        activity.calendar.invalidate()
-
+        with(activity.calendar) {
+            removeAllEvents()
+            addEvents(convertEvents(events))
+            invalidate()
+        }
     }
 
     private fun toCalendar(date: Date): Calendar {
@@ -265,8 +286,6 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                     }
 
                     e.completed = !e.completed
-                    load(true)
-                    updateAdapter()
                 }
                 1 -> {
                     val found = e.agenda.getInfo()
@@ -276,10 +295,6 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                     } else {
                         DatabaseHelper.database.eventsDao().insert(RemoteAgendaInfo(e.agenda.id, false, false, !isEventTest(e)))
                     }
-
-                    load(true)
-                    updateAdapter()
-                    updateCalendar()
                 }
                 2 -> {
                     val sendIntent = Intent()
@@ -296,10 +311,6 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                     } else {
                         DatabaseHelper.database.eventsDao().insert(RemoteAgendaInfo(e.agenda.id, false, true, isEventTest(e)))
                     }
-
-                    load(true)
-                    updateAdapter()
-                    updateCalendar()
                 }
             }
         } else if (e is LocalAgenda) { //no need to invalidate since cache is used only for RemoteAgenda
@@ -307,17 +318,10 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                 0 -> {
                     e.completed_date = if (e.completed_date != null) null else Date()
                     DatabaseHelper.database.eventsDao().insert(e)
-
-                    load(false)
-                    updateAdapter()
                 }
                 1 -> {
                     e.type = if (e.type == "verifica") "altro" else "verifica"
                     DatabaseHelper.database.eventsDao().insert(e)
-
-                    load(false)
-                    updateAdapter()
-                    updateCalendar()
                 }
                 2 -> {
                     val sendIntent = Intent()
@@ -329,10 +333,6 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                 3 -> {
                     e.archived = !e.archived
                     DatabaseHelper.database.eventsDao().insert(e)
-
-                    load(false)
-                    updateAdapter()
-                    updateCalendar()
                 }
             }
         }
