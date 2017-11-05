@@ -182,13 +182,13 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
     }
 
     private fun initializeEvents(date: Date, invalidate: Boolean) {
-        if (invalidate) {
+        /*if (invalidate) {
             RemoteAgenda.clearCache()
             RemoteAgenda.setupCache(Account.with(context).user)
-        }
+        }*/
 
         events.clear()
-        events.addAll(RemoteAgenda.getSuperAgenda(Account.with(context).user, date, true))
+        events.addAll(emptyList())
         //events.addAll(SugarRecord.find(LocalAgenda::class.java, "PROFILE=? AND ARCHIVED=0 AND DAY>=${date.time}", Account.with(context).user.toString()))
         events.sortWith(Comparator { t1: Any, t2: Any ->
             val date1 = (t1 as? SuperAgenda)?.agenda?.start ?: Date((t1 as? LocalAgenda)?.day ?: 0)

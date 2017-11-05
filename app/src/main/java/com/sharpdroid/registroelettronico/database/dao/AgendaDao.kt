@@ -5,12 +5,13 @@ import android.arch.persistence.room.*
 import com.sharpdroid.registroelettronico.database.entities.LocalAgenda
 import com.sharpdroid.registroelettronico.database.entities.RemoteAgenda
 import com.sharpdroid.registroelettronico.database.entities.RemoteAgendaInfo
+import com.sharpdroid.registroelettronico.database.pojos.RemoteAgendaPOJO
 
 @Dao
 interface AgendaDao {
 
     @Query("SELECT * FROM REMOTE_AGENDA WHERE PROFILE = :profile")
-    fun getRemote(profile: Long): LiveData<List<RemoteAgenda>>
+    fun getRemote(profile: Long): LiveData<List<RemoteAgendaPOJO>>
 
 
     @Query("SELECT * FROM LOCAL_AGENDA WHERE PROFILE = :profile")
@@ -42,4 +43,7 @@ interface AgendaDao {
 
     @Query("UPDATE LOCAL_AGENDA SET ARCHIVED=0 WHERE ARCHIVED!=0")
     fun setNotArchived()
+
+    @Query("SELECT * FROM REMOTE_AGENDA_INFO WHERE ID=:id")
+    fun getInfo(id: Long): RemoteAgendaInfo?
 }
