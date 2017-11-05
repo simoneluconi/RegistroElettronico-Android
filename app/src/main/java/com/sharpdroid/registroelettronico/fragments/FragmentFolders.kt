@@ -1,7 +1,6 @@
 package com.sharpdroid.registroelettronico.fragments
 
 
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -19,11 +18,13 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.FolderAdapter
 import com.sharpdroid.registroelettronico.database.pojos.FolderPOJO
 import com.sharpdroid.registroelettronico.database.pojos.TeacherDidacticPOJO
+import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.database.viewModels.DidatticaViewModel
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.EventType
 import com.sharpdroid.registroelettronico.utils.Metodi.updateFolders
 import com.sharpdroid.registroelettronico.views.EmptyFragment
+import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.coordinator_swipe_recycler.*
 import kotlinx.android.synthetic.main.coordinator_swipe_recycler.view.*
 
@@ -33,7 +34,12 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
             EventType.UPDATE_FOLDERS_START -> {
                 if (!swiperefresh.isRefreshing) swiperefresh.isRefreshing = true
             }
-            EventType.UPDATE_FOLDERS_OK,
+            EventType.UPDATE_FOLDERS_OK -> {
+                DatabaseHelper.database.foldersDao().getDidattica(Account.with(context).user).toObservable().observeOn(AndroidSchedulers.mainThread()).subscribe {
+                    addFiles(it.orEmpty())
+                }
+                if (swiperefresh.isRefreshing) swiperefresh.isRefreshing = false
+            }
             EventType.UPDATE_FOLDERS_KO -> {
                 if (swiperefresh.isRefreshing) swiperefresh.isRefreshing = false
             }
@@ -77,10 +83,16 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
         if (savedInstanceState == null)
             download()
 
+        /*
         viewModel.getDidattica(Account.with(context).user).observe(this, Observer {
             println("OBSERVED " + it?.size + " - " + it?.joinToString(separator = ", ") { it.teacher.teacherName })
             addFiles(it.orEmpty())
         })
+        */
+
+        DatabaseHelper.database.foldersDao().getDidattica(Account.with(context).user).toObservable().observeOn(AndroidSchedulers.mainThread()).subscribe {
+            addFiles(it.orEmpty())
+        }
 
         if (!BuildConfig.DEBUG)
             Answers.getInstance().logContentView(ContentViewEvent().putContentId("Didattica").putContentType("Cartelle"))
@@ -94,7 +106,7 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
     private fun addFiles(teachers: List<TeacherDidacticPOJO>) {
         mRVAdapter.setTeacherFolder(teachers)
 
-        emptyHolder.visibility = if(teachers.isEmpty()) View.VISIBLE else View.GONE
+        emptyHolder.visibility = if (teachers.isEmpty()) View.VISIBLE else View.GONE
     }
 
     override fun onRefresh() {

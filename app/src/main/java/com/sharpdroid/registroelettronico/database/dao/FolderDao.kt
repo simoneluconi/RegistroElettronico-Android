@@ -6,6 +6,7 @@ import com.sharpdroid.registroelettronico.database.entities.File
 import com.sharpdroid.registroelettronico.database.entities.FileInfo
 import com.sharpdroid.registroelettronico.database.entities.Folder
 import com.sharpdroid.registroelettronico.database.pojos.TeacherDidacticPOJO
+import io.reactivex.Single
 
 @Dao
 interface FolderDao {
@@ -36,7 +37,7 @@ interface FolderDao {
 
     @Transaction
     @Query("SELECT * FROM TEACHER WHERE ID IN (SELECT FOLDER.TEACHER FROM FOLDER WHERE PROFILE=:profile GROUP BY FOLDER.TEACHER)")
-    fun getDidattica(profile: Long): LiveData<List<TeacherDidacticPOJO>>
+    fun getDidattica(profile: Long): Single<List<TeacherDidacticPOJO>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertFiles(files: List<File>)
