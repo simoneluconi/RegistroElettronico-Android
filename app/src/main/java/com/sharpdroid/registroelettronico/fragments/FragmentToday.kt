@@ -1,6 +1,6 @@
 package com.sharpdroid.registroelettronico.fragments
 
-
+import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -113,9 +113,9 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
 
 
         DatabaseHelper.database.lessonsDao().loadLessons(Account.with(context).user, Date().flat().time)
-                .observe(this, android.arch.lifecycle.Observer { t: MutableList<Lesson>? ->
+                .observe(this, Observer<List<Lesson>> {
                     println("OBSERVED")
-                    initializeLessons(t ?: emptyList())
+                    initializeLessons(it ?: emptyList())
                 })
 
         NotificationManager.instance.addObserver(this,
@@ -160,9 +160,9 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
     }
 
     private fun initializeAbsence(date: Date) {
-        DatabaseHelper.database.absencesDao().getAbsences(date, Account.with(context).user).observe(this, android.arch.lifecycle.Observer { t: MutableList<Absence>? ->
+        DatabaseHelper.database.absencesDao().getAbsences(date, Account.with(context).user).observe(this, Observer {
             absences.clear()
-            absences.addAll(t ?: emptyList())
+            absences.addAll(it ?: emptyList())
             absence_card.visibility = if (absences.isNotEmpty()) View.VISIBLE else View.GONE
             absence_recycler.adapter.notifyDataSetChanged()
         })
