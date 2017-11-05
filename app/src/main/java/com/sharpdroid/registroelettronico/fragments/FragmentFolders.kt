@@ -78,8 +78,8 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
             download()
 
         viewModel.getDidattica(Account.with(context).user).observe(this, Observer {
-            println("OBSERVED")
-            addFiles(it ?: emptyList())
+            println("OBSERVED " + it?.size + " - " + it?.joinToString(separator = ", ") { it.teacher.teacherName })
+            addFiles(it.orEmpty())
         })
 
         if (!BuildConfig.DEBUG)
@@ -92,11 +92,9 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
     }
 
     private fun addFiles(teachers: List<TeacherDidacticPOJO>) {
-        if (!teachers.isEmpty()) {
-            mRVAdapter.setTeacherFolder(teachers)
-        } else {
-            emptyHolder.visibility = View.VISIBLE
-        }
+        mRVAdapter.setTeacherFolder(teachers)
+
+        emptyHolder.visibility = if(teachers.isEmpty()) View.VISIBLE else View.GONE
     }
 
     override fun onRefresh() {
