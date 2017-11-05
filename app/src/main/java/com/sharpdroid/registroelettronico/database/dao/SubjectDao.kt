@@ -1,50 +1,59 @@
-package com.sharpdroid.registroelettronico.database.dao
+package com.sharpdroid.registroelettronico.database.dao;
 
-import android.arch.lifecycle.LiveData
-import android.arch.persistence.room.*
-import com.sharpdroid.registroelettronico.database.entities.Subject
-import com.sharpdroid.registroelettronico.database.entities.SubjectInfo
-import com.sharpdroid.registroelettronico.database.entities.SubjectTeacher
-import com.sharpdroid.registroelettronico.database.entities.Teacher
-import com.sharpdroid.registroelettronico.database.pojos.SubjectWithLessons
+import android.arch.lifecycle.LiveData;
+import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
+import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Transaction;
+import android.arch.persistence.room.Update;
+
+import com.sharpdroid.registroelettronico.database.entities.Subject;
+import com.sharpdroid.registroelettronico.database.entities.SubjectInfo;
+import com.sharpdroid.registroelettronico.database.entities.SubjectTeacher;
+import com.sharpdroid.registroelettronico.database.entities.Teacher;
+import com.sharpdroid.registroelettronico.database.pojos.SubjectWithLessons;
+
+import java.util.Collection;
+import java.util.List;
 
 @Dao
-interface SubjectDao {
+public interface SubjectDao {
 
     @Transaction
     @Query("select * from SUBJECT where ID in (SELECT SUBJECT_TEACHER.SUBJECT FROM SUBJECT_TEACHER WHERE SUBJECT_TEACHER.PROFILE=:profile)")
-    fun getSubjectWithLessons(profile: Long): LiveData<List<SubjectWithLessons>>
+    LiveData<List<SubjectWithLessons>> getSubjectWithLessons(long profile);
 
     @Query("SELECT * FROM SUBJECT WHERE ID = :id LIMIT 1")
-    fun getSubject(id: Long): Subject
+    Subject getSubject(long id);
 
     @Query("select * from SUBJECT where SUBJECT.ID IN (SELECT  SUBJECT_TEACHER.SUBJECT from SUBJECT_TEACHER WHERE SUBJECT_TEACHER.PROFILE=:profile) ORDER BY DESCRIPTION ASC")
-    fun getSubjects(profile: Long): LiveData<List<Subject>>
+    LiveData<List<Subject>> getSubjects(long profile);
 
     @Query("DELETE FROM SUBJECT WHERE ID IN (SELECT SUBJECT FROM SUBJECT_TEACHER WHERE PROFILE=:profile)")
-    fun deleteSubjects(profile: Long)
+    void deleteSubjects(long profile);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun updateSubject(subject: Subject)
+    void updateSubject(Subject subject);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(info: List<Subject>)
+    void insert(List<Subject> info);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg info: SubjectInfo)
+    void insert(SubjectInfo... info);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg info: SubjectTeacher)
+    void insert(SubjectTeacher... info);
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(teachers: Collection<Teacher>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insert(Collection<Teacher> teachers);
 
     @Update
-    fun updateSubjectInfo(subject: SubjectInfo)
+    void updateSubjectInfo(SubjectInfo subject);
 
     @Query("DELETE FROM SUBJECT_TEACHER WHERE PROFILE = :profile")
-    fun delete(profile: Long)
+    void delete(long profile);
 
     @Query("DELETE FROM SUBJECT_TEACHER WHERE PROFILE=:profile AND SUBJECT=:subject AND TEACHER=:teacher")
-    fun deleteSingle(profile: Long, subject: Long, teacher: Long)
+    void deleteSingle(long profile, long subject, long teacher);
 }

@@ -380,6 +380,7 @@ public class Metodi {
 
                     DatabaseHelper.database.foldersDao().deleteFiles(p.getId());
                     DatabaseHelper.database.foldersDao().deleteFolders(p.getId());
+                    DatabaseHelper.database.subjectsDao().insert(didacticAPI.getDidactics());
 
                     //collect folders and files
                     for (Teacher teacher : didacticAPI.getDidactics()) {
@@ -402,7 +403,6 @@ public class Metodi {
                         }
                     }
 
-                    DatabaseHelper.database.subjectsDao().insert(didacticAPI.getDidactics());
                     DatabaseHelper.database.foldersDao().insertFiles(files); //update otherwise will clean any additional info (path...)
 
 
