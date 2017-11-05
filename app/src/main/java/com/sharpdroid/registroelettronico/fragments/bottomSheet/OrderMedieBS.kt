@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.bottom_sheet_order_medie.view.*
  */
 class OrderMedieBS : BottomSheetDialogFragment() {
     private val texts = intArrayOf(R.string.nome_bs, R.string.media_bs, R.string.nvoti_bs)
-    private val images = intArrayOf(R.drawable.ic_title, R.drawable.ic_timeline, R.drawable.ic_timeline)
+    private val images = intArrayOf(R.drawable.ic_title, R.drawable.ic_timeline, R.drawable.ic_functions_black_24dp)
     private var mListener: OrderListener? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
