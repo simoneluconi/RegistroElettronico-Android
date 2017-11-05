@@ -1,7 +1,6 @@
 package com.sharpdroid.registroelettronico.fragments
 
 import android.arch.lifecycle.MediatorLiveData
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
@@ -12,6 +11,7 @@ import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.ContentViewEvent
 import com.github.sundeepk.compactcalendarview.CompactCalendarView
 import com.sharpdroid.registroelettronico.BuildConfig
+import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.AddEventActivity
 import com.sharpdroid.registroelettronico.adapters.AgendaAdapter
@@ -22,6 +22,7 @@ import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.database.viewModels.AgendaViewModel
 import com.sharpdroid.registroelettronico.fragments.bottomSheet.AgendaBS
 import com.sharpdroid.registroelettronico.utils.Account
+import com.sharpdroid.registroelettronico.utils.EventType
 import com.sharpdroid.registroelettronico.utils.Metodi
 import com.sharpdroid.registroelettronico.utils.Metodi.*
 import com.sharpdroid.registroelettronico.utils.add
@@ -32,11 +33,17 @@ import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.fragment_agenda.*
 import java.text.SimpleDateFormat
 import java.util.*
+import android.arch.lifecycle.Observer as CoolObserver
+
 
 // DONE: 19/01/2017 Aggiungere eventi all'agenda
 // DONE: 19/01/2017 Aggiungere eventi dell'agenda nel calendario del telefono
 
-class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListener, AgendaAdapter.AgendaClickListener, AgendaBS.Listener {
+class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListener, AgendaAdapter.AgendaClickListener, AgendaBS.Listener, NotificationManager.NotificationReceiver {
+
+    override fun didReceiveNotification(code: Int, args: Array<in Any>) {
+    }
+
     private var month = SimpleDateFormat("MMMM", Locale.getDefault())
     private var year = SimpleDateFormat("yyyy", Locale.getDefault())
     internal var agenda = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
@@ -44,15 +51,21 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
     private lateinit var adapter: AgendaAdapter
     private var mDate: Date = Date()
     private val events = ArrayList<Any>()
+    private val local = ArrayList<LocalAgenda>()
+    private val remote = ArrayList<SuperAgenda>()
+
+    private var active: Boolean = false //avoid updating views if fragment is gone
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
+        active = true
         return inflater.inflate(R.layout.fragment_agenda, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        NotificationManager.instance.addObserver(this, EventType.UPDATE_AGENDA_OK, EventType.UPDATE_AGENDA_KO, EventType.UPDATE_AGENDA_START)
 
         with(activity.calendar) {
             visibility = View.VISIBLE
@@ -106,18 +119,30 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         val mediator = MediatorLiveData<List<Any>>()
 
         mediator.addSource(viewModel.getLocal(Account.with(context).user), {
-            mediator.value = it.orEmpty()
+            local.clear()
+            local.addAll(it.orEmpty())
+
+            events.clear()
+            events.addAll(local)
+            events.addAll(remote)
+            println("LOCAL OBSERVED total:" + events.size)
+            mediator.postValue(events)
         })
 
         mediator.addSource(viewModel.getRemote(Account.with(context).user), {
-            mediator.value = it?.map {
+            remote.clear()
+            remote.addAll(it?.map {
                 SuperAgenda(it.event, it.isCompleted(), it.isTest())
-            }.orEmpty()
+            }.orEmpty())
+
+            events.clear()
+            events.addAll(local)
+            events.addAll(remote)
+            println("REMOTE OBSERVED total:" + events.size)
+            mediator.postValue(events)
         })
 
-        mediator.observe(this, Observer {
-            events.clear()
-            events.addAll(it.orEmpty())
+        mediator.observe(this, CoolObserver {
             println("ALL OBSERVED " + events.size)
             updateAdapter()
             updateCalendar()
@@ -140,6 +165,11 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         super.onResume()
         activity.calendar.visibility = View.VISIBLE
         setTitleSubtitle(mDate)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        NotificationManager.instance.removeObserver(this, EventType.UPDATE_AGENDA_OK, EventType.UPDATE_AGENDA_KO, EventType.UPDATE_AGENDA_START)
     }
 
     private fun prepareDate(predictNextDay: Boolean) {
@@ -234,7 +264,9 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
     override fun onDetach() {
         super.onDetach()
         activity.toolbar.subtitle = ""
+        active = false
     }
+
 
     override fun onAgendaItemClicked(e: Any) {
         val bottomSheetAgenda = AgendaBS()
