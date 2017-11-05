@@ -19,7 +19,7 @@ class LocalAgenda(
         @ColumnInfo(name = "DAY") var day: Long = 0,
         @ColumnInfo(name = "SUBJECT") var subject: Long = 0L,
         @ColumnInfo(name = "TEACHER") var teacher: Long = 0L,
-        @ColumnInfo(name = "COMPLETED_DATE") var completed_date: Date = Date(0),
+        @ColumnInfo(name = "COMPLETED_DATE") var completed_date: Date? = Date(0),
         @ColumnInfo(name = "PROFILE") var profile: Long = 0L,
         @ColumnInfo(name = "ARCHIVED") var archived: Boolean = false
 ) {
