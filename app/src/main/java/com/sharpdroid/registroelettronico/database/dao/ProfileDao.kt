@@ -10,7 +10,7 @@ interface ProfileDao {
     val profilesSync: List<Profile>
 
     @get:Query("SELECT * FROM PROFILE LIMIT 1")
-    val randomProfile: Profile
+    val randomProfile: Profile?
 
     @Query("SELECT * FROM PROFILE WHERE ID = :profile LIMIT 1")
     fun getProfile(profile: Long): Profile
