@@ -56,7 +56,7 @@ class Intro : IntroActivity() {
         addSlide(FragmentSlide.Builder()
                 .background(R.color.intro_blue)
                 .backgroundDark(R.color.intro_blue_dark)
-                .fragment(FragmentLogin.newInstance())
+                .fragment(FragmentLogin())
                 .build())
 
         addSlide(SimpleSlide.Builder()
