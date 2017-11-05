@@ -85,17 +85,16 @@ class FragmentLogin : SlideFragment() {
                                 .adapter(LoginAdapter(login.choices, context) { checked ->
                                     checkedIdents.clear()
                                     checkedIdents.addAll(checked)
-                                    println(checked.toString())
                                     Unit
                                 }, LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false))
-                                .onPositive { materialDialog, dialogAction ->
+                                .onPositive { _, _ ->
                                     for (ident in checkedIdents) {
                                         loginWithIdent(mEmail, mPassword, ident)
                                     }
                                     postLogin()
                                 }
                                 .canceledOnTouchOutside(false)
-                                .onNeutral { dialog, which ->
+                                .onNeutral { _, _ ->
                                     login_btn.setText(R.string.login)
                                     mail.isEnabled = true
                                     password.isEnabled = true
@@ -156,11 +155,4 @@ class FragmentLogin : SlideFragment() {
                     login_btn.isEnabled = true
                 }
     }
-
-    companion object {
-
-        fun newInstance(): FragmentLogin {
-            return FragmentLogin()
-        }
-    }
-}// Required empty public constructor
+}
