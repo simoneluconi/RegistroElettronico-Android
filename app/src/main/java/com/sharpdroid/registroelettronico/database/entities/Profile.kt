@@ -34,9 +34,7 @@ class Profile(
 
     companion object {
         fun getIProfiles(): List<IProfile<ProfileDrawerItem>> {
-            return DatabaseHelper.database.profilesDao().profilesSync.filter {
-                it != null
-            }.map {
+            return DatabaseHelper.database.profilesDao().profilesSync.map {
                 it.asIProfile()
             }
         }
