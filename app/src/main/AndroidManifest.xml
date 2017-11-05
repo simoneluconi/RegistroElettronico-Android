@@ -27,7 +27,7 @@
             android:value="4" />
         <meta-data
             android:name="QUERY_LOG"
-            android:value="true" />
+            android:value="false" />
         <meta-data
             android:name="DOMAIN_PACKAGE_NAME"
             android:value="com.sharpdroid.registroelettronico" />
