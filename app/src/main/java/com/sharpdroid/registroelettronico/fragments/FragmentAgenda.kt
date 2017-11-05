@@ -16,7 +16,6 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.AddEventActivity
 import com.sharpdroid.registroelettronico.adapters.AgendaAdapter
 import com.sharpdroid.registroelettronico.database.entities.LocalAgenda
-import com.sharpdroid.registroelettronico.database.entities.RemoteAgenda
 import com.sharpdroid.registroelettronico.database.entities.RemoteAgendaInfo
 import com.sharpdroid.registroelettronico.database.entities.SuperAgenda
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
@@ -53,7 +52,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
     private var mDate: Date = Date()
     private val events = ArrayList<Any>()
     private val local = ArrayList<LocalAgenda>()
-    private val remote = ArrayList<RemoteAgenda>()
+    private val remote = ArrayList<SuperAgenda>()
 
     private var active: Boolean = false //avoid updating views if fragment is gone
 
@@ -117,7 +116,9 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
 
         mediator.addSource(viewModel.getRemote(Account.with(context).user), {
             remote.clear()
-            remote.addAll(it.orEmpty())
+            remote.addAll(it?.map {
+                SuperAgenda(it.event, it.isCompleted(), it.isTest())
+            }.orEmpty())
 
             events.clear()
             events.addAll(local)
@@ -181,10 +182,9 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
     private fun fetch(currentDate: Boolean?): List<Any> {
         return if (currentDate == true)
             events.filter {
-                if (it is SuperAgenda) {
-                    return@filter it.agenda.end.time in mDate.time until mDate.add(Calendar.HOUR_OF_DAY, 24).time && it.agenda.start.time in mDate.time until mDate.add(Calendar.HOUR_OF_DAY, 24).time
-                } else if (it is LocalAgenda) {
-                    return@filter it.day in mDate.time until mDate.add(Calendar.HOUR_OF_DAY, 24).time
+                when (it) {
+                    is SuperAgenda -> return@filter it.agenda.end.time in mDate.time until mDate.add(Calendar.HOUR_OF_DAY, 24).time && it.agenda.start.time in mDate.time until mDate.add(Calendar.HOUR_OF_DAY, 24).time
+                    is LocalAgenda -> return@filter it.day in mDate.time until mDate.add(Calendar.HOUR_OF_DAY, 24).time
                 }
                 true
             }
@@ -192,7 +192,6 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
     }
 
     private fun updateAdapter() {
-        println("updateAdapter total:" + events.size)
         setAdapterEvents(fetch(true))
     }
 
@@ -258,19 +257,6 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         val bottomSheetAgenda = AgendaBS()
         bottomSheetAgenda.setEvent(e)
         bottomSheetAgenda.show(childFragmentManager, "dialog")
-    }
-
-    private fun invalidateCache() {
-        /*SubjectTeacher.clearCache()
-        Teacher.clearCache()
-        Subject.clearCache()
-
-        SubjectTeacher.setupCache(Account.with(context).user)
-        Teacher.setupCache()
-        Subject.setupCache()
-
-        RemoteAgenda.clearCache()
-        RemoteAgenda.setupCache(Account.with(context).user)*/
     }
 
     override fun onBottomSheetItemClicked(position: Int, e: Any) {
