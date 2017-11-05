@@ -1,6 +1,7 @@
 package com.sharpdroid.registroelettronico.fragments
 
 import android.arch.lifecycle.MediatorLiveData
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
@@ -33,8 +34,6 @@ import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.fragment_agenda.*
 import java.text.SimpleDateFormat
 import java.util.*
-import android.arch.lifecycle.Observer as CoolObserver
-
 
 // DONE: 19/01/2017 Aggiungere eventi all'agenda
 // DONE: 19/01/2017 Aggiungere eventi dell'agenda nel calendario del telefono
@@ -126,7 +125,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
             events.addAll(local)
             events.addAll(remote)
             println("LOCAL OBSERVED total:" + events.size)
-            mediator.postValue(events)
+            mediator.value = null
         })
 
         mediator.addSource(viewModel.getRemote(Account.with(context).user), {
@@ -139,10 +138,10 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
             events.addAll(local)
             events.addAll(remote)
             println("REMOTE OBSERVED total:" + events.size)
-            mediator.postValue(events)
+            mediator.value = null
         })
 
-        mediator.observe(this, CoolObserver {
+        mediator.observe(this, Observer {
             println("ALL OBSERVED " + events.size)
             updateAdapter()
             updateCalendar()
