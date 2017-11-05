@@ -48,9 +48,13 @@ class FragmentMedie : Fragment() {
         }
     }
 
-    fun addSubjects(markSubjects: List<Average>, p: Int) {
-        mRVAdapter.addAll(markSubjects, p)
-
+    fun addSubjects(markSubjects: List<Average>, p: Int, order: String) {
+        val ordered = when (order) {
+            "avg" -> markSubjects.sortedByDescending { if (it.count > 0) it.sum / it.count else 0f }
+            "count" -> markSubjects.sortedByDescending { it.count }
+            else -> markSubjects.sortedBy { it.name }
+        }
+        mRVAdapter.addAll(ordered, p)
         emptyHolder?.visibility = if (markSubjects.isEmpty()) View.VISIBLE else View.GONE
     }
 }

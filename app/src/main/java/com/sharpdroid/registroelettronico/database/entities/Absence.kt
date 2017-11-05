@@ -81,7 +81,7 @@ class Absence(
                 when {
                     timeDifference > 72 -> {
                         //SPLIT absences
-                        map.put(startAbsence!!, days)
+                        map.put(startAbsence, days)
                         startAbsence = null
                         continue@loop
                     }
@@ -90,7 +90,7 @@ class Absence(
                         if (current.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY && next.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
                             days++
                         } else {
-                            map.put(startAbsence!!, days)
+                            map.put(startAbsence, days)
                             startAbsence = null
                             continue@loop
                         }
@@ -100,7 +100,7 @@ class Absence(
                         if (current.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY && next.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
                             days++
                         } else {
-                            map.put(startAbsence!!, days)
+                            map.put(startAbsence, days)
                             startAbsence = null
                             continue@loop
                         }
@@ -111,7 +111,7 @@ class Absence(
                     }
                 }
                 if (i == absencesInSchoolDays.size - 2) {
-                    map.put(startAbsence!!, days)
+                    map.put(startAbsence, days)
                     startAbsence = null
                 }
             }

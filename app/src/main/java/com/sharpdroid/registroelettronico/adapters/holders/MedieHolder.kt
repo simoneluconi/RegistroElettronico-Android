@@ -25,8 +25,8 @@ class MedieHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         }
         itemView.materia.text = capitalizeEach(average.name)
 
-        if (average.avg != 0f) {
-            itemView.media.text = String.format(Locale.getDefault(), "%.2f", average.avg)
+        if (average.count > 0) {
+            itemView.media.text = String.format(Locale.getDefault(), "%.2f", average.sum / average.count)
 
             var target = average.target
 
@@ -35,15 +35,15 @@ class MedieHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
 
             if (target <= 0) {
                 target = if (globalTarget == "Auto") {
-                    getPossibileSubjectTarget(average.avg.toDouble()).toFloat()
+                    getPossibileSubjectTarget((average.sum / average.count).toDouble()).toFloat()
                 } else
                     globalTarget.toFloat()
 
             }
-            itemView.custom_progressBar.setProgress(average.avg * 10)
-            itemView.custom_progressBar.setColor(ContextCompat.getColor(context, getMediaColor(average.avg, target)))
+            itemView.custom_progressBar.setProgress(average.sum / average.count * 10)
+            itemView.custom_progressBar.setColor(ContextCompat.getColor(context, getMediaColor(average.sum / average.count, target)))
 
-            itemView.descrizione.text = MessaggioVoto(target, average.avg, average.count)
+            itemView.descrizione.text = MessaggioVoto(target, average.sum / average.count, average.count)
         } else {
             itemView.custom_progressBar.setProgress(100f)
             itemView.custom_progressBar.setColor(ContextCompat.getColor(context, R.color.intro_blue))

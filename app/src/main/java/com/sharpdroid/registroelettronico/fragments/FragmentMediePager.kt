@@ -45,7 +45,6 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
     private lateinit var viewModel: GradesViewModel
 
     private var pagerSelected: Boolean = false
-    private val grades = mutableListOf<Grade>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -76,39 +75,44 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
                 R.color.greenmaterial,
                 R.color.orangematerial)
 
+        val profile = Account.with(context).user
+
         if (savedInstanceState != null) {
             view_pager.currentItem = savedInstanceState.getInt("position")
             pagerSelected = true
-        } else if (!pagerSelected && Grade.hasMarksSecondPeriod(activity)) {
+        } else if (!pagerSelected && Grade.hasMarksSecondPeriod(profile)) {
             view_pager.setCurrentItem(1, false)
             pagerSelected = true
-        }
-
-        val observer = Observer<List<Grade>> {
-            val order = viewModel.getOrder().value ?: PreferenceManager.getDefaultSharedPreferences(context).getString("order", "")
-
-            grades.clear()
-            grades.addAll(it ?: emptyList())
-
-            var fragment: FragmentMedie
-            for (i in 0..pagerAdapter.count) {
-                fragment = pagerAdapter.instantiateItem(view_pager, i) as FragmentMedie
-                when (i) {
-                    0 -> fragment.addSubjects(Grade.getAverages(grades.filter { it.mPeriod == 1 }, order), 1)
-                    1 -> fragment.addSubjects(Grade.getAverages(grades.filter { it.mPeriod != 1 }, order), 3)
-                    2 -> fragment.addSubjects(Grade.getAverages(grades, order), -1)
-                }
-            }
         }
 
         viewModel = ViewModelProviders.of(this)[GradesViewModel::class.java]
 
         //Observe remote data changes
-        viewModel.getGrades(Account.with(context).user).observe(this, observer)
+        viewModel.getFirstPeriod(profile).observe(this, Observer {
+            val fragment = pagerAdapter.instantiateItem(view_pager, 0) as FragmentMedie
+            fragment.addSubjects(it.orEmpty(), 1, PreferenceManager.getDefaultSharedPreferences(context).getString("order", ""))
+        })
 
-        //Observe order change
+        viewModel.getSecondPeriod(profile).observe(this, Observer {
+            val fragment = pagerAdapter.instantiateItem(view_pager, 1) as FragmentMedie
+            fragment.addSubjects(it.orEmpty(), 3, PreferenceManager.getDefaultSharedPreferences(context).getString("order", ""))
+        })
+
+        viewModel.getAllPeriods(profile).observe(this, Observer {
+            val fragment = pagerAdapter.instantiateItem(view_pager, 2) as FragmentMedie
+            fragment.addSubjects(it.orEmpty(), -1, PreferenceManager.getDefaultSharedPreferences(context).getString("order", ""))
+        })
+
+
         viewModel.getOrder().observe(this, Observer {
-            observer.onChanged(ArrayList(grades))
+            for (i in 0..pagerAdapter.count) {
+                val fragment = pagerAdapter.instantiateItem(view_pager, i) as FragmentMedie
+                when (i) {
+                    0 -> fragment.addSubjects(viewModel.getFirstPeriod(profile).value.orEmpty(), 1, it.orEmpty())
+                    1 -> fragment.addSubjects(viewModel.getSecondPeriod(profile).value.orEmpty(), 3, it.orEmpty())
+                    2 -> fragment.addSubjects(viewModel.getAllPeriods(profile).value.orEmpty(), -1, it.orEmpty())
+                }
+            }
         })
 
         if (savedInstanceState == null) {
@@ -162,7 +166,7 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
 
     private fun getSnackBarMessage(pos: Int): String {/*
         val p = if (pos == 0) 3 else if (pos == 1) 1 else 0
-        val average = SugarRecord.findWithQuery(Average::class.java, "SELECT 0 as ID, AVG(M_VALUE) as AVG FROM GRADE WHERE PROFILE=? AND M_VALUE!=0 AND M_PERIOD!=?", Account.with(activity).user.toString(), p.toString())[0].avg.toDouble()
+        val average = SugarRecord.findWithQuery(Average::class.java, "SELECT 0 as ID, AVG(M_VALUE) as AVG FROM GRADE WHERE PROFILE=? AND M_VALUE!=0 AND M_PERIOD!=?", Account.with(activity).user.toString(), p.toString())[0].sum.toDouble()
         var className: String? = SugarRecord.find(Lesson::class.java, "PROFILE=?", arrayOf(Account.with(activity).user.toString()), "M_CLASS_DESCRIPTION", null, "1").getOrNull(0).mClassDescription
         if (className != null) {
             className = className.split("\\s+".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0]
@@ -180,11 +184,6 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
                 "Media totale: " + String.format(Locale.getDefault(), "%.2f", average)
         } else*/
         return ""
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Grade.clearSubjectCache()
     }
 
     override fun onRefresh() {
