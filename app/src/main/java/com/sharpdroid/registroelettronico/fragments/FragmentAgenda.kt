@@ -73,9 +73,24 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
             fab_big_add.visibility = View.VISIBLE
 
             fab_big_add.setClosedOnTouchOutside(true)
-            fab_mini_verifica.setOnClickListener { _ -> startActivity(Intent(context, AddEventActivity::class.java).putExtra("type", "Verifica").putExtra("time", mDate.time)); fab_big_add.close(true) }
-            fab_mini_esercizi.setOnClickListener { _ -> startActivity(Intent(context, AddEventActivity::class.java).putExtra("type", "Compiti").putExtra("time", mDate.time)); fab_big_add.close(true) }
-            fab_mini_altro.setOnClickListener { _ -> startActivity(Intent(context, AddEventActivity::class.java).putExtra("type", "Altro").putExtra("time", mDate.time)); fab_big_add.close(true) }
+            fab_mini_verifica.setOnClickListener {
+                startActivity(Intent(context, AddEventActivity::class.java)
+                        .putExtra("type", "Verifica").
+                        putExtra("time", mDate.time))
+                fab_big_add.close(true)
+            }
+            fab_mini_esercizi.setOnClickListener {
+                startActivity(Intent(context, AddEventActivity::class.java)
+                        .putExtra("type", "Compiti")
+                        .putExtra("time", mDate.time))
+                fab_big_add.close(true)
+            }
+            fab_mini_altro.setOnClickListener {
+                startActivity(Intent(context, AddEventActivity::class.java)
+                        .putExtra("type", "Altro")
+                        .putExtra("time", mDate.time))
+                fab_big_add.close(true)
+            }
         }
 
         adapter = AgendaAdapter(place_holder)
