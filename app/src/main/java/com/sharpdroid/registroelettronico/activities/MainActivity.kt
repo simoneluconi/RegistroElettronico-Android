@@ -12,10 +12,10 @@ import android.support.design.widget.AppBarLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.view.GravityCompat
+import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.animation.DecelerateInterpolator
@@ -54,7 +54,6 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
     private var fragmentManager: FragmentManager? = null
     private var toggle: ActionBarDrawerToggle? = null
     private var canOpenDrawer = true
-    private var anim: ObjectAnimator? = null
     private var headerResult: AccountHeader? = null
 
     private var savedInstanceState: Bundle? = null
@@ -81,6 +80,9 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         init(savedInstanceState)
     }
 
+    /**
+     * Watch for profile changes. If needed, show login activity
+     */
     override fun onResume() {
         super.onResume()
         val profile = Profile.getProfile(this)
@@ -112,6 +114,9 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         savedInstanceState = null
     }
 
+    /**
+     * Listener for login activities
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1) {
@@ -125,7 +130,6 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             }
         } else if (requestCode == 2) {
             if (resultCode == Activity.RESULT_OK) {
-                Log.d("MAIN", "LOGIN OK")
                 init(null)
             } else if (Profile.getProfile(this) == null) {
                 finish()
@@ -135,7 +139,6 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
     private fun init(savedInstanceState: Bundle?) {
         initDrawer(savedInstanceState)
-        println("INIT")
         fragmentManager = supportFragmentManager
         fragmentManager?.addOnBackStackChangedListener {
             initBackButton()
@@ -152,9 +155,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         }
 
         // Aperto da notifica
-        println(intent?.extras?.toString())
         if (intent?.extras?.containsKey("drawer_open_id") == true) {
-            println("INIT BY NOTIFICATION")
             drawer?.setSelection(intent?.extras?.getLong("drawer_open_id") ?: -1L, true)
             intent?.extras?.clear()
 
@@ -166,35 +167,40 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         }
     }
 
+    /**
+     * Animate Back button / Hamburger depending on backstack size
+     */
     private fun initBackButton() {
         canOpenDrawer = fragmentManager?.backStackEntryCount == 0
         if (toggle == null) return
 
-        if (!canOpenDrawer) {
-            anim = ObjectAnimator.ofFloat(toggle?.drawerArrowDrawable, "progress", 1f)
-            with(anim!!) {
-                interpolator = DecelerateInterpolator(1f)
-                duration = 250
-                start()
-            }
-            drawer?.drawerLayout?.removeDrawerListener(toggle!!)
-        } else {
-            anim = ObjectAnimator.ofFloat(toggle?.drawerArrowDrawable, "progress", 0f)
-            with(anim!!) {
-                interpolator = DecelerateInterpolator(1f)
-                duration = 250
-                start()
-            }
-            drawer?.drawerLayout?.addDrawerListener(toggle!!)
+        with(ObjectAnimator.ofFloat(toggle?.drawerArrowDrawable, "progress", if (!canOpenDrawer) 1f else 0f)) {
+            interpolator = DecelerateInterpolator(1f)
+            duration = 250
+            start()
         }
 
+        if (!canOpenDrawer) {
+            //drawer!!.drawerLayout?.removeDrawerListener(toggle!!)
+            drawer!!.drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+
+        } else {
+            drawer!!.drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+            //drawer!!.drawerLayout?.addDrawerListener(toggle!!)
+        }
     }
 
+    /**
+     * Animate title change
+     */
     override fun setTitle(title: CharSequence) {
         TransitionManager.beginDelayedTransition(toolbar, ChangeText().setChangeBehavior(ChangeText.CHANGE_BEHAVIOR_IN).setDuration(250))
         super.setTitle(title)
     }
 
+    /**
+     * Save drawer's state
+     */
     override fun onSaveInstanceState(outState: Bundle?) {
         if (drawer != null) {
             drawer?.saveInstanceState(outState)
@@ -315,20 +321,12 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                 fragment = FragmentToday()
             }
             R.id.agenda -> {
-                //calendar.visibility = View.VISIBLE
-                //fab_big_add.visibility = View.VISIBLE
-
                 fragment = FragmentAgenda()
-                //updateAgenda(p)
-                //updatePeriods(p)
             }
             R.id.medie -> {
                 tab_layout?.visibility = View.VISIBLE
                 params?.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS or AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP
-
                 fragment = FragmentMediePager()
-                //updateSubjects(this, p)
-                //updateMarks(this, p)
             }
             R.id.lessons -> {
                 fragment = FragmentSubjects()
