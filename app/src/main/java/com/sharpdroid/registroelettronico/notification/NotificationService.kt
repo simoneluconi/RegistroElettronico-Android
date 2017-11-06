@@ -193,17 +193,15 @@ class NotificationService : JobService() {
         return if (diff < 0) 0 else diff
     }
 
-    private fun pushNotification(title: String, type: String, content: String, sound: Boolean, vibrate: Boolean, tabToOpen: Long?) {
+    private fun pushNotification(title: String, type: String, content: String, sound: Boolean, vibrate: Boolean, tabToOpen: Long) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationManager: NotificationManager = getSystemService(NotificationManager::class.java)
             val mBuilder: Notification.Builder
 
             val i = Intent(this, MainActivity::class.java)
-            if (tabToOpen != null) {
-                val bundle = Bundle()
-                bundle.putLong("drawer_open_id", tabToOpen)
-                i.putExtras(bundle)
-            }
+            val bundle = Bundle()
+            bundle.putLong("drawer_open_id", tabToOpen)
+            i.putExtras(bundle)
             val intent = PendingIntent.getActivity(this, MainActivity.REQUEST_CODE, i, PendingIntent.FLAG_UPDATE_CURRENT)
 
             mBuilder = Notification.Builder(this, if (sound) channelId else channelId_mute)
@@ -238,11 +236,9 @@ class NotificationService : JobService() {
             val notificationManager: NotificationManagerCompat = NotificationManagerCompat.from(this)
             val mBuilder: NotificationCompat.Builder
             val i = Intent(this, MainActivity::class.java)
-            if (tabToOpen != null) {
-                val bundle = Bundle()
-                bundle.putLong("drawer_open_id", tabToOpen)
-                i.putExtras(bundle)
-            }
+            val bundle = Bundle()
+            bundle.putLong("drawer_open_id", tabToOpen)
+            i.putExtras(bundle)
             val intent = PendingIntent.getActivity(this, MainActivity.REQUEST_CODE, i, PendingIntent.FLAG_UPDATE_CURRENT)
 
             mBuilder = NotificationCompat.Builder(this, "Registro Elettronico")
