@@ -26,9 +26,6 @@ import com.sharpdroid.registroelettronico.utils.Metodi.updateMarks
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.fragment_medie_pager.*
 
-/**
- * A simple [Fragment] subclass.
- */
 class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, OrderMedieBS.OrderListener, NotificationManager.NotificationReceiver {
     override fun didReceiveNotification(code: Int, args: Array<in Any>) {
         when (code) {
