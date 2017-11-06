@@ -4,7 +4,6 @@ import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
-import android.util.SparseArray
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
@@ -15,31 +14,7 @@ class Teacher(
         @ColumnInfo(name = "TEACHER_NAME") @Expose var teacherName: String = "",
         @Ignore @Expose var folders: List<Folder> = emptyList()
 ) : Serializable {
-    companion object {
-        private val teachersOfSubject = SparseArray<List<Teacher>>()
-        private val teacherWithID = SparseArray<Teacher>()
-
-        fun clearCache() {
-            teachersOfSubject.clear()
-            teacherWithID.clear()
-        }
-
-        fun setupCache() {/*
-            val teachers: List<Teacher> = SugarRecord.find(Teacher::class.java, "")!!
-            val subjectTeacher = SubjectTeacher.cache
-
-            subjectTeacher.forEach {
-                teachersOfSubject.put(it.subject.toInt(), teachers.filter { teacher -> it.teacher == teacher.id })
-            }
-
-            teachers.forEach {
-                teacherWithID.put(it.id.toInt(), it)
-            }*/
-        }
-
-        fun professorsOfSubject(code: Number): List<Teacher> = teachersOfSubject[code.toInt(), emptyList()]
-        fun teacher(id: Number): Teacher? = teacherWithID[id.toInt(), null]
-    }
+    constructor() : this(0, "", emptyList())
 }
 
 class DidacticAPI(@Expose @SerializedName("didacticts") val didactics: List<Teacher>)

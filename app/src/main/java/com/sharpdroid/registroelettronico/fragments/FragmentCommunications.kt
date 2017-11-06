@@ -38,9 +38,7 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
             EventType.UPDATE_BACHECA_START -> {
                 if (!swiperefresh.isRefreshing) swiperefresh.isRefreshing = true
             }
-            EventType.UPDATE_BACHECA_OK -> {
-                if (swiperefresh.isRefreshing) swiperefresh.isRefreshing = false
-            }
+            EventType.UPDATE_BACHECA_OK,
             EventType.UPDATE_BACHECA_KO -> {
                 if (swiperefresh.isRefreshing) swiperefresh.isRefreshing = false
             }

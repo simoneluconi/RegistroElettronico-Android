@@ -168,25 +168,26 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
     private fun initBackButton() {
         canOpenDrawer = fragmentManager?.backStackEntryCount == 0
-        if (toggle != null) {
-            if (!canOpenDrawer) {
-                anim = ObjectAnimator.ofFloat(toggle?.drawerArrowDrawable, "progress", 1f)
-                with(anim!!) {
-                    interpolator = DecelerateInterpolator(1f)
-                    duration = 250
-                    start()
-                }
-                drawer?.drawerLayout?.removeDrawerListener(toggle!!)
-            } else {
-                anim = ObjectAnimator.ofFloat(toggle?.drawerArrowDrawable, "progress", 0f)
-                with(anim!!) {
-                    interpolator = DecelerateInterpolator(1f)
-                    duration = 250
-                    start()
-                }
-                drawer?.drawerLayout?.addDrawerListener(toggle!!)
+        if (toggle == null) return
+
+        if (!canOpenDrawer) {
+            anim = ObjectAnimator.ofFloat(toggle?.drawerArrowDrawable, "progress", 1f)
+            with(anim!!) {
+                interpolator = DecelerateInterpolator(1f)
+                duration = 250
+                start()
             }
+            drawer?.drawerLayout?.removeDrawerListener(toggle!!)
+        } else {
+            anim = ObjectAnimator.ofFloat(toggle?.drawerArrowDrawable, "progress", 0f)
+            with(anim!!) {
+                interpolator = DecelerateInterpolator(1f)
+                duration = 250
+                start()
+            }
+            drawer?.drawerLayout?.addDrawerListener(toggle!!)
         }
+
     }
 
     override fun setTitle(title: CharSequence) {

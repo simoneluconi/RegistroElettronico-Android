@@ -5,17 +5,18 @@ import android.arch.persistence.room.*
 import com.sharpdroid.registroelettronico.database.entities.LocalAgenda
 import com.sharpdroid.registroelettronico.database.entities.RemoteAgenda
 import com.sharpdroid.registroelettronico.database.entities.RemoteAgendaInfo
+import com.sharpdroid.registroelettronico.database.pojos.LocalAgendaPOJO
 import com.sharpdroid.registroelettronico.database.pojos.RemoteAgendaPOJO
 
 @Dao
 interface AgendaDao {
 
-    @Query("SELECT * FROM REMOTE_AGENDA WHERE PROFILE = :profile")
+    @Query("SELECT REMOTE_AGENDA.* FROM REMOTE_AGENDA LEFT JOIN REMOTE_AGENDA_INFO ON REMOTE_AGENDA.ID=REMOTE_AGENDA_INFO.ID WHERE PROFILE = :profile AND (ARCHIVED IS NULL OR ARCHIVED=0)")
     fun getRemote(profile: Long): LiveData<List<RemoteAgendaPOJO>>
 
 
-    @Query("SELECT * FROM LOCAL_AGENDA WHERE PROFILE = :profile")
-    fun getLocal(profile: Long): LiveData<List<LocalAgenda>>
+    @Query("SELECT * FROM LOCAL_AGENDA WHERE PROFILE = :profile AND ARCHIVED!=1")
+    fun getLocal(profile: Long): LiveData<List<LocalAgendaPOJO>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(event: LocalAgenda)
