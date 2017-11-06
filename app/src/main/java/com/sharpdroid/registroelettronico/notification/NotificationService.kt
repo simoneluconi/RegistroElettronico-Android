@@ -37,7 +37,7 @@ class NotificationService : JobService() {
             if (!notify || !(notifyAgenda || notifyVoti || notifyComunicazioni || notifyNote)) return false
         }
 
-        val notificationsList = mutableMapOf<String, Int>()
+        val notificationsList = mutableMapOf<String, Pair<String, Int>>()
         if (profile.expire < System.currentTimeMillis()) {
             var successful = false
             var login: LoginResponse? = null
@@ -57,28 +57,31 @@ class NotificationService : JobService() {
 
         if (option.notifyAgenda) {
             val diff = getAgendaDiff(profile)
-            if (diff != 0)
+            if (diff.second != 0)
                 notificationsList.put("agenda", diff)
             Log.d("NOTIFICATION", "AGENDA - $diff")
+
         }
 
         if (option.notifyVoti) {
             val diff = getVotiDiff(profile)
-            if (diff != 0)
+            if (diff.second != 0)
                 notificationsList.put("voti", diff)
             Log.d("NOTIFICATION", "VOTI - $diff")
+
         }
 
         if (option.notifyComunicazioni) {
             val diff = getComunicazioniDiff(profile)
-            if (diff != 0)
+            if (diff.second != 0)
                 notificationsList.put("comunicazioni", diff)
             Log.d("NOTIFICATION", "COMUNICAZIONI - $diff")
+
         }
 
         if (option.notifyNote) {
             val diff = getNoteDiff(profile)
-            if (diff != 0)
+            if (diff.second != 0)
                 notificationsList.put("note", diff)
             Log.d("NOTIFICATION", "NOTE - $diff")
         }
@@ -88,109 +91,125 @@ class NotificationService : JobService() {
         return false //something else to do?
     }
 
-    private fun notify(notificationsList: MutableMap<String, Int>, preferences: SharedPreferences) {
+    private fun notify(notificationsList: Map<String, Pair<String, Int>>, preferences: SharedPreferences) {
         if (notificationsList.isEmpty()) return
 
         val sound = preferences.getBoolean("notify_sound", true)
         val vibrate = preferences.getBoolean("notify_vibrate", true)
-        val content = resources.getString(R.string.click_to_open)
 
         notificationsList.forEach {
             when (it.key) {
                 "agenda" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_agenda, it.value, it.value), it.key, content, sound, vibrate, R.id.agenda.toLong())
+                    pushNotification(resources.getQuantityString(R.plurals.notification_agenda, it.value.second, it.value.second), it.key, it.value.first, sound, vibrate, R.id.agenda.toLong())
                 }
                 "voti" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_voti, it.value, it.value), it.key, content, sound, vibrate, R.id.medie.toLong())
+                    pushNotification(resources.getQuantityString(R.plurals.notification_voti, it.value.second, it.value.second), it.key, it.value.first, sound, vibrate, R.id.medie.toLong())
                 }
                 "comunicazioni" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_communication, it.value, it.value), it.key, content, sound, vibrate, R.id.communications.toLong())
+                    pushNotification(resources.getQuantityString(R.plurals.notification_communication, it.value.second, it.value.second), it.key, it.value.first, sound, vibrate, R.id.communications.toLong())
                 }
                 "note" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_note, it.value, it.value), it.key, content, sound, vibrate, R.id.notes.toLong())
+                    pushNotification(resources.getQuantityString(R.plurals.notification_note, it.value.second, it.value.second), it.key, it.value.first, sound, vibrate, R.id.notes.toLong())
                 }
             }
         }
     }
 
-    private fun getAgendaDiff(profile: Profile): Int {
+    private fun getAgendaDiff(profile: Profile): Pair<String, Int> {
         val dates = getStartEnd("yyyyMMdd")
 
-        var events = emptyList<RemoteAgenda>()
+        var newEvents = emptyList<RemoteAgenda>()
         APIClient.with(profile).getAgendaBlocking(dates[0], dates[1]).blockingSubscribe({
             if (it?.isSuccessful == true) {
-                events = it.body()?.getAgenda(profile) ?: emptyList()
+                newEvents = it.body()?.getAgenda(profile) ?: emptyList()
             } else {
                 Log.e("NOTIFICATION", "agenda response not successful")
             }
         }, {
             Log.e("NOTIFICATION", it?.localizedMessage, it)
         })
-        if (events.isEmpty()) return 0
+        if (newEvents.isEmpty()) return Pair("", 0)
 
-        val diff = events.size - SugarRecord.count<RemoteAgenda>(RemoteAgenda::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
+        val oldEvents = SugarRecord.find(RemoteAgenda::class.java, "PROFILE=?", profile.id.toString())
+        val diffEvents = newEvents.minus(oldEvents)
+        if (diffEvents.isEmpty()) return Pair("", 0)
+
+        val diff = if (diffEvents.size < 0) 0 else diffEvents.size
         SugarRecord.deleteAll(RemoteAgenda::class.java, "PROFILE=?", profile.id.toString())
-        SugarRecord.saveInTx(events)
-        return if (diff < 0) 0 else diff
+        SugarRecord.saveInTx(newEvents)
+        return Pair(diffEvents.first().notes, diff)
     }
 
-    private fun getVotiDiff(profile: Profile): Int {
-        var grades = emptyList<Grade>()
+    private fun getVotiDiff(profile: Profile): Pair<String, Int> {
+        var newGrades = emptyList<Grade>()
         APIClient.with(profile).getGradesBlocking().blockingSubscribe({
             if (it?.isSuccessful == true) {
-                grades = it.body()?.getGrades(profile) ?: emptyList()
+                newGrades = it.body()?.getGrades(profile) ?: emptyList()
             } else {
                 Log.e("NOTIFICATION", "grade response not successful")
             }
         }, {
             Log.e("NOTIFICATION", it?.localizedMessage, it)
         })
-        if (grades.isEmpty()) return 0
+        if (newGrades.isEmpty()) return Pair("", 0)
 
-        val diff = grades.size - SugarRecord.count<Grade>(Grade::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
+        val oldGrades = SugarRecord.find(Grade::class.java, "PROFILE=?", profile.id.toString())
+        newGrades.map { it.profile = profile.id }
+        val diffGrades = newGrades.minus(oldGrades)
+        if (diffGrades.isEmpty()) return Pair("", 0)
+
+        val diff = if (diffGrades.size < 0) 0 else diffGrades.size
         SugarRecord.deleteAll(Grade::class.java, "PROFILE=?", profile.id.toString())
-        grades.forEach { it.profile = profile.id }
-        SugarRecord.saveInTx(grades)
-        return if (diff < 0) 0 else diff
+        SugarRecord.saveInTx(newGrades)
+        return Pair(diffGrades.first().mValue.toString(), diff)
     }
 
-    private fun getComunicazioniDiff(profile: Profile): Int {
-        var communications = emptyList<Communication>()
+    private fun getComunicazioniDiff(profile: Profile): Pair<String, Int> {
+        var newCommunications = emptyList<Communication>()
         APIClient.with(profile).getBachecaBlocking().blockingSubscribe({
             if (it?.isSuccessful == true) {
-                communications = it.body()?.getCommunications(profile) ?: emptyList()
+                newCommunications = it.body()?.getCommunications(profile) ?: emptyList()
             } else {
                 Log.e("NOTIFICATION", "communication response not successful")
             }
         }, {
             Log.e("NOTIFICATION", it?.localizedMessage, it)
         })
-        if (communications.isEmpty()) return 0
+        if (newCommunications.isEmpty()) return Pair("", 0)
 
-        communications = communications.filter { it.cntStatus != "deleted" }
-        val diff = communications.size - SugarRecord.count<Communication>(Communication::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
+        val oldCommunications = SugarRecord.find(Communication::class.java, "PROFILE=?", profile.id.toString())
+        newCommunications = newCommunications.filter { it.cntStatus != "deleted" }
+        newCommunications.map { it.cntStatus = "" }
+        val diffCommunications = newCommunications.minus(oldCommunications)
+        if (diffCommunications.isEmpty()) return Pair("", 0)
+
+        val diff = if (diffCommunications.size < 0) 0 else diffCommunications.size
         SugarRecord.deleteAll(Communication::class.java, "PROFILE=?", profile.id.toString())
-        SugarRecord.saveInTx(communications)
-        return if (diff < 0) 0 else diff
+        SugarRecord.saveInTx(newCommunications)
+        return Pair(diffCommunications.first().title, diff)
     }
 
-    private fun getNoteDiff(profile: Profile): Int {
-        var notes = emptyList<Note>()
+    private fun getNoteDiff(profile: Profile): Pair<String, Int> {
+        var newNotes = emptyList<Note>()
         APIClient.with(profile).getNotesBlocking().blockingSubscribe({
             if (it?.isSuccessful == true) {
-                notes = it.body()?.getNotes(profile) ?: emptyList()
+                newNotes = it.body()?.getNotes(profile) ?: emptyList()
             } else {
                 Log.e("NOTIFICATION", "note response not successful")
             }
         }, {
             Log.e("NOTIFICATION", it?.localizedMessage, it)
         })
-        if (notes.isEmpty()) return 0
+        if (newNotes.isEmpty()) return Pair("", 0)
 
-        val diff = notes.size - SugarRecord.count<Note>(Note::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
+        val oldNotes = SugarRecord.find(Note::class.java, "PROFILE=?", profile.id.toString())
+        val diffNotes = newNotes.minus(oldNotes)
+        if (diffNotes.isEmpty()) return Pair("", 0)
+
+        val diff = if (diffNotes.size < 0) 0 else diffNotes.size
         SugarRecord.deleteAll(Note::class.java, "PROFILE=?", profile.id.toString())
-        SugarRecord.saveInTx(notes)
-        return if (diff < 0) 0 else diff
+        SugarRecord.saveInTx(newNotes)
+        return Pair(diffNotes.first().mText, diff)
     }
 
     private fun pushNotification(title: String, type: String, content: String, sound: Boolean, vibrate: Boolean, tabToOpen: Long) {
