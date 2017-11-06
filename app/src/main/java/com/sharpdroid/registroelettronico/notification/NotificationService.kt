@@ -39,11 +39,18 @@ class NotificationService : JobService() {
 
         val notificationsList = mutableMapOf<String, Int>()
         if (profile.expire < System.currentTimeMillis()) {
-            val login = APIClient.with(profile).postLoginBlocking(LoginRequest(profile.password, profile.username, profile.ident)).blockingFirst()
-            if (!login.isSuccessful) return false
+            var successful = false
+            var login: LoginResponse? = null
+            APIClient.with(profile).postLoginBlocking(LoginRequest(profile.password, profile.username, profile.ident)).blockingSubscribe({
+                successful = it?.isSuccessful == true
+                login = it.body()
+            }, {
+                Log.e("NOTIFICATION", it?.localizedMessage, it)
+            })
+            if (!successful) return false
 
-            profile.token = login.body()?.token ?: throw IllegalStateException("token not in response body")
-            profile.expire = login.body()?.expire?.time ?: 0
+            profile.token = login?.token ?: throw IllegalStateException("token not in response body")
+            profile.expire = login?.expire?.time ?: 0
 
             SugarRecord.update(profile)
         }
@@ -160,7 +167,7 @@ class NotificationService : JobService() {
         })
         if (communications.isEmpty()) return 0
 
-        communications = communications.filter { it.cntStatus == "deleted" }
+        communications = communications.filter { it.cntStatus != "deleted" }
         val diff = communications.size - SugarRecord.count<Communication>(Communication::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
         SugarRecord.deleteAll(Communication::class.java, "PROFILE=?", profile.id.toString())
         SugarRecord.saveInTx(communications)
