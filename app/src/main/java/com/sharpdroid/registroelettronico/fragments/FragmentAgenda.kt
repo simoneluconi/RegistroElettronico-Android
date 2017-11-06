@@ -19,6 +19,7 @@ import com.sharpdroid.registroelettronico.adapters.AgendaAdapter
 import com.sharpdroid.registroelettronico.database.entities.LocalAgenda
 import com.sharpdroid.registroelettronico.database.entities.RemoteAgendaInfo
 import com.sharpdroid.registroelettronico.database.entities.SuperAgenda
+import com.sharpdroid.registroelettronico.database.pojos.LocalAgendaPOJO
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.database.viewModels.AgendaViewModel
 import com.sharpdroid.registroelettronico.fragments.bottomSheet.AgendaBS
@@ -50,7 +51,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
     private lateinit var adapter: AgendaAdapter
     private var mDate: Date = Date()
     private val events = ArrayList<Any>()
-    private val local = ArrayList<LocalAgenda>()
+    private val local = ArrayList<LocalAgendaPOJO>()
     private val remote = ArrayList<SuperAgenda>()
 
     private var active: Boolean = false //avoid updating views if fragment is gone
@@ -198,7 +199,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
             events.filter {
                 when (it) {
                     is SuperAgenda -> return@filter it.agenda.end.time in mDate.time until mDate.add(Calendar.HOUR_OF_DAY, 24).time && it.agenda.start.time in mDate.time until mDate.add(Calendar.HOUR_OF_DAY, 24).time
-                    is LocalAgenda -> return@filter it.day in mDate.time until mDate.add(Calendar.HOUR_OF_DAY, 24).time
+                    is LocalAgendaPOJO -> return@filter it.event.day in mDate.time until mDate.add(Calendar.HOUR_OF_DAY, 24).time
                 }
                 true
             }
