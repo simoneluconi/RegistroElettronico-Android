@@ -489,18 +489,18 @@ public class Metodi {
                                     .readBacheca(communication.getEvtCode(), communication.getId())
                                     .observeOn(Schedulers.computation())
                                     .subscribe(readResponse -> {
-                                communication.setRead(true);
-                                DatabaseHelper.database.communicationsDao().insert(communication);
+                                        communication.setRead(true);
+                                        DatabaseHelper.database.communicationsDao().insert(communication);
 
-                                CommunicationInfo downloadedInfo = readResponse.getItem();
-                                downloadedInfo.setId(communication.getMyId());
-                                downloadedInfo.setContent(
-                                        downloadedInfo.getContent().isEmpty() ?
-                                                ((info != null) ?
-                                                        info.getContent() : "") :
-                                                downloadedInfo.getContent());
-                                DatabaseHelper.database.communicationsDao().insert(downloadedInfo);
-                            });
+                                        CommunicationInfo downloadedInfo = readResponse.getItem();
+                                        downloadedInfo.setId(communication.getMyId());
+                                        downloadedInfo.setContent(
+                                                downloadedInfo.getContent().isEmpty() ?
+                                                        ((info != null) ?
+                                                                info.getContent() : "") :
+                                                        downloadedInfo.getContent());
+                                        DatabaseHelper.database.communicationsDao().insert(downloadedInfo);
+                                    });
                         }
                     }
                     list.removeAll(toRemove);
@@ -567,26 +567,26 @@ public class Metodi {
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        String filename = getFileNamefromHeaders(response.headers());
-                        if (!dir.exists()) dir.mkdirs();
-                        File fileDir = new File(dir, filename);
+                        if (response.isSuccessful()) {
+                            String filename = getFileNamefromHeaders(response.headers());
+                            if (!dir.exists()) dir.mkdirs();
+                            File fileDir = new File(dir, filename);
 
-                        CommunicationInfo communicationInfo = DatabaseHelper.database.communicationsDao().getInfo(communication.getMyId());
-                        if (communicationInfo == null) communicationInfo = new CommunicationInfo();
-                        communicationInfo.setId(communication.getMyId());
+                            CommunicationInfo communicationInfo = DatabaseHelper.database.communicationsDao().getInfo(communication.getMyId());
+                            if (communicationInfo == null)
+                                communicationInfo = new CommunicationInfo();
+                            communicationInfo.setId(communication.getMyId());
 
-                        if (fileDir.exists()) {      //File esistente ma non salvato nel db
-                            communicationInfo.setPath(fileDir.getAbsolutePath());
-                            DatabaseHelper.database.communicationsDao().update(communicationInfo);
-                            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_OK, new Long[]{communication.getMyId()}));
-                        } else if (writeResponseBodyToDisk(response.body(), fileDir)) {
-                            communicationInfo.setPath(fileDir.getAbsolutePath());
-                            DatabaseHelper.database.communicationsDao().update(communicationInfo);
-                            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_OK, new Long[]{communication.getMyId()}));
+                            if (fileDir.exists() || writeResponseBodyToDisk(response.body(), fileDir)) {
+                                communicationInfo.setPath(fileDir.getAbsolutePath());
+                                DatabaseHelper.database.communicationsDao().update(communicationInfo);
+                                handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_OK, new Long[]{communication.getMyId()}));
+                            } else {
+                                handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_KO, new Long[]{communication.getMyId()}));
+                            }
                         } else {
                             handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_KO, new Long[]{communication.getMyId()}));
                         }
-
                     }
 
                     @Override
@@ -614,15 +614,19 @@ public class Metodi {
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        String filename = getFileNamefromHeaders(response.headers());
-                        if (!dir.exists()) dir.mkdirs();
-                        File fileDir = new File(dir, filename);
+                        if (response.isSuccessful()) {
+                            String filename = getFileNamefromHeaders(response.headers());
+                            if (!dir.exists()) dir.mkdirs();
+                            File fileDir = new File(dir, filename);
 
-                        FileInfo info = new FileInfo(f.getObjectId(), fileDir.getAbsolutePath());
-                        if (DatabaseHelper.database.foldersDao().insert(info) > 0 && writeResponseBodyToDisk(response.body(), fileDir))
-                            handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_OK, new Long[]{f.getObjectId()}));
-                        else
+                            FileInfo info = new FileInfo(f.getObjectId(), fileDir.getAbsolutePath());
+                            if (DatabaseHelper.database.foldersDao().insert(info) > 0 && writeResponseBodyToDisk(response.body(), fileDir))
+                                handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_OK, new Long[]{f.getObjectId()}));
+                            else
+                                handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_KO, new Long[]{f.getObjectId()}));
+                        } else {
                             handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_KO, new Long[]{f.getObjectId()}));
+                        }
 
                     }
 

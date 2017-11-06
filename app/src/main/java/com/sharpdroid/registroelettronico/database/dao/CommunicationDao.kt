@@ -9,7 +9,7 @@ import com.sharpdroid.registroelettronico.database.entities.CommunicationInfo
 interface CommunicationDao {
 
     @Query("SELECT * FROM COMMUNICATION_INFO WHERE ID = :id")
-    fun getInfo(id: Long): CommunicationInfo
+    fun getInfo(id: Long): CommunicationInfo?
 
     @Query("SELECT * FROM COMMUNICATION WHERE PROFILE = :profile ORDER BY DATE DESC")
     fun loadCommunications(profile: Long): LiveData<List<Communication>>

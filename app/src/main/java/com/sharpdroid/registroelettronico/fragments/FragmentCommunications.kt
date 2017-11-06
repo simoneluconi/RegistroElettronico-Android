@@ -48,7 +48,7 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
                 snackbar.show()
             }
             EventType.DOWNLOAD_FILE_OK -> {
-                val file = File(DatabaseHelper.database.communicationsDao().getInfo(args[0] as Long).path)
+                val file = File(DatabaseHelper.database.communicationsDao().getInfo(args[0] as Long)?.path)
                 with(snackbar) {
                     setText(activity.getString(R.string.file_downloaded, file.name))
                     setAction(R.string.open) { openFile(activity, file, Snackbar.make(coordinator_layout, context.resources.getString(R.string.missing_app, file.name), Snackbar.LENGTH_SHORT)) }
