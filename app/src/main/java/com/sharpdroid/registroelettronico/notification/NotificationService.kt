@@ -60,7 +60,6 @@ class NotificationService : JobService() {
             if (diff.second != 0)
                 notificationsList.put("agenda", diff)
             Log.d("NOTIFICATION", "AGENDA - $diff")
-
         }
 
         if (option.notifyVoti) {
@@ -68,7 +67,6 @@ class NotificationService : JobService() {
             if (diff.second != 0)
                 notificationsList.put("voti", diff)
             Log.d("NOTIFICATION", "VOTI - $diff")
-
         }
 
         if (option.notifyComunicazioni) {
@@ -76,7 +74,6 @@ class NotificationService : JobService() {
             if (diff.second != 0)
                 notificationsList.put("comunicazioni", diff)
             Log.d("NOTIFICATION", "COMUNICAZIONI - $diff")
-
         }
 
         if (option.notifyNote) {
@@ -161,7 +158,8 @@ class NotificationService : JobService() {
         val diff = if (diffGrades.size < 0) 0 else diffGrades.size
         SugarRecord.deleteAll(Grade::class.java, "PROFILE=?", profile.id.toString())
         SugarRecord.saveInTx(newGrades)
-        return Pair(diffGrades.first().mValue.toString(), diff)
+        val content = getString(R.string.notification_new_grade, diffGrades.first().mStringValue, diffGrades.first().mDescription)
+        return Pair(content, diff)
     }
 
     private fun getComunicazioniDiff(profile: Profile): Pair<String, Int> {

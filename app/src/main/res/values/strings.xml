@@ -146,4 +146,6 @@
     <string name="generale">Generale</string>
     <string name="aggiungi">Aggiungi</string>
 
+    <string name="notification_new_grade">Hai preso (%1$s) di (%2$s)</string>
+
 </resources>
