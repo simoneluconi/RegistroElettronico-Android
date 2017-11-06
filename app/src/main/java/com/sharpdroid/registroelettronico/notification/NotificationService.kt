@@ -86,14 +86,14 @@ class NotificationService : JobService() {
     }
 
     private fun notify(notificationsList: MutableMap<String, Int>, preferences: SharedPreferences) {
-        if (notificationsList.keys.isEmpty()) return
+        if (notificationsList.isEmpty()) return
 
         val sound = preferences.getBoolean("notify_sound", true)
         val vibrate = preferences.getBoolean("notify_vibrate", true)
         val content = resources.getString(R.string.click_to_open)
 
-        if (notificationsList.keys.size == 1) {
-            when (notificationsList.keys.toTypedArray()[0]) {
+        notificationsList.forEach {
+            when (it.key) {
                 "agenda" -> {
                     pushNotification(resources.getQuantityString(R.plurals.notification_agenda, notificationsList["agenda"]!!, notificationsList["agenda"]!!), content, sound, vibrate, R.id.agenda.toLong())
                 }
@@ -107,9 +107,6 @@ class NotificationService : JobService() {
                     pushNotification(resources.getQuantityString(R.plurals.notification_note, notificationsList["note"]!!, notificationsList["note"]!!), content, sound, vibrate, R.id.notes.toLong())
                 }
             }
-        } else {
-            pushNotification(resources.getString(R.string.new_news), content, sound, vibrate, null)
-            return
         }
     }
 
@@ -213,7 +210,6 @@ class NotificationService : JobService() {
                     .setAutoCancel(true)
 
             if (!content.isNullOrEmpty()) mBuilder.setContentText(content)
-
 
             val channel = NotificationChannel(channelId, "Registro Elettronico", NotificationManager.IMPORTANCE_HIGH)
             channel.enableLights(true)
