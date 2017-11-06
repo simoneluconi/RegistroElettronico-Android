@@ -19,13 +19,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class AgendaAdapter(private val place_holder: View) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private val CVDataList: MutableList<Any>
+    private val CVDataList = mutableListOf<Any>()
     private val dateFormat = SimpleDateFormat("d MMM", Locale.getDefault())
     private var mClickListener: AgendaClickListener? = null
-
-    init {
-        CVDataList = ArrayList()
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == R.layout.adapter_header)
@@ -53,7 +49,7 @@ class AgendaAdapter(private val place_holder: View) : RecyclerView.Adapter<Recyc
                 eventHolder.divider.visibility = if (CVDataList[position - 1] is String) View.INVISIBLE else View.VISIBLE
                 eventHolder.subject.visibility = if (eventHolder.subject.text.isEmpty()) View.GONE else View.VISIBLE
 
-                eventHolder.itemView.setOnClickListener { v: View ->
+                eventHolder.itemView.setOnClickListener {
                     if (mClickListener != null)
                         mClickListener!!.onAgendaItemClicked(entry)
                 }
