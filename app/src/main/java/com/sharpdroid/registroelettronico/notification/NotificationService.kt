@@ -61,18 +61,21 @@ class NotificationService : JobService() {
                 notificationsList.put("agenda", diff)
             Log.d("NOTIFICATION", "AGENDA - $diff")
         }
+
         if (option.notifyVoti) {
             val diff = getVotiDiff(profile)
             if (diff != 0)
                 notificationsList.put("voti", diff)
             Log.d("NOTIFICATION", "VOTI - $diff")
         }
+
         if (option.notifyComunicazioni) {
             val diff = getComunicazioniDiff(profile)
             if (diff != 0)
                 notificationsList.put("comunicazioni", diff)
             Log.d("NOTIFICATION", "COMUNICAZIONI - $diff")
         }
+
         if (option.notifyNote) {
             val diff = getNoteDiff(profile)
             if (diff != 0)
@@ -95,16 +98,16 @@ class NotificationService : JobService() {
         notificationsList.forEach {
             when (it.key) {
                 "agenda" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_agenda, notificationsList["agenda"]!!, notificationsList["agenda"]!!), content, sound, vibrate, R.id.agenda.toLong())
+                    pushNotification(resources.getQuantityString(R.plurals.notification_agenda, it.value, it.value), it.key, content, sound, vibrate, R.id.agenda.toLong())
                 }
                 "voti" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_voti, notificationsList["voti"]!!, notificationsList["voti"]!!), content, sound, vibrate, R.id.medie.toLong())
+                    pushNotification(resources.getQuantityString(R.plurals.notification_voti, it.value, it.value), it.key, content, sound, vibrate, R.id.medie.toLong())
                 }
                 "comunicazioni" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_communication, notificationsList["comunicazioni"]!!, notificationsList["comunicazioni"]!!), content, sound, vibrate, R.id.communications.toLong())
+                    pushNotification(resources.getQuantityString(R.plurals.notification_communication, it.value, it.value), it.key, content, sound, vibrate, R.id.communications.toLong())
                 }
                 "note" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_note, notificationsList["note"]!!, notificationsList["note"]!!), content, sound, vibrate, R.id.notes.toLong())
+                    pushNotification(resources.getQuantityString(R.plurals.notification_note, it.value, it.value), it.key, content, sound, vibrate, R.id.notes.toLong())
                 }
             }
         }
@@ -190,7 +193,7 @@ class NotificationService : JobService() {
         return if (diff < 0) 0 else diff
     }
 
-    private fun pushNotification(title: String, content: String?, sound: Boolean, vibrate: Boolean, tabToOpen: Long?) {
+    private fun pushNotification(title: String, type: String, content: String, sound: Boolean, vibrate: Boolean, tabToOpen: Long?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationManager: NotificationManager = getSystemService(NotificationManager::class.java)
             val mBuilder: Notification.Builder
@@ -209,7 +212,7 @@ class NotificationService : JobService() {
                     .setContentIntent(intent)
                     .setAutoCancel(true)
 
-            if (!content.isNullOrEmpty()) mBuilder.setContentText(content)
+            if (!content.isEmpty()) mBuilder.setContentText(content)
 
             val channel = NotificationChannel(channelId, "Registro Elettronico", NotificationManager.IMPORTANCE_HIGH)
             channel.enableLights(true)
@@ -230,7 +233,7 @@ class NotificationService : JobService() {
 
             notificationManager.createNotificationChannel(channel)
             notificationManager.createNotificationChannel(channelMute)
-            notificationManager.notify(nNotif, mBuilder.build())
+            notificationManager.notify(type.hashCode() and 0xfffffff, mBuilder.build())
         } else {
             val notificationManager: NotificationManagerCompat = NotificationManagerCompat.from(this)
             val mBuilder: NotificationCompat.Builder
@@ -249,19 +252,18 @@ class NotificationService : JobService() {
                     .setLights(Color.BLUE, 3000, 3000)
                     .setAutoCancel(true)
 
-            if (!content.isNullOrEmpty()) mBuilder.setContentText(content)
+            if (!content.isEmpty()) mBuilder.setContentText(content)
 
             if (vibrate)
                 mBuilder.setVibrate(longArrayOf(250, 250, 250, 250))
             if (sound)
                 mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
 
-            notificationManager.notify(nNotif, mBuilder.build())
+            notificationManager.notify(type.hashCode() and 0xfffffff, mBuilder.build())
         }
     }
 
     companion object {
-        private const val nNotif: Int = 999
         private val channelId = "sharpdroid_registro_channel_01"
         private val channelId_mute = "sharpdroid_registro_channel_02"
     }
