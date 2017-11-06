@@ -125,7 +125,7 @@ class EditSubjectDetailsActivity : AppCompatActivity() {
     private inner class EditSubjectAdapter(val listener: (position: Int) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-            var v: View? = null
+            val v: View
             when (viewType) {
                 0 -> {
                     v = HeaderCell(parent.context)
@@ -135,7 +135,7 @@ class EditSubjectDetailsActivity : AppCompatActivity() {
                     v = ValueDetailsCell(parent.context)
                     v.setBackgroundColor(Color.WHITE)
                 }
-                2 -> v = ShadowCell(parent.context)
+                else -> v = ShadowCell(parent.context)
             }
             return Holder(v)
         }

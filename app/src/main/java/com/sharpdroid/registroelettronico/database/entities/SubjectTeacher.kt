@@ -13,22 +13,4 @@ class SubjectTeacher(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "ID")
     var id = 0L
-
-    companion object {
-        val cache = ArrayList<SubjectTeacher>()
-
-        fun clearCache() {
-            cache.clear()
-        }
-
-        fun setupCache(account: Long) {
-            //TODO do proper thangs
-            //throw IllegalStateException("use proper DAO")
-            /*val subjectsTeachers = SugarRecord.find(SubjectTeacher::class.java, "PROFILE=$account")
-            subjectsTeachers.forEach {
-                cache.add(it)
-            }*/
-        }
-
-    }
 }

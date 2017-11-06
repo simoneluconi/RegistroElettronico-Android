@@ -23,7 +23,9 @@ import com.sharpdroid.registroelettronico.activities.MainActivity
 import com.sharpdroid.registroelettronico.api.v2.APIClient
 import com.sharpdroid.registroelettronico.database.entities.LoginRequest
 import com.sharpdroid.registroelettronico.database.entities.Profile
+import com.sharpdroid.registroelettronico.database.entities.RemoteAgenda
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
+import com.sharpdroid.registroelettronico.utils.Metodi.getStartEnd
 import java.util.*
 
 class NotificationService : JobService() {
@@ -35,13 +37,16 @@ class NotificationService : JobService() {
         val profile = Profile.getProfile(applicationContext) ?: return false
         val notificationsList = mutableMapOf<String, Int>()
         if (profile.expire.time < System.currentTimeMillis()) {
-            val login = APIClient.with(profile).postLoginBlocking(LoginRequest(profile.password, profile.username, profile.ident)).blockingFirst()
-            if (!login.isSuccessful) return false
+            APIClient.with(profile).postLoginBlocking(LoginRequest(profile.password, profile.username, profile.ident)).blockingSubscribe({ login ->
+                if (!login.isSuccessful) return@blockingSubscribe
 
-            profile.token = login.body()?.token ?: throw IllegalStateException("token not in response body")
-            profile.expire = login.body()?.expire ?: Date(0)
+                profile.token = login.body()?.token ?: throw IllegalStateException("token not in response body")
+                profile.expire = login.body()?.expire ?: Date(0)
 
-            DatabaseHelper.database.profilesDao().update(profile)
+                DatabaseHelper.database.profilesDao().update(profile)
+            }, {
+                it.printStackTrace()
+            })
         }
 
         var diff = getAgendaDiff(profile)
@@ -99,23 +104,24 @@ class NotificationService : JobService() {
         }
     }
 
-    private fun getAgendaDiff(profile: Profile): Int {/*
+    private fun getAgendaDiff(profile: Profile): Int {
         val dates = getStartEnd("yyyyMMdd")
-        val agenda: List<RemoteAgenda>
-        agenda = try {
-            val response = APIClient.with(profile).getAgendaBlocking(dates[0], dates[1]).blockingFirst()
-            if (response.isSuccessful) response.body()?.getAgenda(profile) ?: return 0 else return 0
-            //APIClient.with(profile).getAgenda(dates[0], dates[1]).blockingFirst()?.getAgenda(profile) ?: return 0
-        } catch (err: IOException) {
-            if (!BuildConfig.DEBUG)
-                Answers.getInstance().logCustom(CustomEvent("IOException getAgendaDiff").putCustomAttribute("stacktrace", err.localizedMessage))
-            return 0
-        }
-        val diff = agenda.size - SugarRecord.count<RemoteAgenda>(RemoteAgenda::class.java, "PROFILE=?", arrayOf(profile.id.toString())).toInt()
-        SugarRecord.deleteAll(RemoteAgenda::class.java, "PROFILE=?", profile.id.toString())
-        SugarRecord.saveInTx(agenda)
-        return if (diff < 0) 0 else diff*/
-        return 0
+        val agenda = mutableListOf<RemoteAgenda>()
+
+        APIClient.with(profile).getAgendaBlocking(dates[0], dates[1]).blockingSubscribe({
+            if (it.isSuccessful) {
+                agenda.addAll(it.body()?.getAgenda(profile).orEmpty())
+            } else {
+                Log.d("NOTIFICATION", "agenda response was not successful")
+            }
+        }, {
+            Log.d("NOTIFICATION", it.localizedMessage)
+        })
+
+        val diff = agenda.size - DatabaseHelper.database.query("SELECT ID FROM REMOTE_AGENDA WHERE PROFILE=?", arrayOf(profile.id)).count
+        DatabaseHelper.database.eventsDao().deleteRemote(profile.id)
+        DatabaseHelper.database.eventsDao().insert(agenda)
+        return if (diff < 0) 0 else diff
     }
 
     private fun getVotiDiff(profile: Profile): Int {/*

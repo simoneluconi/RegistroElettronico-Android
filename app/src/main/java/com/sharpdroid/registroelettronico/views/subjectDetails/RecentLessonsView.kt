@@ -6,7 +6,6 @@ import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.util.AttributeSet
 import android.view.View
-import butterknife.ButterKnife
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.AllLessonsWithDownloadActivity
 import com.sharpdroid.registroelettronico.adapters.LessonsAdapter
@@ -38,7 +37,6 @@ class RecentLessonsView : CardView {
 
     private fun init() {
         View.inflate(mContext, R.layout.view_recent_lessons, this)
-        ButterKnife.bind(this)
 
         adapter = LessonsAdapter(mContext)
         recycler.layoutManager = LinearLayoutManager(mContext)
