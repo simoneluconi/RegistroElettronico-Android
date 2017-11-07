@@ -77,7 +77,6 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
 
         //DETTAGLI
         viewModel.getSubject(subjectId).observe(this, Observer {
-            println("observed")
             it?.subject?.teachers = DatabaseHelper.database.subjectsDao().getTeachersOfSubject(it?.subject?.id ?: 0)
             title = capitalizeEach(it?.subjectInfo?.getOrNull(0)?.description.or(it?.subject?.description.or("")))
             initInfo(it ?: return@Observer)
@@ -94,10 +93,8 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
             initOverall(it.orEmpty())
         })
 
-
-        //LESSONS
-        DatabaseHelper.database.lessonsDao().loadLastLessons(subjectId).observe(this, Observer {
-            lessons.update(it.orEmpty(), subjectId.toInt())
+        viewModel.getGrades(account, subjectId, p).observe(this, Observer {
+            initMarks(it.orEmpty())
         })
 
         with(hypothetical) {
@@ -105,14 +102,15 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
             setRealData(avg)
             setTarget(getTarget(viewModel.subjectInfo?.value))
         }
-
+        //HYPOTHETICAL
         viewModel.getLocalGrades(account, subjectId, p).observeOn(AndroidSchedulers.mainThread()).subscribe {
             hypothetical.setHypoGrades(it.orEmpty(), viewModel.animateLocalMarks.value == true)
             viewModel.animateLocalMarks.value = true
         }
 
-        viewModel.getGrades(account, subjectId, p).observe(this, Observer {
-            initMarks(it.orEmpty())
+        //LESSONS
+        DatabaseHelper.database.lessonsDao().loadLastLessons(subjectId).observe(this, Observer {
+            lessons.update(it.orEmpty(), subjectId.toInt())
         })
 
         if (!BuildConfig.DEBUG)

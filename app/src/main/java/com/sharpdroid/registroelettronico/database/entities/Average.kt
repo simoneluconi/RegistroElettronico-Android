@@ -8,4 +8,6 @@ class Average(
         @ColumnInfo(name = "SUM") var sum: Float = 0f,
         @ColumnInfo(name = "TARGET") var target: Float = 0f,
         @ColumnInfo(name = "COUNT") var count: Int = 0
-)
+) {
+    fun avg() = if (count > 0) sum / count else 0f
+}
