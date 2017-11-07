@@ -125,9 +125,9 @@ class RemoteAgendaInfo(
     fun asMap(): Map<String, Any> {
         val map = mutableMapOf<String, Any>()
         map.put("id", id)
-        map.put("completed", id)
-        map.put("archived", id)
-        map.put("test", id)
+        map.put("completed", completed)
+        map.put("archived", archived)
+        map.put("test", test)
         return map
     }
 
