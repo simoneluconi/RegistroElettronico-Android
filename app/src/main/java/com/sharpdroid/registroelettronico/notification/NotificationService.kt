@@ -131,10 +131,9 @@ class NotificationService : JobService() {
         val diffEvents = newEvents.minus(oldEvents)
         if (diffEvents.isEmpty()) return Pair(emptyList(), 0)
 
-        val diff = if (diffEvents.size < 0) 0 else diffEvents.size
         SugarRecord.deleteAll(RemoteAgenda::class.java, "PROFILE=?", profile.id.toString())
         SugarRecord.saveInTx(newEvents)
-        return Pair(diffEvents.map { it.notes }, diff)
+        return Pair(diffEvents.map { it.notes }, diffEvents.size)
     }
 
     private fun getVotiDiff(profile: Profile): Pair<List<String>, Int> {
@@ -155,10 +154,9 @@ class NotificationService : JobService() {
         val diffGrades = newGrades.minus(oldGrades)
         if (diffGrades.isEmpty()) return Pair(emptyList(), 0)
 
-        val diff = if (diffGrades.size < 0) 0 else diffGrades.size
         SugarRecord.deleteAll(Grade::class.java, "PROFILE=?", profile.id.toString())
         SugarRecord.saveInTx(newGrades)
-        return Pair(diffGrades.map { getString(R.string.notification_new_grade, it.mStringValue, it.mDescription) }, diff)
+        return Pair(diffGrades.map { getString(R.string.notification_new_grade, it.mStringValue, it.mDescription) }, diffGrades.size)
     }
 
     private fun getComunicazioniDiff(profile: Profile): Pair<List<String>, Int> {
@@ -180,10 +178,9 @@ class NotificationService : JobService() {
         val diffCommunications = newCommunications.minus(oldCommunications)
         if (diffCommunications.isEmpty()) return Pair(emptyList(), 0)
 
-        val diff = if (diffCommunications.size < 0) 0 else diffCommunications.size
         SugarRecord.deleteAll(Communication::class.java, "PROFILE=?", profile.id.toString())
         SugarRecord.saveInTx(newCommunications)
-        return Pair(diffCommunications.map { it.title }, diff)
+        return Pair(diffCommunications.map { it.title }, diffCommunications.size)
     }
 
     private fun getNoteDiff(profile: Profile): Pair<List<String>, Int> {
@@ -203,10 +200,9 @@ class NotificationService : JobService() {
         val diffNotes = newNotes.minus(oldNotes)
         if (diffNotes.isEmpty()) return Pair(emptyList(), 0)
 
-        val diff = if (diffNotes.size < 0) 0 else diffNotes.size
         SugarRecord.deleteAll(Note::class.java, "PROFILE=?", profile.id.toString())
         SugarRecord.saveInTx(newNotes)
-        return Pair(diffNotes.map { it.mText }, diff)
+        return Pair(diffNotes.map { it.mText }, diffNotes.size)
     }
 
     private fun pushNotification(title: String, type: Int, content: List<String>, sound: Boolean, vibrate: Boolean, tabToOpen: Long) {
