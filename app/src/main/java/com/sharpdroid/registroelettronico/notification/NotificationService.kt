@@ -244,7 +244,8 @@ class NotificationService : JobService() {
             val notificationManager = NotificationManagerCompat.from(this)
             val i = Intent(this, MainActivity::class.java)
                     .putExtra("drawer_open_id", tabToOpen)
-            val intent = PendingIntent.getActivity(this, MainActivity.REQUEST_CODE, i, PendingIntent.FLAG_UPDATE_CURRENT)
+            val intent = PendingIntent.getActivity(this, MainActivity.REQUEST_CODE, i,
+                    PendingIntent.FLAG_UPDATE_CURRENT)
 
             val style = NotificationCompat.InboxStyle()
 
@@ -258,6 +259,7 @@ class NotificationService : JobService() {
                     .setContentIntent(intent)
                     .setStyle(style)
                     .setLights(Color.BLUE, 3000, 3000)
+                    .setNumber(content.size)
                     .setAutoCancel(true)
 
             if (vibrate)
