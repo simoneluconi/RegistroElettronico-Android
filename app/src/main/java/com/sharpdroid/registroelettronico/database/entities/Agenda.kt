@@ -3,6 +3,7 @@ package com.sharpdroid.registroelettronico.database.entities
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
+import com.google.firebase.database.DataSnapshot
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
@@ -13,6 +14,7 @@ class SuperAgenda(val agenda: RemoteAgenda, var completed: Boolean = false, var 
 
 @Entity(tableName = "LOCAL_AGENDA")
 class LocalAgenda(
+        @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "ID") var id: Long = 0L,
         @ColumnInfo(name = "TITLE") var title: String = "",
         @ColumnInfo(name = "CONTENT") var content: String = "",
         @ColumnInfo(name = "TYPE") var type: String = "",
@@ -23,9 +25,34 @@ class LocalAgenda(
         @ColumnInfo(name = "PROFILE") var profile: Long = 0L,
         @ColumnInfo(name = "ARCHIVED") var archived: Boolean = false
 ) {
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "ID")
-    var id = 0L
+
+    constructor(snap: DataSnapshot) : this(
+            snap.child("id").getValue(Long::class.java) ?: 0,
+            snap.child("title").getValue(String::class.java).orEmpty(),
+            snap.child("content").getValue(String::class.java).orEmpty(),
+            snap.child("type").getValue(String::class.java).orEmpty(),
+            snap.child("day").getValue(Long::class.java) ?: 0,
+            snap.child("subject").getValue(Long::class.java) ?: 0,
+            snap.child("teacher").getValue(Long::class.java) ?: 0,
+            Date(snap.child("completed_date").getValue(Long::class.java) ?: 0),
+            snap.child("profile").getValue(Long::class.java) ?: 0,
+            snap.child("archived").getValue(Boolean::class.java) == true
+    )
+
+    fun asMap(): Map<String, Any> {
+        val map = mutableMapOf<String, Any>()
+        map.put("id", id)
+        map.put("title", title)
+        map.put("content", content)
+        map.put("type", type)
+        map.put("day", day)
+        map.put("subject", subject)
+        map.put("teacher", teacher)
+        map.put("completed_date", completed_date?.time ?: 0)
+        map.put("profile", profile)
+        map.put("archived", archived)
+        return map
+    }
 }
 
 /*

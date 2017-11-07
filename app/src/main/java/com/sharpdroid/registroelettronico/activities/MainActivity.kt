@@ -25,6 +25,10 @@ import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.ShareEvent
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.mikepenz.materialdrawer.AccountHeader
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
@@ -37,6 +41,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IProfile
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
+import com.sharpdroid.registroelettronico.database.entities.LocalAgenda
 import com.sharpdroid.registroelettronico.database.entities.Profile
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.fragments.*
@@ -110,6 +115,19 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
 
     override fun onStop() {
+        val profile = Account.with(this).user
+
+        val userDB = FirebaseDatabase.getInstance().getReference("users").child(profile.toString()).child("events")
+        userDB.keepSynced(false)
+
+        DatabaseHelper.database.eventsDao().getLocalAsSingle(profile).toObservable().subscribe {
+            userDB.removeValue()
+            userDB.setValue(it.map { it.asMap() })
+            userDB.onDisconnect()
+            println("UPDATE REMOTE DB")
+        }
+
+
         super.onStop()
         savedInstanceState = null
     }
@@ -164,6 +182,23 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             val default = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getString("drawer_to_open", "0")) ?: 0
             val drawerToOpen = intent.extras?.getInt("drawer_to_open", default) ?: default
             drawer?.setSelectionAtPosition(drawerToOpen + 1, true)
+
+
+            val profile = Account.with(this).user
+            val events = FirebaseDatabase.getInstance().getReference("users").child(profile.toString()).child("events")
+            events.keepSynced(false)
+            events.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onCancelled(p0: DatabaseError?) {
+
+                }
+
+                override fun onDataChange(ref: DataSnapshot?) {
+                    DatabaseHelper.database.eventsDao().deleteLocal(profile)
+                    val map = ref?.children?.map { LocalAgenda(it) }.orEmpty()
+                    DatabaseHelper.database.eventsDao().insertBulk(map)
+                    println(map.toString())
+                }
+            })
         }
     }
 

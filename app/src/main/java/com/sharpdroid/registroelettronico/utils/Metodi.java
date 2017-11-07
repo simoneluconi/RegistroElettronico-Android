@@ -25,13 +25,13 @@ import com.sharpdroid.registroelettronico.database.entities.CommunicationInfo;
 import com.sharpdroid.registroelettronico.database.entities.FileInfo;
 import com.sharpdroid.registroelettronico.database.entities.Folder;
 import com.sharpdroid.registroelettronico.database.entities.Grade;
-import com.sharpdroid.registroelettronico.database.entities.LocalAgenda;
 import com.sharpdroid.registroelettronico.database.entities.Profile;
 import com.sharpdroid.registroelettronico.database.entities.RemoteAgenda;
 import com.sharpdroid.registroelettronico.database.entities.Subject;
 import com.sharpdroid.registroelettronico.database.entities.SubjectTeacher;
 import com.sharpdroid.registroelettronico.database.entities.SuperAgenda;
 import com.sharpdroid.registroelettronico.database.entities.Teacher;
+import com.sharpdroid.registroelettronico.database.pojos.LocalAgendaPOJO;
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper;
 
 import org.jetbrains.annotations.NotNull;
@@ -260,8 +260,8 @@ public class Metodi {
         for (Object event : events) {
             if (event instanceof SuperAgenda)
                 list.add(new Event(((SuperAgenda) event).getTest() ? Color.parseColor("#FF9800") : Color.WHITE, ((SuperAgenda) event).getAgenda().getStart().getTime()));
-            else if (event instanceof LocalAgenda) {
-                list.add(new Event(((LocalAgenda) event).getType().equalsIgnoreCase("verifica") ? Color.parseColor("#FF9800") : Color.WHITE, ((LocalAgenda) event).getDay()));
+            else if (event instanceof LocalAgendaPOJO) {
+                list.add(new Event((((LocalAgendaPOJO) event).component1()).getType().equalsIgnoreCase("verifica") ? Color.parseColor("#FF9800") : Color.WHITE, ((((LocalAgendaPOJO) event).component1()).getDay())));
             }
         }
         return list;
