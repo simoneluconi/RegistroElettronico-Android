@@ -1,5 +1,7 @@
 package com.sharpdroid.registroelettronico
 
+import android.app.NotificationManager
+import android.os.Build
 import android.support.multidex.MultiDexApplication
 import android.support.v7.app.AppCompatDelegate
 import android.util.Log
@@ -27,6 +29,12 @@ class App : MultiDexApplication() {
                 Log.e(TAG, "Cannot configure Fabric", e)
             }
 
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.deleteNotificationChannel("sharpdroid_registro_channel_01")
+            notificationManager.deleteNotificationChannel("sharpdroid_registro_channel_02")
         }
     }
 

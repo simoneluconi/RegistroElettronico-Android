@@ -2,11 +2,13 @@ package com.sharpdroid.registroelettronico.fragments;
 
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceCategory;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.TwoStatePreference;
 import android.view.View;
@@ -74,6 +76,12 @@ public class FragmentSettings extends PreferenceFragmentCompat implements Shared
                     return true;
                 }
         );
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            PreferenceCategory preference = (PreferenceCategory) findPreference("notifuche_preference");
+            preference.removePreference(findPreference("notify_sound"));
+            preference.removePreference(findPreference("notify_vibrate"));
+        }
 
         if (!BuildConfig.DEBUG)
             Answers.getInstance().logContentView(new ContentViewEvent().putContentId("Impostazioni"));

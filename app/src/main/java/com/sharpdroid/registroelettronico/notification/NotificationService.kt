@@ -1,17 +1,13 @@
 package com.sharpdroid.registroelettronico.notification
 
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
-import android.media.AudioAttributes
-import android.media.AudioManager
 import android.media.RingtoneManager
 import android.os.Build
-import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
@@ -32,12 +28,12 @@ class NotificationService : JobService() {
 
     override fun onStartJob(job: JobParameters?): Boolean {
         val profile = Profile.getProfile(applicationContext) ?: return false
-        val option: Option = SugarRecord.findById(Option::class.java, profile.id) ?: return false
+        val option = SugarRecord.findById(Option::class.java, profile.id) ?: return false
         with(option) {
             if (!notify || !(notifyAgenda || notifyVoti || notifyComunicazioni || notifyNote)) return false
         }
 
-        val notificationsList = mutableMapOf<String, Pair<List<String>, Int>>()
+        val notificationsList = mutableMapOf<NotificationIDs, Pair<List<String>, Int>>()
         if (profile.expire < System.currentTimeMillis()) {
             var successful = false
             var login: LoginResponse? = null
@@ -58,37 +54,42 @@ class NotificationService : JobService() {
         if (option.notifyAgenda) {
             val diff = getAgendaDiff(profile)
             if (diff.second != 0)
-                notificationsList.put("agenda", diff)
+                notificationsList.put(NotificationIDs.AGENGA, diff)
             Log.d("NOTIFICATION", "AGENDA - ${diff.second}")
         }
 
         if (option.notifyVoti) {
             val diff = getVotiDiff(profile)
             if (diff.second != 0)
-                notificationsList.put("voti", diff)
+                notificationsList.put(NotificationIDs.VOTI, diff)
             Log.d("NOTIFICATION", "VOTI - ${diff.second}")
         }
 
         if (option.notifyComunicazioni) {
             val diff = getComunicazioniDiff(profile)
             if (diff.second != 0)
-                notificationsList.put("comunicazioni", diff)
+                notificationsList.put(NotificationIDs.COMUNICAZIONI, diff)
             Log.d("NOTIFICATION", "COMUNICAZIONI - ${diff.second}")
         }
 
         if (option.notifyNote) {
             val diff = getNoteDiff(profile)
             if (diff.second != 0)
-                notificationsList.put("note", diff)
+                notificationsList.put(NotificationIDs.NOTE, diff)
             Log.d("NOTIFICATION", "NOTE - ${diff.second}")
         }
+
+        notificationsList.put(NotificationIDs.AGENGA, Pair(listOf("hello agenda"), 1))
+        notificationsList.put(NotificationIDs.COMUNICAZIONI, Pair(listOf("hello com"), 1))
+        notificationsList.put(NotificationIDs.VOTI, Pair(listOf("hello voti"), 1))
+        notificationsList.put(NotificationIDs.NOTE, Pair(listOf("hello note", "merda"), 2))
 
         notify(notificationsList, PreferenceManager.getDefaultSharedPreferences(this))
 
         return false //something else to do?
     }
 
-    private fun notify(notificationsList: Map<String, Pair<List<String>, Int>>, preferences: SharedPreferences) {
+    private fun notify(notificationsList: Map<NotificationIDs, Pair<List<String>, Int>>, preferences: SharedPreferences) {
         if (notificationsList.isEmpty()) return
 
         val sound = preferences.getBoolean("notify_sound", true)
@@ -96,17 +97,17 @@ class NotificationService : JobService() {
 
         notificationsList.forEach {
             when (it.key) {
-                "agenda" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_agenda, it.value.second, it.value.second), agenda_id, it.value.first, sound, vibrate, R.id.agenda.toLong())
+                NotificationIDs.AGENGA -> {
+                    pushNotification(resources.getQuantityString(R.plurals.notification_agenda, it.value.second, it.value.second), it.key, it.value.first, sound, vibrate, R.id.agenda.toLong())
                 }
-                "voti" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_voti, it.value.second, it.value.second), voti_id, it.value.first, sound, vibrate, R.id.medie.toLong())
+                NotificationIDs.VOTI -> {
+                    pushNotification(resources.getQuantityString(R.plurals.notification_voti, it.value.second, it.value.second), it.key, it.value.first, sound, vibrate, R.id.medie.toLong())
                 }
-                "comunicazioni" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_communication, it.value.second, it.value.second), comunicazioni_id, it.value.first, sound, vibrate, R.id.communications.toLong())
+                NotificationIDs.COMUNICAZIONI -> {
+                    pushNotification(resources.getQuantityString(R.plurals.notification_communication, it.value.second, it.value.second), it.key, it.value.first, sound, vibrate, R.id.communications.toLong())
                 }
-                "note" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_note, it.value.second, it.value.second), note_id, it.value.first, sound, vibrate, R.id.notes.toLong())
+                NotificationIDs.NOTE -> {
+                    pushNotification(resources.getQuantityString(R.plurals.notification_note, it.value.second, it.value.second), it.key, it.value.first, sound, vibrate, R.id.notes.toLong())
                 }
             }
         }
@@ -205,57 +206,49 @@ class NotificationService : JobService() {
         return Pair(diffNotes.map { it.mText }, diffNotes.size)
     }
 
-    private fun pushNotification(title: String, type: Int, content: List<String>, sound: Boolean, vibrate: Boolean, tabToOpen: Long) {
+    private fun pushNotification(title: String, type: NotificationIDs, content: List<String>, sound: Boolean, vibrate: Boolean, tabToOpen: Long) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationManager: NotificationManager = getSystemService(NotificationManager::class.java)
-            val mBuilder: Notification.Builder
+            val notificationManager = getSystemService(NotificationManager::class.java)
 
             val i = Intent(this, MainActivity::class.java)
-            val bundle = Bundle()
-            bundle.putLong("drawer_open_id", tabToOpen)
-            i.putExtras(bundle)
-            val intent = PendingIntent.getActivity(this, MainActivity.REQUEST_CODE, i, PendingIntent.FLAG_UPDATE_CURRENT)
+                    .putExtra("drawer_open_id", tabToOpen)
+                    .setAction(type.name)
+            val intent = PendingIntent.getActivity(this, MainActivity.REQUEST_CODE, i,
+                    PendingIntent.FLAG_UPDATE_CURRENT)
 
-            val style = Notification.InboxStyle()
+            val style = NotificationCompat.InboxStyle()
 
             content.forEach {
                 style.addLine(it)
             }
 
-            mBuilder = Notification.Builder(this, if (sound) channelId else channelId_mute)
+            val channelName = when (type) {
+                NotificationIDs.AGENGA -> "Agenda"
+                NotificationIDs.VOTI -> "Voti"
+                NotificationIDs.COMUNICAZIONI -> "Comunicazioni"
+                NotificationIDs.NOTE -> "Note"
+            }
+
+            val mBuilder = NotificationCompat.Builder(this, type.name)
                     .setContentTitle(title)
                     .setSmallIcon(R.drawable.ic_stat_name)
                     .setContentIntent(intent)
                     .setStyle(style)
+                    .setNumber(content.size)
                     .setAutoCancel(true)
 
-            val channel = NotificationChannel(channelId, "Registro Elettronico", NotificationManager.IMPORTANCE_HIGH)
+            val channel = NotificationChannel(type.name, channelName, NotificationManager.IMPORTANCE_DEFAULT)
             channel.enableLights(true)
-            channel.enableVibration(vibrate)
+            channel.enableVibration(true)
             channel.lightColor = Color.BLUE
-
-            val channelMute = NotificationChannel(channelId_mute, "Registro Elettronico silent", NotificationManager.IMPORTANCE_LOW)
-            channelMute.enableLights(true)
-            channelMute.enableVibration(vibrate)
-            channelMute.lightColor = Color.BLUE
-
-            if (vibrate) {
-                channel.vibrationPattern = longArrayOf(250, 250, 250, 250)
-            }
-            if (sound) {
-                channel.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), AudioAttributes.Builder().setLegacyStreamType(AudioManager.STREAM_NOTIFICATION).build())
-            }
+            channel.setShowBadge(true)
 
             notificationManager.createNotificationChannel(channel)
-            notificationManager.createNotificationChannel(channelMute)
-            notificationManager.notify(type, mBuilder.build())
+            notificationManager.notify(type.ordinal, mBuilder.build())
         } else {
-            val notificationManager: NotificationManagerCompat = NotificationManagerCompat.from(this)
-            val mBuilder: NotificationCompat.Builder
+            val notificationManager = NotificationManagerCompat.from(this)
             val i = Intent(this, MainActivity::class.java)
-            val bundle = Bundle()
-            bundle.putLong("drawer_open_id", tabToOpen)
-            i.putExtras(bundle)
+                    .putExtra("drawer_open_id", tabToOpen)
             val intent = PendingIntent.getActivity(this, MainActivity.REQUEST_CODE, i, PendingIntent.FLAG_UPDATE_CURRENT)
 
             val style = NotificationCompat.InboxStyle()
@@ -264,7 +257,7 @@ class NotificationService : JobService() {
                 style.addLine(it)
             }
 
-            mBuilder = NotificationCompat.Builder(this, "Registro Elettronico")
+            val mBuilder = NotificationCompat.Builder(this, "Registro Elettronico")
                     .setContentTitle(title)
                     .setSmallIcon(R.drawable.ic_stat_name)
                     .setContentIntent(intent)
@@ -277,16 +270,16 @@ class NotificationService : JobService() {
             if (sound)
                 mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
 
-            notificationManager.notify(type, mBuilder.build())
+            notificationManager.notify(type.ordinal, mBuilder.build())
         }
     }
 
     companion object {
-        private val channelId = "sharpdroid_registro_channel_01"
-        private val channelId_mute = "sharpdroid_registro_channel_02"
-        private val agenda_id = 400
-        private val voti_id = 401
-        private val comunicazioni_id = 402
-        private val note_id = 403
+        enum class NotificationIDs {
+            AGENGA,
+            VOTI,
+            COMUNICAZIONI,
+            NOTE
+        }
     }
 }
