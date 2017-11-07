@@ -124,7 +124,7 @@
 
     <plurals name="notification_voti">
         <item quantity="one">Un nuovo voto</item>
-        <item quantity="other">%d nuovi voti!</item>
+        <item quantity="other">%d nuovi voti</item>
     </plurals>
 
     <plurals name="notification_note">
