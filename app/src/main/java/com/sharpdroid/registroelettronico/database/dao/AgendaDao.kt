@@ -34,6 +34,10 @@ interface AgendaDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(event: RemoteAgendaInfo)
 
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertInfos(event: List<RemoteAgendaInfo>)
+
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun update(event: LocalAgenda): Int
 
@@ -50,6 +54,9 @@ interface AgendaDao {
     @Query("DELETE FROM REMOTE_AGENDA_INFO")
     fun deleteRemoteInfo()
 
+    @Query("DELETE FROM REMOTE_AGENDA_INFO WHERE REMOTE_AGENDA_INFO.ID IN (SELECT REMOTE_AGENDA.ID FROM REMOTE_AGENDA WHERE REMOTE_AGENDA.PROFILE=:profile)")
+    fun deleteRemoteInfo(profile: Long)
+
 
     @Query("DELETE FROM LOCAL_AGENDA WHERE PROFILE=:profile")
     fun deleteLocal(profile: Long)
@@ -59,4 +66,7 @@ interface AgendaDao {
 
     @Query("SELECT * FROM REMOTE_AGENDA_INFO WHERE ID=:id")
     fun getInfo(id: Long): RemoteAgendaInfo?
+
+    @Query("SELECT REMOTE_AGENDA_INFO.* FROM REMOTE_AGENDA_INFO LEFT JOIN REMOTE_AGENDA ON REMOTE_AGENDA_INFO.ID=REMOTE_AGENDA.ID WHERE REMOTE_AGENDA.PROFILE=:profile")
+    fun getRemoteInfos(profile: Long): Single<List<RemoteAgendaInfo>>
 }
