@@ -129,7 +129,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
         DatabaseHelper.database.eventsDao().getRemoteInfos(profile).subscribe { remoteInfos ->
             remoteInfos.forEach {
-                userDB.child("api_events_info").child(it.id.toString()).setValue(remoteInfos.map { it.asMap() })
+                userDB.child("api_events_info").child(it.id.toString()).setValue(it.asMap())
             }
         }
 
