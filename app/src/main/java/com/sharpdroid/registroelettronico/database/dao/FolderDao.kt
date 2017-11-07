@@ -12,7 +12,7 @@ import io.reactivex.Single
 interface FolderDao {
 
     @Query("SELECT * FROM FILE_INFO WHERE ID = :id LIMIT 1")
-    fun getInfo(id: Long): FileInfo
+    fun getInfo(id: Long): FileInfo?
 
     @Query("SELECT * FROM FILE WHERE TEACHER=:teacherId AND FOLDER=:folderId")
     fun getFiles(teacherId: Long, folderId: Long): LiveData<List<File>>

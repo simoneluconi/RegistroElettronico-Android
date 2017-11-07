@@ -7,9 +7,13 @@ import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 
 class CommunicationViewModel : ViewModel() {
     private var livedata: LiveData<List<Communication>>? = null
+    private var profile = 0L
 
     fun getCommunications(profile: Long): LiveData<List<Communication>> {
-        if (livedata == null) livedata = DatabaseHelper.database.communicationsDao().loadCommunications(profile)
+        if (livedata == null || this.profile != profile) {
+            livedata = DatabaseHelper.database.communicationsDao().loadCommunications(profile)
+            this.profile = profile
+        }
         return livedata ?: throw NullPointerException("Communications' LiveData not yet initialized")
     }
 }

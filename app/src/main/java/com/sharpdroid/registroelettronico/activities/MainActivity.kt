@@ -121,7 +121,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         val userDB = FirebaseDatabase.getInstance().getReference("users").child(profile.toString())
         userDB.keepSynced(false)
 
-        DatabaseHelper.database.eventsDao().getLocalAsSingle(profile).toObservable().subscribe { localEvents ->
+        DatabaseHelper.database.eventsDao().getLocalAsSingle(profile).subscribe { localEvents ->
             localEvents.forEach {
                 userDB.child("events").child(it.event.id.toString()).setValue(it.asMap())
             }
@@ -434,7 +434,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
     override fun onProfileChanged(view: View?, profile: IProfile<*>?, current: Boolean): Boolean {
         if (profile == null || profile.identifier == 1234L) {
             startActivityForResult(Intent(this, LoginActivity::class.java), 2)
-        } else if (!current) {
+        } else {
 
             Account.with(this).user = profile.identifier
 

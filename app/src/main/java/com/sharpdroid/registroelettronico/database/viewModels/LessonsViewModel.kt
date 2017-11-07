@@ -9,13 +9,14 @@ import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 class LessonsViewModel : ViewModel() {
     private var subjects: LiveData<List<SubjectWithLessons>>? = null
     var selected = MutableLiveData<SubjectWithLessons>()
-    var profile = MutableLiveData<Long>()
+    var profile = 0L
 
     var query = MutableLiveData<String>()
 
     fun getSubjectsWithLessons(profile: Long): LiveData<List<SubjectWithLessons>> {
-        if (subjects == null || this.profile.value != profile) {
+        if (subjects == null || this.profile != profile) {
             subjects = DatabaseHelper.database.subjectsDao().getSubjectWithLessons(profile)
+            this.profile = profile
         }
         return subjects ?: throw NullPointerException("Subjects' LiveData not yet initialized")
     }

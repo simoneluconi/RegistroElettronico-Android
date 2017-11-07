@@ -282,14 +282,13 @@ public class Metodi {
     public static void fetchDataOfUser(@NotNull Context c) {
         Profile p = Profile.Companion.getProfile(c);
         updateSubjects(p);
-        updateLessons(p);
-        updateFolders(p);
-        updateAgenda(p);
-        updateAbsence(p);
-        updateBacheca(p);
-        updateNote(p);
-        updatePeriods(p);
-        updateMarks(p);
+        //updateLessons(p);
+        //updateFolders(p);
+        //updateAgenda(p);
+        //updateAbsence(p);
+        //updateBacheca(p);
+        //updateNote(p);
+        //updateMarks(p);
     }
 
     public static void updateMarks(@NotNull Context c) {
@@ -532,24 +531,6 @@ public class Metodi {
                 });
     }
 
-    public static void updatePeriods(@NotNull Context c) {
-        updatePeriods(Profile.Companion.getProfile(c));
-    }
-
-
-    public static void updatePeriods(Profile p) {/*
-        if (p == null) return;
-        handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_PERIODS_START, null));
-        APIClient.Companion.with(p).getPeriods()
-                .subscribe(notes -> {
-                    SugarRecord.deleteAll(Period.class, "PROFILE=?", String.valueOf(p.getId()));
-                    SugarRecord.saveInTx(notes.getPeriods(p));
-                    handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_PERIODS_OK, null));
-                }, throwable -> {
-                    handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.UPDATE_PERIODS_KO, null));
-                    throwable.printStackTrace();
-                });*/
-    }
 
     public static void downloadAttachment(@NotNull Context c, Communication communication) {
         downloadAttachment(c, communication, Profile.Companion.getProfile(c));

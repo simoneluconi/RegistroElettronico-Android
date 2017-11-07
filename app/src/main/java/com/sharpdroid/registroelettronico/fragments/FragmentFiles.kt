@@ -36,7 +36,7 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
                 Snackbar.make(layout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE).show()
             }
             EventType.DOWNLOAD_FILE_OK -> {
-                val file = JavaFile(DatabaseHelper.database.foldersDao().getInfo(args[0] as Long).path)
+                val file = JavaFile(DatabaseHelper.database.foldersDao().getInfo(args[0] as Long)?.path)
                 Snackbar.make(layout, String.format(getString(R.string.file_downloaded), file.name), Snackbar.LENGTH_SHORT)
                         .setAction(R.string.open) { openFile(context, file, Snackbar.make(layout, context.resources.getString(R.string.missing_app, file.name), Snackbar.LENGTH_SHORT)) }
                         .show()
