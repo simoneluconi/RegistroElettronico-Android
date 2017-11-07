@@ -158,7 +158,6 @@ class NotificationService : JobService() {
         val diff = if (diffGrades.size < 0) 0 else diffGrades.size
         SugarRecord.deleteAll(Grade::class.java, "PROFILE=?", profile.id.toString())
         SugarRecord.saveInTx(newGrades)
-        val l = listOf(getString(R.string.notification_new_grade, "6", "Arte"), getString(R.string.notification_new_grade, "9", "Filosofia"))
         return Pair(diffGrades.map { getString(R.string.notification_new_grade, it.mStringValue, it.mDescription) }, diff)
     }
 
