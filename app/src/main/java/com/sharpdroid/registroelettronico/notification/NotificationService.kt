@@ -37,7 +37,7 @@ class NotificationService : JobService() {
             if (!notify || !(notifyAgenda || notifyVoti || notifyComunicazioni || notifyNote)) return false
         }
 
-        val notificationsList = mutableMapOf<String, Pair<String, Int>>()
+        val notificationsList = mutableMapOf<String, Pair<List<String>, Int>>()
         if (profile.expire < System.currentTimeMillis()) {
             var successful = false
             var login: LoginResponse? = null
@@ -59,28 +59,28 @@ class NotificationService : JobService() {
             val diff = getAgendaDiff(profile)
             if (diff.second != 0)
                 notificationsList.put("agenda", diff)
-            Log.d("NOTIFICATION", "AGENDA - $diff")
+            Log.d("NOTIFICATION", "AGENDA - ${diff.second}")
         }
 
         if (option.notifyVoti) {
             val diff = getVotiDiff(profile)
             if (diff.second != 0)
                 notificationsList.put("voti", diff)
-            Log.d("NOTIFICATION", "VOTI - $diff")
+            Log.d("NOTIFICATION", "VOTI - ${diff.second}")
         }
 
         if (option.notifyComunicazioni) {
             val diff = getComunicazioniDiff(profile)
             if (diff.second != 0)
                 notificationsList.put("comunicazioni", diff)
-            Log.d("NOTIFICATION", "COMUNICAZIONI - $diff")
+            Log.d("NOTIFICATION", "COMUNICAZIONI - ${diff.second}")
         }
 
         if (option.notifyNote) {
             val diff = getNoteDiff(profile)
             if (diff.second != 0)
                 notificationsList.put("note", diff)
-            Log.d("NOTIFICATION", "NOTE - $diff")
+            Log.d("NOTIFICATION", "NOTE - ${diff.second}")
         }
 
         notify(notificationsList, PreferenceManager.getDefaultSharedPreferences(this))
@@ -88,7 +88,7 @@ class NotificationService : JobService() {
         return false //something else to do?
     }
 
-    private fun notify(notificationsList: Map<String, Pair<String, Int>>, preferences: SharedPreferences) {
+    private fun notify(notificationsList: Map<String, Pair<List<String>, Int>>, preferences: SharedPreferences) {
         if (notificationsList.isEmpty()) return
 
         val sound = preferences.getBoolean("notify_sound", true)
@@ -97,22 +97,22 @@ class NotificationService : JobService() {
         notificationsList.forEach {
             when (it.key) {
                 "agenda" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_agenda, it.value.second, it.value.second), it.key, it.value.first, sound, vibrate, R.id.agenda.toLong())
+                    pushNotification(resources.getQuantityString(R.plurals.notification_agenda, it.value.second, it.value.second), agenda_id, it.value.first, sound, vibrate, R.id.agenda.toLong())
                 }
                 "voti" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_voti, it.value.second, it.value.second), it.key, it.value.first, sound, vibrate, R.id.medie.toLong())
+                    pushNotification(resources.getQuantityString(R.plurals.notification_voti, it.value.second, it.value.second), voti_id, it.value.first, sound, vibrate, R.id.medie.toLong())
                 }
                 "comunicazioni" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_communication, it.value.second, it.value.second), it.key, it.value.first, sound, vibrate, R.id.communications.toLong())
+                    pushNotification(resources.getQuantityString(R.plurals.notification_communication, it.value.second, it.value.second), comunicazioni_id, it.value.first, sound, vibrate, R.id.communications.toLong())
                 }
                 "note" -> {
-                    pushNotification(resources.getQuantityString(R.plurals.notification_note, it.value.second, it.value.second), it.key, it.value.first, sound, vibrate, R.id.notes.toLong())
+                    pushNotification(resources.getQuantityString(R.plurals.notification_note, it.value.second, it.value.second), note_id, it.value.first, sound, vibrate, R.id.notes.toLong())
                 }
             }
         }
     }
 
-    private fun getAgendaDiff(profile: Profile): Pair<String, Int> {
+    private fun getAgendaDiff(profile: Profile): Pair<List<String>, Int> {
         val dates = getStartEnd("yyyyMMdd")
 
         var newEvents = emptyList<RemoteAgenda>()
@@ -125,19 +125,19 @@ class NotificationService : JobService() {
         }, {
             Log.e("NOTIFICATION", it?.localizedMessage, it)
         })
-        if (newEvents.isEmpty()) return Pair("", 0)
+        if (newEvents.isEmpty()) return Pair(emptyList(), 0)
 
         val oldEvents = SugarRecord.find(RemoteAgenda::class.java, "PROFILE=?", profile.id.toString())
         val diffEvents = newEvents.minus(oldEvents)
-        if (diffEvents.isEmpty()) return Pair("", 0)
+        if (diffEvents.isEmpty()) return Pair(emptyList(), 0)
 
         val diff = if (diffEvents.size < 0) 0 else diffEvents.size
         SugarRecord.deleteAll(RemoteAgenda::class.java, "PROFILE=?", profile.id.toString())
         SugarRecord.saveInTx(newEvents)
-        return Pair(diffEvents.first().notes, diff)
+        return Pair(diffEvents.map { it.notes }, diff)
     }
 
-    private fun getVotiDiff(profile: Profile): Pair<String, Int> {
+    private fun getVotiDiff(profile: Profile): Pair<List<String>, Int> {
         var newGrades = emptyList<Grade>()
         APIClient.with(profile).getGradesBlocking().blockingSubscribe({
             if (it?.isSuccessful == true) {
@@ -148,21 +148,21 @@ class NotificationService : JobService() {
         }, {
             Log.e("NOTIFICATION", it?.localizedMessage, it)
         })
-        if (newGrades.isEmpty()) return Pair("", 0)
+        if (newGrades.isEmpty()) return Pair(emptyList(), 0)
 
         val oldGrades = SugarRecord.find(Grade::class.java, "PROFILE=?", profile.id.toString())
         newGrades.map { it.profile = profile.id }
         val diffGrades = newGrades.minus(oldGrades)
-        if (diffGrades.isEmpty()) return Pair("", 0)
+        if (diffGrades.isEmpty()) return Pair(emptyList(), 0)
 
         val diff = if (diffGrades.size < 0) 0 else diffGrades.size
         SugarRecord.deleteAll(Grade::class.java, "PROFILE=?", profile.id.toString())
         SugarRecord.saveInTx(newGrades)
-        val content = getString(R.string.notification_new_grade, diffGrades.first().mStringValue, diffGrades.first().mDescription)
-        return Pair(content, diff)
+        val l = listOf(getString(R.string.notification_new_grade, "6", "Arte"), getString(R.string.notification_new_grade, "9", "Filosofia"))
+        return Pair(diffGrades.map { getString(R.string.notification_new_grade, it.mStringValue, it.mDescription) }, diff)
     }
 
-    private fun getComunicazioniDiff(profile: Profile): Pair<String, Int> {
+    private fun getComunicazioniDiff(profile: Profile): Pair<List<String>, Int> {
         var newCommunications = emptyList<Communication>()
         APIClient.with(profile).getBachecaBlocking().blockingSubscribe({
             if (it?.isSuccessful == true) {
@@ -173,21 +173,21 @@ class NotificationService : JobService() {
         }, {
             Log.e("NOTIFICATION", it?.localizedMessage, it)
         })
-        if (newCommunications.isEmpty()) return Pair("", 0)
+        if (newCommunications.isEmpty()) return Pair(emptyList(), 0)
 
         val oldCommunications = SugarRecord.find(Communication::class.java, "PROFILE=?", profile.id.toString())
         newCommunications = newCommunications.filter { it.cntStatus != "deleted" }
         newCommunications.map { it.cntStatus = "" }
         val diffCommunications = newCommunications.minus(oldCommunications)
-        if (diffCommunications.isEmpty()) return Pair("", 0)
+        if (diffCommunications.isEmpty()) return Pair(emptyList(), 0)
 
         val diff = if (diffCommunications.size < 0) 0 else diffCommunications.size
         SugarRecord.deleteAll(Communication::class.java, "PROFILE=?", profile.id.toString())
         SugarRecord.saveInTx(newCommunications)
-        return Pair(diffCommunications.first().title, diff)
+        return Pair(diffCommunications.map { it.title }, diff)
     }
 
-    private fun getNoteDiff(profile: Profile): Pair<String, Int> {
+    private fun getNoteDiff(profile: Profile): Pair<List<String>, Int> {
         var newNotes = emptyList<Note>()
         APIClient.with(profile).getNotesBlocking().blockingSubscribe({
             if (it?.isSuccessful == true) {
@@ -198,19 +198,19 @@ class NotificationService : JobService() {
         }, {
             Log.e("NOTIFICATION", it?.localizedMessage, it)
         })
-        if (newNotes.isEmpty()) return Pair("", 0)
+        if (newNotes.isEmpty()) return Pair(emptyList(), 0)
 
         val oldNotes = SugarRecord.find(Note::class.java, "PROFILE=?", profile.id.toString())
         val diffNotes = newNotes.minus(oldNotes)
-        if (diffNotes.isEmpty()) return Pair("", 0)
+        if (diffNotes.isEmpty()) return Pair(emptyList(), 0)
 
         val diff = if (diffNotes.size < 0) 0 else diffNotes.size
         SugarRecord.deleteAll(Note::class.java, "PROFILE=?", profile.id.toString())
         SugarRecord.saveInTx(newNotes)
-        return Pair(diffNotes.first().mText, diff)
+        return Pair(diffNotes.map { it.mText }, diff)
     }
 
-    private fun pushNotification(title: String, type: String, content: String, sound: Boolean, vibrate: Boolean, tabToOpen: Long) {
+    private fun pushNotification(title: String, type: Int, content: List<String>, sound: Boolean, vibrate: Boolean, tabToOpen: Long) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationManager: NotificationManager = getSystemService(NotificationManager::class.java)
             val mBuilder: Notification.Builder
@@ -221,13 +221,18 @@ class NotificationService : JobService() {
             i.putExtras(bundle)
             val intent = PendingIntent.getActivity(this, MainActivity.REQUEST_CODE, i, PendingIntent.FLAG_UPDATE_CURRENT)
 
+            val style = Notification.InboxStyle()
+
+            content.forEach {
+                style.addLine(it)
+            }
+
             mBuilder = Notification.Builder(this, if (sound) channelId else channelId_mute)
                     .setContentTitle(title)
                     .setSmallIcon(R.drawable.ic_stat_name)
                     .setContentIntent(intent)
+                    .setStyle(style)
                     .setAutoCancel(true)
-
-            if (!content.isEmpty()) mBuilder.setContentText(content)
 
             val channel = NotificationChannel(channelId, "Registro Elettronico", NotificationManager.IMPORTANCE_HIGH)
             channel.enableLights(true)
@@ -248,7 +253,7 @@ class NotificationService : JobService() {
 
             notificationManager.createNotificationChannel(channel)
             notificationManager.createNotificationChannel(channelMute)
-            notificationManager.notify(type.hashCode() and 0xfffffff, mBuilder.build())
+            notificationManager.notify(type, mBuilder.build())
         } else {
             val notificationManager: NotificationManagerCompat = NotificationManagerCompat.from(this)
             val mBuilder: NotificationCompat.Builder
@@ -258,26 +263,35 @@ class NotificationService : JobService() {
             i.putExtras(bundle)
             val intent = PendingIntent.getActivity(this, MainActivity.REQUEST_CODE, i, PendingIntent.FLAG_UPDATE_CURRENT)
 
+            val style = NotificationCompat.InboxStyle()
+
+            content.forEach {
+                style.addLine(it)
+            }
+
             mBuilder = NotificationCompat.Builder(this, "Registro Elettronico")
                     .setContentTitle(title)
                     .setSmallIcon(R.drawable.ic_stat_name)
                     .setContentIntent(intent)
+                    .setStyle(style)
                     .setLights(Color.BLUE, 3000, 3000)
                     .setAutoCancel(true)
-
-            if (!content.isEmpty()) mBuilder.setContentText(content)
 
             if (vibrate)
                 mBuilder.setVibrate(longArrayOf(250, 250, 250, 250))
             if (sound)
                 mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
 
-            notificationManager.notify(type.hashCode() and 0xfffffff, mBuilder.build())
+            notificationManager.notify(type, mBuilder.build())
         }
     }
 
     companion object {
         private val channelId = "sharpdroid_registro_channel_01"
         private val channelId_mute = "sharpdroid_registro_channel_02"
+        private val agenda_id = 1
+        private val voti_id = 1
+        private val comunicazioni_id = 1
+        private val note_id = 1
     }
 }
