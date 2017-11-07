@@ -21,6 +21,8 @@ class MedieAdapter(private val mContext: Context) : RecyclerView.Adapter<MedieHo
         notifyDataSetChanged()
     }
 
+    fun getAll() = ArrayList(CVDataList)
+
     fun clear() {
         CVDataList.clear()
         notifyDataSetChanged()

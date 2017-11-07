@@ -1,6 +1,5 @@
 package com.sharpdroid.registroelettronico.fragments
 
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -82,8 +81,8 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
             pagerSelected = true
         }
 
-        viewModel = ViewModelProviders.of(this)[GradesViewModel::class.java]
-
+        viewModel = ViewModelProviders.of(activity)[GradesViewModel::class.java]
+/*
         //Observe remote data changes
         viewModel.getFirstPeriod(profile).observe(this, Observer {
             val fragment = pagerAdapter.instantiateItem(view_pager, 0) as FragmentMedie
@@ -99,8 +98,8 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
             val fragment = pagerAdapter.instantiateItem(view_pager, 2) as FragmentMedie
             fragment.addSubjects(it.orEmpty(), -1, PreferenceManager.getDefaultSharedPreferences(context).getString("order", ""))
         })
-
-
+*/
+        /*
         viewModel.getOrder().observe(this, Observer {
             for (i in 0..pagerAdapter.count) {
                 val fragment = pagerAdapter.instantiateItem(view_pager, i) as FragmentMedie
@@ -110,7 +109,7 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
                     2 -> fragment.addSubjects(viewModel.getAllPeriods(profile).value.orEmpty(), -1, it.orEmpty())
                 }
             }
-        })
+        })*/
 
         if (savedInstanceState == null) {
             download()
@@ -154,7 +153,7 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
         }
 
         pref.edit().putString("order", order).apply()
-        viewModel.setOrder(order)
+        viewModel.order.value = order
     }
 
     private fun download() {
@@ -196,7 +195,8 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
         override fun getItem(position: Int): Fragment {
             val f = FragmentMedie()
             val args = Bundle()
-            args.putInt("q", position)
+            args.putInt("q", when (position) { 0 -> 1; 1 -> 3; else -> -1
+            })
             f.arguments = args
             return f
         }

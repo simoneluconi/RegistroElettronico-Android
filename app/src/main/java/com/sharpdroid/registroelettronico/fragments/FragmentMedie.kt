@@ -1,5 +1,7 @@
 package com.sharpdroid.registroelettronico.fragments
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.graphics.Color
 import android.os.Bundle
@@ -11,6 +13,8 @@ import android.view.ViewGroup
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.MedieAdapter
 import com.sharpdroid.registroelettronico.database.entities.Average
+import com.sharpdroid.registroelettronico.database.viewModels.GradesViewModel
+import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.ItemOffsetDecoration
 import com.sharpdroid.registroelettronico.views.EmptyFragment
 import kotlinx.android.synthetic.main.coordinator_swipe_recycler_padding.*
@@ -21,6 +25,7 @@ class FragmentMedie : Fragment() {
         MedieAdapter(context)
     }
     private var emptyHolder: EmptyFragment? = null
+    private lateinit var viewModel: GradesViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) = inflater.inflate(R.layout.coordinator_swipe_recycler_padding, container, false)
 
@@ -34,6 +39,8 @@ class FragmentMedie : Fragment() {
 
         periodo = arguments.getInt("q")
 
+        viewModel = ViewModelProviders.of(activity)[GradesViewModel::class.java]
+
         with(recycler) {
             setBackgroundColor(Color.parseColor("#F1F1F1"))
             setHasFixedSize(true)
@@ -46,11 +53,18 @@ class FragmentMedie : Fragment() {
 
             adapter = mRVAdapter
         }
+
+        viewModel.getGrades(Account.with(context).user, periodo).observe(this, Observer {
+            addSubjects(it.orEmpty(), periodo, viewModel.order.value.orEmpty())
+        })
+        viewModel.order.observe(this, Observer {
+            addSubjects(mRVAdapter.getAll(), periodo, it.orEmpty())
+        })
     }
 
     fun addSubjects(markSubjects: List<Average>, p: Int, order: String) {
         val ordered = when (order) {
-            "avg" -> markSubjects.sortedByDescending { if (it.count > 0) it.sum / it.count else 0f }
+            "avg" -> markSubjects.sortedByDescending { it.avg() }
             "count" -> markSubjects.sortedByDescending { it.count }
             else -> markSubjects.sortedBy { it.name }
         }

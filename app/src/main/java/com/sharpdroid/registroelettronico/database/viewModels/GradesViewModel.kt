@@ -10,36 +10,30 @@ class GradesViewModel : ViewModel() {
     private var firstPeriod: LiveData<List<Average>>? = null
     private var secondPeriod: LiveData<List<Average>>? = null
     private var allPeriods: LiveData<List<Average>>? = null
-    private var order = MutableLiveData<String>()
+    val order = MutableLiveData<String>()
+    private var profile = 0L
 
-    fun getFirstPeriod(profile: Long): LiveData<List<Average>> {
-        if (firstPeriod == null) {
-            firstPeriod = DatabaseHelper.database.gradesDao().getAverages(profile, 1)
-
+    fun getGrades(profile: Long, period: Int): LiveData<List<Average>> {
+        return when (period) {
+            1 -> {
+                if (firstPeriod == null || profile != this.profile) {
+                    firstPeriod = DatabaseHelper.database.gradesDao().getAverages(profile, 1)
+                }
+                firstPeriod ?: throw NullPointerException("firstPeriod livedata not yet initialized")
+            }
+            3 -> {
+                if (secondPeriod == null || profile != this.profile) {
+                    secondPeriod = DatabaseHelper.database.gradesDao().getAverages(profile, 3)
+                }
+                secondPeriod ?: throw NullPointerException("secondPeriod livedata not yet initialized")
+            }
+            else -> {
+                if (allPeriods == null || profile != this.profile) {
+                    allPeriods = DatabaseHelper.database.gradesDao().getAllAverages(profile)
+                }
+                allPeriods ?: throw NullPointerException("allPeriods livedata not yet initialized")
+            }
         }
-        return firstPeriod ?: throw NullPointerException("firstPeriod livedata not yet initialized")
     }
 
-    fun getSecondPeriod(profile: Long): LiveData<List<Average>> {
-        if (secondPeriod == null) {
-            secondPeriod = DatabaseHelper.database.gradesDao().getAverages(profile, 3)
-
-        }
-        return secondPeriod ?: throw NullPointerException("secondPeriod livedata not yet initialized")
-    }
-
-    fun getAllPeriods(profile: Long): LiveData<List<Average>> {
-        if (allPeriods == null) {
-            allPeriods = DatabaseHelper.database.gradesDao().getAllAverages(profile)
-        }
-        return allPeriods ?: throw NullPointerException("allPeriods livedata not yet initialized")
-    }
-
-    fun getOrder(): LiveData<String> {
-        return order
-    }
-
-    fun setOrder(value: String) {
-        order.postValue(value)
-    }
 }
