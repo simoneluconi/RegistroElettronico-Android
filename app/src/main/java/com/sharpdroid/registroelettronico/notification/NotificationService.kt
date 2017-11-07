@@ -79,11 +79,6 @@ class NotificationService : JobService() {
             Log.d("NOTIFICATION", "NOTE - ${diff.second}")
         }
 
-        notificationsList.put(NotificationIDs.AGENGA, Pair(listOf("hello agenda"), 1))
-        notificationsList.put(NotificationIDs.COMUNICAZIONI, Pair(listOf("hello com"), 1))
-        notificationsList.put(NotificationIDs.VOTI, Pair(listOf("hello voti"), 1))
-        notificationsList.put(NotificationIDs.NOTE, Pair(listOf("hello note", "merda"), 2))
-
         notify(notificationsList, PreferenceManager.getDefaultSharedPreferences(this))
 
         return false //something else to do?
