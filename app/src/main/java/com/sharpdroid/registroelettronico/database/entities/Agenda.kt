@@ -121,4 +121,20 @@ class RemoteAgendaInfo(
         @ColumnInfo(name = "COMPLETED") var completed: Boolean = false,
         @ColumnInfo(name = "ARCHIVED") var archived: Boolean = false,
         @ColumnInfo(name = "TEST") var test: Boolean = false
-)
+) {
+    fun asMap(): Map<String, Any> {
+        val map = mutableMapOf<String, Any>()
+        map.put("id", id)
+        map.put("completed", id)
+        map.put("archived", id)
+        map.put("test", id)
+        return map
+    }
+
+    constructor(snap: DataSnapshot) : this(
+            snap.child("id").getValue(Long::class.java) ?: 0,
+            snap.child("completed").getValue(Boolean::class.java) == true,
+            snap.child("archived").getValue(Boolean::class.java) == true,
+            snap.child("test").getValue(Boolean::class.java) == true
+    )
+}

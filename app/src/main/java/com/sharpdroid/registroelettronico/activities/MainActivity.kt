@@ -43,6 +43,7 @@ import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.database.entities.LocalAgenda
 import com.sharpdroid.registroelettronico.database.entities.Profile
+import com.sharpdroid.registroelettronico.database.entities.RemoteAgendaInfo
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.fragments.*
 import com.sharpdroid.registroelettronico.utils.Account
@@ -117,14 +118,17 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
     override fun onStop() {
         val profile = Account.with(this).user
 
-        val userDB = FirebaseDatabase.getInstance().getReference("users").child(profile.toString()).child("events")
+        val userDB = FirebaseDatabase.getInstance().getReference("users").child(profile.toString())
         userDB.keepSynced(false)
 
         DatabaseHelper.database.eventsDao().getLocalAsSingle(profile).toObservable().subscribe {
-            userDB.removeValue()
-            userDB.setValue(it.map { it.asMap() })
-            userDB.onDisconnect()
-            println("UPDATE REMOTE DB")
+            userDB.child("events").removeValue()
+            userDB.child("events").setValue(it.map { it.asMap() })
+        }
+
+        DatabaseHelper.database.eventsDao().getRemoteInfos(profile).subscribe { remoteInfos ->
+            userDB.child("api_events_info").removeValue()
+            userDB.child("api_events_info").setValue(remoteInfos.map { it.asMap() })
         }
 
 
@@ -185,18 +189,20 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
 
             val profile = Account.with(this).user
-            val events = FirebaseDatabase.getInstance().getReference("users").child(profile.toString()).child("events")
+            val events = FirebaseDatabase.getInstance().getReference("users").child(profile.toString())
             events.keepSynced(false)
-            events.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onCancelled(p0: DatabaseError?) {
-
-                }
-
+            events.child("events").addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onCancelled(p0: DatabaseError?) {}
                 override fun onDataChange(ref: DataSnapshot?) {
                     DatabaseHelper.database.eventsDao().deleteLocal(profile)
-                    val map = ref?.children?.map { LocalAgenda(it) }.orEmpty()
-                    DatabaseHelper.database.eventsDao().insertBulk(map)
-                    println(map.toString())
+                    DatabaseHelper.database.eventsDao().insertBulk(ref?.children?.map { LocalAgenda(it) }.orEmpty())
+                }
+            })
+            events.child("api_events_info").addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onCancelled(p0: DatabaseError?) {}
+                override fun onDataChange(ref: DataSnapshot?) {
+                    DatabaseHelper.database.eventsDao().deleteRemoteInfo(profile)
+                    DatabaseHelper.database.eventsDao().insertInfos(ref?.children?.map { RemoteAgendaInfo(it) }.orEmpty())
                 }
             })
         }
