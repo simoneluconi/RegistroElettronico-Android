@@ -35,7 +35,7 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
                 if (!swiperefresh.isRefreshing) swiperefresh.isRefreshing = true
             }
             EventType.UPDATE_FOLDERS_OK -> {
-                DatabaseHelper.database.foldersDao().getDidattica(Account.with(context).user).toObservable().observeOn(AndroidSchedulers.mainThread()).subscribe {
+                DatabaseHelper.database.foldersDao().getDidattica(Account.with(context).user).observeOn(AndroidSchedulers.mainThread()).subscribe { it ->
                     addFiles(it.orEmpty())
                 }
                 if (swiperefresh.isRefreshing) swiperefresh.isRefreshing = false

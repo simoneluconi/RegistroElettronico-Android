@@ -6,5 +6,4 @@ import com.sharpdroid.registroelettronico.database.pojos.FolderPOJO
 
 class DidatticaViewModel : ViewModel() {
     var selectedFolder = MutableLiveData<FolderPOJO>()
-    var profile = MutableLiveData<Long>()
 }

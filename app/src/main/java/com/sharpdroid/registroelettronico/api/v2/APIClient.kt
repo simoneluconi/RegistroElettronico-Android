@@ -54,7 +54,11 @@ class APIClient {
                     }
 
                 }
-                chain.proceed(original)
+                try {
+                    chain.proceed(original)
+                } catch (err: Error) {
+                    return@Interceptor null
+                }
             }
 
             val zorro = Interceptor { chain ->
@@ -67,13 +71,17 @@ class APIClient {
                         .method(original.method(), original.body())
                         .url(original.url().toString().replace("%7BstudentId%7D", profile?.id.toString()))
                         .build()
-                val res = chain.proceed(request)
 
-                if (!res.isSuccessful)
-                    Log.d("REQUEST", request.method() + " " + request.url().toString() + " " + request.headers().toString() + " ==> " + res.body()?.string())
-                else Log.d("REQUEST", request.method() + " " + request.url().toString() + " " + request.headers().toString())
-
-                res
+                try {
+                    chain.proceed(original)
+                    val res = chain.proceed(request)
+                    if (!res.isSuccessful)
+                        Log.d("REQUEST", request.method() + " " + request.url().toString() + " " + request.headers().toString() + " ==> " + res.body()?.string())
+                    else Log.d("REQUEST", request.method() + " " + request.url().toString() + " " + request.headers().toString())
+                    res
+                } catch (err: Error) {
+                    return@Interceptor null
+                }
             }
 
 
