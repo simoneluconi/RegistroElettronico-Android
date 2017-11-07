@@ -13,10 +13,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.sharpdroid.registroelettronico.R
-import com.sharpdroid.registroelettronico.database.entities.SubjectInfo
+import com.sharpdroid.registroelettronico.database.pojos.SubjectPOJO
 import com.sharpdroid.registroelettronico.utils.Metodi
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.utils.Metodi.dp
+import com.sharpdroid.registroelettronico.utils.or
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import kotlinx.android.synthetic.main.adapter_view_info.view.*
 import kotlinx.android.synthetic.main.view_info.view.*
@@ -51,7 +52,7 @@ class InfoView : CardView {
         recycler.addItemDecoration(HorizontalDividerItemDecoration.Builder(mContext).colorResId(R.color.divider).size(Metodi.dp(1)).marginResId(R.dimen.padding_left_divider1, R.dimen.nav_header_vertical_spacing).build())
     }
 
-    fun setSubjectDetails(data: SubjectInfo) {
+    fun setSubjectDetails(data: SubjectPOJO) {
         adapter.setData(data)
     }
 
@@ -80,29 +81,24 @@ class InfoView : CardView {
             notifyDataSetChanged()
         }
 
-        fun setData(data: SubjectInfo) {
+        fun setData(data: SubjectPOJO) {
             this.data = convertToList(data)
             notifyDataSetChanged()
         }
 
-        private fun convertToList(data: SubjectInfo): MutableList<Pair<Int, String>> {
+        private fun convertToList(data: SubjectPOJO): MutableList<Pair<Int, String>> {
             val list = ArrayList<Pair<Int, String>>()
 
-            list.add(Pair(R.drawable.ic_title,
-                    capitalizeEach(
-                            if (data.description.isEmpty())
-                            /*data.subject.description*/ ""
-                            else
-                                data.description)))
-            if (!/*data.subject.teachers.isEmpty()*/ true) {
-                val prof = ArrayList<String>()
-                //data.subject.teachers.mapTo(prof) { it.teacherName }
+            list.add(Pair(R.drawable.ic_title, capitalizeEach(data.subjectInfo.getOrNull(0)?.description.or(data.subject.description))))
+
+            if (data.subject.teachers.isNotEmpty()) {
+                val prof = data.subject.teachers.map { it.teacherName }
                 list.add(Pair(R.drawable.ic_person, capitalizeEach(TextUtils.join(" - ", prof), true)))
             }
-            if (!TextUtils.isEmpty(data.classroom))
-                list.add(Pair(R.drawable.ic_room, data.classroom))
-            if (!TextUtils.isEmpty(data.details))
-                list.add(Pair(R.drawable.ic_description, data.details))
+            if (!(data.subjectInfo.getOrNull(0)?.classroom).isNullOrEmpty())
+                list.add(Pair(R.drawable.ic_room, data.subjectInfo.getOrNull(0)?.classroom.orEmpty()))
+            if (!(data.subjectInfo.getOrNull(0)?.details).isNullOrEmpty())
+                list.add(Pair(R.drawable.ic_description, data.subjectInfo.getOrNull(0)?.details.orEmpty()))
 
             return list
         }

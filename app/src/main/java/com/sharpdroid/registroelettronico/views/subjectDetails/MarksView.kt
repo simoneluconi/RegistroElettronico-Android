@@ -97,9 +97,11 @@ class MarksView : CardView, PopupMenu.OnMenuItemClickListener {
         chart.legend.isEnabled = false
     }
 
-    fun setSubject(subject: SubjectInfo, media: Float) {
-        setLimitLines(subject.target, media)
-        setTarget(subject)
+    fun setSubject(subject: SubjectInfo?, media: Float) {
+        subject?.let {
+            setLimitLines(it.target, media)
+            setTarget(it)
+        }
     }
 
     private fun setTarget(subject: SubjectInfo) {

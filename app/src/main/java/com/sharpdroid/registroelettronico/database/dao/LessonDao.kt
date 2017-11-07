@@ -13,7 +13,7 @@ interface LessonDao {
     fun loadLessons(profile: Long, date: Long): LiveData<List<Lesson>>
 
     @Query("SELECT * FROM LESSON WHERE M_SUBJECT_ID=:code GROUP BY M_ARGUMENT, M_AUTHOR_NAME, M_DATE ORDER BY M_DATE DESC LIMIT 5")
-    fun loadLastLessons(code: Long): Flowable<List<Lesson>>
+    fun loadLastLessons(code: Long): LiveData<List<Lesson>>
 
     @Query("SELECT * FROM LESSON WHERE M_SUBJECT_ID=:code GROUP BY M_ARGUMENT, M_AUTHOR_NAME, M_DATE ORDER BY M_DATE DESC")
     fun loadLessons(code: Long): Flowable<List<LessonMini>>

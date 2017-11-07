@@ -5,6 +5,8 @@ import android.arch.persistence.room.*
 import com.sharpdroid.registroelettronico.database.entities.Average
 import com.sharpdroid.registroelettronico.database.entities.Grade
 import com.sharpdroid.registroelettronico.database.entities.LocalGrade
+import com.sharpdroid.registroelettronico.database.pojos.AverageType
+import io.reactivex.Flowable
 
 @Dao
 interface GradeDao {
@@ -25,6 +27,24 @@ interface GradeDao {
             "WHERE GRADE.PROFILE=:profile \n" +
             "GROUP BY GRADE.M_SUBJECT_ID")
     fun getAllAverages(profile: Long): LiveData<List<Average>>
+
+    @Query("SELECT SUM(M_VALUE) as `SUM`, M_TYPE, COUNT(CASE WHEN M_VALUE!=0 THEN 1 END) AS `COUNT` FROM GRADE WHERE PROFILE=:profile AND M_SUBJECT_ID=:subject AND M_PERIOD=:period GROUP BY M_TYPE")
+    fun getPeriodTypeAverage(profile: Long, subject: Long, period: Int): LiveData<List<AverageType>>
+
+    @Query("SELECT SUM(M_VALUE) as `SUM`, M_TYPE, COUNT(CASE WHEN M_VALUE!=0 THEN 1 END) AS `COUNT` FROM GRADE WHERE PROFILE=:profile AND M_SUBJECT_ID=:subject GROUP BY M_TYPE")
+    fun getAllTypeAverage(profile: Long, subject: Long): LiveData<List<AverageType>>
+
+    @Query("SELECT * FROM GRADE WHERE PROFILE=:profile AND M_SUBJECT_ID=:subject AND M_PERIOD=:period")
+    fun periodGrades(profile: Long, subject: Long, period: Int): LiveData<List<Grade>>
+
+    @Query("SELECT * FROM GRADE WHERE PROFILE=:profile AND M_SUBJECT_ID=:subject")
+    fun allPeriodsGrades(profile: Long, subject: Long): LiveData<List<Grade>>
+
+    @Query("SELECT * FROM LOCAL_GRADE WHERE PROFILE=:profile AND SUBJECT=:subject AND PERIOD=:period")
+    fun periodLocalGrades(profile: Long, subject: Long, period: Int): Flowable<List<LocalGrade>>
+
+    @Query("SELECT * FROM LOCAL_GRADE WHERE PROFILE=:profile AND SUBJECT=:subject")
+    fun allPeriodsLocalGrades(profile: Long, subject: Long): Flowable<List<LocalGrade>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(grades: List<Grade>)

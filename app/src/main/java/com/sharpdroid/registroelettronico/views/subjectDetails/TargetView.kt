@@ -37,41 +37,32 @@ class TargetView : CardView {
         View.inflate(mContext, R.layout.view_target, this)
     }
 
-    fun setProgress(new_media: Float) {
-        if (new_media == -1f) {
+    fun setTarget(new_media: Float, target: Float, animate: Boolean) {
+        this.target = target
+
+
+        if (target == -1f || new_media == 0f) {
+            obiettivo.text = "-"
+        } else {
+            obiettivo.text = String.format(Locale.getDefault(), "%.2f", target)
+        }
+
+
+        if (new_media != 0f) {
+            media.text = String.format(Locale.getDefault(), "%.2f", new_media)
+
+            if (animate) {
+                animateBar(target, new_media, getColor(getMarkColor(new_media, target)))
+            } else {
+                progress.progressColor = getColor(getMarkColor(new_media, target))
+                progress.max = target
+                progress.progress = new_media
+            }
+        } else {
             progress.progressColor = getColor(R.color.intro_blue)
             progress.max = 10f
             progress.progress = 11f
             media.text = "-"
-
-            if (target == -1f) {
-                obiettivo.text = "-"
-            }
-        } else {
-            media.text = String.format(Locale.getDefault(), "%.2f", new_media)
-
-            if (target == -1f) {
-                setTarget(new_media, Math.ceil(new_media.toDouble()).toFloat(), false)
-            }
-
-            progress.progressColor = getColor(getMarkColor(new_media, target))
-            progress.max = target
-            progress.progress = new_media
-        }
-    }
-
-    fun setTarget(media: Float, target: Float, animate: Boolean) {
-        this.target = target
-        obiettivo.text = String.format(Locale.getDefault(), "%.2f", target)
-
-        if (media != -1f) {
-            if (animate) {
-                animateBar(target, media, getColor(getMarkColor(media, target)))
-            } else {
-                progress.progressColor = getColor(getMarkColor(media, target))
-                progress.max = target
-                progress.progress = media
-            }
         }
     }
 
