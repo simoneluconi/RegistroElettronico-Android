@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.support.v4.content.ContextCompat
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -16,12 +17,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
 import com.sharpdroid.registroelettronico.R
-import com.sharpdroid.registroelettronico.activities.MarkSubjectDetailActivity
 import com.sharpdroid.registroelettronico.adapters.holders.Holder
 import com.sharpdroid.registroelettronico.database.entities.LocalGrade
+import com.sharpdroid.registroelettronico.database.pojos.AverageType
 import com.sharpdroid.registroelettronico.utils.Metodi
 import com.sharpdroid.registroelettronico.utils.Metodi.getMarkColor
+import com.transitionseverywhere.AutoTransition
 import com.transitionseverywhere.TransitionManager
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import kotlinx.android.synthetic.main.adapter_mark.view.*
@@ -65,8 +68,8 @@ class HypotheticalView : CardView {
         empty.setTextAndDrawable("Nessun voto ipotetico", R.drawable.ic_timeline)
     }
 
-    fun setRealData(avg: MarkSubjectDetailActivity.AverageType) {
-        realGradeSum = avg.avg * avg.count
+    fun setRealData(avg: AverageType) {
+        realGradeSum = avg.sum
         realCount = avg.count
         invalidate()
     }
@@ -76,8 +79,7 @@ class HypotheticalView : CardView {
         recycler.adapter.notifyDataSetChanged()
     }
 
-    fun setHypoGrades(grades: List<LocalGrade>) {
-        TransitionManager.beginDelayedTransition(rootView as ViewGroup)
+    fun setHypoGrades(grades: List<LocalGrade>, animate: Boolean) {
         hypoGradeSum = grades.foldRight(0f, { localGrade, acc -> acc + localGrade.value })
         hypoCount = grades.size
 
@@ -85,56 +87,33 @@ class HypotheticalView : CardView {
             localGrade.index = index
         }
 
-        this.grades.clear()
-        this.grades.addAll(grades)
-
-        recycler.adapter.notifyDataSetChanged()
-
         updateHypoAvg()
         updatePercentage()
+
+        if (animate)
+            TransitionManager.beginDelayedTransition(rootView as ViewGroup, AutoTransition()
+                    .excludeChildren(R.id.info, true)
+                    .excludeChildren(R.id.overall, true)
+                    .excludeChildren(R.id.target, true)
+                    .excludeChildren(R.id.marks, true)
+                    .excludeChildren(R.id.lessons, true)
+                    .setInterpolator(DecelerateInterpolator(1.8f))
+            )
+
+        DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) = this@HypotheticalView.grades[oldItemPosition].id == grades[newItemPosition].id
+            override fun getOldListSize() = this@HypotheticalView.grades.size
+            override fun getNewListSize() = grades.size
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) = this@HypotheticalView.grades[oldItemPosition].value == grades[newItemPosition].value && this@HypotheticalView.grades[oldItemPosition].index == grades[newItemPosition].index
+        }).dispatchUpdatesTo(recycler.adapter)
+        recycler.invalidateItemDecorations()
+
+        this.grades.clear()
+        this.grades.addAll(grades)
 
         empty.visibility = if (grades.isEmpty()) View.VISIBLE else View.GONE
         media_layout.visibility = if (grades.isNotEmpty()) View.VISIBLE else View.GONE
         recycler.visibility = if (grades.isNotEmpty()) View.VISIBLE else View.GONE
-    }
-
-    fun add(grade: LocalGrade) {
-        if (grades.size != 0)
-            grade.index = grades.last().index + 1
-
-        grades.add(grades.lastIndex + 1, grade)
-        recycler.adapter.notifyDataSetChanged()
-
-        TransitionManager.beginDelayedTransition(rootView as ViewGroup)
-        hypoGradeSum = grades.foldRight(0f, { localGrade, acc -> acc + localGrade.value })
-        hypoCount = grades.size
-
-        updateHypoAvg()
-        updatePercentage()
-
-        empty.visibility = View.GONE
-        media_layout.visibility = View.VISIBLE
-        recycler.visibility = View.VISIBLE
-    }
-
-    fun remove(grade: LocalGrade) {
-        val index = grades.indexOf(grade)
-        grades.removeAt(index)
-        recycler.adapter.notifyItemRemoved(index)
-
-        TransitionManager.beginDelayedTransition(rootView as ViewGroup)
-        hypoGradeSum = grades.foldRight(0f, { localGrade, acc -> acc + localGrade.value })
-        hypoCount = grades.size
-
-        recycler.visibility = if (grades.isNotEmpty()) View.VISIBLE else View.GONE
-        empty.visibility = if (grades.isEmpty()) View.VISIBLE else View.GONE
-        if (grades.isEmpty()) {
-            media_layout.visibility = View.GONE
-            return
-        }
-
-        updateHypoAvg()
-        updatePercentage()
     }
 
     private fun updateHypoAvg() {
