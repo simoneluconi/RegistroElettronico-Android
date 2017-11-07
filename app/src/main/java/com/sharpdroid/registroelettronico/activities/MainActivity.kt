@@ -121,14 +121,16 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         val userDB = FirebaseDatabase.getInstance().getReference("users").child(profile.toString())
         userDB.keepSynced(false)
 
-        DatabaseHelper.database.eventsDao().getLocalAsSingle(profile).toObservable().subscribe {
-            userDB.child("events").removeValue()
-            userDB.child("events").setValue(it.map { it.asMap() })
+        DatabaseHelper.database.eventsDao().getLocalAsSingle(profile).toObservable().subscribe { localEvents ->
+            localEvents.forEach {
+                userDB.child("events").child(it.event.id.toString()).setValue(it.asMap())
+            }
         }
 
         DatabaseHelper.database.eventsDao().getRemoteInfos(profile).subscribe { remoteInfos ->
-            userDB.child("api_events_info").removeValue()
-            userDB.child("api_events_info").setValue(remoteInfos.map { it.asMap() })
+            remoteInfos.forEach {
+                userDB.child("api_events_info").child(it.id.toString()).setValue(remoteInfos.map { it.asMap() })
+            }
         }
 
 
@@ -187,22 +189,25 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             val drawerToOpen = intent.extras?.getInt("drawer_to_open", default) ?: default
             drawer?.setSelectionAtPosition(drawerToOpen + 1, true)
 
-
             val profile = Account.with(this).user
             val events = FirebaseDatabase.getInstance().getReference("users").child(profile.toString())
             events.keepSynced(false)
             events.child("events").addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onCancelled(p0: DatabaseError?) {}
                 override fun onDataChange(ref: DataSnapshot?) {
-                    DatabaseHelper.database.eventsDao().deleteLocal(profile)
-                    DatabaseHelper.database.eventsDao().insertBulk(ref?.children?.map { LocalAgenda(it) }.orEmpty())
+                    if (ref?.hasChildren()!!) {
+                        //Updated info will be replaced, new ones will be inserted. Nothing has to be deleted
+                        DatabaseHelper.database.eventsDao().insertBulk(ref.children?.map { LocalAgenda(it) }.orEmpty())
+                    }
                 }
             })
             events.child("api_events_info").addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onCancelled(p0: DatabaseError?) {}
                 override fun onDataChange(ref: DataSnapshot?) {
-                    DatabaseHelper.database.eventsDao().deleteRemoteInfo(profile)
-                    DatabaseHelper.database.eventsDao().insertInfos(ref?.children?.map { RemoteAgendaInfo(it) }.orEmpty())
+                    if (ref?.hasChildren()!!) {
+                        //Updated info will be replaced, new ones will be inserted. Nothing has to be deleted
+                        DatabaseHelper.database.eventsDao().insertInfos(ref.children?.map { RemoteAgendaInfo(it) }.orEmpty())
+                    }
                 }
             })
         }
