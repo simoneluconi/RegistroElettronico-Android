@@ -288,9 +288,9 @@ class NotificationService : JobService() {
     companion object {
         private val channelId = "sharpdroid_registro_channel_01"
         private val channelId_mute = "sharpdroid_registro_channel_02"
-        private val agenda_id = 1
-        private val voti_id = 1
-        private val comunicazioni_id = 1
-        private val note_id = 1
+        private val agenda_id = 400
+        private val voti_id = 401
+        private val comunicazioni_id = 402
+        private val note_id = 403
     }
 }
