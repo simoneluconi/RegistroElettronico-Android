@@ -24,14 +24,16 @@
         <com.github.sundeepk.compactcalendarview.CompactCalendarView
             android:id="@+id/calendar"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="@dimen/agenda_calendar_size"
             android:layout_marginBottom="16dp"
             android:visibility="gone"
             app:compactCalendarBackgroundColor="@color/colorPrimary"
             app:compactCalendarCurrentDayBackgroundColor="@color/bluematerial"
             app:compactCalendarCurrentSelectedDayBackgroundColor="@color/colorPrimaryDark"
+            app:compactCalendarDisplayOtherMonthDays="true"
             app:compactCalendarMultiEventIndicatorColor="@color/md_white_1000"
-            app:compactCalendarTargetHeight="200dp"
+            app:compactCalendarOtherMonthDaysTextColor="#44ffffff"
+            app:compactCalendarTargetHeight="@dimen/agenda_calendar_size"
             app:compactCalendarTextColor="@color/md_white_1000"
             app:compactCalendarTextSize="12.0sp" />
 
