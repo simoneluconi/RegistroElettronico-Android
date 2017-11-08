@@ -9,5 +9,6 @@
     <dimen name="padding_left_divider2">64dp</dimen>
     <dimen name="list_item_spacing">16dp</dimen>
     <dimen name="list_item_spacing_half">8dp</dimen>
+    <dimen name="agenda_calendar_size">200dp</dimen>
     <integer name="fragment_transition_duration">500</integer>
 </resources>
