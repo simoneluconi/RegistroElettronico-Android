@@ -1,6 +1,7 @@
 package com.sharpdroid.registroelettronico.api.v2
 
 import android.util.Log
+import android.util.SparseArray
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.sharpdroid.registroelettronico.Info.API_URL
@@ -23,7 +24,11 @@ import java.util.*
 class APIClient {
 
     companion object {
+        val cache = SparseArray<SpaggiariREST>()
+
         fun with(profile: Profile?): SpaggiariREST {
+            if (cache.get(profile?.id?.toInt() ?: 0, null) != null) return cache[profile?.id?.toInt() ?: 0]
+
             val loginInterceptor = Interceptor { chain ->
                 val original = chain.request()
                 if (profile != null && original.url().toString() != API_URL + "auth/login" && profile.expire.time < System.currentTimeMillis()) {
@@ -101,8 +106,9 @@ class APIClient {
 
                     .baseUrl(API_URL)
                     .client(okHttp)
-                    .build()
-            return retrofit.create(SpaggiariREST::class.java)
+                    .build().create(SpaggiariREST::class.java)
+            cache.put(profile?.id?.toInt() ?: 0, retrofit)
+            return retrofit
         }
     }
 }
