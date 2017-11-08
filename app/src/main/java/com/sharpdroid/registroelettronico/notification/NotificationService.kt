@@ -231,6 +231,7 @@ class NotificationService : JobService() {
                     .setStyle(style)
                     .setNumber(content.size)
                     .setAutoCancel(true)
+                    .setOnlyAlertOnce(true)
 
             val channel = NotificationChannel(type.name, channelName, NotificationManager.IMPORTANCE_DEFAULT)
             channel.enableLights(true)
@@ -261,6 +262,7 @@ class NotificationService : JobService() {
                     .setLights(Color.BLUE, 3000, 3000)
                     .setNumber(content.size)
                     .setAutoCancel(true)
+                    .setOnlyAlertOnce(true)
 
             if (vibrate)
                 mBuilder.setVibrate(longArrayOf(250, 250, 250, 250))
