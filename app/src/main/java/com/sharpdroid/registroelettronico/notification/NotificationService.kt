@@ -203,21 +203,44 @@ class NotificationService : JobService() {
     }
 
     private fun pushNotification(title: String, type: NotificationIDs, content: List<String>, sound: Boolean, vibrate: Boolean, tabToOpen: Long) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationManager = getSystemService(NotificationManager::class.java)
+        val notificationManager = NotificationManagerCompat.from(this)
+        val i = Intent(this, MainActivity::class.java)
+                .putExtra("drawer_open_id", tabToOpen)
+        val intent = PendingIntent.getActivity(this, MainActivity.REQUEST_CODE, i,
+                PendingIntent.FLAG_UPDATE_CURRENT)
 
-            val i = Intent(this, MainActivity::class.java)
-                    .putExtra("drawer_open_id", tabToOpen)
-                    .setAction(type.name)
-            val intent = PendingIntent.getActivity(this, MainActivity.REQUEST_CODE, i,
-                    PendingIntent.FLAG_UPDATE_CURRENT)
+        val style = NotificationCompat.InboxStyle()
 
-            val style = NotificationCompat.InboxStyle()
+        content.forEach {
+            style.addLine(it)
+        }
 
-            content.forEach {
-                style.addLine(it)
-            }
+        val bundled = NotificationCompat.Builder(this, type.name)
+                .setAutoCancel(true)
+                .setColor(ContextCompat.getColor(this, R.color.primary))
+                .setGroup(NOTIFICATION_GROUP)
+                .setGroupSummary(true)
+                .setSmallIcon(R.drawable.ic_stat_name)
 
+        val summary = NotificationCompat.Builder(this, type.name)
+                .setAutoCancel(true)
+                .setColor(ContextCompat.getColor(this, R.color.primary))
+                .setContentIntent(intent)
+                .setContentTitle(title)
+                .setGroup(NOTIFICATION_GROUP)
+                .setNumber(content.size)
+                .setOnlyAlertOnce(true)
+                .setSmallIcon(R.drawable.ic_stat_name)
+                .setStyle(style)
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            if (vibrate)
+                summary.setVibrate(longArrayOf(250, 250, 250, 250))
+            if (sound)
+                summary.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+
+            summary.setLights(Color.BLUE, 3000, 3000)
+        } else {
             val channelName = when (type) {
                 NotificationIDs.AGENGA -> "Agenda"
                 NotificationIDs.VOTI -> "Voti"
@@ -225,58 +248,23 @@ class NotificationService : JobService() {
                 NotificationIDs.NOTE -> "Note"
             }
 
-            val builder = NotificationCompat.Builder(this, type.name)
-                    .setAutoCancel(true)
-                    .setColor(ContextCompat.getColor(this, R.color.primary))
-                    .setContentIntent(intent)
-                    .setContentTitle(title)
-                    .setNumber(content.size)
-                    .setOnlyAlertOnce(true)
-                    .setSmallIcon(R.drawable.ic_stat_name)
-                    .setStyle(style)
-
             val channel = NotificationChannel(type.name, channelName, NotificationManager.IMPORTANCE_DEFAULT)
             channel.enableLights(true)
             channel.enableVibration(true)
             channel.lightColor = Color.BLUE
             channel.setShowBadge(true)
 
-            notificationManager.createNotificationChannel(channel)
-            notificationManager.notify(type.ordinal, builder.build())
-        } else {
-            val notificationManager = NotificationManagerCompat.from(this)
-            val i = Intent(this, MainActivity::class.java)
-                    .putExtra("drawer_open_id", tabToOpen)
-            val intent = PendingIntent.getActivity(this, MainActivity.REQUEST_CODE, i,
-                    PendingIntent.FLAG_UPDATE_CURRENT)
-
-            val style = NotificationCompat.InboxStyle()
-
-            content.forEach {
-                style.addLine(it)
-            }
-
-            val builder = NotificationCompat.Builder(this, "Registro Elettronico")
-                    .setAutoCancel(true)
-                    .setColor(ContextCompat.getColor(this, R.color.primary))
-                    .setContentIntent(intent)
-                    .setContentTitle(title)
-                    .setLights(Color.BLUE, 3000, 3000)
-                    .setNumber(content.size)
-                    .setOnlyAlertOnce(true)
-                    .setSmallIcon(R.drawable.ic_stat_name)
-                    .setStyle(style)
-
-            if (vibrate)
-                builder.setVibrate(longArrayOf(250, 250, 250, 250))
-            if (sound)
-                builder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-
-            notificationManager.notify(type.ordinal, builder.build())
+            getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
         }
+
+        notificationManager.notify(NOTIFICATION_ID, bundled.build())
+        notificationManager.notify(type.ordinal, summary.build())
     }
 
     companion object {
+        private val NOTIFICATION_GROUP = "group"
+        private val NOTIFICATION_ID = 900
+
         enum class NotificationIDs {
             AGENGA,
             VOTI,
