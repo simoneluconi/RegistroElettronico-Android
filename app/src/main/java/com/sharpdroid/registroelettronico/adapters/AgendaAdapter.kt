@@ -59,7 +59,7 @@ class AgendaAdapter(private val place_holder: View) : RecyclerView.Adapter<Recyc
                 val event = entry.event
 
                 val title = SpannableString(event.title)
-                if (event.completed_date != null) {
+                if (event.completed_date?.time != 0L) {
                     title.setSpan(StrikethroughSpan(), 0, event.title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
 
