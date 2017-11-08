@@ -11,6 +11,7 @@ import android.os.Build
 import android.preference.PreferenceManager
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
+import android.support.v4.content.ContextCompat
 import android.util.Log
 import com.firebase.jobdispatcher.JobParameters
 import com.firebase.jobdispatcher.JobService
@@ -224,14 +225,15 @@ class NotificationService : JobService() {
                 NotificationIDs.NOTE -> "Note"
             }
 
-            val mBuilder = NotificationCompat.Builder(this, type.name)
-                    .setContentTitle(title)
-                    .setSmallIcon(R.drawable.ic_stat_name)
-                    .setContentIntent(intent)
-                    .setStyle(style)
-                    .setNumber(content.size)
+            val builder = NotificationCompat.Builder(this, type.name)
                     .setAutoCancel(true)
+                    .setColor(ContextCompat.getColor(this, R.color.primary))
+                    .setContentIntent(intent)
+                    .setContentTitle(title)
+                    .setNumber(content.size)
                     .setOnlyAlertOnce(true)
+                    .setSmallIcon(R.drawable.ic_stat_name)
+                    .setStyle(style)
 
             val channel = NotificationChannel(type.name, channelName, NotificationManager.IMPORTANCE_DEFAULT)
             channel.enableLights(true)
@@ -240,7 +242,7 @@ class NotificationService : JobService() {
             channel.setShowBadge(true)
 
             notificationManager.createNotificationChannel(channel)
-            notificationManager.notify(type.ordinal, mBuilder.build())
+            notificationManager.notify(type.ordinal, builder.build())
         } else {
             val notificationManager = NotificationManagerCompat.from(this)
             val i = Intent(this, MainActivity::class.java)
@@ -254,22 +256,23 @@ class NotificationService : JobService() {
                 style.addLine(it)
             }
 
-            val mBuilder = NotificationCompat.Builder(this, "Registro Elettronico")
-                    .setContentTitle(title)
-                    .setSmallIcon(R.drawable.ic_stat_name)
+            val builder = NotificationCompat.Builder(this, "Registro Elettronico")
+                    .setAutoCancel(true)
+                    .setColor(ContextCompat.getColor(this, R.color.primary))
                     .setContentIntent(intent)
-                    .setStyle(style)
+                    .setContentTitle(title)
                     .setLights(Color.BLUE, 3000, 3000)
                     .setNumber(content.size)
-                    .setAutoCancel(true)
                     .setOnlyAlertOnce(true)
+                    .setSmallIcon(R.drawable.ic_stat_name)
+                    .setStyle(style)
 
             if (vibrate)
-                mBuilder.setVibrate(longArrayOf(250, 250, 250, 250))
+                builder.setVibrate(longArrayOf(250, 250, 250, 250))
             if (sound)
-                mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                builder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
 
-            notificationManager.notify(type.ordinal, mBuilder.build())
+            notificationManager.notify(type.ordinal, builder.build())
         }
     }
 
