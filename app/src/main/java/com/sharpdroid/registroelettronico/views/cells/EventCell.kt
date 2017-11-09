@@ -13,7 +13,7 @@ import android.view.View
 import android.widget.FrameLayout
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.database.entities.LocalAgenda
-import com.sharpdroid.registroelettronico.database.entities.SuperAgenda
+import com.sharpdroid.registroelettronico.database.pojos.RemoteAgendaPOJO
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.utils.Metodi.dp
 import kotlinx.android.synthetic.main.adapter_lesson_2.view.*
@@ -36,17 +36,17 @@ class EventCell(context: Context, private val withDateDiff: Boolean) : FrameLayo
     @SuppressLint("SetTextI18n")
     fun bindData(event: Any, currentDate: Date) {
         when (event) {
-            is SuperAgenda -> {
-                val spannableString = SpannableString(event.agenda.notes)
-                if (event.completed) {
-                    spannableString.setSpan(StrikethroughSpan(), 0, event.agenda.notes.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            is RemoteAgendaPOJO -> {
+                val spannableString = SpannableString(event.event.notes)
+                if (event.isCompleted()) {
+                    spannableString.setSpan(StrikethroughSpan(), 0, event.event.notes.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
                 if (withDateDiff)
-                    duration.text = "${(event.agenda.start.time - currentDate.time) / (24 * 3600000)}g"
+                    duration.text = "${(event.event.start.time - currentDate.time) / (24 * 3600000)}g"
                 //date.text = dateFormat.format(event.agenda.start)
-                date.text = capitalizeEach(event.agenda.author, true)
+                date.text = capitalizeEach(event.event.author, true)
                 content.text = spannableString
-                circleImageView2.setImageDrawable(ColorDrawable(ContextCompat.getColor(context, if (event.test) R.color.deep_orange else R.color.light_green)))
+                circleImageView2.setImageDrawable(ColorDrawable(ContextCompat.getColor(context, if (event.isTest()) R.color.deep_orange else R.color.light_green)))
             }
             is LocalAgenda -> {
                 val spannableString = SpannableString(event.title)
@@ -65,7 +65,7 @@ class EventCell(context: Context, private val withDateDiff: Boolean) : FrameLayo
                 //notes.text = event.content.trim({ it <= ' ' })
                 circleImageView2.setImageDrawable(ColorDrawable(ContextCompat.getColor(context, if (event.type.equals("verifica", true)) R.color.deep_orange else R.color.light_green)))
             }
-            else -> throw IllegalStateException("Allowed data types: SuperAgenda, LocalAgenda\nFound: '${event::class.java.canonicalName}'")
+            else -> throw IllegalStateException("Allowed data types: RemoteAgendaPOJO, LocalAgenda\nFound: '${event::class.java.canonicalName}'")
         }
     }
 
