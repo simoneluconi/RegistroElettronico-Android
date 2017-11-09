@@ -129,7 +129,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
 
     private fun initInfo(subject: SubjectPOJO) {
         info.setSubjectDetails(subject)
-        info.setEditListener { _ -> startActivity(Intent(this, EditSubjectDetailsActivity::class.java).putExtra("code", subject.subject)) }
+        info.setEditListener { _ -> startActivity(Intent(this, EditSubjectDetailsActivity::class.java).putExtra("code", subject.subject.id)) }
     }
 
     private fun initOverall(avgTypes: List<AverageType>) {

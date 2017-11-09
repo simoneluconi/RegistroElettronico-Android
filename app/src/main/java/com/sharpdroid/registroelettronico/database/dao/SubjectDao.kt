@@ -21,7 +21,7 @@ interface SubjectDao {
     fun getSubject(id: Long): Subject?
 
     @Query("SELECT * FROM SUBJECT WHERE ID = :id LIMIT 1")
-    fun getSubjectInfo(id: Long): LiveData<SubjectPOJO>?
+    fun getSubjectInfo(id: Long): LiveData<SubjectPOJO>
 
     @Query("select * from SUBJECT where SUBJECT.ID IN (SELECT  SUBJECT_TEACHER.SUBJECT from SUBJECT_TEACHER WHERE SUBJECT_TEACHER.PROFILE=:profile) ORDER BY DESCRIPTION ASC")
     fun getSubjects(profile: Long): LiveData<List<Subject>>
