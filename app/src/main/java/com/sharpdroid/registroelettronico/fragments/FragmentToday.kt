@@ -167,9 +167,6 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
     }
 
     private fun initializeEvents(date: Date, e: List<Any>) {
-        println(e.groupBy { it.javaClass.canonicalName }.entries.map { entry: Map.Entry<String, List<Any>> ->
-            entry.key + ": " + entry.value.size + "\n"
-        })
         val events = e.sortedWith(Comparator { t1: Any, t2: Any ->
             val date1 = (t1 as? RemoteAgendaPOJO)?.event?.start ?: Date((t1 as? LocalAgenda)?.day ?: 0)
             val date2 = (t2 as? RemoteAgendaPOJO)?.event?.start ?: Date((t2 as? LocalAgenda)?.day ?: 0)
