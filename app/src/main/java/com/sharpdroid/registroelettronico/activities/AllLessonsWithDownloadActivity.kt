@@ -31,6 +31,8 @@ class AllLessonsWithDownloadActivity : AppCompatActivity(), SwipeRefreshLayout.O
 
         mRVAdapter = AllLessonsAdapter()
 
+        title = "Lezioni"
+
         with(recycler) {
             layoutManager = LinearLayoutManager(this@AllLessonsWithDownloadActivity)
             adapter = mRVAdapter
