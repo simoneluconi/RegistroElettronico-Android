@@ -86,9 +86,9 @@ class AgendaBS : BottomSheetDialogFragment() {
                 }
             } else if (event is LocalAgenda) {
                 when (position) {
-                    0 -> holder.bindData(if ((event as LocalAgenda).completed_date != null) "Non completato" else "Completato",
+                    0 -> holder.bindData(if ((event as LocalAgenda).completed_date?.time != 0L) "Non completato" else "Completato",
                             ContextCompat.getColor(context, R.color.greenmaterial_800),
-                            if ((event as LocalAgenda).completed_date != null) R.drawable.agenda_uncomplete else R.drawable.agenda_complete, ContextCompat.getColor(context, R.color.greenmaterial_800))
+                            if ((event as LocalAgenda).completed_date?.time != 0L) R.drawable.agenda_uncomplete else R.drawable.agenda_complete, ContextCompat.getColor(context, R.color.greenmaterial_800))
                     1 -> holder.bindData(if ((event as LocalAgenda).type == "verifica") "Rimuovi contrassegno" else "Contrassegna come compito",
                             ContextCompat.getColor(context, R.color.redmaterial),
                             if ((event as LocalAgenda).type == "verifica") R.drawable.agenda_uncomplete else R.drawable.agenda_complete, ContextCompat.getColor(context, R.color.redmaterial))
