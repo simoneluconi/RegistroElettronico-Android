@@ -50,7 +50,7 @@ class EventCell(context: Context, private val withDateDiff: Boolean) : FrameLayo
             }
             is LocalAgenda -> {
                 val spannableString = SpannableString(event.title)
-                if (event.completed_date != null) {
+                if (event.completed_date?.time != 0L) {
                     spannableString.setSpan(StrikethroughSpan(), 0, event.title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
 
