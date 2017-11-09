@@ -22,6 +22,9 @@ interface AgendaDao {
     @Query("SELECT * FROM LOCAL_AGENDA WHERE PROFILE = :profile")
     fun getLocalAsSingle(profile: Long): Single<List<LocalAgendaPOJO>>
 
+    @Query("SELECT * FROM LOCAL_AGENDA WHERE PROFILE=:profile AND ARCHIVED=0")
+    fun getTodayAtSchool(profile: Long): LiveData<List<LocalAgenda>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(event: LocalAgenda)
 
