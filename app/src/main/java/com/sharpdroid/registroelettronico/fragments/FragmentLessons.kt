@@ -84,7 +84,7 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
 
     private fun addLessons(lessons: List<LessonMini>) {
         mRVAdapter.clear()
-        mRVAdapter.addAll(lessons)
+        mRVAdapter.addAll(lessons.sortedByDescending { it.mDate })
 
         emptyHolder.visibility = if (lessons.isEmpty()) View.VISIBLE else View.GONE
     }
