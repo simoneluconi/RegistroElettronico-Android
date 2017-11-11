@@ -279,7 +279,10 @@ public class Metodi {
         DatabaseHelper.database.subjectsDao().delete(account);
     }
 
-    public static void fetchDataOfUser(@NotNull Context c) {
+    public static void fetchDataOfUser(Context c) {
+        if (c == null) {
+            return;
+        }
         Profile p = Profile.Companion.getProfile(c);
         updateSubjects(p);
         //updateLessons(p);
@@ -291,7 +294,10 @@ public class Metodi {
         //updateMarks(p);
     }
 
-    public static void updateMarks(@NotNull Context c) {
+    public static void updateMarks(Context c) {
+        if (c == null) {
+            return;
+        }
         updateMarks(Profile.Companion.getProfile(c));
     }
 
@@ -309,7 +315,10 @@ public class Metodi {
         });
     }
 
-    public static void updateSubjects(@NotNull Context c) {
+    public static void updateSubjects(Context c) {
+        if (c == null) {
+            return;
+        }
         updateSubjects(Profile.Companion.getProfile(c));
     }
 
@@ -346,7 +355,10 @@ public class Metodi {
         });
     }
 
-    public static void updateLessons(@NotNull Context c) {
+    public static void updateLessons(Context c) {
+        if (c == null) {
+            return;
+        }
         updateLessons(Profile.Companion.getProfile(c));
     }
 
@@ -365,7 +377,10 @@ public class Metodi {
                 });
     }
 
-    public static void updateFolders(@NotNull Context c) {
+    public static void updateFolders(Context c) {
+        if (c == null) {
+            return;
+        }
         updateFolders(Profile.Companion.getProfile(c));
     }
 
@@ -424,7 +439,10 @@ public class Metodi {
 
     }
 
-    public static void updateAgenda(@NotNull Context c) {
+    public static void updateAgenda(Context c) {
+        if (c == null) {
+            return;
+        }
         updateAgenda(Profile.Companion.getProfile(c));
     }
 
@@ -444,7 +462,10 @@ public class Metodi {
                 });
     }
 
-    public static void updateAbsence(@NotNull Context c) {
+    public static void updateAbsence(Context c) {
+        if (c == null) {
+            return;
+        }
         updateAbsence(Profile.Companion.getProfile(c));
     }
 
@@ -462,7 +483,10 @@ public class Metodi {
                 });
     }
 
-    public static void updateBacheca(@NotNull Context c) {
+    public static void updateBacheca(Context c) {
+        if (c == null) {
+            return;
+        }
         updateBacheca(Profile.Companion.getProfile(c));
     }
 
@@ -513,7 +537,10 @@ public class Metodi {
                 });
     }
 
-    public static void updateNote(@NotNull Context c) {
+    public static void updateNote(Context c) {
+        if (c == null) {
+            return;
+        }
         updateNote(Profile.Companion.getProfile(c));
     }
 
@@ -532,12 +559,15 @@ public class Metodi {
     }
 
 
-    public static void downloadAttachment(@NotNull Context c, Communication communication) {
+    public static void downloadAttachment(Context c, Communication communication) {
+        if (c == null) {
+            return;
+        }
         downloadAttachment(c, communication, Profile.Companion.getProfile(c));
     }
 
-    public static void downloadAttachment(@NotNull Context c, Communication communication, Profile p) {
-        if (p == null) return;
+    public static void downloadAttachment(Context c, Communication communication, Profile p) {
+        if (p == null || c == null) return;
         File dir = new File(
                 Environment.getExternalStorageDirectory() +
                         File.separator +
