@@ -20,6 +20,7 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.FileAdapter
 import com.sharpdroid.registroelettronico.database.entities.File
 import com.sharpdroid.registroelettronico.database.entities.FileInfo
+import com.sharpdroid.registroelettronico.database.entities.Profile
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.database.viewModels.DidatticaViewModel
 import com.sharpdroid.registroelettronico.utils.EventType
@@ -95,8 +96,8 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
         val info = DatabaseHelper.database.foldersDao().getInfo(file.objectId) ?: FileInfo(0, "")
         when (file.type) {
             "file" -> {
-                if (info.path.isEmpty() || JavaFile(info.path).exists()) {
-                    downloadFile(context, file)
+                if (info.path.isEmpty() || !JavaFile(info.path).exists()) {
+                    downloadFile(file, Profile.getProfile(context))
                 } else {
                     openFile(context, JavaFile(info.path), Snackbar.make(layout, context.resources.getString(R.string.missing_app, JavaFile(info.path).name), Snackbar.LENGTH_SHORT))
                 }
