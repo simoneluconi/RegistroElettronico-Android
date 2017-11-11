@@ -80,18 +80,11 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
         mRVAdapter = FolderAdapter(this)
         recycler.adapter = mRVAdapter
 
-        if (savedInstanceState == null)
-            download()
-
-        /*
-        viewModel.getDidattica(Account.with(context).user).observe(this, Observer {
-            println("OBSERVED " + it?.size + " - " + it?.joinToString(separator = ", ") { it.teacher.teacherName })
-            addFiles(it.orEmpty())
-        })
-        */
-
         DatabaseHelper.database.foldersDao().getDidattica(Account.with(context).user).toObservable().observeOn(AndroidSchedulers.mainThread()).subscribe {
             addFiles(it.orEmpty())
+
+            if (savedInstanceState == null)
+                download()
         }
 
         if (!BuildConfig.DEBUG)
