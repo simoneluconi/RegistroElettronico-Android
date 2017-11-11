@@ -86,10 +86,10 @@ class HypotheticalView : CardView {
         grades.forEachIndexed { index, localGrade ->
             localGrade.index = index
         }
-
-        updateHypoAvg()
-        updatePercentage()
-
+        if (hypoCount > 0) {
+            updateHypoAvg()
+            updatePercentage()
+        }
         if (animate)
             TransitionManager.beginDelayedTransition(rootView as ViewGroup, AutoTransition()
                     .excludeChildren(R.id.info, true)
