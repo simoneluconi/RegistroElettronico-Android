@@ -19,7 +19,7 @@ interface LessonDao {
     fun loadLessons(code: Long): Flowable<List<LessonMini>>
 
     @Transaction
-    @Query("SELECT * FROM LESSON WHERE PROFILE=:profile AND (M_ARGUMENT LIKE :query OR M_SUBJECT_DESCRIPTION LIKE :query)")
+    @Query("SELECT * FROM LESSON WHERE PROFILE=:profile AND (M_ARGUMENT LIKE :query OR M_SUBJECT_DESCRIPTION LIKE :query OR M_AUTHOR_NAME LIKE :query)")
     fun query(query: String, profile: Long): Flowable<List<Lesson>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
