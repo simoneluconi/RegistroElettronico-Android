@@ -17,8 +17,8 @@ import com.crashlytics.android.answers.ContentViewEvent
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.database.entities.LocalAgenda
-import com.sharpdroid.registroelettronico.database.entities.SubjectInfo
 import com.sharpdroid.registroelettronico.database.entities.Teacher
+import com.sharpdroid.registroelettronico.database.pojos.SubjectPOJO
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
@@ -36,9 +36,11 @@ class AddEventActivity : AppCompatActivity() {
     lateinit private var animShake: Animation
     lateinit private var vibrator: Vibrator
 
-    private var selectedSubject: SubjectInfo? = null
+    private var selectedSubject: SubjectPOJO? = null
     private var selectedProfessor: Teacher? = null
     private var selectedDay: Date? = null
+    private val subjectList by lazy { DatabaseHelper.database.subjectsDao().getSubjectsWithInfoBlocking(Account.with(this).user).sortedBy { it.subjectInfo.getOrNull(0)?.description?.or(it.subject.description) } }
+    private val professorList by lazy { DatabaseHelper.database.subjectsDao().getTeachersOfProfile(Account.with(this).user) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,19 +69,19 @@ class AddEventActivity : AppCompatActivity() {
     private fun handleConfirm(type: String) {
         when (type.toLowerCase()) {
             "verifica" -> if (handleTitle() && handleSubject() && handleProfessor() && handleDate()) {
-                DatabaseHelper.database.eventsDao().insert(LocalAgenda(0L, layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay?.flat()!!.time, selectedSubject?.subject ?: 0, selectedProfessor?.id ?: 0, Date(0), Account.with(this).user, false))
+                DatabaseHelper.database.eventsDao().insert(LocalAgenda(0L, layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay?.flat()!!.time, selectedSubject?.subject?.id ?: 0L, selectedProfessor?.id ?: 0, Date(0), Account.with(this).user, false))
                 finish()
             } else {
                 vibrate()
             }
             "compiti" -> if (handleTitle() && handleSubject() && handleProfessor() && handleDate()) {
-                DatabaseHelper.database.eventsDao().insert(LocalAgenda(0L, layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay?.flat()!!.time, selectedSubject!!.subject, selectedProfessor?.id ?: 0, Date(0), Account.with(this).user, false))
+                DatabaseHelper.database.eventsDao().insert(LocalAgenda(0L, layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay?.flat()!!.time, selectedSubject?.subject?.id ?: 0L, selectedProfessor?.id ?: 0, Date(0), Account.with(this).user, false))
                 finish()
             } else {
                 vibrate()
             }
             else -> if (handleTitle() && handleDate()) {
-                DatabaseHelper.database.eventsDao().insert(LocalAgenda(0L, layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay?.flat()!!.time, selectedSubject?.subject ?: 0L, selectedProfessor?.id ?: 0, Date(0), Account.with(this).user, false))
+                DatabaseHelper.database.eventsDao().insert(LocalAgenda(0L, layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay?.flat()!!.time, selectedSubject?.subject?.id ?: 0L, selectedProfessor?.id ?: 0, Date(0), Account.with(this).user, false))
                 finish()
             } else {
                 vibrate()
@@ -104,12 +106,9 @@ class AddEventActivity : AppCompatActivity() {
     }
 
     private fun subjectDialog(v: View) {
-        val subjectList: List<SubjectInfo> = emptyList()//SugarRecord.findWithQuery(Subject::class.java, "SELECT * FROM SUBJECT WHERE ID IN (SELECT SUBJECT_TEACHER.SUBJECT FROM SUBJECT_TEACHER WHERE SUBJECT_TEACHER.PROFILE=?) ORDER BY DESCRIPTION ASC", Account.with(this).user.toString()).map { it.getInfo(this) }
-
         MaterialDialog.Builder(this)
                 .title("Seleziona una materia")
-                //TODO query subject
-                .items(subjectList.map { capitalizeEach(it.description.or(/*it.subject.description*/""), false) })
+                .items(subjectList.map { capitalizeEach(it.subjectInfo.getOrNull(0)?.description.or(it.subject.description), false) })
                 .itemsCallbackSingleChoice(subjectList.indexOf(selectedSubject)) { _, _, which, text ->
                     selectedSubject = subjectList[which]
                     v.findViewById<TextView>(R.id.content).text = text
@@ -119,13 +118,11 @@ class AddEventActivity : AppCompatActivity() {
     }
 
     private fun professorDialog(v: View) {
-        val professors = emptyList<Teacher>()//SugarRecord.findWithQuery(Teacher::class.java, "SELECT * FROM TEACHER WHERE ID IN (SELECT SUBJECT_TEACHER.TEACHER FROM SUBJECT_TEACHER WHERE SUBJECT_TEACHER.PROFILE=?) ORDER BY TEACHER_NAME ASC", Account.with(this).user.toString())
-
         MaterialDialog.Builder(this)
                 .title("Seleziona un professore")
-                .items(professors.map { capitalizeEach(it.teacherName, true) })
-                .itemsCallbackSingleChoice(professors.indexOf(selectedProfessor)) { _, _, which, text ->
-                    selectedProfessor = professors[which]
+                .items(professorList.map { capitalizeEach(it.teacherName, true) })
+                .itemsCallbackSingleChoice(professorList.indexOf(selectedProfessor)) { _, _, which, text ->
+                    selectedProfessor = professorList[which]
                     v.findViewById<TextView>(R.id.content).text = text
                     true
                 }.show()
@@ -165,15 +162,6 @@ class AddEventActivity : AppCompatActivity() {
         if (!ok) {
             layout_verifica.startAnimation(animShake)
             layout_verifica.requestFocus()
-        }
-        return ok
-    }
-
-    private fun handleSubtitle(): Boolean {
-        val ok = layout_note.editText != null && !layout_note.editText!!.text.toString().isEmpty()
-        if (!ok) {
-            layout_note.startAnimation(animShake)
-            layout_note.requestFocus()
         }
         return ok
     }

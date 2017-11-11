@@ -26,11 +26,17 @@ interface SubjectDao {
     @Query("select * from SUBJECT where SUBJECT.ID IN (SELECT  SUBJECT_TEACHER.SUBJECT from SUBJECT_TEACHER WHERE SUBJECT_TEACHER.PROFILE=:profile) ORDER BY DESCRIPTION ASC")
     fun getSubjects(profile: Long): LiveData<List<Subject>>
 
+    @Query("select * from SUBJECT where SUBJECT.ID IN (SELECT  SUBJECT_TEACHER.SUBJECT from SUBJECT_TEACHER WHERE SUBJECT_TEACHER.PROFILE=:profile) ORDER BY DESCRIPTION ASC")
+    fun getSubjectsWithInfoBlocking(profile: Long): List<SubjectPOJO>
+
     @Query("SELECT SUM(M_VALUE) as `SUM` , 'Generale' as `M_TYPE`, COUNT(M_VALUE) as `COUNT`  FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=:subject LIMIT 1")
     fun getAverage(subject: Long): AverageType
 
     @Query("select * from TEACHER where TEACHER.ID IN (SELECT  SUBJECT_TEACHER.TEACHER from SUBJECT_TEACHER WHERE SUBJECT_TEACHER.SUBJECT=:subjectId) ORDER BY TEACHER_NAME ASC")
     fun getTeachersOfSubject(subjectId: Long): List<Teacher>
+
+    @Query("select * from TEACHER where TEACHER.ID IN (SELECT  SUBJECT_TEACHER.TEACHER from SUBJECT_TEACHER WHERE SUBJECT_TEACHER.PROFILE=:profile) ORDER BY TEACHER_NAME ASC")
+    fun getTeachersOfProfile(profile: Long): List<Teacher>
 
     @Query("DELETE FROM SUBJECT WHERE ID IN (SELECT SUBJECT FROM SUBJECT_TEACHER WHERE PROFILE=:profile)")
     fun deleteSubjects(profile: Long)
