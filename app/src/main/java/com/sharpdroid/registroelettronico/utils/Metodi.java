@@ -578,11 +578,7 @@ public class Metodi {
                 });
     }
 
-    public static void downloadFile(@NotNull Context c, com.sharpdroid.registroelettronico.database.entities.File f) {
-        downloadFile(c, f, Profile.Companion.getProfile(c));
-    }
-
-    public static void downloadFile(@NotNull Context c, com.sharpdroid.registroelettronico.database.entities.File f, Profile p) {
+    public static void downloadFile(com.sharpdroid.registroelettronico.database.entities.File f, Profile p) {
         if (p == null) return;
 
         File dir = new File(
@@ -601,7 +597,8 @@ public class Metodi {
                             File fileDir = new File(dir, filename);
 
                             FileInfo info = new FileInfo(f.getObjectId(), fileDir.getAbsolutePath());
-                            if (DatabaseHelper.database.foldersDao().insert(info) > 0 && writeResponseBodyToDisk(response.body(), fileDir))
+                            long id = DatabaseHelper.database.foldersDao().insert(info);
+                            if (id > 0 && writeResponseBodyToDisk(response.body(), fileDir))
                                 handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_OK, new Long[]{f.getObjectId()}));
                             else
                                 handler.post(() -> NotificationManager.Companion.getInstance().postNotificationName(EventType.DOWNLOAD_FILE_KO, new Long[]{f.getObjectId()}));
