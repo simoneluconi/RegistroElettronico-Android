@@ -32,15 +32,22 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class AddEventActivity : AppCompatActivity() {
-    internal var format = SimpleDateFormat("EEEE d MMMM yyyy", Locale.ITALIAN)
+    internal val format = SimpleDateFormat("EEEE d MMMM yyyy", Locale.ITALIAN)
     lateinit private var animShake: Animation
     lateinit private var vibrator: Vibrator
 
     private var selectedSubject: SubjectPOJO? = null
     private var selectedProfessor: Teacher? = null
     private var selectedDay: Date? = null
-    private val subjectList by lazy { DatabaseHelper.database.subjectsDao().getSubjectsWithInfoBlocking(Account.with(this).user).sortedBy { it.subjectInfo.getOrNull(0)?.description?.or(it.subject.description) } }
-    private val professorList by lazy { DatabaseHelper.database.subjectsDao().getTeachersOfProfile(Account.with(this).user) }
+
+    private val subjectList by lazy {
+        DatabaseHelper.database.subjectsDao().getSubjectsWithInfoBlocking(Account.with(this).user).sortedBy {
+            it.subjectInfo.getOrNull(0)?.description?.or(it.subject.description)
+        }
+    }
+    private val professorList by lazy {
+        DatabaseHelper.database.subjectsDao().getTeachersOfProfile(Account.with(this).user)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -166,15 +173,9 @@ class AddEventActivity : AppCompatActivity() {
         return ok
     }
 
-    private fun handleSubject(): Boolean {
-        return selectedSubject != null
-    }
+    private fun handleSubject() = selectedSubject != null
 
-    private fun handleProfessor(): Boolean {
-        return selectedProfessor != null
-    }
+    private fun handleProfessor() = selectedProfessor != null
 
-    private fun handleDate(): Boolean {
-        return selectedDay != null
-    }
+    private fun handleDate() = selectedDay != null
 }

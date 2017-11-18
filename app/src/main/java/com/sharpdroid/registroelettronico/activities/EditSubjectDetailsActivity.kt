@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
 import android.view.*
 import com.afollestad.materialdialogs.MaterialDialog
 import com.crashlytics.android.answers.Answers
@@ -26,10 +25,10 @@ import com.sharpdroid.registroelettronico.utils.or
 import com.sharpdroid.registroelettronico.views.cells.HeaderCell
 import com.sharpdroid.registroelettronico.views.cells.ShadowCell
 import com.sharpdroid.registroelettronico.views.cells.ValueDetailsCell
+import kotlinx.android.synthetic.main.activity_add_event.*
 import kotlinx.android.synthetic.main.activity_edit_subject_details.*
 
 class EditSubjectDetailsActivity : AppCompatActivity() {
-
     private lateinit var adapter: EditSubjectAdapter
     private var rowCount: Int = 0
     private var rowInfo: Int = 0
@@ -47,7 +46,6 @@ class EditSubjectDetailsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_edit_subject_details)
 
         // toolbar
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         if (supportActionBar != null) {
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -61,7 +59,6 @@ class EditSubjectDetailsActivity : AppCompatActivity() {
         DatabaseHelper.database.subjectsDao().getSubjectInfo(intent.getLongExtra("code", 0L)).observe(this, Observer {
             init(it!!, teachers)
         })
-
 
         if (!BuildConfig.DEBUG)
             Answers.getInstance().logContentView(ContentViewEvent().putContentId("Materia").putContentType("Modifica"))
@@ -116,7 +113,6 @@ class EditSubjectDetailsActivity : AppCompatActivity() {
         }
         recycler.adapter = adapter
         recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-
     }
 
     internal fun apply() {
@@ -187,8 +183,6 @@ class EditSubjectDetailsActivity : AppCompatActivity() {
             else 1
         }
 
-        override fun getItemCount(): Int {
-            return rowCount
-        }
+        override fun getItemCount() = rowCount
     }
 }
