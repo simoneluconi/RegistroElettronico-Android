@@ -64,12 +64,18 @@ interface AgendaDao {
     @Query("DELETE FROM LOCAL_AGENDA WHERE PROFILE=:profile")
     fun deleteLocal(profile: Long)
 
-    @Query("UPDATE LOCAL_AGENDA SET ARCHIVED=0 WHERE ARCHIVED!=0")
-    fun setNotArchived()
-
     @Query("SELECT * FROM REMOTE_AGENDA_INFO WHERE ID=:id")
     fun getInfo(id: Long): RemoteAgendaInfo?
 
     @Query("SELECT REMOTE_AGENDA_INFO.* FROM REMOTE_AGENDA_INFO LEFT JOIN REMOTE_AGENDA ON REMOTE_AGENDA_INFO.ID=REMOTE_AGENDA.ID WHERE REMOTE_AGENDA.PROFILE=:profile")
     fun getRemoteInfos(profile: Long): Single<List<RemoteAgendaInfo>>
+
+    @Query("SELECT * FROM REMOTE_AGENDA")
+    fun getAllRemote(): Single<List<RemoteAgenda>>
+
+    @Query("UPDATE LOCAL_AGENDA SET ARCHIVED=0")
+    fun setLocalNotArchived()
+
+    @Query("UPDATE REMOTE_AGENDA_INFO SET ARCHIVED=0")
+    fun setRemoteNotArchived()
 }
