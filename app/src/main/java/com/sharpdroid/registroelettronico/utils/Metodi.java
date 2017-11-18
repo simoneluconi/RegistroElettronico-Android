@@ -149,7 +149,7 @@ public class Metodi {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
-    public static int CalculateScholasticCredits(int year, double average) {
+    public static int CalculateScholasticCredits(int year, float average) {
         switch (year) {
             case 3:
             case 4:

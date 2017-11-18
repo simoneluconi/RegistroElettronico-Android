@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.PagerAdapter
+import android.support.v4.view.ViewPager
 import android.support.v4.widget.SwipeRefreshLayout
 import android.view.*
 import com.crashlytics.android.answers.Answers
@@ -62,6 +63,29 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
         pagerAdapter = MediePager(childFragmentManager)
         view_pager.adapter = pagerAdapter
         view_pager.offscreenPageLimit = 2
+        view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {
+
+            }
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                viewModel.selected = when (position) {
+                    0 -> 1
+                    1 -> 3
+                    2 -> -1
+                    else -> 0
+                }
+            }
+
+            override fun onPageSelected(position: Int) {
+                viewModel.selected = when (position) {
+                    0 -> 1
+                    1 -> 3
+                    2 -> -1
+                    else -> 0
+                }
+            }
+        })
         activity.tab_layout.setupWithViewPager(view_pager)
 
         swiperefresh.setOnRefreshListener(this)
@@ -82,34 +106,6 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
         }
 
         viewModel = ViewModelProviders.of(activity)[GradesViewModel::class.java]
-/*
-        //Observe remote data changes
-        viewModel.getFirstPeriod(profile).observe(this, Observer {
-            val fragment = pagerAdapter.instantiateItem(view_pager, 0) as FragmentMedie
-            fragment.addSubjects(it.orEmpty(), 1, PreferenceManager.getDefaultSharedPreferences(context).getString("order", ""))
-        })
-
-        viewModel.getSecondPeriod(profile).observe(this, Observer {
-            val fragment = pagerAdapter.instantiateItem(view_pager, 1) as FragmentMedie
-            fragment.addSubjects(it.orEmpty(), 3, PreferenceManager.getDefaultSharedPreferences(context).getString("order", ""))
-        })
-
-        viewModel.getAllPeriods(profile).observe(this, Observer {
-            val fragment = pagerAdapter.instantiateItem(view_pager, 2) as FragmentMedie
-            fragment.addSubjects(it.orEmpty(), -1, PreferenceManager.getDefaultSharedPreferences(context).getString("order", ""))
-        })
-*/
-        /*
-        viewModel.getOrder().observe(this, Observer {
-            for (i in 0..pagerAdapter.count) {
-                val fragment = pagerAdapter.instantiateItem(view_pager, i) as FragmentMedie
-                when (i) {
-                    0 -> fragment.addSubjects(viewModel.getFirstPeriod(profile).value.orEmpty(), 1, it.orEmpty())
-                    1 -> fragment.addSubjects(viewModel.getSecondPeriod(profile).value.orEmpty(), 3, it.orEmpty())
-                    2 -> fragment.addSubjects(viewModel.getAllPeriods(profile).value.orEmpty(), -1, it.orEmpty())
-                }
-            }
-        })*/
 
         if (savedInstanceState == null) {
             download()
@@ -158,28 +154,6 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
 
     private fun download() {
         updateMarks(context)
-    }
-
-    private fun getSnackBarMessage(pos: Int): String {/*
-        val p = if (pos == 0) 3 else if (pos == 1) 1 else 0
-        val average = SugarRecord.findWithQuery(Average::class.java, "SELECT 0 as ID, AVG(M_VALUE) as AVG FROM GRADE WHERE PROFILE=? AND M_VALUE!=0 AND M_PERIOD!=?", Account.with(activity).user.toString(), p.toString())[0].sum.toDouble()
-        var className: String? = SugarRecord.find(Lesson::class.java, "PROFILE=?", arrayOf(Account.with(activity).user.toString()), "M_CLASS_DESCRIPTION", null, "1").getOrNull(0).mClassDescription
-        if (className != null) {
-            className = className.split("\\s+".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0]
-            val classyear: Int
-            classyear = try {
-                Integer.parseInt(className[0].toString())
-            } catch (ex: Exception) {
-                ex.printStackTrace()
-                return "Media totale: " + String.format(Locale.getDefault(), "%.2f", average)
-            }
-
-            return if (classyear > 2)
-                String.format(Locale.getDefault(), "Media Totale: %.2f | Crediti: %2\$d + %3\$d", average, CalculateScholasticCredits(classyear, average), 1)
-            else
-                "Media totale: " + String.format(Locale.getDefault(), "%.2f", average)
-        } else*/
-        return ""
     }
 
     override fun onRefresh() {
