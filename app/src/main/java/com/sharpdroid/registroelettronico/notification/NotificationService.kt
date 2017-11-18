@@ -183,10 +183,6 @@ class NotificationService : JobService() {
     private fun pushNotification(title: String, type: NotificationIDs, content: List<String>, sound: Boolean, vibrate: Boolean, tabToOpen: Long) {
         val notificationManager = NotificationManagerCompat.from(this)
 
-        val bundledIntent = Intent(this, MainActivity::class.java)
-        val bundledPi = PendingIntent.getActivity(this, MainActivity.REQUEST_CODE, bundledIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT)
-
         val summaryIntent = Intent(this, MainActivity::class.java)
                 .putExtra("drawer_open_id", tabToOpen)
                 .setAction(type.name)
@@ -199,14 +195,6 @@ class NotificationService : JobService() {
             style.addLine(it)
         }
 
-        val summary = NotificationCompat.Builder(this, type.name)
-                .setAutoCancel(true)
-                .setColor(ContextCompat.getColor(this, R.color.primary))
-                .setContentIntent(bundledPi)
-                .setGroup(SUMMARY_GROUP)
-                .setGroupSummary(true)
-                .setSmallIcon(R.drawable.ic_stat_name)
-
         val notification = NotificationCompat.Builder(this, type.name)
                 .setAutoCancel(true)
                 .setColor(ContextCompat.getColor(this, R.color.primary))
@@ -215,6 +203,7 @@ class NotificationService : JobService() {
                 .setGroup(SUMMARY_GROUP)
                 .setNumber(content.size)
                 .setOnlyAlertOnce(true)
+                .setGroupSummary(true)
                 .setSmallIcon(R.drawable.ic_stat_name)
                 .setStyle(style)
 
@@ -242,7 +231,6 @@ class NotificationService : JobService() {
             getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
         }
 
-        notificationManager.notify(SUMMARY_ID, summary.build())
         notificationManager.notify(type.ordinal, notification.build())
     }
 
