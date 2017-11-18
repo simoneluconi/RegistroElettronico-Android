@@ -70,13 +70,13 @@ class FolderAdapter(private val listener: Listener?) : RecyclerView.Adapter<Recy
     }
 
     internal inner class SubheaderHolder(layout: View) : RecyclerView.ViewHolder(layout) {
-        var teacher = layout.content
+        var teacher = layout.content!!
     }
 
     internal inner class FileTeacherHolder(layout: View) : RecyclerView.ViewHolder(layout) {
-        var title = layout.title
-        var date = layout.date
-        var layout = layout.relative_layout
+        var title = layout.title!!
+        var date = layout.date!!
+        var layout = layout.relative_layout!!
     }
 
 }
