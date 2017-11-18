@@ -80,12 +80,10 @@ data class RemoteAgenda(
         @ColumnInfo(name = "IS_FULL_DAY") @Expose @SerializedName("isFullDay") var isFullDay: Boolean = false,
         @ColumnInfo(name = "NOTES") @Expose @SerializedName("notes") var notes: String = "",
         @ColumnInfo(name = "AUTHOR") @Expose @SerializedName("authorName") var author: String = "",
-        @ColumnInfo(name = "SUBJECT") @Expose @SerializedName("subjectDesc") var subject: String = "",
+        @ColumnInfo(name = "SUBJECT") @Expose @SerializedName("subjectDesc") var subject: String? = "",
         @ColumnInfo(name = "PROFILE") var profile: Long = -1L
 ) {
-    fun isTest(info: RemoteAgendaInfo?): Boolean {
-        return info?.test ?: Metodi.isEventTest(this)
-    }
+    fun isTest(info: RemoteAgendaInfo?) = info?.test ?: Metodi.isEventTest(this)
 
     override fun equals(other: Any?): Boolean {
         if (other !is RemoteAgenda) return false
@@ -103,9 +101,7 @@ data class RemoteAgenda(
         return result
     }
 
-    fun getInfo(): RemoteAgendaInfo? {
-        return DatabaseHelper.database.eventsDao().getInfo(id)
-    }
+    fun getInfo() = DatabaseHelper.database.eventsDao().getInfo(id)
 }
 
 class AgendaAPI(@Expose @SerializedName("agenda") val agenda: List<RemoteAgenda>) {

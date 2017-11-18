@@ -30,7 +30,6 @@ object DatabaseHelper {
                     .allowMainThreadQueries()
                     .addMigrations(object : Migration(4, 5) {
                         override fun migrate(database: SupportSQLiteDatabase) {
-
                             with(database) {
                                 execSQL("DROP TABLE ABSENCE")
                                 execSQL("DROP TABLE COMMUNICATION")
@@ -97,13 +96,6 @@ object DatabaseHelper {
                                 execSQL("CREATE TABLE `SUBJECT_INFO` (`ID` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `TARGET` REAL NOT NULL, `DESCRIPTION` TEXT NOT NULL, `DETAILS` TEXT NOT NULL, `CLASSROOM` TEXT NOT NULL, `SUBJECT` INTEGER NOT NULL, `PROFILE` INTEGER NOT NULL)")
                                 execSQL("INSERT INTO SUBJECT_INFO(ID, TARGET, DESCRIPTION, DETAILS, CLASSROOM, SUBJECT, PROFILE) SELECT ID, TARGET, DESCRIPTION, DETAILS, CLASSROOM, SUBJECT, PROFILE FROM SUBJECT_INFO_OLD")
                                 execSQL("DROP TABLE SUBJECT_INFO_OLD")
-                            }
-                        }
-                    })
-                    .addMigrations(object : Migration(5, 6) {
-                        override fun migrate(database: SupportSQLiteDatabase) {
-                            with(database) {
-                                execSQL("ALTER TABLE REMOTE_AGENDA ADD COLUMN SUBJECT TEXT NOT NULL DEFAULT ''")
                             }
                         }
                     })
