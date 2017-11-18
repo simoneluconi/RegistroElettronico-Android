@@ -30,7 +30,7 @@ object DatabaseHelper {
         Completable.fromAction({
             database = Room.databaseBuilder(context, RoomDB::class.java, "registro.db")
                     .allowMainThreadQueries()
-                    .addMigrations(object : Migration(4, 5) {
+                    .addMigrations(object : Migration(5, 6) {
                         override fun migrate(database: SupportSQLiteDatabase) {
 
                             //throw IllegalStateException("Not yet implemented")
