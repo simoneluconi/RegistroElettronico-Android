@@ -156,7 +156,7 @@ class NotificationService : JobService() {
         if (newCommunications.isEmpty()) return emptyList()
 
         val oldCommunications = DatabaseHelper.database.communicationsDao().getCommunicationsList(Account.with(applicationContext).user)
-        val diffCommunications = newCommunications.minus(oldCommunications)
+        val diffCommunications = if (!BuildConfig.DEBUG) newCommunications.minus(oldCommunications) else newCommunications
         if (diffCommunications.isEmpty()) return emptyList()
         return diffCommunications.map { it.title }
     }
