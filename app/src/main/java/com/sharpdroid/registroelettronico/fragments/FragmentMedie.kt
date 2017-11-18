@@ -31,7 +31,8 @@ class FragmentMedie : Fragment() {
     private var emptyHolder: EmptyFragment? = null
     private lateinit var viewModel: GradesViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) = inflater.inflate(R.layout.coordinator_swipe_recycler_padding, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+            inflater.inflate(R.layout.coordinator_swipe_recycler_padding, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -92,7 +93,7 @@ class FragmentMedie : Fragment() {
         } ?: "Media totale: " + String.format(Locale.getDefault(), "%.2f", average)
     }
 
-    fun addSubjects(markSubjects: List<Average>, p: Int, order: String) {
+    private fun addSubjects(markSubjects: List<Average>, p: Int, order: String) {
         val ordered = when (order) {
             "avg" -> markSubjects.sortedByDescending { it.avg() }
             "count" -> markSubjects.sortedByDescending { it.count }

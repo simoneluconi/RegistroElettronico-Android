@@ -96,13 +96,13 @@ class FragmentSettings : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             }
         } else if (preference is TwoStatePreference) {
             if (key.equals("notify", ignoreCase = true)) {
-                val vibrate_d = findPreference("notify_vibrate").icon
-                vibrate_d.alpha = if (preference.isChecked) 255 else 102
-                findPreference("notify_vibrate").icon = vibrate_d
+                val vibrate = findPreference("notify_vibrate").icon
+                vibrate.alpha = if (preference.isChecked) 255 else 102
+                findPreference("notify_vibrate").icon = vibrate
 
-                val sound_d = findPreference("notify_sound").icon
-                sound_d.alpha = if (preference.isChecked) 255 else 102
-                findPreference("notify_sound").icon = sound_d
+                val sound = findPreference("notify_sound").icon
+                sound.alpha = if (preference.isChecked) 255 else 102
+                findPreference("notify_sound").icon = sound
             }
         } else {
             preference.summary = sharedPreferences.getString(key, "")

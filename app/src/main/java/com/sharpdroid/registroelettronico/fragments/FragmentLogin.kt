@@ -61,9 +61,7 @@ class FragmentLogin : SlideFragment() {
         }
     }
 
-    override fun canGoForward(): Boolean {
-        return loggedIn
-    }
+    override fun canGoForward() = loggedIn
 
     private fun login() {
         val mEmail = mail.text.toString()

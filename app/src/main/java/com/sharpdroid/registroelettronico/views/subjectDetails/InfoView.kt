@@ -64,17 +64,14 @@ class InfoView : CardView {
 
         private var data: MutableList<Pair<Int, String>> = ArrayList()
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InfoHolder {
-            return InfoHolder(LayoutInflater.from(mContext).inflate(R.layout.adapter_view_info, parent, false))
-        }
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+                InfoHolder(LayoutInflater.from(mContext).inflate(R.layout.adapter_view_info, parent, false))
 
         override fun onBindViewHolder(holder: InfoHolder, position: Int) {
             holder.bindData(data[position])
         }
 
-        override fun getItemCount(): Int {
-            return data.size
-        }
+        override fun getItemCount() = data.size
 
         fun clear() {
             data.clear()

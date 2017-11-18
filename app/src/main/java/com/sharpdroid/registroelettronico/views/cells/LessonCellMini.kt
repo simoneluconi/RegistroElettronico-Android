@@ -17,7 +17,7 @@ class LessonCellMini : FrameLayout {
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    val formatter = SimpleDateFormat("d MMM", Locale.getDefault())
+    private val formatter = SimpleDateFormat("d MMM", Locale.getDefault())
 
     init {
         View.inflate(context, R.layout.adapter_lessons_1, this)

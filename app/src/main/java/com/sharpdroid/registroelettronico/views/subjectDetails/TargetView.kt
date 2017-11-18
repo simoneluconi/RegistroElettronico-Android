@@ -82,7 +82,5 @@ class TargetView : CardView {
         dettagli.setOnClickListener(details)
     }
 
-    private fun getColor(color: Int): Int {
-        return ContextCompat.getColor(mContext, color)
-    }
+    private fun getColor(color: Int) = ContextCompat.getColor(mContext, color)
 }

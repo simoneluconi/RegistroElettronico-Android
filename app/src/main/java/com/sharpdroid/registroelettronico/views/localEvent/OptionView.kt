@@ -32,9 +32,7 @@ class OptionView : RelativeLayout {
         }
     }
 
-    fun builder(): Builder {
-        return Builder(context)
-    }
+    fun builder() = Builder(context)
 
     private fun init() {
         View.inflate(context, R.layout.view_event_option, this)

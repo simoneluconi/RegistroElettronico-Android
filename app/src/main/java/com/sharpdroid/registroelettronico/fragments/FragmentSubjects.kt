@@ -22,7 +22,6 @@ import com.sharpdroid.registroelettronico.adapters.SubjectsAdapter
 import com.sharpdroid.registroelettronico.adapters.holders.Holder
 import com.sharpdroid.registroelettronico.database.entities.Lesson
 import com.sharpdroid.registroelettronico.database.entities.Profile
-import com.sharpdroid.registroelettronico.database.entities.Subject
 import com.sharpdroid.registroelettronico.database.pojos.SubjectWithLessons
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.database.viewModels.LessonsViewModel
@@ -42,7 +41,6 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
     lateinit var adapter: SubjectsAdapter
     private lateinit var searchAdapter: SearchAdapter
     private lateinit var emptyHolder: EmptyFragment
-    private var selectedSubject: Subject? = null
     private lateinit var viewModel: LessonsViewModel
     private var queryDisposable: Disposable? = null
     private var querying = false
@@ -132,9 +130,7 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
         }
     }
 
-    override fun onQueryTextSubmit(query_: String): Boolean {
-        return false
-    }
+    override fun onQueryTextSubmit(query: String) = false
 
     override fun onQueryTextChange(newText: String): Boolean {
         querying = newText.isNotEmpty()

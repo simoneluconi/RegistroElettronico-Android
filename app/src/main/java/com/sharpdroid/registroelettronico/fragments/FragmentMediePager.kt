@@ -44,9 +44,8 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
     private var pagerSelected: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_medie_pager, container, false)
-    }
+                              savedInstanceState: Bundle?): View? =
+            inflater.inflate(R.layout.fragment_medie_pager, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -162,9 +161,8 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
 
     private inner class MediePager internal constructor(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
-        override fun getPageTitle(position: Int): CharSequence {
-            return if (position == 2) "Generale" else (position + 1).toString() + "° periodo"
-        }
+        override fun getPageTitle(position: Int) =
+                if (position == 2) "Generale" else (position + 1).toString() + "° periodo"
 
         override fun getItem(position: Int): Fragment {
             val f = FragmentMedie()
@@ -175,9 +173,7 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
             return f
         }
 
-        override fun getCount(): Int {
-            return 3
-        }
+        override fun getCount() = 3
     }
 
 }
