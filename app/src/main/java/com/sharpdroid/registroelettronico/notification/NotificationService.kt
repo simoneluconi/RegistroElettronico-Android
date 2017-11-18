@@ -15,12 +15,14 @@ import android.support.v7.preference.PreferenceManager
 import android.util.Log
 import com.firebase.jobdispatcher.JobParameters
 import com.firebase.jobdispatcher.JobService
+import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.MainActivity
 import com.sharpdroid.registroelettronico.api.v2.APIClient
 import com.sharpdroid.registroelettronico.database.entities.*
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
+import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.utils.Metodi.getStartEnd
 import java.util.*
 
@@ -113,7 +115,7 @@ class NotificationService : JobService() {
         })
         if (newEvents.isEmpty()) return emptyList()
 
-        val oldEvents = DatabaseHelper.database.eventsDao().getRemoteList(Account.with(applicationContext).user)
+        val oldEvents = DatabaseHelper.database.eventsDao().getRemoteList()
         val diffEvents = newEvents.minus(oldEvents)
         if (diffEvents.isEmpty()) return emptyList()
 
@@ -137,12 +139,12 @@ class NotificationService : JobService() {
         if (newGrades.isEmpty()) return emptyList()
 
         val oldGrades = DatabaseHelper.database.gradesDao().getGradesList(Account.with(applicationContext).user)
-        val diffGrades = newGrades.minus(oldGrades)
+        val diffGrades = if (!BuildConfig.DEBUG) newGrades.minus(oldGrades) else newGrades
         if (diffGrades.isEmpty()) return emptyList()
 
         DatabaseHelper.database.gradesDao().delete(profile.id)
         DatabaseHelper.database.gradesDao().insert(newGrades)
-        return diffGrades.map { getString(R.string.notification_new_grade, it.mStringValue, it.mDescription) }
+        return diffGrades.map { getString(R.string.notification_new_grade, it.mStringValue, capitalizeEach(it.mDescription, false)) }
     }
 
     private fun getComunicazioniDiff(profile: Profile): List<String> {

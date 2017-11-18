@@ -16,7 +16,7 @@ interface AgendaDao {
     fun getRemote(profile: Long): LiveData<List<RemoteAgendaPOJO>>
 
     @Query("SELECT * FROM REMOTE_AGENDA")
-    fun getRemoteList(profile: Long): List<RemoteAgenda>
+    fun getRemoteList(): List<RemoteAgenda>
 
     @Query("SELECT * FROM LOCAL_AGENDA WHERE PROFILE = :profile AND ARCHIVED!=1")
     fun getLocal(profile: Long): LiveData<List<LocalAgendaPOJO>>
