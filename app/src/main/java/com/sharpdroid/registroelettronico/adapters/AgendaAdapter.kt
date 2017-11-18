@@ -44,7 +44,7 @@ class AgendaAdapter(private val place_holder: View) : RecyclerView.Adapter<Recyc
                 eventHolder.date.text = dateFormat.format(entry.agenda.start)
                 eventHolder.subject.text = capitalizeEach(entry.agenda.author, true)
                 eventHolder.subject.text = capitalizeEach(
-                        if (entry.agenda.subject.isEmpty()) entry.agenda.author else entry.agenda.subject, true)
+                        if (entry.agenda.subject.isNullOrEmpty()) entry.agenda.author else entry.agenda.subject, true)
                 eventHolder.title.text = title
 
                 eventHolder.notes.visibility = View.GONE
