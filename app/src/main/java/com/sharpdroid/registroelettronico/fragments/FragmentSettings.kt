@@ -1,10 +1,12 @@
 package com.sharpdroid.registroelettronico.fragments
 
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.preference.ListPreference
+import android.support.v7.preference.PreferenceCategory
 import android.support.v7.preference.PreferenceFragmentCompat
 import android.support.v7.preference.TwoStatePreference
 import android.view.View
@@ -21,7 +23,6 @@ import com.sharpdroid.registroelettronico.utils.Account
  * shows the settings option for choosing the movie categories in ListPreference.
  */
 class FragmentSettings : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
-
 
     override fun onCreatePreferences(bundle: Bundle, s: String) {
         //add xml
@@ -68,6 +69,12 @@ class FragmentSettings : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             }).supportFragment()).addToBackStack(null)
             transaction.commit()
             true
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val preference = findPreference("notifuche_preference") as PreferenceCategory
+            preference.removePreference(findPreference("notify_sound"))
+            preference.removePreference(findPreference("notify_vibrate"))
         }
 
         if (!BuildConfig.DEBUG)

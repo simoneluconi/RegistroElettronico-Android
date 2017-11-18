@@ -124,7 +124,7 @@
 
     <plurals name="notification_voti">
         <item quantity="one">Un nuovo voto</item>
-        <item quantity="other">%d nuovi voti!</item>
+        <item quantity="other">%d nuovi voti</item>
     </plurals>
 
     <plurals name="notification_note">
@@ -146,4 +146,5 @@
     <string name="generale">Generale</string>
     <string name="aggiungi">Aggiungi</string>
 
+    <string name="notification_new_grade">Hai preso %1$s di %2$s</string>
 </resources>

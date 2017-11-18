@@ -14,6 +14,9 @@ interface CommunicationDao {
     @Query("SELECT * FROM COMMUNICATION WHERE PROFILE = :profile ORDER BY DATE DESC")
     fun loadCommunications(profile: Long): LiveData<List<Communication>>
 
+    @Query("SELECT * FROM COMMUNICATION WHERE PROFILE = :profile ORDER BY DATE DESC")
+    fun getCommunicationsList(profile: Long): List<Communication>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(communications: List<Communication>)
 
