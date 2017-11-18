@@ -115,7 +115,7 @@ class NotificationService : JobService() {
         })
         if (newEvents.isEmpty()) return emptyList()
 
-        val oldEvents = DatabaseHelper.database.eventsDao().getRemoteList()
+        val oldEvents = DatabaseHelper.database.eventsDao().getRemoteList(Account.with(applicationContext).user)
         val diffEvents = newEvents.minus(oldEvents)
         if (diffEvents.isEmpty()) return emptyList()
 
