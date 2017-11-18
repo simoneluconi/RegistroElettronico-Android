@@ -15,7 +15,6 @@ import android.support.v7.preference.PreferenceManager
 import android.util.Log
 import com.firebase.jobdispatcher.JobParameters
 import com.firebase.jobdispatcher.JobService
-import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.MainActivity
 import com.sharpdroid.registroelettronico.api.v2.APIClient
@@ -27,6 +26,8 @@ import com.sharpdroid.registroelettronico.utils.Metodi.getStartEnd
 import java.util.*
 
 class NotificationService : JobService() {
+    private val debug = false
+
     override fun onStopJob(job: JobParameters?) = false //need retry?
 
     override fun onStartJob(job: JobParameters?): Boolean {
@@ -135,7 +136,7 @@ class NotificationService : JobService() {
         if (newGrades.isEmpty()) return emptyList()
 
         val oldGrades = DatabaseHelper.database.gradesDao().getGradesList(Account.with(applicationContext).user)
-        val diffGrades = if (!BuildConfig.DEBUG) newGrades.minus(oldGrades) else newGrades
+        val diffGrades = if (!debug) newGrades.minus(oldGrades) else newGrades
         if (diffGrades.isEmpty()) return emptyList()
         return diffGrades.map { getString(R.string.notification_new_grade, it.mStringValue, capitalizeEach(it.mDescription, false)) }
     }
@@ -156,7 +157,7 @@ class NotificationService : JobService() {
         if (newCommunications.isEmpty()) return emptyList()
 
         val oldCommunications = DatabaseHelper.database.communicationsDao().getCommunicationsList(Account.with(applicationContext).user)
-        val diffCommunications = if (!BuildConfig.DEBUG) newCommunications.minus(oldCommunications) else newCommunications
+        val diffCommunications = if (!debug) newCommunications.minus(oldCommunications) else newCommunications
         if (diffCommunications.isEmpty()) return emptyList()
         return diffCommunications.map { it.title }
     }
