@@ -200,6 +200,7 @@ class NotificationService : JobService() {
                 .setColor(ContextCompat.getColor(this, R.color.primary))
                 .setContentIntent(pi)
                 .setContentTitle(title)
+                .setContentText(content.last())
                 .setNumber(content.size)
                 .setOnlyAlertOnce(true)
                 .setSmallIcon(R.drawable.ic_stat_name)
