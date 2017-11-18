@@ -73,7 +73,7 @@ class LocalAgenda(
 }
  */
 @Entity(tableName = "REMOTE_AGENDA")
-class RemoteAgenda(
+data class RemoteAgenda(
         @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("evtId") var id: Long = 0L,
         @ColumnInfo(name = "START") @Expose @SerializedName("evtDatetimeBegin") var start: Date = Date(0),
         @ColumnInfo(name = "END") @Expose @SerializedName("evtDatetimeEnd") var end: Date = Date(0),

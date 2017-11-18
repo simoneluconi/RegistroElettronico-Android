@@ -33,7 +33,7 @@ import java.util.*
 }
  */
 @Entity(tableName = "COMMUNICATION")
-class Communication(
+data class Communication(
         @PrimaryKey @ColumnInfo(name = "ID") @Expose @SerializedName("pubId") var id: Long = 0L,
         @ColumnInfo(name = "DATE") @Expose @SerializedName("pubDT") var date: Date = Date(0),
         @ColumnInfo(name = "IS_READ") @Expose @SerializedName("readStatus") var isRead: Boolean = false,

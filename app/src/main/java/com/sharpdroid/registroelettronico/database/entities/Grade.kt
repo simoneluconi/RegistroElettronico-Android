@@ -9,7 +9,7 @@ import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import java.util.*
 
 @Entity(tableName = "GRADE")
-class Grade(
+data class Grade(
         @ColumnInfo(name = "M_CODE") @Expose @SerializedName("evtCode") var mCode: String = "",
         @ColumnInfo(name = "M_COMPONENT_POS") @Expose @SerializedName("componentPos") var mComponentPos: Int = -1,
         @ColumnInfo(name = "M_DATE") @Expose @SerializedName("evtDate") var mDate: Date = Date(0),

@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 import java.util.*
 
 @Entity(tableName = "NOTE")
-class Note(
+data class Note(
         @ColumnInfo(name = "M_AUTHOR") @Expose @SerializedName("authorName") var mAuthor: String = "",
         @ColumnInfo(name = "M_DATE") @Expose @SerializedName("evtDate") var mDate: Date = Date(0),
         @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("evtId") var id: Long = 0L,
