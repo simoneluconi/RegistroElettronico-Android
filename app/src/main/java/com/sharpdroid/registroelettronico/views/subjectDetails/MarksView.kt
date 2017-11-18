@@ -8,6 +8,7 @@ import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.PopupMenu
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -98,13 +99,15 @@ class MarksView : CardView, PopupMenu.OnMenuItemClickListener {
     }
 
     fun setSubject(subject: SubjectInfo?, media: Float) {
-        subject?.let {
-            val pref = PreferenceManager.getDefaultSharedPreferences(mContext).getString("voto_obiettivo", "8")
-            val prefTarget = if (pref == "Auto") Math.ceil(media.toDouble()).toFloat() else pref.toFloat()
+        val pref = PreferenceManager.getDefaultSharedPreferences(mContext).getString("voto_obiettivo", "8")
+        val prefTarget = if (pref == "Auto") Math.ceil(media.toDouble()).toFloat() else pref.toFloat()
 
-            setLimitLines(it.target, media)
-            adapter.setTarget(if (subject.target == 0f) prefTarget else subject.target)
-        }
+        val target = if (subject == null || subject.target == 0f) prefTarget else subject.target
+
+        setLimitLines(target, media)
+        Log.d("MarksView", "target=$target")
+        adapter.setTarget(target)
+
     }
 
     fun addAll(marks: List<Grade>) {
