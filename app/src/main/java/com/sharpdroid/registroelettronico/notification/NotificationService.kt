@@ -118,10 +118,6 @@ class NotificationService : JobService() {
         val oldEvents = DatabaseHelper.database.eventsDao().getRemoteList(Account.with(applicationContext).user)
         val diffEvents = newEvents.minus(oldEvents)
         if (diffEvents.isEmpty()) return emptyList()
-
-        DatabaseHelper.database.eventsDao().deleteRemote(profile.id)
-        DatabaseHelper.database.eventsDao().insert(newEvents)
-
         return diffEvents.map { it.notes }
     }
 
@@ -141,9 +137,6 @@ class NotificationService : JobService() {
         val oldGrades = DatabaseHelper.database.gradesDao().getGradesList(Account.with(applicationContext).user)
         val diffGrades = if (!BuildConfig.DEBUG) newGrades.minus(oldGrades) else newGrades
         if (diffGrades.isEmpty()) return emptyList()
-
-        DatabaseHelper.database.gradesDao().delete(profile.id)
-        DatabaseHelper.database.gradesDao().insert(newGrades)
         return diffGrades.map { getString(R.string.notification_new_grade, it.mStringValue, capitalizeEach(it.mDescription, false)) }
     }
 
@@ -165,9 +158,6 @@ class NotificationService : JobService() {
         val oldCommunications = DatabaseHelper.database.communicationsDao().getCommunicationsList(Account.with(applicationContext).user)
         val diffCommunications = newCommunications.minus(oldCommunications)
         if (diffCommunications.isEmpty()) return emptyList()
-
-        DatabaseHelper.database.communicationsDao().delete(profile.id)
-        DatabaseHelper.database.communicationsDao().insert(newCommunications)
         return diffCommunications.map { it.title }
     }
 
@@ -187,9 +177,6 @@ class NotificationService : JobService() {
         val oldNotes = DatabaseHelper.database.notesDao().getNotesList(Account.with(applicationContext).user)
         val diffNotes = newNotes.minus(oldNotes)
         if (diffNotes.isEmpty()) return emptyList()
-
-        DatabaseHelper.database.notesDao().delete(profile.id)
-        DatabaseHelper.database.notesDao().insert(newNotes)
         return diffNotes.map { it.mText }
     }
 
