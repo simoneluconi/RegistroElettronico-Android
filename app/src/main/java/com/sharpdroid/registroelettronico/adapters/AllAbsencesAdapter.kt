@@ -18,10 +18,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class AllAbsencesAdapter(private val mContext: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private val long_date_format = SimpleDateFormat("EEEE, d MMMM yyyy", Locale.ITALIAN)
-
-    private var CVDataList: MutableList<in Any> = mutableListOf()
-
+    private val longDateFormat = SimpleDateFormat("EEEE, d MMMM yyyy", Locale.ITALIAN)
+    private val data: MutableList<in Any> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == 0)
@@ -31,7 +29,7 @@ class AllAbsencesAdapter(private val mContext: Context) : RecyclerView.Adapter<R
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val entry = CVDataList[position]
+        val entry = data[position]
         when (entry) {
             is String -> (holder as HeaderHolder).content.text = entry
             is Absence -> {
@@ -56,13 +54,13 @@ class AllAbsencesAdapter(private val mContext: Context) : RecyclerView.Adapter<R
                     }
                 }
 
-                absencesHolder.date.text = capitalizeFirst(long_date_format.format(entry.date))
+                absencesHolder.date.text = capitalizeFirst(longDateFormat.format(entry.date))
                 absencesHolder.done.visibility = if (entry.justified) View.VISIBLE else View.INVISIBLE
             }
             is MyAbsence -> {
                 val absencesHolder = holder as AbsencesHolder
 
-                absencesHolder.date.text = capitalizeFirst(long_date_format.format(entry.absence.date))
+                absencesHolder.date.text = capitalizeFirst(longDateFormat.format(entry.absence.date))
                 absencesHolder.hour.text = mContext.resources.getQuantityString(R.plurals.days, entry.days, entry.days)
                 absencesHolder.type_color.setImageDrawable(ColorDrawable(ContextCompat.getColor(mContext, R.color.redmaterial)))
                 absencesHolder.type_text.text = "A"
@@ -70,13 +68,9 @@ class AllAbsencesAdapter(private val mContext: Context) : RecyclerView.Adapter<R
         }
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return if (CVDataList[position] is String) 0 else 1
-    }
+    override fun getItemViewType(position: Int) = if (data[position] is String) 0 else 1
 
-    override fun getItemCount(): Int {
-        return CVDataList.size
-    }
+    override fun getItemCount() = data.size
 
     fun addAll(absences: Array<in Any>) {
         if (absences.isEmpty()) return
@@ -115,12 +109,12 @@ class AllAbsencesAdapter(private val mContext: Context) : RecyclerView.Adapter<R
             hashmap[it]?.toCollection(finalList)
         }
 
-        CVDataList.addAll(finalList)
+        data.addAll(finalList)
         notifyDataSetChanged()
     }
 
     fun clear() {
-        CVDataList.clear()
+        data.clear()
         notifyDataSetChanged()
     }
 }

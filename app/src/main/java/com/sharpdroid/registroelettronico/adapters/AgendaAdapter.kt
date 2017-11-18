@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class AgendaAdapter(private val place_holder: View) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private val CVDataList = mutableListOf<Any>()
+    private val data = mutableListOf<Any>()
     private val dateFormat = SimpleDateFormat("d MMM", Locale.getDefault())
     private var mClickListener: AgendaClickListener? = null
 
@@ -31,7 +31,7 @@ class AgendaAdapter(private val place_holder: View) : RecyclerView.Adapter<Recyc
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val entry = CVDataList[position]
+        val entry = data[position]
         when (entry) {
             is String -> (holder as HeaderHolder).content.text = entry
             is SuperAgenda -> {
@@ -48,7 +48,7 @@ class AgendaAdapter(private val place_holder: View) : RecyclerView.Adapter<Recyc
                 eventHolder.title.text = title
 
                 eventHolder.notes.visibility = View.GONE
-                eventHolder.divider.visibility = if (CVDataList[position - 1] is String) View.INVISIBLE else View.VISIBLE
+                eventHolder.divider.visibility = if (data[position - 1] is String) View.INVISIBLE else View.VISIBLE
                 eventHolder.subject.visibility = if (eventHolder.subject.text.isEmpty()) View.GONE else View.VISIBLE
 
                 eventHolder.itemView.setOnClickListener {
@@ -84,24 +84,22 @@ class AgendaAdapter(private val place_holder: View) : RecyclerView.Adapter<Recyc
     }
 
     override fun getItemViewType(position: Int): Int {
-        val item = CVDataList[position]
+        val item = data[position]
         return if (item is String)
             R.layout.adapter_header
         else
             R.layout.adapter_event
     }
 
-    override fun getItemCount(): Int {
-        return CVDataList.size
-    }
+    override fun getItemCount() = data.size
 
     fun setItemClickListener(longClickListener: AgendaClickListener) {
         mClickListener = longClickListener
     }
 
     fun addAll(events: List<Any>) {
-        CVDataList.addAll(convert(events))
-        if (CVDataList.isEmpty()) {
+        data.addAll(convert(events))
+        if (data.isEmpty()) {
             place_holder.visibility = View.VISIBLE
         } else {
             place_holder.visibility = View.GONE
@@ -110,7 +108,7 @@ class AgendaAdapter(private val place_holder: View) : RecyclerView.Adapter<Recyc
     }
 
     fun clear() {
-        CVDataList.clear()
+        data.clear()
         notifyDataSetChanged()
     }
 

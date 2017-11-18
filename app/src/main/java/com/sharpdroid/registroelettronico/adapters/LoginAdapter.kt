@@ -24,9 +24,8 @@ class LoginAdapter(choiceList: List<Choice>, private val c: Context, private val
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return Holder(ValueDetailsCheckboxCell(parent.context))
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+            Holder(ValueDetailsCheckboxCell(parent.context))
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val choice = choices[position]
@@ -62,7 +61,5 @@ class LoginAdapter(choiceList: List<Choice>, private val c: Context, private val
         }
     }
 
-    override fun getItemCount(): Int {
-        return choices.size
-    }
+    override fun getItemCount() = choices.size
 }
