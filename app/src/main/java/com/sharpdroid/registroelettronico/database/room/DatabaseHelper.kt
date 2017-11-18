@@ -1,5 +1,3 @@
-@file:Suppress("UNREACHABLE_CODE")
-
 package com.sharpdroid.registroelettronico.database.room
 
 import android.arch.lifecycle.MutableLiveData
@@ -32,8 +30,6 @@ object DatabaseHelper {
                     .allowMainThreadQueries()
                     .addMigrations(object : Migration(5, 6) {
                         override fun migrate(database: SupportSQLiteDatabase) {
-
-                            //throw IllegalStateException("Not yet implemented")
 
                             with(database) {
                                 execSQL("DROP TABLE ABSENCE")
