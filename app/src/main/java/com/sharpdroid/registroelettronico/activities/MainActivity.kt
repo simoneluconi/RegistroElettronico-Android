@@ -184,11 +184,8 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         }
 
         // Aperto da notifica
-        if (intent?.extras?.containsKey("drawer_open_id") == true) {
-            drawer?.setSelection(intent?.extras?.getLong("drawer_open_id") ?: -1L, true)
-            intent?.extras?.clear()
-
-            //Primo avvio
+        if (intent.extras != null && intent.extras.containsKey("drawer_open_id")) {
+            drawer?.setSelection(intent.extras.getLong("drawer_open_id"), true)
         } else if (savedInstanceState == null) {
             val default = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getString("drawer_to_open", "0")) ?: 0
             val drawerToOpen = intent.extras?.getInt("drawer_to_open", default) ?: default

@@ -14,6 +14,9 @@ interface GradeDao {
     @Query("SELECT * FROM GRADE WHERE PROFILE = :profile")
     fun getGrades(profile: Long): LiveData<List<Grade>>
 
+    @Query("SELECT * FROM GRADE WHERE PROFILE = :profile")
+    fun getGradesList(profile: Long): List<Grade>
+
     @Query("SELECT SUM(GRADE.M_VALUE) as `SUM`, COUNT(CASE WHEN GRADE.M_VALUE>0 THEN 1 END) as `COUNT`, coalesce(nullif(SUBJECT_INFO.DESCRIPTION,''), GRADE.M_DESCRIPTION) as NAME, GRADE.M_SUBJECT_ID, coalesce(SUBJECT_INFO.TARGET, 0) as TARGET \n" +
             "FROM GRADE \n" +
             "LEFT JOIN SUBJECT_INFO ON SUBJECT_INFO.SUBJECT=GRADE.M_SUBJECT_ID\n" +

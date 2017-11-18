@@ -14,6 +14,9 @@ interface NoteDao {
     @Query("SELECT * FROM NOTE WHERE PROFILE=:profile ORDER BY M_DATE DESC")
     fun getNotes(profile: Long): LiveData<List<Note>>
 
+    @Query("SELECT * FROM NOTE WHERE PROFILE=:profile ORDER BY M_DATE DESC")
+    fun getNotesList(profile: Long): List<Note>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(notes: List<Note>)
 

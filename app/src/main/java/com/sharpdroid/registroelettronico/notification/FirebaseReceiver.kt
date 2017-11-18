@@ -13,20 +13,28 @@ class FirebaseReceiver : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage?) {
         if (remoteMessage?.notification != null) {
             super.onMessageReceived(remoteMessage)
-        } else if (remoteMessage?.data != null && PreferenceManager.getDefaultSharedPreferences(this).getBoolean("notify", true)) {
+        } else if (remoteMessage?.data != null &&
+                PreferenceManager.getDefaultSharedPreferences(this).getBoolean("notify", true)) {
 
             val dispatcher = FirebaseJobDispatcher(GooglePlayDriver(applicationContext))
             val notificationJob = dispatcher.newJobBuilder()
+                    // the JobService that will be called
                     .setService(NotificationService::class.java)
+                    // uniquely identifies the job
                     .setTag("sharpdroid-notification-service")
+                    // start now
                     .setTrigger(Trigger.NOW)
+                    // one-off job
                     .setRecurring(false)
+                    // don't overwrite an existing job with the same tag
                     .setReplaceCurrent(true)
-                    .addConstraint(Constraint.ON_ANY_NETWORK)
-                    .addConstraint(Constraint.DEVICE_IDLE)
+                    // constraints that need to be satisfied for the job to run
+                    .setConstraints(
+                            Constraint.ON_ANY_NETWORK,
+                            Constraint.DEVICE_IDLE
+                    )
 
             dispatcher.mustSchedule(notificationJob.build())
-
         }
     }
 }

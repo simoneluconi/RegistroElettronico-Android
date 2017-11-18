@@ -21,7 +21,9 @@
         android:summary="@string/restore_archived_summary"
         android:title="@string/restore_archived_title" />
 
-    <PreferenceCategory android:title="Notifiche">
+    <PreferenceCategory
+        android:key="notifuche_preference"
+        android:title="Notifiche">
         <SwitchPreference
             android:defaultValue="true"
             android:key="notify"
