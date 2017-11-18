@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
@@ -12,11 +13,15 @@ import android.view.ViewGroup
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.MedieAdapter
 import com.sharpdroid.registroelettronico.database.entities.Average
+import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.database.viewModels.GradesViewModel
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.ItemOffsetDecoration
+import com.sharpdroid.registroelettronico.utils.Metodi.CalculateScholasticCredits
 import com.sharpdroid.registroelettronico.views.EmptyFragment
 import kotlinx.android.synthetic.main.coordinator_swipe_recycler_padding.*
+import kotlinx.android.synthetic.main.fragment_medie_pager.*
+import java.util.*
 
 class FragmentMedie : Fragment() {
     private var periodo: Int = 0
@@ -54,10 +59,33 @@ class FragmentMedie : Fragment() {
 
         viewModel.getGrades(Account.with(context).user, periodo).observe(this, Observer {
             addSubjects(it.orEmpty(), periodo, viewModel.order.value.orEmpty())
+            var acc = 0f
+            var count = 0
+
+            it.orEmpty().forEach {
+                if (it.count > 0) {
+                    acc += it.sum / it.count
+                    count++
+                }
+            }
+
+            val classe: String = DatabaseHelper.database.lessonsDao().getClassDescription(Account.with(context).user)
+
+            if (acc > 0 && viewModel.selected == periodo)
+                Snackbar.make(activity.coordinator_layout, getSnackBarMessage(acc / count, classe), Snackbar.LENGTH_SHORT).show()
         })
         viewModel.order.observe(this, Observer {
             addSubjects(mRVAdapter.getAll(), periodo, it.orEmpty())
         })
+    }
+
+    private fun getSnackBarMessage(average: Float, classDescription: String): String {
+        val maybeClass: String = classDescription.substring(0, 1)
+        val classe: Int? = maybeClass.toIntOrNull()
+
+        return classe?.let {
+            String.format(Locale.getDefault(), "Media Totale: %.2f | Crediti: %2\$d + %3\$d", average, CalculateScholasticCredits(classe, average), 1)
+        } ?: "Media totale: " + String.format(Locale.getDefault(), "%.2f", average)
     }
 
     fun addSubjects(markSubjects: List<Average>, p: Int, order: String) {

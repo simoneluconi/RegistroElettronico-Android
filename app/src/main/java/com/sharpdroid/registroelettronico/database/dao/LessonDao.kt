@@ -28,4 +28,7 @@ interface LessonDao {
     @Query("DELETE FROM LESSON WHERE PROFILE = :profile")
     fun delete(profile: Long)
 
+    @Query("SELECT M_CLASS_DESCRIPTION FROM LESSON WHERE PROFILE = :profile LIMIT 1")
+    fun getClassDescription(profile: Long): String
+
 }

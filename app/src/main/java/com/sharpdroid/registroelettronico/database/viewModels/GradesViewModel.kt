@@ -14,6 +14,7 @@ class GradesViewModel : ViewModel() {
     private var firstProfile = 0L
     private var secondProfile = 0L
     private var thirdProfile = 0L
+    var selected = 0
 
     fun getGrades(profile: Long, period: Int): LiveData<List<Average>> {
         return when (period) {
