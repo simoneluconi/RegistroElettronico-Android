@@ -18,6 +18,7 @@ import com.mikepenz.aboutlibraries.LibsConfiguration;
 import com.sharpdroid.registroelettronico.BuildConfig;
 import com.sharpdroid.registroelettronico.R;
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper;
+import com.sharpdroid.registroelettronico.utils.Account;
 
 /**
  * shows the settings option for choosing the movie categories in ListPreference.
@@ -39,12 +40,17 @@ public class FragmentSettings extends PreferenceFragmentCompat implements Shared
         onSharedPreferenceChanged(sharedPreferences, "notify_sound");
         onSharedPreferenceChanged(sharedPreferences, "notify_vibrate");
 
-        Preference button = findPreference("clear_archive");
-        button.setOnPreferenceClickListener(preference -> {
+        findPreference("clear_archive").setOnPreferenceClickListener(preference -> {
             DatabaseHelper.database.eventsDao().deleteRemoteInfo();
             DatabaseHelper.database.eventsDao().setNotArchived();
             return true;
         });
+
+        findPreference("voto_obiettivo").setOnPreferenceClickListener(preference -> {
+            DatabaseHelper.database.subjectsDao().removeTargets(Account.Companion.with(getContext()).getUser());
+            return true;
+        });
+
 
         findPreference("credits").setOnPreferenceClickListener(preference -> {
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();

@@ -64,4 +64,7 @@ interface SubjectDao {
 
     @Query("DELETE FROM SUBJECT_TEACHER WHERE PROFILE=:profile AND SUBJECT=:subject AND TEACHER=:teacher")
     fun deleteSingle(profile: Long, subject: Long, teacher: Long)
+
+    @Query("UPDATE SUBJECT_INFO SET TARGET = 0 WHERE PROFILE = :profile")
+    fun removeTargets(profile: Long)
 }

@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class MarkAdapter(private val mContext: Context) : RecyclerView.Adapter<MarkAdapter.MarkHolder>() {
-    internal var target: Float = 0.toFloat()
+    internal var target: Float = 0f
     private val format = SimpleDateFormat("d MMMM yyyy", Locale.ITALIAN)
     private val data = mutableListOf<Grade>()
 
