@@ -12,8 +12,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.SeekBar
-import android.widget.Spinner
-import android.widget.TextView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.ContentViewEvent
@@ -36,6 +34,8 @@ import com.sharpdroid.registroelettronico.views.subjectDetails.HypotheticalView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_mark_subject_detail.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.fragment_imposta_obiettivo.view.*
+import kotlinx.android.synthetic.main.view_dialog_add_grade.*
 import java.util.*
 
 // DONE: 03/12/2016 Dettagli (nome, aula, prof, ora, note, colore)
@@ -47,9 +47,7 @@ import java.util.*
 // DONE: 03/12/2016 Voti recenti
 // DONE: 14/12/2016 Lezioni recenti
 
-
 class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.HypotheticalDelegate {
-
     var p: Int = 0
     private lateinit var avg: AverageType
     private lateinit var viewModel: SubjectDetailsViewModel
@@ -158,20 +156,18 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
             alert.setMessage(getString(R.string.obiettivo_summary))
 
             val v = layoutInflater.inflate(R.layout.fragment_imposta_obiettivo, null)
-            val mSeekBar = v.findViewById<SeekBar>(R.id.seekbar)
-            val mValueText = v.findViewById<TextView>(R.id.value)
-            mSeekBar.progress = getTarget(subject).toInt()
-            mValueText.text = String.format(Locale.getDefault(), "%.0f", getTarget(viewModel.subjectInfo?.value))
+            v.seekbar.progress = getTarget(subject).toInt()
+            v.value.text = String.format(Locale.getDefault(), "%.0f", getTarget(viewModel.subjectInfo?.value))
 
             alert.setView(v)
 
             alert.setPositiveButton(android.R.string.ok
-            ) { _, _ -> updateTarget(mSeekBar.progress.toFloat()) }
+            ) { _, _ -> updateTarget(v.seekbar.progress.toFloat()) }
 
 
-            mSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            v.seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                    mValueText.text = String.format(Locale.getDefault(), "%d", progress)
+                    v.value.text = String.format(Locale.getDefault(), "%d", progress)
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -220,10 +216,9 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
     override fun hypotheticalAddListener() {
         val view = LayoutInflater.from(this).inflate(R.layout.view_dialog_add_grade, null)
         val grade = LocalGrade(0f, "", viewModel.subjectInfo?.value?.subject?.id ?: 0, p, "Generale", Account.with(this).user, 0)
-        val spinner = view.findViewById<Spinner>(R.id.voto)
 
-        spinner.setSelection(resources.getStringArray(R.array.marks_list).size / 2)
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        voto.setSelection(resources.getStringArray(R.array.marks_list).size / 2)
+        voto.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(p0: AdapterView<*>?) {
             }
 
@@ -246,7 +241,6 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
                         }
                     }
                 }.show()
-
     }
 
     override fun hypotheticalClickListener(grade: LocalGrade, position: Int) {

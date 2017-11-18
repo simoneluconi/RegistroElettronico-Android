@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.fragments.bottomSheet.OrderMedieBS.OrderListener
+import kotlinx.android.synthetic.main.bottom_sheet_list_order_medie.*
 import kotlinx.android.synthetic.main.bottom_sheet_order_medie.view.*
 
 /**
@@ -29,14 +30,12 @@ class OrderMedieBS : BottomSheetDialogFragment() {
     private var mListener: OrderListener? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.bottom_sheet_list_order_medie, container, false)
-    }
+                              savedInstanceState: Bundle?): View? =
+            inflater.inflate(R.layout.bottom_sheet_list_order_medie, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val recyclerView = view.findViewById<RecyclerView>(R.id.list)
-        recyclerView?.layoutManager = LinearLayoutManager(context)
-        recyclerView?.adapter = ItemAdapter(3, mListener!!)
+        list.layoutManager = LinearLayoutManager(context)
+        list.adapter = ItemAdapter(3, mListener!!)
     }
 
     override fun onAttach(context: Context?) {
@@ -58,7 +57,6 @@ class OrderMedieBS : BottomSheetDialogFragment() {
         fun onItemClicked(position: Int)
     }
 
-
     private inner class ItemAdapter internal constructor(private val mItemCount: Int, val clickListener: OrderListener) : RecyclerView.Adapter<ItemAdapter.ViewHolder>() {
         private inner class ViewHolder(inflater: LayoutInflater, parent: ViewGroup) : RecyclerView.ViewHolder(inflater.inflate(R.layout.bottom_sheet_order_medie, parent, false)) {
             fun bind(text: String, image: Int) {
@@ -73,16 +71,13 @@ class OrderMedieBS : BottomSheetDialogFragment() {
             }
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            return ViewHolder(LayoutInflater.from(parent.context), parent)
-        }
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+                ViewHolder(LayoutInflater.from(parent.context), parent)
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             holder.bind(getString(texts[position]), images[position])
         }
 
-        override fun getItemCount(): Int {
-            return mItemCount
-        }
+        override fun getItemCount() = mItemCount
     }
 }
