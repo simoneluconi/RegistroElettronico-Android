@@ -57,6 +57,8 @@ class FragmentMedie : Fragment() {
             adapter = mRVAdapter
         }
 
+        val snackbar = Snackbar.make(activity.coordinator_layout, "", Snackbar.LENGTH_SHORT)
+
         viewModel.getGrades(Account.with(context).user, periodo).observe(this, Observer {
             addSubjects(it.orEmpty(), periodo, viewModel.order.value.orEmpty())
             var acc = 0f
@@ -71,8 +73,10 @@ class FragmentMedie : Fragment() {
 
             val classe: String = DatabaseHelper.database.lessonsDao().getClassDescription(Account.with(context).user)
 
-            if (acc > 0 && viewModel.selected == periodo)
-                Snackbar.make(activity.coordinator_layout, getSnackBarMessage(acc / count, classe), Snackbar.LENGTH_SHORT).show()
+            if (acc > 0 && viewModel.selected == periodo) {
+                snackbar.setText(getSnackBarMessage(acc / count, classe))
+                snackbar.show()
+            }
         })
         viewModel.order.observe(this, Observer {
             addSubjects(mRVAdapter.getAll(), periodo, it.orEmpty())
