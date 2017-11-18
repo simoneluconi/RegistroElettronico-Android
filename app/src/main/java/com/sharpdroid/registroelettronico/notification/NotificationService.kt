@@ -137,7 +137,6 @@ class NotificationService : JobService() {
         if (newGrades.isEmpty()) return emptyList()
 
         val oldGrades = DatabaseHelper.database.gradesDao().getGradesList(Account.with(applicationContext).user)
-        newGrades.map { it.profile = profile.id }
         val diffGrades = newGrades.minus(oldGrades)
         if (diffGrades.isEmpty()) return emptyList()
 
@@ -157,11 +156,11 @@ class NotificationService : JobService() {
         }, {
             Log.e("NOTIFICATION", it?.localizedMessage, it)
         })
+        newCommunications = newCommunications.filter { it.cntStatus != "deleted" }
+        newCommunications.map { it.cntStatus = "" }
         if (newCommunications.isEmpty()) return emptyList()
 
         val oldCommunications = DatabaseHelper.database.communicationsDao().getCommunicationsList(Account.with(applicationContext).user)
-        newCommunications = newCommunications.filter { it.cntStatus != "deleted" }
-        newCommunications.map { it.cntStatus = "" }
         val diffCommunications = newCommunications.minus(oldCommunications)
         if (diffCommunications.isEmpty()) return emptyList()
 
