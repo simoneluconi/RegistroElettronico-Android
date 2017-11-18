@@ -53,7 +53,7 @@ import com.sharpdroid.registroelettronico.database.entities.Teacher;
         SubjectInfo.class,
         SubjectTeacher.class,
         Teacher.class
-}, version = 7)
+}, version = 6)
 @TypeConverters({Converters.class})
 public abstract class RoomDB extends RoomDatabase {
     public abstract AbsenceDao absencesDao();
