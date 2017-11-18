@@ -183,10 +183,10 @@ class NotificationService : JobService() {
     private fun pushNotification(title: String, type: NotificationIDs, content: List<String>, sound: Boolean, vibrate: Boolean, tabToOpen: Long) {
         val notificationManager = NotificationManagerCompat.from(this)
 
-        val summaryIntent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, MainActivity::class.java)
                 .putExtra("drawer_open_id", tabToOpen)
                 .setAction(type.name)
-        val summaryPi = PendingIntent.getActivity(this, MainActivity.REQUEST_CODE, summaryIntent,
+        val pi = PendingIntent.getActivity(this, MainActivity.REQUEST_CODE, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT)
 
         val style = NotificationCompat.InboxStyle()
@@ -198,12 +198,10 @@ class NotificationService : JobService() {
         val notification = NotificationCompat.Builder(this, type.name)
                 .setAutoCancel(true)
                 .setColor(ContextCompat.getColor(this, R.color.primary))
-                .setContentIntent(summaryPi)
+                .setContentIntent(pi)
                 .setContentTitle(title)
-                .setGroup(SUMMARY_GROUP)
                 .setNumber(content.size)
                 .setOnlyAlertOnce(true)
-                .setGroupSummary(true)
                 .setSmallIcon(R.drawable.ic_stat_name)
                 .setStyle(style)
 
@@ -235,9 +233,6 @@ class NotificationService : JobService() {
     }
 
     companion object {
-        private val SUMMARY_GROUP = "group"
-        private val SUMMARY_ID = 900
-
         enum class NotificationIDs {
             AGENGA,
             VOTI,
