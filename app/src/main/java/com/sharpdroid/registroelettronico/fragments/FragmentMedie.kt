@@ -3,7 +3,6 @@ package com.sharpdroid.registroelettronico.fragments
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
@@ -42,7 +41,6 @@ class FragmentMedie : Fragment() {
         viewModel = ViewModelProviders.of(activity)[GradesViewModel::class.java]
 
         with(recycler) {
-            setBackgroundColor(Color.parseColor("#F1F1F1"))
             setHasFixedSize(true)
             layoutManager = if (resources.getBoolean(R.bool.isTablet) || resources.configuration.orientation == ORIENTATION_LANDSCAPE) {
                 GridLayoutManager(context, 3)
