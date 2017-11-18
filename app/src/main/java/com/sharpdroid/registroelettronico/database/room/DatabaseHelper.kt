@@ -100,6 +100,13 @@ object DatabaseHelper {
                             }
                         }
                     })
+                    .addMigrations(object : Migration(6, 7) {
+                        override fun migrate(database: SupportSQLiteDatabase) {
+                            with(database) {
+                                execSQL("ALTER TABLE REMOTE_AGENDA ADD COLUMN SUBJECT TEXT NOT NULL DEFAULT ''")
+                            }
+                        }
+                    })
                     .build()
         })
                 .subscribeOn(Schedulers.computation())
