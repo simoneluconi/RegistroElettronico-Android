@@ -26,9 +26,8 @@ class AgendaBS : BottomSheetDialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_item_list_options, container, false)
-    }
+                              savedInstanceState: Bundle?): View? =
+            inflater.inflate(R.layout.fragment_item_list_options, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val recyclerView = view as RecyclerView
@@ -69,9 +68,8 @@ class AgendaBS : BottomSheetDialogFragment() {
             }
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.fragment_item_agenda_options, parent, false))
-        }
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+                ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.fragment_item_agenda_options, parent, false))
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             if (event is SuperAgenda) {
@@ -97,10 +95,7 @@ class AgendaBS : BottomSheetDialogFragment() {
             }
         }
 
-        override fun getItemCount(): Int {
-            return mItemCount
-        }
-
+        override fun getItemCount() = mItemCount
     }
 
     companion object {

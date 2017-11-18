@@ -61,8 +61,8 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
         EventsAdapter(emptyList(), Date(), true)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?) = inflater?.inflate(R.layout.fragment_today, container, false)
-
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?) =
+            inflater?.inflate(R.layout.fragment_today, container, false)
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

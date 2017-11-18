@@ -24,7 +24,7 @@ import java.util.*
 class APIClient {
 
     companion object {
-        val cache = SparseArray<SpaggiariREST>()
+        private val cache = SparseArray<SpaggiariREST>()
 
         fun with(profile: Profile?): SpaggiariREST {
             if (cache.get(profile?.id?.toInt() ?: 0, null) != null) return cache[profile?.id?.toInt() ?: 0]

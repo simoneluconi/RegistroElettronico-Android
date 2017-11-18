@@ -54,12 +54,9 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
     private val local = ArrayList<LocalAgendaPOJO>()
     private val remote = ArrayList<SuperAgenda>()
 
-    private var active: Boolean = false //avoid updating views if fragment is gone
-
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
-        active = true
         return inflater.inflate(R.layout.fragment_agenda, container, false)
     }
 
@@ -264,7 +261,6 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
     override fun onDetach() {
         super.onDetach()
         activity.toolbar.subtitle = ""
-        active = false
     }
 
 

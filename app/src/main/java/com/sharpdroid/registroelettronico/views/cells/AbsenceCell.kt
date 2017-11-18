@@ -13,9 +13,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class AbsenceCell(context: Context) : FrameLayout(context) {
-    var absence: Absence? = null
     private val longDateFormat = SimpleDateFormat("EEEE, d MMMM yyyy", Locale.ITALIAN)
-
 
     init {
         View.inflate(context, R.layout.adapter_absence, this)
