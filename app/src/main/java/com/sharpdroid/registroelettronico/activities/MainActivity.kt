@@ -126,7 +126,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                 println("SET VALUE " + it.event.id)
                 userDB.child("events").child(it.event.id.toString()).setValue(it.asMap()).addOnCompleteListener { t ->
                     println("SUCCESS " + it.event.id)
-                }.addOnFailureListener { err ->
+                }.addOnFailureListener { _ ->
                     println("FAIL " + it.event.id)
                 }
             }
