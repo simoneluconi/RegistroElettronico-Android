@@ -24,7 +24,7 @@ import com.sharpdroid.registroelettronico.utils.Account
  */
 class FragmentSettings : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
 
-    override fun onCreatePreferences(bundle: Bundle, s: String) {
+    override fun onCreatePreferences(bundle: Bundle?, s: String?) {
         //add xml
         addPreferencesFromResource(R.xml.preferences)
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
@@ -57,9 +57,7 @@ class FragmentSettings : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         findPreference("attribution").setOnPreferenceClickListener { _ ->
             val transaction = activity.supportFragmentManager.beginTransaction()
             transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.fragment_container, LibsBuilder().withUiListener(object : LibsConfiguration.LibsUIListener {
-                override fun preOnCreateView(view: View): View {
-                    return view
-                }
+                override fun preOnCreateView(view: View) = view
 
                 override fun postOnCreateView(view: View): View {
                     if (activity != null)
