@@ -99,21 +99,12 @@ class MarksView : CardView, PopupMenu.OnMenuItemClickListener {
 
     fun setSubject(subject: SubjectInfo?, media: Float) {
         subject?.let {
-            setLimitLines(it.target, media)
-            setTarget(it)
-        }
-    }
+            val pref = PreferenceManager.getDefaultSharedPreferences(mContext).getString("voto_obiettivo", "8")
+            val prefTarget = if (pref == "Auto") Math.ceil(media.toDouble()).toFloat() else pref.toFloat()
 
-    private fun setTarget(subject: SubjectInfo) {
-        val pref = PreferenceManager.getDefaultSharedPreferences(mContext).getString("voto_obiettivo", "8")
-        val prefTarget: Float?
-        prefTarget = if (pref == "Auto") {
-            -1f
-        } else {
-            java.lang.Float.parseFloat(pref)
+            setLimitLines(it.target, media)
+            adapter.setTarget(if (subject.target == 0f) prefTarget else subject.target)
         }
-        adapter.setTarget(if (subject.target == 0f) prefTarget else subject.target)
-        invalidate()
     }
 
     fun addAll(marks: List<Grade>) {
