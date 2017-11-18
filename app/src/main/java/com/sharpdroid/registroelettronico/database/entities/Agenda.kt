@@ -80,6 +80,7 @@ data class RemoteAgenda(
         @ColumnInfo(name = "IS_FULL_DAY") @Expose @SerializedName("isFullDay") var isFullDay: Boolean = false,
         @ColumnInfo(name = "NOTES") @Expose @SerializedName("notes") var notes: String = "",
         @ColumnInfo(name = "AUTHOR") @Expose @SerializedName("authorName") var author: String = "",
+        @ColumnInfo(name = "SUBJECT") @Expose @SerializedName("subjectDesc") var subject: String = "",
         @ColumnInfo(name = "PROFILE") var profile: Long = -1L
 ) {
     fun isTest(info: RemoteAgendaInfo?): Boolean {
