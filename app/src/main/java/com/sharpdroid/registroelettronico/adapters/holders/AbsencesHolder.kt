@@ -7,7 +7,6 @@ import android.widget.TextView
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.adapter_absence.view.*
 
-
 class AbsencesHolder(l: View) : RecyclerView.ViewHolder(l) {
     var date: TextView = l.date
     var hour: TextView = l.hour

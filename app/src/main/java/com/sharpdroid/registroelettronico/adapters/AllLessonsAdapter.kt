@@ -27,9 +27,8 @@ class AllLessonsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     @LayoutRes
-    override fun getItemViewType(position: Int): Int {
-        return if (types[position] is String) R.layout.adapter_header else R.layout.adapter_lessons_1
-    }
+    override fun getItemViewType(position: Int) =
+            if (types[position] is String) R.layout.adapter_header else R.layout.adapter_lessons_1
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is HeaderHolder) {

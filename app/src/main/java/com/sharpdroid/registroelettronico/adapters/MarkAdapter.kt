@@ -38,7 +38,8 @@ class MarkAdapter(private val mContext: Context) : RecyclerView.Adapter<MarkAdap
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = MarkHolder(LayoutInflater.from(mContext).inflate(R.layout.adapter_mark, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+            MarkHolder(LayoutInflater.from(mContext).inflate(R.layout.adapter_mark, parent, false))
 
     override fun onBindViewHolder(holder: MarkHolder, position: Int) {
 

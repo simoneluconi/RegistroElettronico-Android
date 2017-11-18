@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class CommunicationAdapter(fragmentCommunications: FragmentCommunications) : RecyclerView.Adapter<CommunicationHolder>(), Filterable {
-    private val CVDataList = mutableListOf<Communication>()
+    private val data = mutableListOf<Communication>()
     private val filtered = mutableListOf<Communication>()
     private val formatter = SimpleDateFormat("d MMM", Locale.ITALIAN)
     private val listener: DownloadListener
@@ -21,13 +21,13 @@ class CommunicationAdapter(fragmentCommunications: FragmentCommunications) : Rec
     }
 
     fun addAll(list: Collection<Communication>) {
-        CVDataList.addAll(list)
+        data.addAll(list)
         filtered.addAll(list)
         notifyDataSetChanged()
     }
 
     fun clear() {
-        CVDataList.clear()
+        data.clear()
         filtered.clear()
         notifyDataSetChanged()
     }
@@ -52,11 +52,11 @@ class CommunicationAdapter(fragmentCommunications: FragmentCommunications) : Rec
             val filterResults = Filter.FilterResults()
 
             if (constraint.isNotBlank()) {
-                CVDataList.filterTo(list) {
+                data.filterTo(list) {
                     it.title.toLowerCase().contains(constraint.toString().toLowerCase())
                 }
             } else {
-                list.addAll(CVDataList)
+                list.addAll(data)
             }
 
             filterResults.values = list

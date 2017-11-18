@@ -19,7 +19,6 @@ import java.util.*
  */
 class NoteAdapter(private val mContext: Context) : RecyclerView.Adapter<NoteAdapter.NoteHolder>() {
     private val formatter = SimpleDateFormat("d MMM", Locale.ITALIAN)
-
     private val data = mutableListOf<Note>()
 
     fun addAll(note: Collection<Note>) {
@@ -32,7 +31,8 @@ class NoteAdapter(private val mContext: Context) : RecyclerView.Adapter<NoteAdap
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = NoteHolder(LayoutInflater.from(parent.context).inflate(R.layout.adapter_note, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+            NoteHolder(LayoutInflater.from(parent.context).inflate(R.layout.adapter_note, parent, false))
 
     override fun onBindViewHolder(h: NoteHolder, position: Int) {
         val nota = data[position]
@@ -50,7 +50,6 @@ class NoteAdapter(private val mContext: Context) : RecyclerView.Adapter<NoteAdap
     }
 
     override fun getItemCount() = data.size
-
 
     inner class NoteHolder(l: View) : RecyclerView.ViewHolder(l) {
         var teacher: TextView = l.teacher
