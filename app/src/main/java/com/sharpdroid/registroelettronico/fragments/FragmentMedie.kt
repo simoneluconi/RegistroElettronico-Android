@@ -78,6 +78,7 @@ class FragmentMedie : Fragment() {
 
             if (acc > 0 && viewModel.selected == periodo) {
                 snackbar.setText(getSnackBarMessage(acc / count, classe))
+                snackbar.duration = Snackbar.LENGTH_LONG
                 snackbar.show()
             }
         })
