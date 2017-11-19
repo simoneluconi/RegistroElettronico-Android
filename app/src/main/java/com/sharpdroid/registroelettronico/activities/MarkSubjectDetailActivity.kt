@@ -35,7 +35,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_mark_subject_detail.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.fragment_imposta_obiettivo.view.*
-import kotlinx.android.synthetic.main.view_dialog_add_grade.*
+import kotlinx.android.synthetic.main.view_dialog_add_grade.view.*
 import java.util.*
 
 // DONE: 03/12/2016 Dettagli (nome, aula, prof, ora, note, colore)
@@ -219,8 +219,8 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
         val view = LayoutInflater.from(this).inflate(R.layout.view_dialog_add_grade, null)
         val grade = LocalGrade(0f, "", viewModel.subjectInfo?.value?.subject?.id ?: 0, p, "Generale", Account.with(this).user, 0)
 
-        voto.setSelection(resources.getStringArray(R.array.marks_list).size / 2)
-        voto.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        view.voto?.setSelection(resources.getStringArray(R.array.marks_list).size / 2)
+        view.voto?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(p0: AdapterView<*>?) {
             }
 
