@@ -115,7 +115,9 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
             Answers.getInstance().logContentView(ContentViewEvent().putContentId("Materia").putContentType("Dettagli"))
 
         if (savedInstanceState != null && savedInstanceState["scrollY"] != null) {
-            nested_scroll_view.scrollY = savedInstanceState.getInt("scrollY")
+            nested_scroll_view.postDelayed({
+                nested_scroll_view.scrollY = savedInstanceState.getInt("scrollY")
+            }, 20)
         }
 
     }

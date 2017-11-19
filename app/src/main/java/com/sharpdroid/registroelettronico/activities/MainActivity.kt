@@ -438,7 +438,8 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             //fetchDataOfUser(this)
 
             //Update fragment
-            drawer?.setSelectionAtPosition(drawer?.currentSelectedPosition!!, true)
+            if (!current)
+                drawer?.setSelectionAtPosition(drawer?.currentSelectedPosition!!, true)
         }
         return false
     }

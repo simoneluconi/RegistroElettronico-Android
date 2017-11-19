@@ -140,7 +140,9 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
             download()
 
         if (savedInstanceState != null && savedInstanceState["scrollY"] != null) {
-            nested_scroll_view.scrollY = savedInstanceState.getInt("scrollY")
+            nested_scroll_view.postDelayed({
+                nested_scroll_view.scrollY = savedInstanceState.getInt("scrollY")
+            }, 20)
         }
 
         if (!BuildConfig.DEBUG)
