@@ -234,7 +234,7 @@ public class Metodi {
 
     public static String getFileNamefromHeaders(Headers headers) {
         String contentd = headers.get("Content-Disposition");
-        contentd = contentd.replace("attachment; filename=", "");
+        contentd = contentd != null ? contentd.replace("attachment; filename=", "") : "";
         contentd = contentd.replaceAll("\"", "");
         contentd = contentd.trim();
         return contentd;

@@ -16,8 +16,11 @@ import com.mikepenz.aboutlibraries.LibsBuilder
 import com.mikepenz.aboutlibraries.LibsConfiguration
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
+import com.sharpdroid.registroelettronico.database.entities.Profile
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
+import io.reactivex.Completable
+import io.reactivex.schedulers.Schedulers
 
 /**
  * shows the settings option for choosing the movie categories in ListPreference.
@@ -27,7 +30,7 @@ class FragmentSettings : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     override fun onCreatePreferences(bundle: Bundle?, s: String?) {
         //add xml
         addPreferencesFromResource(R.xml.preferences)
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
         onSharedPreferenceChanged(sharedPreferences, "voto_obiettivo")
         onSharedPreferenceChanged(sharedPreferences, "drawer_to_open")
@@ -51,6 +54,18 @@ class FragmentSettings : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             val transaction = activity.supportFragmentManager.beginTransaction()
             transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.fragment_container, FragmentCredits()).addToBackStack(null)
             transaction.commit()
+            true
+        }
+
+        findPreference("classe").setOnPreferenceClickListener { preference ->
+            Completable.fromAction {
+                val profile = Profile.getProfile(context)
+                profile?.classe = (preference as ListPreference).value.orEmpty()
+
+                if (profile != null) {
+                    DatabaseHelper.database.profilesDao().update(profile)
+                }
+            }.subscribeOn(Schedulers.computation())
             true
         }
 

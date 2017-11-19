@@ -16,6 +16,14 @@
         android:summary="@string/start_tab_summary"
         android:title="@string/start_tab_title" />
 
+    <ListPreference
+        android:defaultValue="0"
+        android:entries="@array/classi_list"
+        android:entryValues="@array/classi_list"
+        android:key="classe"
+        android:summary="@string/class_summary"
+        android:title="@string/class_tab_title" />
+
     <Preference
         android:key="clear_archive"
         android:summary="@string/restore_archived_summary"
