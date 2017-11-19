@@ -13,11 +13,13 @@ import android.view.ViewGroup
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.MedieAdapter
 import com.sharpdroid.registroelettronico.database.entities.Average
+import com.sharpdroid.registroelettronico.database.entities.Profile
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.database.viewModels.GradesViewModel
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.ItemOffsetDecoration
 import com.sharpdroid.registroelettronico.utils.Metodi.CalculateScholasticCredits
+import com.sharpdroid.registroelettronico.utils.or
 import com.sharpdroid.registroelettronico.views.EmptyFragment
 import kotlinx.android.synthetic.main.coordinator_swipe_recycler_padding.*
 import kotlinx.android.synthetic.main.fragment_medie_pager.*
@@ -29,7 +31,9 @@ class FragmentMedie : Fragment() {
         MedieAdapter(context)
     }
     private var emptyHolder: EmptyFragment? = null
-    private lateinit var viewModel: GradesViewModel
+    private val viewModel by lazy {
+        ViewModelProviders.of(activity)[GradesViewModel::class.java]
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.coordinator_swipe_recycler_padding, container, false)
@@ -43,8 +47,6 @@ class FragmentMedie : Fragment() {
         relative.addView(emptyHolder)
 
         periodo = arguments.getInt("q")
-
-        viewModel = ViewModelProviders.of(activity)[GradesViewModel::class.java]
 
         with(recycler) {
             setHasFixedSize(true)
@@ -84,8 +86,8 @@ class FragmentMedie : Fragment() {
         })
     }
 
-    private fun getSnackBarMessage(average: Float, classDescription: String): String {
-        val maybeClass: String = classDescription.substring(0, 1)
+    private fun getSnackBarMessage(average: Float, classDescription: String?): String {
+        val maybeClass: String = classDescription?.substring(0, 1).or(Profile.getProfile(context)?.classe.orEmpty())
         val classe: Int? = maybeClass.toIntOrNull()
 
         return classe?.let {

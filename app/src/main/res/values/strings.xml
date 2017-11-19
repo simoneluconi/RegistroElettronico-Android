@@ -99,6 +99,9 @@
     <string name="start_tab_summary">Seleziona il tab di partenza</string>
     <string name="start_tab_title">Tab di partenza</string>
 
+    <string name="class_summary">Seleziona la classe del profilo corrente</string>
+    <string name="class_tab_title">Classe</string>
+
     <string name="restore_archived_summary">Ripristina tutti i dati archiviati dalla sezione agenda</string>
     <string name="restore_archived_title">Ripristina dati archiviati</string>
     <string name="ordina">Ordina</string>

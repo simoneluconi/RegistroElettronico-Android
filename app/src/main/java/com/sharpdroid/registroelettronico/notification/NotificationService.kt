@@ -200,7 +200,7 @@ class NotificationService : JobService() {
                 .setAutoCancel(true)
                 .setColor(ContextCompat.getColor(this, R.color.primary))
                 .setContentIntent(pi)
-                .setContentText(content.last())
+                .setContentText(content.first())
                 .setContentTitle(title)
                 .setNumber(content.size)
                 .setOnlyAlertOnce(true)

@@ -39,7 +39,9 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
     }
 
     private lateinit var pagerAdapter: PagerAdapter
-    private lateinit var viewModel: GradesViewModel
+    private val viewModel: GradesViewModel by lazy {
+        ViewModelProviders.of(activity)[GradesViewModel::class.java]
+    }
 
     private var pagerSelected: Boolean = false
 
@@ -103,8 +105,6 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
             view_pager.setCurrentItem(1, false)
             pagerSelected = true
         }
-
-        viewModel = ViewModelProviders.of(activity)[GradesViewModel::class.java]
 
         if (savedInstanceState == null) {
             download()

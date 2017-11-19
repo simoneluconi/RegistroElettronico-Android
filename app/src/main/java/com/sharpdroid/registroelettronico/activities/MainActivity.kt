@@ -124,11 +124,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         DatabaseHelper.database.eventsDao().getLocalAsSingle(profile).subscribe { localEvents ->
             localEvents.forEach {
                 println("SET VALUE " + it.event.id)
-                userDB.child("events").child(it.event.id.toString()).setValue(it.asMap()).addOnCompleteListener { _ ->
-                    println("SUCCESS " + it.event.id)
-                }.addOnFailureListener { _ ->
-                    println("FAIL " + it.event.id)
-                }
+                userDB.child("events").child(it.event.id.toString()).setValue(it.asMap())
             }
         }
 
