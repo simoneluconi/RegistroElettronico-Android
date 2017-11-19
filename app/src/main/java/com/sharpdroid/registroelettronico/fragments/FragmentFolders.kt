@@ -73,8 +73,7 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
         viewModel = ViewModelProviders.of(activity)[DidatticaViewModel::class.java]
 
         activity.title = getString(R.string.files)
-        recycler.setHasFixedSize(true)
-        recycler.layoutManager = LinearLayoutManager(activity)
+        recycler.layoutManager = LinearLayoutManager(context)
         recycler.itemAnimator = null
 
         mRVAdapter = FolderAdapter(this)
@@ -107,7 +106,7 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
     }
 
     private fun download() {
-        updateFolders(activity)
+        updateFolders(context)
     }
 
     override fun onDestroyView() {
