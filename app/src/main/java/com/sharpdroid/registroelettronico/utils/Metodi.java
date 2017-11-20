@@ -201,31 +201,19 @@ public class Metodi {
     }
 
     public static boolean writeResponseBodyToDisk(ResponseBody body, File file) {
-        try {
-            InputStream inputStream = null;
-            OutputStream outputStream = null;
-
-            try {
-                byte[] fileReader = new byte[4096];
-                inputStream = body.byteStream();
-                outputStream = new FileOutputStream(file);
-                while (true) {
-                    int read = inputStream.read(fileReader);
-                    if (read == -1)
-                        break;
-                    outputStream.write(fileReader, 0, read);
-                }
-                outputStream.flush();
-                return true;
-            } catch (IOException e) {
-                e.printStackTrace();
-                return false;
-            } finally {
-                if (inputStream != null)
-                    inputStream.close();
-                if (outputStream != null)
-                    outputStream.close();
+        try (
+                InputStream inputStream = body.byteStream();
+                OutputStream outputStream = new FileOutputStream(file);
+        ) {
+            byte[] fileReader = new byte[4096];
+            while (true) {
+                int read = inputStream.read(fileReader);
+                if (read == -1)
+                    break;
+                outputStream.write(fileReader, 0, read);
             }
+            outputStream.flush();
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
             return false;
