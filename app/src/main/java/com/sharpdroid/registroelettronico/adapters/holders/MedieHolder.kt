@@ -13,7 +13,7 @@ import com.sharpdroid.registroelettronico.database.entities.Average
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.utils.Metodi.getMediaColor
 import com.sharpdroid.registroelettronico.utils.Metodi.getMessaggioVoto
-import com.sharpdroid.registroelettronico.utils.Metodi.getPossibileSubjectTarget
+import com.sharpdroid.registroelettronico.utils.Metodi.getPossibleSubjectTarget
 import kotlinx.android.synthetic.main.adapter_medie_grid.view.*
 import java.util.*
 
@@ -38,7 +38,7 @@ class MedieHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
 
             if (target <= 0) {
                 target = if (globalTarget == "Auto") {
-                    getPossibileSubjectTarget((average.sum / average.count).toDouble()).toFloat()
+                    getPossibleSubjectTarget((average.sum / average.count).toDouble()).toFloat()
                 } else
                     globalTarget.toFloat()
 
