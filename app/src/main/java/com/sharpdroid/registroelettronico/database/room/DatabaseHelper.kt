@@ -28,6 +28,13 @@ object DatabaseHelper {
         Completable.fromAction({
             database = Room.databaseBuilder(context, RoomDB::class.java, "registro.db")
                     .allowMainThreadQueries()
+                    .addMigrations(object : Migration(1, 4) {
+                        override fun migrate(database: SupportSQLiteDatabase) {
+                            with(database) {
+                                execSQL("DROP TABLE IF EXISTS PROFILE")
+                            }
+                        }
+                    })
                     .addMigrations(object : Migration(4, 5) {
                         override fun migrate(database: SupportSQLiteDatabase) {
                             with(database) {
