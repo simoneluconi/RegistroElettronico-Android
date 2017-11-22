@@ -37,7 +37,7 @@ interface SpaggiariREST {
         fun getAgenda( @Path("eventCode") eventCode: String, @Path("begin") begin: String, @Path("end") end: String): Observable<List<Agenda>>
     */
     @GET("students/{studentId}/didactics/item/{fileId}")
-    fun getAttachmentFile(@Path("fileId") fileId: Long): Call<ResponseBody>
+    fun getAttachmentFile(@Path("fileId") fileId: Long): Observable<Response<ResponseBody>>
 
     @GET("students/{studentId}/didactics/item/{fileId}")
     fun getAttachmentUrl(@Path("fileId") fileId: Long): Observable<DownloadUrlAPI>
@@ -52,7 +52,7 @@ interface SpaggiariREST {
     fun getBachecaBlocking(): Observable<Response<CommunicationAPI>>
 
     @GET("students/{studentId}/noticeboard/attach/{eventCode}/{pubId}/101")
-    fun getBachecaAttachment(@Path("eventCode") eventCode: String, @Path("pubId") pubId: Long): Call<ResponseBody>
+    fun getBachecaAttachment(@Path("eventCode") eventCode: String, @Path("pubId") pubId: Long): Observable<Response<ResponseBody>>
 
     @POST("students/{studentId}/noticeboard/read/{eventCode}/{pubId}/101")
     fun readBacheca(@Path("eventCode") eventCode: String, @Path("pubId") pubId: Long): Observable<ReadResponse>

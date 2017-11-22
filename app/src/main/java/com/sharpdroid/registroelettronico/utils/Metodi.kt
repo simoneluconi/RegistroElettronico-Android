@@ -22,20 +22,16 @@ import com.sharpdroid.registroelettronico.api.v2.APIClient
 import com.sharpdroid.registroelettronico.database.entities.*
 import com.sharpdroid.registroelettronico.database.pojos.LocalAgendaPOJO
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.Headers
 import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.HttpException
-import retrofit2.Response
-import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.net.URLConnection
 import java.text.SimpleDateFormat
 import java.util.*
+import java.io.File as JavaFile
 
 object Metodi {
     var month_year = SimpleDateFormat("MMMM yyyy", Locale.ITALIAN)
@@ -148,8 +144,9 @@ object Metodi {
     fun getMediaColor(media: Float?, voto_obiettivo: Float) = getMarkColor(media!!, voto_obiettivo)
 
     fun getMarkColor(voto: Float, voto_obiettivo: Float): Int {
-        if (voto == 0f) return R.color.intro_blue
-        return if (voto >= voto_obiettivo)
+        return if (voto == 0f)
+            R.color.intro_blue
+        else if (voto >= voto_obiettivo)
             R.color.greenmaterial
         else if (voto < 5)
             R.color.redmaterial
@@ -159,18 +156,18 @@ object Metodi {
             R.color.lightgreenmaterial
     }
 
-    fun getPossibileSubjectTarget(media: Double): Int {
+    fun getPossibleSubjectTarget(media: Double): Int {
         return if (media < 6)
             6
         else {
-            val m = Math.ceil(media)
-            m.toInt()
+            Math.ceil(media).toInt()
         }
     }
 
-    fun writeResponseBodyToDisk(body: ResponseBody?, file: File): Boolean {
+    private fun writeResponseBodyToDisk(body: ResponseBody?, file: JavaFile): Boolean {
+        if (body == null) return false
         try {
-            body!!.byteStream().use { inputStream ->
+            body.byteStream().use { inputStream ->
                 FileOutputStream(file).use { outputStream ->
                     val fileReader = ByteArray(4096)
                     while (true) {
@@ -190,9 +187,9 @@ object Metodi {
 
     }
 
-    fun getFileNamefromHeaders(headers: Headers): String {
-        var contentd = headers.get("Content-Disposition")
-        contentd = if (contentd != null) contentd.replace("attachment; filename=", "") else ""
+    private fun getFileNameFromHeaders(headers: Headers): String {
+        var contentd = headers.get("Content-Disposition") ?: return ""
+        contentd = contentd.replace("attachment; filename=", "")
         contentd = contentd.replace("\"".toRegex(), "")
         contentd = contentd.trim { it <= ' ' }
         return contentd
@@ -211,8 +208,8 @@ object Metodi {
                 || title.contains("interrogazione scritta") || title.contains("prova ") || title.contains("test ") || title.endsWith("test") || title.contains("verifiche orali"))
     }
 
-    fun convertEvents(events: List<Any>): List<com.github.sundeepk.compactcalendarview.domain.Event> {
-        val list = ArrayList<com.github.sundeepk.compactcalendarview.domain.Event>()
+    fun convertEvents(events: List<Any>): List<Event> {
+        val list = mutableListOf<Event>()
         for (event in events) {
             if (event is SuperAgenda)
                 list.add(Event(if (event.test) Color.parseColor("#FF9800") else Color.WHITE, event.agenda.start.time))
@@ -236,9 +233,8 @@ object Metodi {
     }
 
     fun fetchDataOfUser(c: Context?) {
-        if (c == null) {
-            return
-        }
+        if (c == null) return
+
         val p = Profile.getProfile(c)
         updateSubjects(p)
         //updateLessons(p);
@@ -251,9 +247,8 @@ object Metodi {
     }
 
     fun updateMarks(c: Context?) {
-        if (c == null) {
-            return
-        }
+        if (c == null) return
+
         updateMarks(Profile.getProfile(c))
     }
 
@@ -261,27 +256,29 @@ object Metodi {
         if (p == null) return
 
         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_MARKS_START, null) }
-        APIClient.with(p).getGrades().subscribe({ gradeAPI ->
+        APIClient.with(p).getGrades().subscribe({
             DatabaseHelper.database.gradesDao().delete(p.id)
-            DatabaseHelper.database.gradesDao().insert(gradeAPI.getGrades(p))
+            DatabaseHelper.database.gradesDao().insert(it.getGrades(p))
             handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_MARKS_OK, null) }
-        }) { throwable ->
+        }) {
             handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_MARKS_KO, null) }
-            throwable.printStackTrace()
+            it.printStackTrace()
         }
     }
 
     fun updateSubjects(p: Profile?) {
         if (p == null) return
+
         handler.post {
             NotificationManager.instance.postNotificationName(EventType.UPDATE_SUBJECTS_START, null)
             NotificationManager.instance.postNotificationName(EventType.UPDATE_TEACHERS_START, null)
         }
-        APIClient.with(p).getSubjects().subscribeOn(AndroidSchedulers.mainThread()).subscribe({ subjectAPI ->
-            val allTeachers = ArrayList<Teacher>()
+
+        APIClient.with(p).getSubjects().subscribe({
+            val allTeachers = mutableListOf<Teacher>()
             DatabaseHelper.database.subjectsDao().deleteSubjects(p.id)
 
-            for (subject in subjectAPI.subjects) {
+            for (subject in it.subjects) {
                 allTeachers.addAll(subject.teachers)
                 for (t in subject.teachers) {
                     val obj = SubjectTeacher(subject.id, t.id, p.id)
@@ -291,62 +288,64 @@ object Metodi {
             }
 
             DatabaseHelper.database.subjectsDao().insert(allTeachers)
-            DatabaseHelper.database.subjectsDao().insert(subjectAPI.subjects)
+            DatabaseHelper.database.subjectsDao().insert(it.subjects)
 
             handler.post {
                 NotificationManager.instance.postNotificationName(EventType.UPDATE_SUBJECTS_OK, null)
                 NotificationManager.instance.postNotificationName(EventType.UPDATE_TEACHERS_OK, null)
             }
-        }) { throwable ->
-            handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_TEACHERS_KO, null) }
-            handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_SUBJECTS_KO, null) }
-            throwable.printStackTrace()
+        }) {
+            handler.post {
+                NotificationManager.instance.postNotificationName(EventType.UPDATE_TEACHERS_KO, null)
+                NotificationManager.instance.postNotificationName(EventType.UPDATE_SUBJECTS_KO, null)
+            }
+            it.printStackTrace()
         }
     }
 
     fun updateLessons(c: Context?) {
-        if (c == null) {
-            return
-        }
+        if (c == null) return
+
         updateLessons(Profile.getProfile(c))
     }
 
     fun updateLessons(p: Profile?) {
-        val dates = getStartEnd("yyyyMMdd")
         if (p == null) return
+
+        val dates = getStartEnd("yyyyMMdd")
         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_LESSONS_START, null) }
         APIClient.with(p).getLessons(dates[0], dates[1])
-                .subscribe({ l ->
+                .subscribe({
                     DatabaseHelper.database.lessonsDao().delete(p.id)
-                    DatabaseHelper.database.lessonsDao().insert(l.getLessons(p))
+                    DatabaseHelper.database.lessonsDao().insert(it.getLessons(p))
                     handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_LESSONS_OK, null) }
-                }) { throwable ->
+                }) {
                     handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_LESSONS_KO, null) }
-                    throwable.printStackTrace()
+                    it.printStackTrace()
                 }
     }
 
     fun updateFolders(c: Context?) {
-        if (c == null) {
-            return
-        }
+        if (c == null) return
+
         updateFolders(Profile.getProfile(c))
     }
 
     fun updateFolders(p: Profile?) {
         if (p == null) return
+
         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_FOLDERS_START, null) }
         APIClient.with(p).getDidactics()
                 .observeOn(Schedulers.computation())
-                .subscribe({ didacticAPI ->
-                    val files = LinkedList<com.sharpdroid.registroelettronico.database.entities.File>()
+                .subscribe({
+                    val files = mutableListOf<File>()
 
                     DatabaseHelper.database.foldersDao().deleteFiles(p.id)
                     DatabaseHelper.database.foldersDao().deleteFolders(p.id)
-                    DatabaseHelper.database.subjectsDao().insert(didacticAPI.didactics)
+                    DatabaseHelper.database.subjectsDao().insert(it.didactics)
 
                     //collect folders and files
-                    for (teacher in didacticAPI.didactics) {
+                    for (teacher in it.didactics) {
                         for (folder in teacher.folders) {
                             folder.teacher = teacher.id
                             folder.profile = p.id
@@ -379,72 +378,71 @@ object Metodi {
                                     .subscribe { downloadTXT -> DatabaseHelper.database.foldersDao().insert(FileInfo(f.objectId, downloadTXT.item.text)) }
                     }
                     handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_FOLDERS_OK, null) }
-                }) { throwable ->
+                }) {
                     handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_FOLDERS_KO, null) }
-                    throwable.printStackTrace()
+                    it.printStackTrace()
                 }
-
     }
 
     fun updateAgenda(c: Context?) {
-        if (c == null) {
-            return
-        }
+        if (c == null) return
+
         updateAgenda(Profile.getProfile(c))
     }
 
     fun updateAgenda(p: Profile?) {
-        val dates = getStartEnd("yyyyMMdd")
         if (p == null) return
+
+        val dates = getStartEnd("yyyyMMdd")
         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_AGENDA_START, null) }
         APIClient.with(p).getAgenda(dates[0], dates[1])
-                .subscribe({ agendaAPI ->
-                    val apiAgenda = agendaAPI.getAgenda(p)
+                .subscribe({
+                    val apiAgenda = it.getAgenda(p)
                     DatabaseHelper.database.eventsDao().deleteRemote(p.id)
                     DatabaseHelper.database.eventsDao().insert(apiAgenda)
                     handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_AGENDA_OK, null) }
-                }) { throwable ->
+                }) {
                     handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_AGENDA_KO, null) }
-                    throwable.printStackTrace()
+                    it.printStackTrace()
                 }
     }
 
     fun updateAbsence(c: Context?) {
-        if (c == null) {
-            return
-        }
+        if (c == null) return
+
         updateAbsence(Profile.getProfile(c))
     }
 
     fun updateAbsence(p: Profile?) {
         if (p == null) return
+
         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_ABSENCES_START, null) }
         APIClient.with(p).getAbsences()
-                .subscribe({ absenceAPI ->
+                .subscribe({
                     DatabaseHelper.database.absencesDao().delete(p.id)
-                    DatabaseHelper.database.absencesDao().insert(absenceAPI.getEvents(p))
+                    DatabaseHelper.database.absencesDao().insert(it.getEvents(p))
                     handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_ABSENCES_OK, null) }
-                }) { throwable ->
+                }) {
                     handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_ABSENCES_KO, null) }
-                    throwable.printStackTrace()
+                    it.printStackTrace()
                 }
     }
 
     fun updateBacheca(c: Context?) {
-        if (c == null) {
-            return
-        }
+        if (c == null) return
+
         updateBacheca(Profile.getProfile(c))
     }
 
     private fun updateBacheca(p: Profile?) {
         if (p == null) return
+
         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_BACHECA_START, null) }
         APIClient.with(p).getBacheca()
                 .observeOn(Schedulers.computation())
-                .subscribe({ communicationAPI ->
-                    val list = communicationAPI.getCommunications(p).toMutableList()
-                    val toRemove = ArrayList<Communication>()
+                .subscribe({
+                    val list = it.getCommunications(p).toMutableList()
+                    val toRemove = mutableListOf<Communication>()
 
                     for (communication in list) {
                         if (communication.cntStatus == "deleted") {
@@ -477,114 +475,105 @@ object Metodi {
                     DatabaseHelper.database.communicationsDao().delete(p.id)
                     DatabaseHelper.database.communicationsDao().insert(list)
                     handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_BACHECA_OK, null) }
-                }) { throwable ->
+                }) {
                     handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_BACHECA_KO, null) }
-                    throwable.printStackTrace()
+                    it.printStackTrace()
                 }
     }
 
     fun updateNote(c: Context?) {
-        if (c == null) {
-            return
-        }
+        if (c == null) return
+
         updateNote(Profile.getProfile(c))
     }
 
     fun updateNote(p: Profile?) {
         if (p == null) return
+
         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_NOTES_START, null) }
         APIClient.with(p).getNotes()
-                .subscribe({ notes ->
+                .subscribe({
                     DatabaseHelper.database.notesDao().delete(p.id)
-                    DatabaseHelper.database.notesDao().insert(notes.getNotes(p))
+                    DatabaseHelper.database.notesDao().insert(it.getNotes(p))
                     handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_NOTES_OK, null) }
-                }) { throwable ->
+                }) {
                     handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_NOTES_KO, null) }
-                    throwable.printStackTrace()
+                    it.printStackTrace()
                 }
     }
 
 
     fun downloadAttachment(c: Context?, communication: Communication) {
-        if (c == null) {
-            return
-        }
+        if (c == null) return
+
         downloadAttachment(c, communication, Profile.getProfile(c))
     }
 
     private fun downloadAttachment(c: Context?, communication: Communication, p: Profile?) {
         if (p == null || c == null) return
-        val dir = File(
+        val dir = JavaFile(
                 Environment.getExternalStorageDirectory().toString() +
-                        File.separator +
-                        "Registro Elettronico" + File.separator + "Circolari")
+                        JavaFile.separator +
+                        "Registro Elettronico" + JavaFile.separator + "Circolari")
 
         handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_START, arrayOf(communication.myId)) }
         APIClient.with(p).getBachecaAttachment(communication.evtCode, communication.id)
-                .enqueue(object : Callback<ResponseBody> {
-                    override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                        if (response.isSuccessful) {
-                            val filename = getFileNamefromHeaders(response.headers())
-                            if (!dir.exists()) dir.mkdirs()
-                            val fileDir = File(dir, filename)
+                .subscribe({
+                    if (it.isSuccessful) {
+                        val filename = getFileNameFromHeaders(it.headers())
+                        if (!dir.exists()) dir.mkdirs()
+                        val fileDir = JavaFile(dir, filename)
 
-                            var communicationInfo = DatabaseHelper.database.communicationsDao().getInfo(communication.myId)
-                            if (communicationInfo == null)
-                                communicationInfo = CommunicationInfo()
-                            communicationInfo.id = communication.myId
+                        var communicationInfo = DatabaseHelper.database.communicationsDao().getInfo(communication.myId)
+                        if (communicationInfo == null)
+                            communicationInfo = CommunicationInfo()
+                        communicationInfo.id = communication.myId
 
-                            if (fileDir.exists() || writeResponseBodyToDisk(response.body(), fileDir)) {
-                                communicationInfo.path = fileDir.absolutePath
-                                DatabaseHelper.database.communicationsDao().update(communicationInfo)
-                                handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_OK, arrayOf(communication.myId)) }
-                            } else {
-                                handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(communication.myId)) }
-                            }
+                        if (fileDir.exists() || writeResponseBodyToDisk(it.body(), fileDir)) {
+                            communicationInfo.path = fileDir.absolutePath
+                            DatabaseHelper.database.communicationsDao().update(communicationInfo)
+                            handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_OK, arrayOf(communication.myId)) }
                         } else {
                             handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(communication.myId)) }
                         }
-                    }
-
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                        t.printStackTrace()
+                    } else {
                         handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(communication.myId)) }
                     }
+                }, {
+                    handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(communication.myId)) }
+                    it.printStackTrace()
                 })
     }
 
-    fun downloadFile(f: com.sharpdroid.registroelettronico.database.entities.File, p: Profile?) {
+    fun downloadFile(f: File, p: Profile?) {
         if (p == null) return
 
-        val dir = File(
+        val dir = JavaFile(
                 Environment.getExternalStorageDirectory().toString() +
-                        File.separator +
-                        "Registro Elettronico" + File.separator + "Didattica")
+                        JavaFile.separator +
+                        "Registro Elettronico" + JavaFile.separator + "Didattica")
 
         handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_START, arrayOf(f.objectId)) }
         APIClient.with(p).getAttachmentFile(f.id.toInt().toLong())
-                .enqueue(object : Callback<ResponseBody> {
-                    override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                        if (response.isSuccessful) {
-                            val filename = getFileNamefromHeaders(response.headers())
-                            if (!dir.exists()) dir.mkdirs()
-                            val fileDir = File(dir, filename)
+                .subscribe({
+                    if (it.isSuccessful) {
+                        val filename = getFileNameFromHeaders(it.headers())
+                        if (!dir.exists()) dir.mkdirs()
+                        val fileDir = JavaFile(dir, filename)
 
-                            val info = FileInfo(f.objectId, fileDir.absolutePath)
-                            val id = DatabaseHelper.database.foldersDao().insert(info)
-                            if (id > 0 && writeResponseBodyToDisk(response.body(), fileDir))
-                                handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_OK, arrayOf(f.objectId)) }
-                            else
-                                handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(f.objectId)) }
-                        } else {
+                        val info = FileInfo(f.objectId, fileDir.absolutePath)
+                        val id = DatabaseHelper.database.foldersDao().insert(info)
+                        if (id > 0 && writeResponseBodyToDisk(it.body(), fileDir))
+                            handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_OK, arrayOf(f.objectId)) }
+                        else
                             handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(f.objectId)) }
-                        }
-
-                    }
-
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                        t.printStackTrace()
+                    } else {
                         handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(f.objectId)) }
                     }
+
+                }, {
+                    it.printStackTrace()
+                    handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(f.objectId)) }
                 })
     }
 
@@ -622,7 +611,7 @@ object Metodi {
         }
     }
 
-    fun openFile(context: Context, file: File, bar: Snackbar) {
+    fun openFile(context: Context, file: JavaFile, bar: Snackbar) {
         val mime = URLConnection.guessContentTypeFromName(file.toString())
         val intent = Intent(Intent.ACTION_VIEW)
         intent.setDataAndType(FileProvider.getUriForFile(context, context.packageName + ".fileprovider", file), mime)
@@ -633,7 +622,6 @@ object Metodi {
         } catch (e: ActivityNotFoundException) {
             bar.show()
         }
-
     }
 
     fun openLink(context: Context, url: String, snackbar: Snackbar) {
