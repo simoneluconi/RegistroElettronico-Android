@@ -47,7 +47,9 @@ import com.sharpdroid.registroelettronico.database.entities.RemoteAgendaInfo
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.fragments.*
 import com.sharpdroid.registroelettronico.utils.Account
-import com.sharpdroid.registroelettronico.utils.Metodi.*
+import com.sharpdroid.registroelettronico.utils.Metodi.deleteUser
+import com.sharpdroid.registroelettronico.utils.Metodi.dp
+import com.sharpdroid.registroelettronico.utils.Metodi.updateSubjects
 import com.transitionseverywhere.ChangeText
 import com.transitionseverywhere.TransitionManager
 import kotlinx.android.synthetic.main.activity_main.*

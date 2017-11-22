@@ -153,9 +153,9 @@ class EditSubjectDetailsActivity : AppCompatActivity() {
             when (getItemViewType(position)) {
                 0 -> (holder.itemView as HeaderCell).setText(if (position == rowInfo) "Informazioni" else "Professori")
                 1 -> when (position) {
-                    rowTitle -> (holder.itemView as ValueDetailsCell).setTextAndValue(Metodi.capitalizeEach(subjectInfo.subjectInfo.getOrNull(0)?.description.or(subjectInfo.subject.description).or("Senza nome")), "Nome", true)
-                    rowNotes -> (holder.itemView as ValueDetailsCell).setTextAndValue(Metodi.capitalizeEach(subjectInfo.subjectInfo.getOrNull(0)?.details).or("Aggiungi dettagli"), "Dettagli", true)
-                    rowClassroom -> (holder.itemView as ValueDetailsCell).setTextAndValue(Metodi.capitalizeEach(subjectInfo.subjectInfo.getOrNull(0)?.classroom).or("Aggiungi aula"), "Aula", true)
+                    rowTitle -> (holder.itemView as ValueDetailsCell).setTextAndValue(Metodi.capitalizeEach(subjectInfo.subjectInfo[0].description.or(subjectInfo.subject.description).or("Senza nome")), "Nome", true)
+                    rowNotes -> (holder.itemView as ValueDetailsCell).setTextAndValue(Metodi.capitalizeEach(subjectInfo.subjectInfo[0].details).or("Aggiungi dettagli"), "Dettagli", true)
+                    rowClassroom -> (holder.itemView as ValueDetailsCell).setTextAndValue(Metodi.capitalizeEach(subjectInfo.subjectInfo[0].classroom).or("Aggiungi aula"), "Aula", true)
                     else -> (holder.itemView as ValueDetailsCell).setText(Metodi.capitalizeEach(teachers[position - rowTeachers - 1]), true)
                 }
             }

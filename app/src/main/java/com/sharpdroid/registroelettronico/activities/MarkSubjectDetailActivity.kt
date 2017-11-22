@@ -27,7 +27,7 @@ import com.sharpdroid.registroelettronico.database.pojos.SubjectPOJO
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.database.viewModels.SubjectDetailsViewModel
 import com.sharpdroid.registroelettronico.utils.Account
-import com.sharpdroid.registroelettronico.utils.Metodi.MessaggioVoto
+import com.sharpdroid.registroelettronico.utils.Metodi.getMessaggioVoto
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.utils.or
 import com.sharpdroid.registroelettronico.views.subjectDetails.HypotheticalView
@@ -185,7 +185,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
         }, View.OnClickListener { _ ->
             val alert = AlertDialog.Builder(this)
             alert.setTitle(getString(R.string.obiettivo_title))
-            alert.setMessage(MessaggioVoto(target.target, avg.avg(), avg.count))
+            alert.setMessage(getMessaggioVoto(target.target, avg.avg(), avg.count))
             alert.show()
         })
     }

@@ -10,7 +10,10 @@ import android.view.ViewGroup
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.MarkSubjectDetailActivity
 import com.sharpdroid.registroelettronico.database.entities.Average
-import com.sharpdroid.registroelettronico.utils.Metodi.*
+import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
+import com.sharpdroid.registroelettronico.utils.Metodi.getMediaColor
+import com.sharpdroid.registroelettronico.utils.Metodi.getMessaggioVoto
+import com.sharpdroid.registroelettronico.utils.Metodi.getPossibileSubjectTarget
 import kotlinx.android.synthetic.main.adapter_medie_grid.view.*
 import java.util.*
 
@@ -43,7 +46,7 @@ class MedieHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             itemView.custom_progressBar.setProgress(average.sum / average.count * 10)
             itemView.custom_progressBar.setColor(ContextCompat.getColor(context, getMediaColor(average.sum / average.count, target)))
 
-            itemView.descrizione.text = MessaggioVoto(target, average.sum / average.count, average.count)
+            itemView.descrizione.text = getMessaggioVoto(target, average.sum / average.count, average.count)
         } else {
             itemView.custom_progressBar.setProgress(100f)
             itemView.custom_progressBar.setColor(ContextCompat.getColor(context, R.color.intro_blue))

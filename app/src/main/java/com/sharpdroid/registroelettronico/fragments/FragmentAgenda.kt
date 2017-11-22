@@ -24,7 +24,11 @@ import com.sharpdroid.registroelettronico.database.viewModels.AgendaViewModel
 import com.sharpdroid.registroelettronico.fragments.bottomSheet.AgendaBS
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi
-import com.sharpdroid.registroelettronico.utils.Metodi.*
+import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
+import com.sharpdroid.registroelettronico.utils.Metodi.convertEvents
+import com.sharpdroid.registroelettronico.utils.Metodi.eventToString
+import com.sharpdroid.registroelettronico.utils.Metodi.isEventTest
+import com.sharpdroid.registroelettronico.utils.Metodi.updateAgenda
 import com.sharpdroid.registroelettronico.utils.add
 import com.transitionseverywhere.ChangeText
 import com.transitionseverywhere.TransitionManager
@@ -284,7 +288,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                 2 -> {
                     val sendIntent = Intent()
                     sendIntent.action = Intent.ACTION_SEND
-                    sendIntent.putExtra(Intent.EXTRA_TEXT, eventToString(e, ""))
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, eventToString(e))
                     sendIntent.type = "text/plain"
                     startActivity(Intent.createChooser(sendIntent, getString(R.string.share_with)))
                 }

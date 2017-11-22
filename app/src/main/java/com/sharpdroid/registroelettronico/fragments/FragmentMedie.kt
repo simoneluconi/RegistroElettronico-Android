@@ -18,7 +18,7 @@ import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.database.viewModels.GradesViewModel
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.ItemOffsetDecoration
-import com.sharpdroid.registroelettronico.utils.Metodi.CalculateScholasticCredits
+import com.sharpdroid.registroelettronico.utils.Metodi.calculateScholasticCredits
 import com.sharpdroid.registroelettronico.utils.or
 import com.sharpdroid.registroelettronico.views.EmptyFragment
 import kotlinx.android.synthetic.main.coordinator_swipe_recycler_padding.*
@@ -92,7 +92,7 @@ class FragmentMedie : Fragment() {
         val classe: Int? = maybeClass.toIntOrNull()
 
         return classe?.let {
-            String.format(Locale.getDefault(), "Media Totale: %.2f | Crediti: %2\$d + %3\$d", average, CalculateScholasticCredits(classe, average), 1)
+            String.format(Locale.getDefault(), "Media Totale: %.2f | Crediti: %2\$d + %3\$d", average, calculateScholasticCredits(classe, average), 1)
         } ?: "Media totale: " + String.format(Locale.getDefault(), "%.2f", average)
     }
 
