@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.ContentViewEvent
 import com.sharpdroid.registroelettronico.BuildConfig
-import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.holders.Holder
 import com.sharpdroid.registroelettronico.database.entities.Absence
@@ -22,7 +21,6 @@ import com.sharpdroid.registroelettronico.database.entities.Profile
 import com.sharpdroid.registroelettronico.database.pojos.RemoteAgendaPOJO
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
-import com.sharpdroid.registroelettronico.utils.EventType.*
 import com.sharpdroid.registroelettronico.utils.Metodi
 import com.sharpdroid.registroelettronico.utils.Metodi.dp
 import com.sharpdroid.registroelettronico.utils.add
@@ -34,14 +32,7 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import kotlinx.android.synthetic.main.fragment_today.*
 import java.util.*
 
-class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
-    override fun didReceiveNotification(code: Int, args: Array<in Any>) {
-        when (code) {
-            UPDATE_AGENDA_OK -> {
-            }
-        }
-    }
-
+class FragmentToday : Fragment() {
     private val absences = mutableListOf<Absence>()
     private val lessons = mutableListOf<Lesson>()
     private val remoteEvents = mutableListOf<RemoteAgendaPOJO>()
@@ -131,11 +122,6 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
             initializeEvents(Date().flat(), list)
         })
 
-        NotificationManager.instance.addObserver(this,
-                UPDATE_ABSENCES_KO, UPDATE_ABSENCES_OK, UPDATE_ABSENCES_START,
-                UPDATE_LESSONS_KO, UPDATE_LESSONS_OK, UPDATE_LESSONS_START,
-                UPDATE_AGENDA_KO, UPDATE_AGENDA_OK, UPDATE_AGENDA_START
-        )
         if (savedInstanceState == null)
             download()
 
@@ -202,15 +188,6 @@ class FragmentToday : Fragment(), NotificationManager.NotificationReceiver {
 
         week_card.visibility = if (weekAdapter.events.isNotEmpty()) View.VISIBLE else View.GONE
         textView4.visibility = if (weekAdapter.events.isNotEmpty()) View.VISIBLE else View.GONE
-    }
-
-    override fun onStop() {
-        super.onStop()
-        NotificationManager.instance.removeObserver(this,
-                UPDATE_ABSENCES_KO, UPDATE_ABSENCES_OK, UPDATE_ABSENCES_START,
-                UPDATE_LESSONS_KO, UPDATE_LESSONS_OK, UPDATE_LESSONS_START,
-                UPDATE_AGENDA_KO, UPDATE_AGENDA_OK, UPDATE_AGENDA_START
-        )
     }
 
     inner class AbsencesAdapter : RecyclerView.Adapter<Holder>() {

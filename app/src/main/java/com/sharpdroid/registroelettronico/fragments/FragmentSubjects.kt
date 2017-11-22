@@ -1,6 +1,5 @@
 package com.sharpdroid.registroelettronico.fragments
 
-
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
@@ -15,7 +14,6 @@ import android.widget.FrameLayout
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.ContentViewEvent
 import com.sharpdroid.registroelettronico.BuildConfig
-import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.EditSubjectDetailsActivity
 import com.sharpdroid.registroelettronico.adapters.SubjectsAdapter
@@ -26,7 +24,6 @@ import com.sharpdroid.registroelettronico.database.pojos.SubjectWithLessons
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.database.viewModels.LessonsViewModel
 import com.sharpdroid.registroelettronico.utils.Account
-import com.sharpdroid.registroelettronico.utils.EventType
 import com.sharpdroid.registroelettronico.utils.Metodi.updateLessons
 import com.sharpdroid.registroelettronico.utils.Metodi.updateSubjects
 import com.sharpdroid.registroelettronico.views.EmptyFragment
@@ -37,20 +34,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_lessons.*
 
-class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, NotificationManager.NotificationReceiver, SearchView.OnQueryTextListener, SearchView.OnCloseListener {
+class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener {
     lateinit var adapter: SubjectsAdapter
     private lateinit var searchAdapter: SearchAdapter
     private lateinit var emptyHolder: EmptyFragment
     private lateinit var viewModel: LessonsViewModel
     private var queryDisposable: Disposable? = null
     private var querying = false
-
-    override fun didReceiveNotification(code: Int, args: Array<in Any>) {
-        when (code) {
-            EventType.UPDATE_SUBJECTS_OK -> {
-            }
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -64,7 +54,6 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        NotificationManager.instance.addObserver(this, EventType.UPDATE_SUBJECTS_START, EventType.UPDATE_SUBJECTS_OK, EventType.UPDATE_SUBJECTS_KO)
 
         setHasOptionsMenu(true)
 
@@ -167,11 +156,6 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, Notificati
 
     override fun onSubjectLongClick(subject: SubjectWithLessons) {
         startActivity(Intent(activity, EditSubjectDetailsActivity::class.java).putExtra("code", subject.subject.id))
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        NotificationManager.instance.removeObserver(this, EventType.UPDATE_SUBJECTS_START, EventType.UPDATE_SUBJECTS_OK, EventType.UPDATE_SUBJECTS_KO)
     }
 
     inner class SearchAdapter : RecyclerView.Adapter<Holder>() {

@@ -31,7 +31,7 @@ import java.io.File
 class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener, NotificationManager.NotificationReceiver, CommunicationAdapter.DownloadListener {
     lateinit private var snackbar: Snackbar
 
-    override fun didReceiveNotification(code: Int, args: Array<in Any>) {
+    override fun didReceiveNotification(code: EventType, args: Array<in Any>) {
         snackbar = Snackbar.make(coordinator_layout, R.string.download_in_corso,
                 Snackbar.LENGTH_INDEFINITE)
         when (code) {
@@ -61,8 +61,9 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
                     show()
                 }
             }
+            else -> { // Ignore
+            }
         }
-
     }
 
     lateinit private var mRVAdapter: CommunicationAdapter
