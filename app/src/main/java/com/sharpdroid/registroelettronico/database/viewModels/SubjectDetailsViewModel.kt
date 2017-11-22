@@ -11,9 +11,9 @@ import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import io.reactivex.Flowable
 
 class SubjectDetailsViewModel : ViewModel() {
-    var averages: LiveData<List<AverageType>>? = null
-    var grades: LiveData<List<Grade>>? = null
-    var localGrades: Flowable<List<LocalGrade>>? = null
+    private var averages: LiveData<List<AverageType>>? = null
+    private var grades: LiveData<List<Grade>>? = null
+    private var localGrades: Flowable<List<LocalGrade>>? = null
     var subjectInfo: LiveData<SubjectPOJO>? = null
     var animateTarget = MutableLiveData<Boolean>()
     var animateLocalMarks = MutableLiveData<Boolean>()
