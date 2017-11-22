@@ -29,7 +29,7 @@ import kotlinx.android.synthetic.main.coordinator_swipe_recycler.*
 import kotlinx.android.synthetic.main.coordinator_swipe_recycler.view.*
 
 class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, FolderAdapter.Listener, NotificationManager.NotificationReceiver {
-    override fun didReceiveNotification(code: Int, args: Array<in Any>) {
+    override fun didReceiveNotification(code: EventType, args: Array<in Any>) {
         when (code) {
             EventType.UPDATE_FOLDERS_START -> {
                 if (!swiperefresh.isRefreshing) swiperefresh.isRefreshing = true
@@ -42,6 +42,8 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
             }
             EventType.UPDATE_FOLDERS_KO -> {
                 if (swiperefresh.isRefreshing) swiperefresh.isRefreshing = false
+            }
+            else -> { // Ignore
             }
         }
     }

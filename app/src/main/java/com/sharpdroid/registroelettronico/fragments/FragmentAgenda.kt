@@ -12,7 +12,6 @@ import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.ContentViewEvent
 import com.github.sundeepk.compactcalendarview.CompactCalendarView
 import com.sharpdroid.registroelettronico.BuildConfig
-import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.AddEventActivity
 import com.sharpdroid.registroelettronico.adapters.AgendaAdapter
@@ -24,7 +23,6 @@ import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.database.viewModels.AgendaViewModel
 import com.sharpdroid.registroelettronico.fragments.bottomSheet.AgendaBS
 import com.sharpdroid.registroelettronico.utils.Account
-import com.sharpdroid.registroelettronico.utils.EventType
 import com.sharpdroid.registroelettronico.utils.Metodi
 import com.sharpdroid.registroelettronico.utils.Metodi.*
 import com.sharpdroid.registroelettronico.utils.add
@@ -39,11 +37,7 @@ import java.util.*
 // DONE: 19/01/2017 Aggiungere eventi all'agenda
 // DONE: 19/01/2017 Aggiungere eventi dell'agenda nel calendario del telefono
 
-class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListener, AgendaAdapter.AgendaClickListener, AgendaBS.Listener, NotificationManager.NotificationReceiver {
-
-    override fun didReceiveNotification(code: Int, args: Array<in Any>) {
-    }
-
+class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListener, AgendaAdapter.AgendaClickListener, AgendaBS.Listener {
     private var month = SimpleDateFormat("MMMM", Locale.getDefault())
     private var year = SimpleDateFormat("yyyy", Locale.getDefault())
     internal var agenda = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
@@ -62,7 +56,6 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        NotificationManager.instance.addObserver(this, EventType.UPDATE_AGENDA_OK, EventType.UPDATE_AGENDA_KO, EventType.UPDATE_AGENDA_START)
 
         with(activity.calendar) {
             visibility = View.VISIBLE
@@ -162,11 +155,6 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         super.onResume()
         activity.calendar.visibility = View.VISIBLE
         setTitleSubtitle(mDate)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        NotificationManager.instance.removeObserver(this, EventType.UPDATE_AGENDA_OK, EventType.UPDATE_AGENDA_KO, EventType.UPDATE_AGENDA_START)
     }
 
     private fun prepareDate(predictNextDay: Boolean) {

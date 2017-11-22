@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.coordinator_swipe_recycler.*
 import kotlinx.android.synthetic.main.coordinator_swipe_recycler.view.*
 
 class FragmentAllAbsences : Fragment(), SwipeRefreshLayout.OnRefreshListener, NotificationManager.NotificationReceiver {
-    override fun didReceiveNotification(code: Int, args: Array<in Any>) {
+    override fun didReceiveNotification(code: EventType, args: Array<in Any>) {
         when (code) {
             EventType.UPDATE_ABSENCES_START -> {
                 if (!swiperefresh.isRefreshing) swiperefresh.isRefreshing = true
@@ -33,7 +33,8 @@ class FragmentAllAbsences : Fragment(), SwipeRefreshLayout.OnRefreshListener, No
             EventType.UPDATE_ABSENCES_KO -> {
                 load()
                 if (swiperefresh.isRefreshing) swiperefresh.isRefreshing = false
-
+            }
+            else -> { // Ignore
             }
         }
     }
