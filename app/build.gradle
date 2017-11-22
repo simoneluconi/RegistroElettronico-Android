@@ -28,8 +28,8 @@ android {
         applicationId "com.sharpdroid.registroelettronico"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 501
-        versionName "2.1.01"
+        versionCode 502
+        versionName "2.1.02"
 
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
@@ -178,8 +178,6 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-messaging:11.6.0'
     implementation 'com.firebase:firebase-jobdispatcher:0.8.4'
-
-    kapt 'com.jakewharton:butterknife-compiler:8.6.0'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
 
