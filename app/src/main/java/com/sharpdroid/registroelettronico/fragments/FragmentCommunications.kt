@@ -21,7 +21,10 @@ import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.database.viewModels.CommunicationViewModel
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.EventType
-import com.sharpdroid.registroelettronico.utils.Metodi.*
+import com.sharpdroid.registroelettronico.utils.Metodi.downloadAttachment
+import com.sharpdroid.registroelettronico.utils.Metodi.dp
+import com.sharpdroid.registroelettronico.utils.Metodi.openFile
+import com.sharpdroid.registroelettronico.utils.Metodi.updateBacheca
 import com.sharpdroid.registroelettronico.views.EmptyFragment
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import kotlinx.android.synthetic.main.coordinator_swipe_recycler.*
@@ -133,7 +136,6 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
             }
 
             builder.positiveText("OK")
-
             builder.show()
         }
     }

@@ -8,7 +8,7 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IProfile
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
-import com.sharpdroid.registroelettronico.utils.Metodi.AccountImage
+import com.sharpdroid.registroelettronico.utils.Metodi.getAccountImage
 import java.util.*
 
 @Entity(tableName = "PROFILE")
@@ -28,7 +28,7 @@ class Profile(
                 .withName(name)
                 .withEmail(ident)
                 .withNameShown(true)
-                .withIcon(AccountImage(name))
+                .withIcon(getAccountImage(name))
                 .withIdentifier(id)
     }
 
