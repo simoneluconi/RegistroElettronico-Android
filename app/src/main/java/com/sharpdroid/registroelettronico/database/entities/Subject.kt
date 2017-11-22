@@ -27,7 +27,7 @@ import java.io.Serializable
  */
 @Entity(tableName = "SUBJECT")
 class Subject(
-        @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("id")var id: Long = 0L,
+        @ColumnInfo(name = "ID") @PrimaryKey @Expose @SerializedName("id") var id: Long = 0L,
         @ColumnInfo(name = "DESCRIPTION") @Expose @SerializedName("description") var description: String = "",
         @Ignore @Expose @SerializedName("teachers") var teachers: List<Teacher> = emptyList()
 ) : Serializable
