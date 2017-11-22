@@ -22,7 +22,6 @@ import com.sharpdroid.registroelettronico.api.v2.APIClient
 import com.sharpdroid.registroelettronico.database.entities.*
 import com.sharpdroid.registroelettronico.database.pojos.LocalAgendaPOJO
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
-import io.reactivex.schedulers.Schedulers
 import okhttp3.Headers
 import okhttp3.ResponseBody
 import retrofit2.HttpException
@@ -336,7 +335,6 @@ object Metodi {
 
         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_FOLDERS_START, null) }
         APIClient.with(p).getDidactics()
-                .observeOn(Schedulers.computation())
                 .subscribe({
                     val files = mutableListOf<File>()
 
@@ -370,11 +368,9 @@ object Metodi {
                     for (f in DatabaseHelper.database.foldersDao().getNoFiles(p.id)) {
                         if (f.type == "link")
                             APIClient.with(p).getAttachmentUrl(f.id)
-                                    .observeOn(Schedulers.computation())
                                     .subscribe({ downloadURL -> DatabaseHelper.database.foldersDao().insert(FileInfo(f.objectId, downloadURL.item.link)) }, { it.printStackTrace() })
                         else
                             APIClient.with(p).getAttachmentTxt(f.id)
-                                    .observeOn(Schedulers.computation())
                                     .subscribe { downloadTXT -> DatabaseHelper.database.foldersDao().insert(FileInfo(f.objectId, downloadTXT.item.text)) }
                     }
                     handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_FOLDERS_OK, null) }
@@ -439,7 +435,6 @@ object Metodi {
 
         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_BACHECA_START, null) }
         APIClient.with(p).getBacheca()
-                .observeOn(Schedulers.computation())
                 .subscribe({
                     val list = it.getCommunications(p).toMutableList()
                     val toRemove = mutableListOf<Communication>()
@@ -455,7 +450,6 @@ object Metodi {
                             println("REQUEST - " + communication.title)
                             APIClient.with(p)
                                     .readBacheca(communication.evtCode, communication.id)
-                                    .observeOn(Schedulers.computation())
                                     .subscribe { readResponse ->
                                         communication.isRead = true
                                         DatabaseHelper.database.communicationsDao().insert(communication)

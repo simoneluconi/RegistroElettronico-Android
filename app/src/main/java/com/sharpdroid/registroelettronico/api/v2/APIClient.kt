@@ -89,12 +89,10 @@ class APIClient {
                 }
             }
 
-
             val okHttp = OkHttpClient.Builder()
                     .addInterceptor(loginInterceptor)
                     .addInterceptor(zorro)
                     .build()
-
 
             val retrofit = Retrofit.Builder()
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
@@ -106,7 +104,8 @@ class APIClient {
 
                     .baseUrl(API_URL)
                     .client(okHttp)
-                    .build().create(SpaggiariREST::class.java)
+                    .build()
+                    .create(SpaggiariREST::class.java)
             cache.put(profile?.id?.toInt() ?: 0, retrofit)
             return retrofit
         }
