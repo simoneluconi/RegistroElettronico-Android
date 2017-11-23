@@ -2,6 +2,7 @@ package com.sharpdroid.registroelettronico.views.cells
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.support.constraint.ConstraintLayout
 import android.support.v4.content.ContextCompat
@@ -45,7 +46,7 @@ class EventCell(context: Context, private val withDateDiff: Boolean) : FrameLayo
                 //date.text = dateFormat.format(event.agenda.start)
                 date.text = capitalizeEach(event.event.author, true)
                 content.text = spannableString
-                circleImageView2.circleBackgroundColor = ContextCompat.getColor(context, if (event.isTest()) R.color.deep_orange else R.color.light_green)
+                circleImageView2.setImageDrawable(ColorDrawable(ContextCompat.getColor(context, if (event.isTest()) R.color.deep_orange else R.color.light_green)))
             }
             is LocalAgenda -> {
                 val spannableString = SpannableString(event.title)
@@ -62,7 +63,7 @@ class EventCell(context: Context, private val withDateDiff: Boolean) : FrameLayo
 
                 content.text = spannableString
                 //notes.text = event.content.trim({ it <= ' ' })
-                circleImageView2.circleBackgroundColor = ContextCompat.getColor(context, if (event.type.equals("verifica", true)) R.color.deep_orange else R.color.light_green)
+                circleImageView2.setImageDrawable(ColorDrawable(ContextCompat.getColor(context, if (event.type.equals("verifica", true)) R.color.deep_orange else R.color.light_green)))
             }
             else -> throw IllegalStateException("Allowed data types: RemoteAgendaPOJO, LocalAgenda\nFound: '${event::class.java.canonicalName}'")
         }

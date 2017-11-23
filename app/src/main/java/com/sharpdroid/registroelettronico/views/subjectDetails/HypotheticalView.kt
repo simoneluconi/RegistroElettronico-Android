@@ -160,7 +160,7 @@ class HypotheticalView : CardView {
                 mark.text = grade.value_name
                 date.setText(R.string.generale)
                 content.text = "${grade.index + 1}° voto ipotetico"
-                color.circleBackgroundColor = ContextCompat.getColor(context, getMarkColor(grade.value, target))
+                color.setImageDrawable(ColorDrawable(ContextCompat.getColor(context, getMarkColor(grade.value, target))))
                 setOnClickListener { v ->
                     v.postDelayed({ delegate?.hypotheticalClickListener(grade, holder.adapterPosition) }, ViewConfiguration.getTapTimeout().toLong())
                 }
