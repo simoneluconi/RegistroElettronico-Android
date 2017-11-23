@@ -75,21 +75,13 @@ class AllAbsencesAdapter(private val mContext: Context) : RecyclerView.Adapter<R
     fun addAll(absences: Array<in Any>) {
         if (absences.isEmpty()) return
         val list = absences.sortedWith(kotlin.Comparator { t: Any?, t1: Any? ->
-            var val1: Date? = null
-            var val2: Date? = null
-            if (t is Absence)
-                val1 = t.date
-            else if (t is MyAbsence)
-                val1 = t.absence.date
-
-            if (t1 is Absence)
-                val2 = t1.date
-            else if (t1 is MyAbsence)
-                val2 = t1.absence.date
-            val1?.compareTo(val2!!) ?: 0
-
+            if (t is Absence && t1 is Absence) {
+                t.date.compareTo(t1.date)
+            } else {
+                -1
+            }
         }) //ASC
-        val hashmap = hashMapOf<String, MutableCollection<Any>>()
+        val hashmap = mutableMapOf<String, MutableCollection<Any>>()
 
         list.forEach {
             val date = (it as? Absence)?.date ?: ((it as? MyAbsence)?.absence?.date ?: Date())

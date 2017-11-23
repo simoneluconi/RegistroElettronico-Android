@@ -7,7 +7,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import java.util.*
-import kotlin.collections.HashMap
 
 /*
 {
@@ -54,71 +53,74 @@ class Absence(
         @ColumnInfo(name = "VALUE") @Expose @SerializedName("evtValue") var value: Int = 0
 ) {
     companion object {
-        fun getAbsences(p: Long): HashMap<Absence, Int> /*<ABSENCE, N_DAYS>*/ {
-            val map = HashMap<Absence, Int>()
+        fun getAbsences(p: Long): Map<Absence, Int> /*<ABSENCE, N_DAYS>*/ {
+            val map = mutableMapOf<Absence, Int>()
 
-            val absencesInSchoolDays = DatabaseHelper.database.absencesDao().getAbsences(p)
-            var startAbsence: Absence? = null
-            var days = 0
+            val absences = DatabaseHelper.database.absencesDao().getAbsences(p).sortedBy { it.date }
+            var start: Absence? = null
+            var days = 1
 
-            if (absencesInSchoolDays.size == 1) {
-                map.put(absencesInSchoolDays[0], 1)
+            if (absences.size == 1) {
+                map.put(absences[0], 1)
                 return map
             }
 
-            loop@ for (i in 0 until absencesInSchoolDays.size - 1) {
-                val timeDifference = (absencesInSchoolDays[i].date.time - absencesInSchoolDays[i + 1].date.time) / 3600000
-                if (startAbsence == null) {
-                    startAbsence = absencesInSchoolDays[i]
+            for (i in 0 until absences.size) {
+                if (start == null) {
+                    start = absences[i]
                     days = 1
                 }
-                val current = Calendar.getInstance()
-                val next = Calendar.getInstance() //previous in time (e.g. current=monday; next=saturday)
 
-                current.time = absencesInSchoolDays[i].date
-                next.time = absencesInSchoolDays[i + 1].date
+                val current = Calendar.getInstance()
+                val next = Calendar.getInstance()
+
+                var delta = 0L
+                if (absences.size > i + 1) {
+                    current.time = absences[i].date
+                    next.time = absences[i + 1].date
+
+                    delta = (next.time.time - current.time.time) / 3600000
+                }
 
                 when {
-                    timeDifference > 72 -> {
+                    delta > 72 -> {
                         //SPLIT absences
-                        map.put(startAbsence, days)
-                        startAbsence = null
-                        continue@loop
+                        map.put(start, days)
+                        start = null
                     }
-                    timeDifference == 72L -> {
+                    delta == 72L -> {
                         //is friday->monday CONTINUE else SPLIT
-                        if (current.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY && next.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
+                        if (current.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY &&
+                                next.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
                             days++
                         } else {
-                            map.put(startAbsence, days)
-                            startAbsence = null
-                            continue@loop
+                            map.put(start, days)
+                            start = null
                         }
                     }
-                    timeDifference == 48L -> {
+                    delta == 48L -> {
                         //is saturday->monday CONTINUE else SPLIT
-                        if (current.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY && next.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
+                        if (current.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY &&
+                                next.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
                             days++
                         } else {
-                            map.put(startAbsence, days)
-                            startAbsence = null
-                            continue@loop
+                            map.put(start, days)
+                            start = null
                         }
                     }
-                    timeDifference == 24L -> {
+                    delta == 24L -> {
                         //CONTINUE
                         days++
                     }
-                }
-                if (i == absencesInSchoolDays.size - 2) {
-                    map.put(startAbsence, days)
-                    startAbsence = null
+                    else -> {
+                        map.put(start, days)
+                        start = null
+                    }
                 }
             }
 
             return map
         }
-
     }
 }
 
