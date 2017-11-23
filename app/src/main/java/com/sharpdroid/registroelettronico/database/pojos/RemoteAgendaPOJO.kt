@@ -9,13 +9,9 @@ data class RemoteAgendaPOJO(
         @Embedded var event: RemoteAgenda,
         @Relation(parentColumn = "ID", entityColumn = "ID") var info: List<RemoteAgendaInfo>
 ) {
-    fun isTest(): Boolean {
-        return event.isTest(info.getOrNull(0))
-    }
+    fun isTest() = event.isTest(info.getOrNull(0))
 
-    fun isCompleted(): Boolean {
-        return info.getOrNull(0)?.completed == true
-    }
+    fun isCompleted() = info.getOrNull(0)?.completed == true
 
     constructor() : this(RemoteAgenda(), emptyList())
 }
