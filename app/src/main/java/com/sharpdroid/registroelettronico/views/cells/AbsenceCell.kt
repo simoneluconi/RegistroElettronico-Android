@@ -1,7 +1,6 @@
 package com.sharpdroid.registroelettronico.views.cells
 
 import android.content.Context
-import android.graphics.drawable.ColorDrawable
 import android.support.v4.content.ContextCompat
 import android.view.View
 import android.widget.FrameLayout
@@ -23,23 +22,22 @@ class AbsenceCell(context: Context) : FrameLayout(context) {
         when (absence.type) {
             "ABR0" -> {
                 hour.text = context.resources.getString(R.string.hours, "entrato", absence.hPos)
-                type_color.setImageDrawable(ColorDrawable(ContextCompat.getColor(context, R.color.orangematerial)))
+                type_color.circleBackgroundColor = ContextCompat.getColor(context, R.color.orangematerial)
                 type.text = "R"
-
             }
             "ABR1" -> {
                 hour.text = context.resources.getString(R.string.short_delay)
-                type_color.setImageDrawable(ColorDrawable(ContextCompat.getColor(context, R.color.orangematerial)))
+                type_color.circleBackgroundColor = ContextCompat.getColor(context, R.color.orangematerial)
                 type.text = "RB"
             }
             "ABU0" -> {
                 hour.text = context.resources.getString(R.string.hours, "uscito", absence.hPos)
-                type_color.setImageDrawable(ColorDrawable(ContextCompat.getColor(context, R.color.bluematerial)))
+                type_color.circleBackgroundColor = ContextCompat.getColor(context, R.color.bluematerial)
                 type.text = "U"
             }
             "ABA0" -> {
                 hour.text = context.resources.getQuantityString(R.plurals.days, 1, 1)
-                type_color.setImageDrawable(ColorDrawable(ContextCompat.getColor(context, R.color.redmaterial)))
+                type_color.circleBackgroundColor = ContextCompat.getColor(context, R.color.redmaterial)
                 type.text = "A"
             }
         }

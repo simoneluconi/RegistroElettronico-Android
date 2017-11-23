@@ -1,7 +1,6 @@
 package com.sharpdroid.registroelettronico.adapters
 
 import android.content.Context
-import android.graphics.drawable.ColorDrawable
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
@@ -44,7 +43,7 @@ class MarkAdapter(private val mContext: Context) : RecyclerView.Adapter<MarkAdap
     override fun onBindViewHolder(holder: MarkHolder, position: Int) {
 
         val mark = data[position]
-        holder.color.setImageDrawable(ColorDrawable(ContextCompat.getColor(mContext, getMarkColor(mark.mValue, target))))
+        holder.color.circleBackgroundColor = ContextCompat.getColor(mContext, getMarkColor(mark.mValue, target))
         holder.mark.text = mark.mStringValue
 
         holder.content.text = mark.mNotes.trim { it <= ' ' }
