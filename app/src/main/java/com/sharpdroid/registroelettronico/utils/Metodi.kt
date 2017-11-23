@@ -207,6 +207,12 @@ object Metodi {
                 || title.contains("interrogazione scritta") || title.contains("prova ") || title.contains("test ") || title.endsWith("test") || title.contains("verifiche orali"))
     }
 
+    fun isLessonTest(lesson: Lesson): Boolean {
+        val title = lesson.mType.toLowerCase()
+        return (title.contains("compito") || title.endsWith("compito") || title.endsWith("verifica") || title.contains("verifica ")
+                || title.contains("interrogazione scritta") || title.contains("prova ") || title.contains("test ") || title.endsWith("test") || title.contains("verifiche orali"))
+    }
+
     fun convertEvents(events: List<Any>): List<Event> {
         val list = mutableListOf<Event>()
         for (event in events) {
