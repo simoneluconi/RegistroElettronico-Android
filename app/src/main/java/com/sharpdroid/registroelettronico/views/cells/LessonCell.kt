@@ -1,6 +1,7 @@
 package com.sharpdroid.registroelettronico.views.cells
 
 import android.content.Context
+import android.graphics.drawable.ColorDrawable
 import android.support.v4.content.ContextCompat
 import android.view.View
 import android.widget.FrameLayout
@@ -25,7 +26,7 @@ class LessonCell(context: Context) : FrameLayout(context) {
             content.text = lesson.mArgument
         }
         val color = if (isLessonTest(lesson)) R.color.deep_orange else R.color.light_green
-        circleImageView2.circleBackgroundColor = ContextCompat.getColor(context, color)
+        circleImageView2.setImageDrawable(ColorDrawable(ContextCompat.getColor(context, color)))
         duration.text = "${lesson.mDuration}h"
         date.text = capitalizeEach(lesson.mSubjectDescription)
     }
