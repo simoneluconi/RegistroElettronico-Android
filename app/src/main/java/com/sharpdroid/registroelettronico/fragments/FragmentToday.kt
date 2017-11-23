@@ -89,10 +89,12 @@ class FragmentToday : Fragment() {
         tomorrow_empty.setTextAndDrawable("Giornata libera", R.drawable.ic_event_available)
         week_empty.setTextAndDrawable("Settimana libera", R.drawable.ic_event_available)
 
-        DatabaseHelper.database.lessonsDao().loadLessons(Account.with(context).user, Date().flat().time)
-                .observe(this, Observer<List<Lesson>> {
-                    initializeLessons(it ?: emptyList())
-                })
+        DatabaseHelper.database.lessonsDao().loadLessons(Account.with(context).user, Date().flat().time).observe(this, Observer {
+            lessons.clear()
+            lessons.addAll(it ?: emptyList())
+            lessons_empty.visibility = if (lessons.isEmpty()) View.VISIBLE else View.GONE
+            lessons_recycler.adapter.notifyDataSetChanged()
+        })
 
         DatabaseHelper.database.absencesDao().getAbsences(Date().flat(), Account.with(context).user).observe(this, Observer {
             absences.clear()
@@ -145,13 +147,6 @@ class FragmentToday : Fragment() {
         Metodi.updateAbsence(p)
         Metodi.updateLessons(p)
         Metodi.updateAgenda(p)
-    }
-
-    private fun initializeLessons(lesson: List<Lesson>) {
-        lessons.clear()
-        lessons.addAll(lesson)
-        lessons_empty.visibility = if (lessons.isEmpty()) View.VISIBLE else View.GONE
-        lessons_recycler.adapter.notifyDataSetChanged()
     }
 
     private fun initializeEvents(date: Date, e: List<Any>) {
