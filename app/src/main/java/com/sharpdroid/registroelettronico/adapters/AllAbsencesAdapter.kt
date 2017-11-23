@@ -1,7 +1,6 @@
 package com.sharpdroid.registroelettronico.adapters
 
 import android.content.Context
-import android.graphics.drawable.ColorDrawable
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -38,18 +37,18 @@ class AllAbsencesAdapter(private val mContext: Context) : RecyclerView.Adapter<R
                 when (entry.type) {
                     "ABR0" -> {
                         absencesHolder.hour.text = mContext.resources.getString(R.string.hours, "entrato", entry.hPos)
-                        absencesHolder.type_color.setImageDrawable(ColorDrawable(ContextCompat.getColor(mContext, R.color.orangematerial)))
+                        absencesHolder.type_color.circleBackgroundColor = ContextCompat.getColor(mContext, R.color.orangematerial)
                         absencesHolder.type_text.text = "R"
 
                     }
                     "ABR1" -> {
                         absencesHolder.hour.text = mContext.resources.getString(R.string.short_delay)
-                        absencesHolder.type_color.setImageDrawable(ColorDrawable(ContextCompat.getColor(mContext, R.color.orangematerial)))
+                        absencesHolder.type_color.circleBackgroundColor = ContextCompat.getColor(mContext, R.color.orangematerial)
                         absencesHolder.type_text.text = "RB"
                     }
                     "ABU0" -> {
                         absencesHolder.hour.text = mContext.resources.getString(R.string.hours, "uscito", entry.hPos)
-                        absencesHolder.type_color.setImageDrawable(ColorDrawable(ContextCompat.getColor(mContext, R.color.bluematerial)))
+                        absencesHolder.type_color.circleBackgroundColor = ContextCompat.getColor(mContext, R.color.bluematerial)
                         absencesHolder.type_text.text = "U"
                     }
                 }
@@ -62,7 +61,7 @@ class AllAbsencesAdapter(private val mContext: Context) : RecyclerView.Adapter<R
 
                 absencesHolder.date.text = capitalizeFirst(longDateFormat.format(entry.absence.date))
                 absencesHolder.hour.text = mContext.resources.getQuantityString(R.plurals.days, entry.days, entry.days)
-                absencesHolder.type_color.setImageDrawable(ColorDrawable(ContextCompat.getColor(mContext, R.color.redmaterial)))
+                absencesHolder.type_color.circleBackgroundColor = ContextCompat.getColor(mContext, R.color.redmaterial)
                 absencesHolder.type_text.text = "A"
             }
         }
