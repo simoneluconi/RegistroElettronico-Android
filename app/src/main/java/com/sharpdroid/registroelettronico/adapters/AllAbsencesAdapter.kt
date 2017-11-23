@@ -75,13 +75,26 @@ class AllAbsencesAdapter(private val mContext: Context) : RecyclerView.Adapter<R
     fun addAll(absences: Array<in Any>) {
         if (absences.isEmpty()) return
         val list = absences.sortedWith(kotlin.Comparator { t: Any?, t1: Any? ->
-            if (t is Absence && t1 is Absence) {
-                t.date.compareTo(t1.date)
-            } else {
-                -1
+            if (t is MyAbsence && t1 is MyAbsence) {
+                // Already ordered
+                return@Comparator -1
             }
+
+            var val1: Date? = null
+            var val2: Date? = null
+            if (t is Absence)
+                val1 = t.date
+            else if (t is MyAbsence)
+                val1 = t.absence.date
+
+            if (t1 is Absence)
+                val2 = t1.date
+            else if (t1 is MyAbsence)
+                val2 = t1.absence.date
+
+            val1?.compareTo(val2!!) ?: 0
         }) //ASC
-        val hashmap = mutableMapOf<String, MutableCollection<Any>>()
+        val hashmap = hashMapOf<String, MutableCollection<Any>>()
 
         list.forEach {
             val date = (it as? Absence)?.date ?: ((it as? MyAbsence)?.absence?.date ?: Date())
@@ -90,15 +103,11 @@ class AllAbsencesAdapter(private val mContext: Context) : RecyclerView.Adapter<R
             hashmap.put(month_year.format(date), l)
         }
 
-        hashmap.toSortedMap(kotlin.Comparator { t: String, t1: String ->
-            month_year.parse(t).compareTo(month_year.parse(t1))
-        })
-
         val finalList = mutableListOf<Any>()
 
-        hashmap.keys.forEach {
-            finalList.add(it)
-            hashmap[it]?.toCollection(finalList)
+        hashmap.forEach {
+            finalList.add(it.key)
+            it.value.toCollection(finalList)
         }
 
         data.addAll(finalList)

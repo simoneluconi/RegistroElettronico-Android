@@ -65,14 +65,14 @@ class Absence(
                 return map
             }
 
+            val current = Calendar.getInstance()
+            val next = Calendar.getInstance()
+
             for (i in 0 until absences.size) {
                 if (start == null) {
                     start = absences[i]
                     days = 1
                 }
-
-                val current = Calendar.getInstance()
-                val next = Calendar.getInstance()
 
                 var delta = 0L
                 if (absences.size > i + 1) {
