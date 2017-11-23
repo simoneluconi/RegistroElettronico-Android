@@ -29,9 +29,11 @@ class FragmentAllAbsences : Fragment(), SwipeRefreshLayout.OnRefreshListener, No
             EventType.UPDATE_ABSENCES_START -> {
                 if (!swiperefresh.isRefreshing) swiperefresh.isRefreshing = true
             }
-            EventType.UPDATE_ABSENCES_OK,
-            EventType.UPDATE_ABSENCES_KO -> {
+            EventType.UPDATE_ABSENCES_OK -> {
                 load()
+                if (swiperefresh.isRefreshing) swiperefresh.isRefreshing = false
+            }
+            EventType.UPDATE_ABSENCES_KO -> {
                 if (swiperefresh.isRefreshing) swiperefresh.isRefreshing = false
             }
             else -> { // Ignore
