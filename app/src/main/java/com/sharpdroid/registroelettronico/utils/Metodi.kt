@@ -319,15 +319,14 @@ object Metodi {
 
         val dates = getStartEnd("yyyyMMdd")
         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_LESSONS_START, null) }
-        APIClient.with(p).getLessons(dates[0], dates[1])
-                .subscribe({
-                    DatabaseHelper.database.lessonsDao().delete(p.id)
-                    DatabaseHelper.database.lessonsDao().insert(it.getLessons(p))
-                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_LESSONS_OK, null) }
-                }) {
-                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_LESSONS_KO, null) }
-                    it.printStackTrace()
-                }
+        APIClient.with(p).getLessons(dates[0], dates[1]).subscribe({
+            DatabaseHelper.database.lessonsDao().delete(p.id)
+            DatabaseHelper.database.lessonsDao().insert(it.getLessons(p))
+            handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_LESSONS_OK, null) }
+        }) {
+            handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_LESSONS_KO, null) }
+            it.printStackTrace()
+        }
     }
 
     fun updateFolders(c: Context?) {
@@ -395,16 +394,15 @@ object Metodi {
 
         val dates = getStartEnd("yyyyMMdd")
         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_AGENDA_START, null) }
-        APIClient.with(p).getAgenda(dates[0], dates[1])
-                .subscribe({
-                    val apiAgenda = it.getAgenda(p)
-                    DatabaseHelper.database.eventsDao().deleteRemote(p.id)
-                    DatabaseHelper.database.eventsDao().insertRemote(apiAgenda)
-                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_AGENDA_OK, null) }
-                }) {
-                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_AGENDA_KO, null) }
-                    it.printStackTrace()
-                }
+        APIClient.with(p).getAgenda(dates[0], dates[1]).subscribe({
+            val apiAgenda = it.getAgenda(p)
+            DatabaseHelper.database.eventsDao().deleteRemote(p.id)
+            DatabaseHelper.database.eventsDao().insertRemote(apiAgenda)
+            handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_AGENDA_OK, null) }
+        }) {
+            handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_AGENDA_KO, null) }
+            it.printStackTrace()
+        }
     }
 
     fun updateAbsence(c: Context?) {
@@ -417,15 +415,14 @@ object Metodi {
         if (p == null) return
 
         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_ABSENCES_START, null) }
-        APIClient.with(p).getAbsences()
-                .subscribe({
-                    DatabaseHelper.database.absencesDao().delete(p.id)
-                    DatabaseHelper.database.absencesDao().insert(it.getEvents(p))
-                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_ABSENCES_OK, null) }
-                }) {
-                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_ABSENCES_KO, null) }
-                    it.printStackTrace()
-                }
+        APIClient.with(p).getAbsences().subscribe({
+            DatabaseHelper.database.absencesDao().delete(p.id)
+            DatabaseHelper.database.absencesDao().insert(it.getEvents(p))
+            handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_ABSENCES_OK, null) }
+        }) {
+            handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_ABSENCES_KO, null) }
+            it.printStackTrace()
+        }
     }
 
     fun updateBacheca(c: Context?) {
@@ -438,45 +435,42 @@ object Metodi {
         if (p == null) return
 
         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_BACHECA_START, null) }
-        APIClient.with(p).getBacheca()
-                .subscribe({
-                    val list = it.getCommunications(p).toMutableList()
-                    val toRemove = mutableListOf<Communication>()
+        APIClient.with(p).getBacheca().subscribe({
+            val list = it.getCommunications(p).toMutableList()
+            val toRemove = mutableListOf<Communication>()
 
-                    for (communication in list) {
-                        if (communication.cntStatus == "deleted") {
-                            toRemove.add(communication)
-                            continue
-                        }
-
-                        val info = DatabaseHelper.database.communicationsDao().getInfo(communication.myId)
-                        if (info == null || !communication.isRead || info.content.isEmpty()) {
-                            println("REQUEST - " + communication.title)
-                            APIClient.with(p)
-                                    .readBacheca(communication.evtCode, communication.id)
-                                    .subscribe { readResponse ->
-                                        communication.isRead = true
-                                        DatabaseHelper.database.communicationsDao().insert(communication)
-
-                                        val downloadedInfo = readResponse.item
-                                        downloadedInfo.id = communication.myId
-                                        downloadedInfo.content = if (downloadedInfo.content.isEmpty())
-                                            info?.content ?: ""
-                                        else
-                                            downloadedInfo.content
-                                        DatabaseHelper.database.communicationsDao().insert(downloadedInfo)
-                                    }
-                        }
-                    }
-                    list.removeAll(toRemove)
-
-                    DatabaseHelper.database.communicationsDao().delete(p.id)
-                    DatabaseHelper.database.communicationsDao().insert(list)
-                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_BACHECA_OK, null) }
-                }) {
-                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_BACHECA_KO, null) }
-                    it.printStackTrace()
+            for (communication in list) {
+                if (communication.cntStatus == "deleted") {
+                    toRemove.add(communication)
+                    continue
                 }
+
+                val info = DatabaseHelper.database.communicationsDao().getInfo(communication.myId)
+                if (info == null || !communication.isRead || info.content.isEmpty()) {
+                    println("REQUEST - " + communication.title)
+                    APIClient.with(p).readBacheca(communication.evtCode, communication.id).subscribe { readResponse ->
+                        communication.isRead = true
+                        DatabaseHelper.database.communicationsDao().insert(communication)
+
+                        val downloadedInfo = readResponse.item
+                        downloadedInfo.id = communication.myId
+                        downloadedInfo.content = if (downloadedInfo.content.isEmpty())
+                            info?.content ?: ""
+                        else
+                            downloadedInfo.content
+                        DatabaseHelper.database.communicationsDao().insert(downloadedInfo)
+                    }
+                }
+            }
+            list.removeAll(toRemove)
+
+            DatabaseHelper.database.communicationsDao().delete(p.id)
+            DatabaseHelper.database.communicationsDao().insert(list)
+            handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_BACHECA_OK, null) }
+        }) {
+            handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_BACHECA_KO, null) }
+            it.printStackTrace()
+        }
     }
 
     fun updateNote(c: Context?) {
@@ -489,15 +483,14 @@ object Metodi {
         if (p == null) return
 
         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_NOTES_START, null) }
-        APIClient.with(p).getNotes()
-                .subscribe({
-                    DatabaseHelper.database.notesDao().delete(p.id)
-                    DatabaseHelper.database.notesDao().insert(it.getNotes(p))
-                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_NOTES_OK, null) }
-                }) {
-                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_NOTES_KO, null) }
-                    it.printStackTrace()
-                }
+        APIClient.with(p).getNotes().subscribe({
+            DatabaseHelper.database.notesDao().delete(p.id)
+            DatabaseHelper.database.notesDao().insert(it.getNotes(p))
+            handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_NOTES_OK, null) }
+        }) {
+            handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_NOTES_KO, null) }
+            it.printStackTrace()
+        }
     }
 
 
@@ -515,32 +508,31 @@ object Metodi {
                         "Registro Elettronico" + JavaFile.separator + "Circolari")
 
         handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_START, arrayOf(communication.myId)) }
-        APIClient.with(p).getBachecaAttachment(communication.evtCode, communication.id)
-                .subscribe({
-                    if (it.isSuccessful) {
-                        val filename = getFileNameFromHeaders(it.headers())
-                        if (!dir.exists()) dir.mkdirs()
-                        val fileDir = JavaFile(dir, filename)
+        APIClient.with(p).getBachecaAttachment(communication.evtCode, communication.id).subscribe({
+            if (it.isSuccessful) {
+                val filename = getFileNameFromHeaders(it.headers())
+                if (!dir.exists()) dir.mkdirs()
+                val fileDir = JavaFile(dir, filename)
 
-                        var communicationInfo = DatabaseHelper.database.communicationsDao().getInfo(communication.myId)
-                        if (communicationInfo == null)
-                            communicationInfo = CommunicationInfo()
-                        communicationInfo.id = communication.myId
+                var communicationInfo = DatabaseHelper.database.communicationsDao().getInfo(communication.myId)
+                if (communicationInfo == null)
+                    communicationInfo = CommunicationInfo()
+                communicationInfo.id = communication.myId
 
-                        if (fileDir.exists() || writeResponseBodyToDisk(it.body(), fileDir)) {
-                            communicationInfo.path = fileDir.absolutePath
-                            DatabaseHelper.database.communicationsDao().update(communicationInfo)
-                            handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_OK, arrayOf(communication.myId)) }
-                        } else {
-                            handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(communication.myId)) }
-                        }
-                    } else {
-                        handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(communication.myId)) }
-                    }
-                }, {
+                if (fileDir.exists() || writeResponseBodyToDisk(it.body(), fileDir)) {
+                    communicationInfo.path = fileDir.absolutePath
+                    DatabaseHelper.database.communicationsDao().update(communicationInfo)
+                    handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_OK, arrayOf(communication.myId)) }
+                } else {
                     handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(communication.myId)) }
-                    it.printStackTrace()
-                })
+                }
+            } else {
+                handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(communication.myId)) }
+            }
+        }, {
+            handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(communication.myId)) }
+            it.printStackTrace()
+        })
     }
 
     fun downloadFile(f: File, p: Profile?) {
@@ -552,27 +544,26 @@ object Metodi {
                         "Registro Elettronico" + JavaFile.separator + "Didattica")
 
         handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_START, arrayOf(f.objectId)) }
-        APIClient.with(p).getAttachmentFile(f.id.toInt().toLong())
-                .subscribe({
-                    if (it.isSuccessful) {
-                        val filename = getFileNameFromHeaders(it.headers())
-                        if (!dir.exists()) dir.mkdirs()
-                        val fileDir = JavaFile(dir, filename)
+        APIClient.with(p).getAttachmentFile(f.id.toInt().toLong()).subscribe({
+            if (it.isSuccessful) {
+                val filename = getFileNameFromHeaders(it.headers())
+                if (!dir.exists()) dir.mkdirs()
+                val fileDir = JavaFile(dir, filename)
 
-                        val info = FileInfo(f.objectId, fileDir.absolutePath)
-                        val id = DatabaseHelper.database.foldersDao().insert(info)
-                        if (id > 0 && writeResponseBodyToDisk(it.body(), fileDir))
-                            handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_OK, arrayOf(f.objectId)) }
-                        else
-                            handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(f.objectId)) }
-                    } else {
-                        handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(f.objectId)) }
-                    }
-
-                }, {
-                    it.printStackTrace()
+                val info = FileInfo(f.objectId, fileDir.absolutePath)
+                val id = DatabaseHelper.database.foldersDao().insert(info)
+                if (id > 0 && writeResponseBodyToDisk(it.body(), fileDir))
+                    handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_OK, arrayOf(f.objectId)) }
+                else
                     handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(f.objectId)) }
-                })
+            } else {
+                handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(f.objectId)) }
+            }
+
+        }, {
+            it.printStackTrace()
+            handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(f.objectId)) }
+        })
     }
 
     fun getStartEnd(format: String): Array<String> {
