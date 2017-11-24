@@ -59,7 +59,7 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        NotificationManager().addObserver(this, EventType.DOWNLOAD_FILE_START, EventType.DOWNLOAD_FILE_OK, EventType.DOWNLOAD_FILE_KO)
+        NotificationManager.instance.addObserver(this, EventType.DOWNLOAD_FILE_START, EventType.DOWNLOAD_FILE_OK, EventType.DOWNLOAD_FILE_KO)
         mRVAdapter = FileAdapter(this)
 
         viewModel = ViewModelProviders.of(activity)[DidatticaViewModel::class.java]
@@ -108,6 +108,6 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
 
     override fun onDestroyView() {
         super.onDestroyView()
-        NotificationManager().removeObserver(this, EventType.DOWNLOAD_FILE_START, EventType.DOWNLOAD_FILE_OK, EventType.DOWNLOAD_FILE_KO)
+        NotificationManager.instance.removeObserver(this, EventType.DOWNLOAD_FILE_START, EventType.DOWNLOAD_FILE_OK, EventType.DOWNLOAD_FILE_KO)
     }
 }

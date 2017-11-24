@@ -47,4 +47,8 @@ class NotificationManager {
             }
         }
     }
+
+    companion object {
+        val instance = NotificationManager()
+    }
 }

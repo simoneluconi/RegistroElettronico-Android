@@ -53,7 +53,7 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        NotificationManager().addObserver(this, EventType.UPDATE_MARKS_OK, EventType.UPDATE_MARKS_START, EventType.UPDATE_MARKS_KO, EventType.UPDATE_PERIODS_START, EventType.UPDATE_PERIODS_OK, EventType.UPDATE_PERIODS_KO, EventType.UPDATE_SUBJECTS_OK)
+        NotificationManager.instance.addObserver(this, EventType.UPDATE_MARKS_OK, EventType.UPDATE_MARKS_START, EventType.UPDATE_MARKS_KO, EventType.UPDATE_PERIODS_START, EventType.UPDATE_PERIODS_OK, EventType.UPDATE_PERIODS_KO, EventType.UPDATE_SUBJECTS_OK)
 
         setHasOptionsMenu(true)
 
@@ -122,7 +122,7 @@ class FragmentMediePager : Fragment(), SwipeRefreshLayout.OnRefreshListener, Ord
 
     override fun onDestroyView() {
         super.onDestroyView()
-        NotificationManager().removeObserver(this, EventType.UPDATE_MARKS_OK, EventType.UPDATE_MARKS_START, EventType.UPDATE_MARKS_KO, EventType.UPDATE_PERIODS_START, EventType.UPDATE_PERIODS_OK, EventType.UPDATE_PERIODS_KO, EventType.UPDATE_SUBJECTS_OK)
+        NotificationManager.instance.removeObserver(this, EventType.UPDATE_MARKS_OK, EventType.UPDATE_MARKS_START, EventType.UPDATE_MARKS_KO, EventType.UPDATE_PERIODS_START, EventType.UPDATE_PERIODS_OK, EventType.UPDATE_PERIODS_KO, EventType.UPDATE_SUBJECTS_OK)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
