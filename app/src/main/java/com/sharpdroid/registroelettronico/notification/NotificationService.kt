@@ -17,7 +17,7 @@ import com.firebase.jobdispatcher.JobParameters
 import com.firebase.jobdispatcher.JobService
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.MainActivity
-import com.sharpdroid.registroelettronico.api.v2.APIClient
+import com.sharpdroid.registroelettronico.api.spiaggiari.v2.APIClient
 import com.sharpdroid.registroelettronico.database.entities.*
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account

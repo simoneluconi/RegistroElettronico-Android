@@ -1,12 +1,12 @@
-package com.sharpdroid.registroelettronico.api.v2
+package com.sharpdroid.registroelettronico.api.spiaggiari.v2
 
 import android.util.Log
 import android.util.SparseArray
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.sharpdroid.registroelettronico.Info.API_URL
-import com.sharpdroid.registroelettronico.api.v2.deserializer.DateDeserializer
-import com.sharpdroid.registroelettronico.api.v2.deserializer.LongDeserializer
+import com.sharpdroid.registroelettronico.api.spiaggiari.v2.deserializer.DateDeserializer
+import com.sharpdroid.registroelettronico.api.spiaggiari.v2.deserializer.LongDeserializer
 import com.sharpdroid.registroelettronico.database.entities.LoginRequest
 import com.sharpdroid.registroelettronico.database.entities.LoginResponse
 import com.sharpdroid.registroelettronico.database.entities.Profile
@@ -24,9 +24,9 @@ import java.util.*
 class APIClient {
 
     companion object {
-        private val cache = SparseArray<SpaggiariREST>()
+        private val cache = SparseArray<SpaggiariAPI>()
 
-        fun with(profile: Profile?): SpaggiariREST {
+        fun with(profile: Profile?): SpaggiariAPI {
             if (cache.get(profile?.id?.toInt() ?: 0, null) != null) return cache[profile?.id?.toInt() ?: 0]
 
             val loginInterceptor = Interceptor { chain ->
@@ -105,7 +105,7 @@ class APIClient {
                     .baseUrl(API_URL)
                     .client(okHttp)
                     .build()
-                    .create(SpaggiariREST::class.java)
+                    .create(SpaggiariAPI::class.java)
             cache.put(profile?.id?.toInt() ?: 0, retrofit)
             return retrofit
         }

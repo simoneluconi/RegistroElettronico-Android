@@ -1,6 +1,6 @@
-package com.sharpdroid.registroelettronico.api
+package com.sharpdroid.registroelettronico.api.spiaggiari
 
-object SpiaggiariAPI {
+object SpiaggiariConst {
     const val ORALE = "Orale"
     const val SCRITTO = "Scritto/Grafico"
     const val PRATICO = "Pratico"

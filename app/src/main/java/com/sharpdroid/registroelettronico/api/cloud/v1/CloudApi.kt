@@ -1,4 +1,4 @@
-package com.sharpdroid.registroelettronico.api
+package com.sharpdroid.registroelettronico.api.cloud.v1
 
 import com.sharpdroid.registroelettronico.database.entities.LocalAgenda
 import com.sharpdroid.registroelettronico.database.entities.RemoteAgendaInfo

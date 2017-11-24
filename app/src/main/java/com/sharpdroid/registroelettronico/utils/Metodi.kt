@@ -18,7 +18,7 @@ import android.widget.Toast
 import com.github.sundeepk.compactcalendarview.domain.Event
 import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
-import com.sharpdroid.registroelettronico.api.v2.APIClient
+import com.sharpdroid.registroelettronico.api.spiaggiari.v2.APIClient
 import com.sharpdroid.registroelettronico.database.entities.*
 import com.sharpdroid.registroelettronico.database.pojos.LocalAgendaPOJO
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
@@ -340,50 +340,48 @@ object Metodi {
         if (p == null) return
 
         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_FOLDERS_START, null) }
-        APIClient.with(p).getDidactics()
-                .subscribe({
-                    val files = mutableListOf<File>()
+        APIClient.with(p).getDidactics().subscribe({
+            val files = mutableListOf<File>()
 
-                    DatabaseHelper.database.foldersDao().deleteFiles(p.id)
-                    DatabaseHelper.database.foldersDao().deleteFolders(p.id)
-                    DatabaseHelper.database.subjectsDao().insert(it.didactics)
+            DatabaseHelper.database.foldersDao().deleteFiles(p.id)
+            DatabaseHelper.database.foldersDao().deleteFolders(p.id)
+            DatabaseHelper.database.subjectsDao().insert(it.didactics)
 
-                    //collect folders and files
-                    for (teacher in it.didactics) {
-                        for (folder in teacher.folders) {
-                            folder.teacher = teacher.id
-                            folder.profile = p.id
-                            if (folder.name == "Uncategorized")
-                                folder.name = "Altri materiali"
-                            folder.id = DatabaseHelper.database.foldersDao().insert(folder)
+            //collect folders and files
+            for (teacher in it.didactics) {
+                for (folder in teacher.folders) {
+                    folder.teacher = teacher.id
+                    folder.profile = p.id
+                    if (folder.name == "Uncategorized")
+                        folder.name = "Altri materiali"
+                    folder.id = DatabaseHelper.database.foldersDao().insert(folder)
 
-                            for (file in folder.files) {
-                                file.folder = folder.id
-                                file.teacher = teacher.id
-                                file.profile = p.id
-                                files.add(file)
-                            }
-                        }
-                        teacher.folders = emptyList()
+                    for (file in folder.files) {
+                        file.folder = folder.id
+                        file.teacher = teacher.id
+                        file.profile = p.id
+                        files.add(file)
                     }
-
-                    DatabaseHelper.database.foldersDao().insertFiles(files) //update otherwise will clean any additional info (path...)
-
-
-                    //Download informations if not file
-                    for (f in DatabaseHelper.database.foldersDao().getNoFiles(p.id)) {
-                        if (f.type == "link")
-                            APIClient.with(p).getAttachmentUrl(f.id)
-                                    .subscribe({ downloadURL -> DatabaseHelper.database.foldersDao().insert(FileInfo(f.objectId, downloadURL.item.link)) }, { it.printStackTrace() })
-                        else
-                            APIClient.with(p).getAttachmentTxt(f.id)
-                                    .subscribe { downloadTXT -> DatabaseHelper.database.foldersDao().insert(FileInfo(f.objectId, downloadTXT.item.text)) }
-                    }
-                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_FOLDERS_OK, null) }
-                }) {
-                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_FOLDERS_KO, null) }
-                    it.printStackTrace()
                 }
+                teacher.folders = emptyList()
+            }
+
+            DatabaseHelper.database.foldersDao().insertFiles(files) //update otherwise will clean any additional info (path...)
+
+            //Download informations if not file
+            for (f in DatabaseHelper.database.foldersDao().getNoFiles(p.id)) {
+                if (f.type == "link")
+                    APIClient.with(p).getAttachmentUrl(f.id)
+                            .subscribe({ downloadURL -> DatabaseHelper.database.foldersDao().insert(FileInfo(f.objectId, downloadURL.item.link)) }, { it.printStackTrace() })
+                else
+                    APIClient.with(p).getAttachmentTxt(f.id)
+                            .subscribe { downloadTXT -> DatabaseHelper.database.foldersDao().insert(FileInfo(f.objectId, downloadTXT.item.text)) }
+            }
+            handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_FOLDERS_OK, null) }
+        }) {
+            handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_FOLDERS_KO, null) }
+            it.printStackTrace()
+        }
     }
 
     fun updateAgenda(c: Context?) {

@@ -1,16 +1,15 @@
-package com.sharpdroid.registroelettronico.api.v2
+package com.sharpdroid.registroelettronico.api.spiaggiari.v2
 
 import com.sharpdroid.registroelettronico.database.entities.*
 import io.reactivex.Observable
 import okhttp3.ResponseBody
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 
-interface SpaggiariREST {
+interface SpaggiariAPI {
     @POST("auth/login")
     fun postLogin(@Body user: LoginRequest): Observable<LoginResponse>
 
