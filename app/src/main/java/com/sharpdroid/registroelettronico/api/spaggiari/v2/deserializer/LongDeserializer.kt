@@ -1,4 +1,4 @@
-package com.sharpdroid.registroelettronico.api.spiaggiari.v2.deserializer
+package com.sharpdroid.registroelettronico.api.spaggiari.v2.deserializer
 
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
