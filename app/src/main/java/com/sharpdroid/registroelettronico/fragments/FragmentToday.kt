@@ -38,7 +38,6 @@ class FragmentToday : Fragment() {
     private val remoteEvents = mutableListOf<RemoteAgendaPOJO>()
     private val localEvents = mutableListOf<LocalAgenda>()
 
-
     private val lessonsAdapter by lazy {
         LessonsAdapter()
     }
@@ -214,6 +213,5 @@ class FragmentToday : Fragment() {
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) = Holder(EventCell(context, withDateDiff))
 
         override fun getItemCount() = events.size
-
     }
 }
