@@ -73,7 +73,6 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, SearchView
         if (savedInstanceState == null)
             download()
 
-
         viewModel.getSubjectsWithLessons(Account.with(context).user).observe(this, Observer {
             if (it?.isNotEmpty() == true)
                 setAdapterData(it)
