@@ -28,24 +28,22 @@ interface AgendaDao {
     fun getTodayAtSchool(profile: Long): LiveData<List<LocalAgenda>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(event: LocalAgenda)
+    fun insertLocal(event: LocalAgenda)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertBulk(event: List<LocalAgenda>)
+    fun insertLocal(event: List<LocalAgenda>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(event: List<RemoteAgenda>)
+    fun insertRemote(event: List<RemoteAgenda>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(event: RemoteAgendaInfo)
-
+    fun insertRemoteInfo(event: RemoteAgendaInfo)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertInfos(event: List<RemoteAgendaInfo>)
+    fun insertRemoteInfo(event: List<RemoteAgendaInfo>)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun update(event: LocalAgenda): Int
-
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun update(event: RemoteAgenda): Int
@@ -62,18 +60,17 @@ interface AgendaDao {
     @Query("DELETE FROM REMOTE_AGENDA_INFO WHERE REMOTE_AGENDA_INFO.ID IN (SELECT REMOTE_AGENDA.ID FROM REMOTE_AGENDA WHERE REMOTE_AGENDA.PROFILE=:profile)")
     fun deleteRemoteInfo(profile: Long)
 
-
     @Query("DELETE FROM LOCAL_AGENDA WHERE PROFILE=:profile")
     fun deleteLocal(profile: Long)
 
     @Query("SELECT * FROM REMOTE_AGENDA_INFO WHERE ID=:id")
-    fun getInfo(id: Long): RemoteAgendaInfo?
+    fun getRemoteInfo(id: Long): RemoteAgendaInfo?
 
     @Query("SELECT REMOTE_AGENDA_INFO.* FROM REMOTE_AGENDA_INFO LEFT JOIN REMOTE_AGENDA ON REMOTE_AGENDA_INFO.ID=REMOTE_AGENDA.ID WHERE REMOTE_AGENDA.PROFILE=:profile")
-    fun getRemoteInfos(profile: Long): Single<List<RemoteAgendaInfo>>
+    fun getRemoteInfoAsSingle(profile: Long): Single<List<RemoteAgendaInfo>>
 
     @Query("SELECT * FROM REMOTE_AGENDA")
-    fun getAllRemote(): Single<List<RemoteAgenda>>
+    fun getAllRemoteAsSingle(): Single<List<RemoteAgenda>>
 
     @Query("UPDATE LOCAL_AGENDA SET ARCHIVED=0")
     fun setLocalNotArchived()

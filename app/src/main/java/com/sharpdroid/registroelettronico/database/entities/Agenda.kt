@@ -72,7 +72,7 @@ data class RemoteAgenda(
         return result
     }
 
-    fun getInfo() = DatabaseHelper.database.eventsDao().getInfo(id)
+    fun getInfo() = DatabaseHelper.database.eventsDao().getRemoteInfo(id)
 }
 
 class AgendaAPI(@Expose @SerializedName("agenda") val agenda: List<RemoteAgenda>) {

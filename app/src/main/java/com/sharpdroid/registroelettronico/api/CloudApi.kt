@@ -14,11 +14,11 @@ interface CloudApi {
     fun pullLocal(@Path("profile") profile: Long): Observable<List<LocalAgenda>>
 
     @GET("user/{profile}/remote")
-    fun pullRemote(@Path("profile") profile: Long): Observable<List<RemoteAgendaInfo>>
+    fun pullRemoteInfo(@Path("profile") profile: Long): Observable<List<RemoteAgendaInfo>>
 
     @POST("user/{profile}/local")
     fun pushLocal(@Path("profile") profile: Long, @Body data: List<LocalAgenda>): Observable<ResponseBody>
 
     @POST("user/{profile}/remote")
-    fun pushRemote(@Path("profile") profile: Long, @Body data: List<RemoteAgendaInfo>): Observable<ResponseBody>
+    fun pushRemoteInfo(@Path("profile") profile: Long, @Body data: List<RemoteAgendaInfo>): Observable<ResponseBody>
 }
