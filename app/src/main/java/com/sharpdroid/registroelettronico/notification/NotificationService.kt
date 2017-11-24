@@ -56,22 +56,22 @@ class NotificationService : JobService() {
         diff = getAgendaDiff(profile)
         if (diff.isNotEmpty())
             notificationsList.put(NotificationIDs.AGENGA, diff)
-        Log.d("NotificationService", "${diff.size} eventi")
+        Log.d("NotificationService", "${diff.size} nuovi eventi")
 
         diff = getVotiDiff(profile)
         if (diff.isNotEmpty())
             notificationsList.put(NotificationIDs.VOTI, diff)
-        Log.d("NotificationService", "${diff.size} voti")
+        Log.d("NotificationService", "${diff.size} nuovi voti")
 
         diff = getComunicazioniDiff(profile)
         if (diff.isNotEmpty())
             notificationsList.put(NotificationIDs.COMUNICAZIONI, diff)
-        Log.d("NotificationService", "${diff.size} comunicazioni")
+        Log.d("NotificationService", "${diff.size} nuovi comunicazioni")
 
         diff = getNoteDiff(profile)
         if (diff.isNotEmpty())
             notificationsList.put(NotificationIDs.NOTE, diff)
-        Log.d("NotificationService", "${diff.size} note")
+        Log.d("NotificationService", "${diff.size} nuovi note")
 
         notify(notificationsList, PreferenceManager.getDefaultSharedPreferences(this))
 
