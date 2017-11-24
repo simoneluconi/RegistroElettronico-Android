@@ -77,7 +77,13 @@ class Spaggiari(val profile: Profile?) {
                     .build()
 
             try {
-                return@Interceptor chain.proceed(request)
+                val res = chain.proceed(request)
+                if (res.isSuccessful) {
+                    Log.d("Spaggiari", "request successful")
+                } else {
+                    Log.d("Spaggiari", "request not successful ${res.code()} ${request.method()} ${request.url()}")
+                }
+                return@Interceptor res
             } catch (err: Error) {
                 return@Interceptor null
             }
