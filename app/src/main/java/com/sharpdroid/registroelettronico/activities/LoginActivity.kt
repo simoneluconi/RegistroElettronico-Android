@@ -67,90 +67,88 @@ class LoginActivity : AppCompatActivity() {
         login_btn.setText(R.string.caricamento)
 
         APIClient.with(null).postLogin(LoginRequest(mPassword, mEmail, ""))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ login ->
-                    if (login.choices != null) {
-                        val it = DatabaseHelper.database.profilesDao().profilesSync.iterator()
-                        while (it.hasNext()) {
-                            val profile = it.next()
-                            val toRemove = login.choices.filter { it.ident.substring(1, 8) == profile.id.toString() }
-                            //remove already logged in profiles
-                            login.choices.removeAll(toRemove)
-                        }
-
-                        if (login.choices.isNotEmpty()) {
-                            val checkedIdents = ArrayList<String>()
-                            val builder = MaterialDialog.Builder(this).title("Account multiplo").content("Seleziona gli account che vuoi importare").positiveText("OK").neutralText("Annulla")
-                                    .alwaysCallMultiChoiceCallback()
-                                    .dividerColor(Color.TRANSPARENT)
-                                    .adapter(LoginAdapter(login.choices, this@LoginActivity) { idents ->
-                                        checkedIdents.clear()
-                                        checkedIdents.addAll(idents)
-                                        println(checkedIdents)
-                                        Unit
-                                    }, LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false))
-                                    .onPositive { _, _ ->
-                                        for (ident in checkedIdents) {
-                                            loginWithIdent(mEmail, mPassword, ident)
-                                        }
-                                        if (!BuildConfig.DEBUG)
-                                            Answers.getInstance().logLogin(LoginEvent().putMethod("multiple"))
-                                    }
-                                    .canceledOnTouchOutside(false)
-                                    .onNeutral { _, _ ->
-                                        login_btn.setText(R.string.login)
-                                        mail.isEnabled = true
-                                        password.isEnabled = true
-                                        login_btn.isEnabled = true
-                                    }
-                            builder.show()
-                        } else {
-                            Toast.makeText(this, "Tutti gli account collegati alla mail sono già in uso", Toast.LENGTH_SHORT).show()
-                            super.onBackPressed()
-                        }
-                    } else {
-                        DatabaseHelper.database.profilesDao().insert(Profile(mEmail, login.firstName + " " + login.lastName, mPassword, "", login.ident!!.substring(1, 8).toLong(), login.token!!, login.expire!!, login.ident, false))
-                        Account.with(this).user = login.ident.substring(1, 8).toLong()
-                        fetchDataOfUser(this)
-
-                        PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("first_run", false).apply()
-                        login_btn.setText(R.string.login_riuscito)
-                        if (!BuildConfig.DEBUG)
-                            Answers.getInstance().logLogin(LoginEvent().putMethod("single"))
-                        setResult(Activity.RESULT_OK)
-                        finish()
-                    }
-                }) { error ->
-                    loginFeedback(error, this)
-
-                    login_btn.setText(R.string.login)
-                    mail.isEnabled = true
-                    password.isEnabled = true
-                    login_btn.isEnabled = true
+                .observeOn(AndroidSchedulers.mainThread()).subscribe({ login ->
+            if (login.choices != null) {
+                val it = DatabaseHelper.database.profilesDao().profilesSync.iterator()
+                while (it.hasNext()) {
+                    val profile = it.next()
+                    val toRemove = login.choices.filter { it.ident.substring(1, 8) == profile.id.toString() }
+                    //remove already logged in profiles
+                    login.choices.removeAll(toRemove)
                 }
+
+                if (login.choices.isNotEmpty()) {
+                    val checkedIdents = ArrayList<String>()
+                    val builder = MaterialDialog.Builder(this).title("Account multiplo").content("Seleziona gli account che vuoi importare").positiveText("OK").neutralText("Annulla")
+                            .alwaysCallMultiChoiceCallback()
+                            .dividerColor(Color.TRANSPARENT)
+                            .adapter(LoginAdapter(login.choices, this@LoginActivity) { idents ->
+                                checkedIdents.clear()
+                                checkedIdents.addAll(idents)
+                                println(checkedIdents)
+                                Unit
+                            }, LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false))
+                            .onPositive { _, _ ->
+                                for (ident in checkedIdents) {
+                                    loginWithIdent(mEmail, mPassword, ident)
+                                }
+                                if (!BuildConfig.DEBUG)
+                                    Answers.getInstance().logLogin(LoginEvent().putMethod("multiple"))
+                            }
+                            .canceledOnTouchOutside(false)
+                            .onNeutral { _, _ ->
+                                login_btn.setText(R.string.login)
+                                mail.isEnabled = true
+                                password.isEnabled = true
+                                login_btn.isEnabled = true
+                            }
+                    builder.show()
+                } else {
+                    Toast.makeText(this, "Tutti gli account collegati alla mail sono già in uso", Toast.LENGTH_SHORT).show()
+                    super.onBackPressed()
+                }
+            } else {
+                DatabaseHelper.database.profilesDao().insert(Profile(mEmail, login.firstName + " " + login.lastName, mPassword, "", login.ident!!.substring(1, 8).toLong(), login.token!!, login.expire!!, login.ident, false))
+                Account.with(this).user = login.ident.substring(1, 8).toLong()
+                fetchDataOfUser(this)
+
+                PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("first_run", false).apply()
+                login_btn.setText(R.string.login_riuscito)
+                if (!BuildConfig.DEBUG)
+                    Answers.getInstance().logLogin(LoginEvent().putMethod("single"))
+                setResult(Activity.RESULT_OK)
+                finish()
+            }
+        }) { error ->
+            loginFeedback(error, this)
+
+            login_btn.setText(R.string.login)
+            mail.isEnabled = true
+            password.isEnabled = true
+            login_btn.isEnabled = true
+        }
     }
 
     private fun loginWithIdent(email: String, password: String, ident: String) {
         val c = this
         APIClient.with(null).postLogin(LoginRequest(password, email, ident))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ t ->
-                    DatabaseHelper.database.profilesDao().insert(Profile(email, t.firstName + " " + t.lastName, password, "", t.ident!!.substring(1, 8).toLong(), t.token!!, t.expire!!, t.ident, true))
-                    Account.with(c).user = t.ident.substring(1, 8).toLong()
-                    fetchDataOfUser(c)
+                .observeOn(AndroidSchedulers.mainThread()).subscribe({ t ->
+            DatabaseHelper.database.profilesDao().insert(Profile(email, t.firstName + " " + t.lastName, password, "", t.ident!!.substring(1, 8).toLong(), t.token!!, t.expire!!, t.ident, true))
+            Account.with(c).user = t.ident.substring(1, 8).toLong()
+            fetchDataOfUser(c)
 
-                    PreferenceManager.getDefaultSharedPreferences(c).edit().putBoolean("first_run", false).apply()
-                    login_btn.setText(R.string.login_riuscito)
-                    setResult(Activity.RESULT_OK)
-                    finish()
-                }) { error ->
-                    loginFeedback(error, c)
+            PreferenceManager.getDefaultSharedPreferences(c).edit().putBoolean("first_run", false).apply()
+            login_btn.setText(R.string.login_riuscito)
+            setResult(Activity.RESULT_OK)
+            finish()
+        }) { error ->
+            loginFeedback(error, c)
 
-                    login_btn.setText(R.string.login)
-                    mail.isEnabled = true
-                    this.password.isEnabled = true
-                    login_btn.isEnabled = true
-                }
+            login_btn.setText(R.string.login)
+            mail.isEnabled = true
+            this.password.isEnabled = true
+            login_btn.isEnabled = true
+        }
     }
 
     override fun onBackPressed() {
