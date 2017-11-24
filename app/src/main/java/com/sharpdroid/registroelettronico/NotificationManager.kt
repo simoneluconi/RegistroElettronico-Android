@@ -6,7 +6,6 @@ import android.util.SparseArray
 import com.sharpdroid.registroelettronico.utils.EventType
 import java.util.*
 
-
 class NotificationManager {
     interface NotificationReceiver {
         fun didReceiveNotification(code: EventType, args: Array<in Any>)
@@ -21,7 +20,7 @@ class NotificationManager {
             rec.add(receiver)
             observers.put(it.ordinal, rec)
             if (BuildConfig.DEBUG)
-                Log.d("NOTIFICATION", "REGISTER $receiver FOR EVENT ${it.name}")
+                Log.d("NotificationManager", "registered for event ${it.name}")
         }
     }
 
@@ -30,7 +29,7 @@ class NotificationManager {
         events.forEach {
             observers[it.ordinal].remove(receiver)
             if (BuildConfig.DEBUG)
-                Log.d("NOTIFICATION", "UNREGISTER $receiver FOR EVENT ${it.name}")
+                Log.d("NotificationManager", "unregistered receiver for event ${it.name}")
         }
     }
 
@@ -38,7 +37,7 @@ class NotificationManager {
         checkLooper()
         observers[event.ordinal]?.forEach { it.didReceiveNotification(event, args ?: emptyArray()) }
         if (BuildConfig.DEBUG)
-            Log.d("NOTIFICATION", event.name)
+            Log.d("NotificationManager", event.name)
     }
 
     private fun checkLooper() {
@@ -47,9 +46,5 @@ class NotificationManager {
                 throw RuntimeException("postNotificationName allowed only from MAIN thread")
             }
         }
-    }
-
-    companion object {
-        val instance = NotificationManager()
     }
 }
