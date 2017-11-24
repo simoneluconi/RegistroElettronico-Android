@@ -3,7 +3,6 @@ package com.sharpdroid.registroelettronico.database.entities
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
-import com.google.firebase.database.DataSnapshot
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
@@ -15,46 +14,17 @@ class SuperAgenda(val agenda: RemoteAgenda, var completed: Boolean = false, var 
 
 @Entity(tableName = "LOCAL_AGENDA")
 class LocalAgenda(
-        @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "ID") var id: Long = 0L,
-        @ColumnInfo(name = "TITLE") var title: String = "",
-        @ColumnInfo(name = "CONTENT") var content: String = "",
-        @ColumnInfo(name = "TYPE") var type: String = "",
-        @ColumnInfo(name = "DAY") var day: Long = 0,
-        @ColumnInfo(name = "SUBJECT") var subject: Long = 0L,
-        @ColumnInfo(name = "TEACHER") var teacher: Long = 0L,
-        @ColumnInfo(name = "COMPLETED_DATE") var completed_date: Date? = Date(0),
-        @ColumnInfo(name = "PROFILE") var profile: Long = 0L,
-        @ColumnInfo(name = "ARCHIVED") var archived: Boolean = false
-) {
-
-    constructor(snap: DataSnapshot) : this(
-            snap.child("id").getValue(Long::class.java) ?: 0,
-            snap.child("title").getValue(String::class.java).orEmpty(),
-            snap.child("content").getValue(String::class.java).orEmpty(),
-            snap.child("type").getValue(String::class.java).orEmpty(),
-            snap.child("day").getValue(Long::class.java) ?: 0,
-            snap.child("subject").getValue(Long::class.java) ?: 0,
-            snap.child("teacher").getValue(Long::class.java) ?: 0,
-            Date(snap.child("completed_date").getValue(Long::class.java) ?: 0),
-            snap.child("profile").getValue(Long::class.java) ?: 0,
-            snap.child("archived").getValue(Boolean::class.java) == true
-    )
-
-    fun asMap(): Map<String, Any> {
-        val map = mutableMapOf<String, Any>()
-        map.put("id", id)
-        map.put("title", title)
-        map.put("content", content)
-        map.put("type", type)
-        map.put("day", day)
-        map.put("subject", subject)
-        map.put("teacher", teacher)
-        map.put("completed_date", completed_date?.time ?: 0)
-        map.put("profile", profile)
-        map.put("archived", archived)
-        return map
-    }
-}
+        @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "ID") @SerializedName("id") var id: Long = 0L,
+        @ColumnInfo(name = "TITLE") @SerializedName("title") var title: String = "",
+        @ColumnInfo(name = "CONTENT") @SerializedName("content") var content: String = "",
+        @ColumnInfo(name = "TYPE") @SerializedName("type") var type: String = "",
+        @ColumnInfo(name = "DAY") @SerializedName("day") var day: Long = 0,
+        @ColumnInfo(name = "SUBJECT") @SerializedName("subject") var subject: Long = 0L,
+        @ColumnInfo(name = "TEACHER") @SerializedName("teacher") var teacher: Long = 0L,
+        @ColumnInfo(name = "COMPLETED_DATE") @SerializedName("completed_date") var completed_date: Long = 0L,
+        @ColumnInfo(name = "PROFILE") @SerializedName("profile") var profile: Long = 0L,
+        @ColumnInfo(name = "ARCHIVED") @SerializedName("archived") var archived: Boolean = false
+)
 
 /*
 {
@@ -115,24 +85,8 @@ class AgendaAPI(@Expose @SerializedName("agenda") val agenda: List<RemoteAgenda>
 
 @Entity(tableName = "REMOTE_AGENDA_INFO")
 class RemoteAgendaInfo(
-        @ColumnInfo(name = "ID") @PrimaryKey var id: Long = 0L,
-        @ColumnInfo(name = "COMPLETED") var completed: Boolean = false,
-        @ColumnInfo(name = "ARCHIVED") var archived: Boolean = false,
-        @ColumnInfo(name = "TEST") var test: Boolean = false
-) {
-    fun asMap(): Map<String, Any> {
-        val map = mutableMapOf<String, Any>()
-        map.put("id", id)
-        map.put("completed", completed)
-        map.put("archived", archived)
-        map.put("test", test)
-        return map
-    }
-
-    constructor(snap: DataSnapshot) : this(
-            snap.child("id").getValue(Long::class.java) ?: 0,
-            snap.child("completed").getValue(Boolean::class.java) == true,
-            snap.child("archived").getValue(Boolean::class.java) == true,
-            snap.child("test").getValue(Boolean::class.java) == true
-    )
-}
+        @ColumnInfo(name = "ID") @PrimaryKey @SerializedName("id") var id: Long = 0L,
+        @ColumnInfo(name = "COMPLETED") @SerializedName("completed") var completed: Boolean = false,
+        @ColumnInfo(name = "ARCHIVED") @SerializedName("archived") var archived: Boolean = false,
+        @ColumnInfo(name = "TEST") @SerializedName("test") var test: Boolean = false
+)

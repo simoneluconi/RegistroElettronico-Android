@@ -18,6 +18,4 @@ data class LocalAgendaPOJO(
         var subjectInfo: List<SubjectInfo>
 ) {
     constructor() : this(LocalAgenda(), emptyList(), emptyList(), emptyList())
-
-    fun asMap() = event.asMap()
 }

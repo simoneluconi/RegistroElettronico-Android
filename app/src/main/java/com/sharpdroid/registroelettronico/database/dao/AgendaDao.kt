@@ -22,7 +22,7 @@ interface AgendaDao {
     fun getLocal(profile: Long): LiveData<List<LocalAgendaPOJO>>
 
     @Query("SELECT * FROM LOCAL_AGENDA WHERE PROFILE = :profile")
-    fun getLocalAsSingle(profile: Long): Single<List<LocalAgendaPOJO>>
+    fun getLocalAsSingle(profile: Long): Single<List<LocalAgenda>>
 
     @Query("SELECT * FROM LOCAL_AGENDA WHERE PROFILE=:profile AND ARCHIVED=0")
     fun getTodayAtSchool(profile: Long): LiveData<List<LocalAgenda>>

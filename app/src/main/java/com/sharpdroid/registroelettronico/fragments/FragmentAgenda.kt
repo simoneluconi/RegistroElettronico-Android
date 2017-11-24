@@ -305,7 +305,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         } else if (e is LocalAgenda) { //no need to invalidate since cache is used only for RemoteAgenda
             when (position) {
                 0 -> {
-                    e.completed_date = if (e.completed_date?.time != 0L) Date(0) else Date()
+                    e.completed_date = if (e.completed_date != 0L) 0L else System.currentTimeMillis()
                     DatabaseHelper.database.eventsDao().insert(e)
                 }
                 1 -> {

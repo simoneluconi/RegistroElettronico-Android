@@ -76,19 +76,19 @@ class AddEventActivity : AppCompatActivity() {
     private fun handleConfirm(type: String) {
         when (type.toLowerCase()) {
             "verifica" -> if (handleTitle() && handleSubject() && handleProfessor() && handleDate()) {
-                DatabaseHelper.database.eventsDao().insert(LocalAgenda(0L, layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay?.flat()!!.time, selectedSubject?.subject?.id ?: 0L, selectedProfessor?.id ?: 0, Date(0), Account.with(this).user, false))
+                DatabaseHelper.database.eventsDao().insert(LocalAgenda(0L, layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay?.flat()!!.time, selectedSubject?.subject?.id ?: 0L, selectedProfessor?.id ?: 0, 0, Account.with(this).user, false))
                 finish()
             } else {
                 vibrate()
             }
             "compiti" -> if (handleTitle() && handleSubject() && handleProfessor() && handleDate()) {
-                DatabaseHelper.database.eventsDao().insert(LocalAgenda(0L, layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay?.flat()!!.time, selectedSubject?.subject?.id ?: 0L, selectedProfessor?.id ?: 0, Date(0), Account.with(this).user, false))
+                DatabaseHelper.database.eventsDao().insert(LocalAgenda(0L, layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay?.flat()!!.time, selectedSubject?.subject?.id ?: 0L, selectedProfessor?.id ?: 0, 0, Account.with(this).user, false))
                 finish()
             } else {
                 vibrate()
             }
             else -> if (handleTitle() && handleDate()) {
-                DatabaseHelper.database.eventsDao().insert(LocalAgenda(0L, layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay?.flat()!!.time, selectedSubject?.subject?.id ?: 0L, selectedProfessor?.id ?: 0, Date(0), Account.with(this).user, false))
+                DatabaseHelper.database.eventsDao().insert(LocalAgenda(0L, layout_verifica.editText!!.text.toString(), layout_note.editText!!.text.toString(), type, selectedDay?.flat()!!.time, selectedSubject?.subject?.id ?: 0L, selectedProfessor?.id ?: 0, 0, Account.with(this).user, false))
                 finish()
             } else {
                 vibrate()

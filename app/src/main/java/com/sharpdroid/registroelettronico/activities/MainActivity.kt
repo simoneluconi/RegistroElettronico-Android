@@ -25,10 +25,6 @@ import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.ShareEvent
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.mikepenz.materialdrawer.AccountHeader
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
@@ -41,9 +37,8 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IProfile
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
-import com.sharpdroid.registroelettronico.database.entities.LocalAgenda
+import com.sharpdroid.registroelettronico.api.Cloud
 import com.sharpdroid.registroelettronico.database.entities.Profile
-import com.sharpdroid.registroelettronico.database.entities.RemoteAgendaInfo
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.fragments.*
 import com.sharpdroid.registroelettronico.utils.Account
@@ -120,20 +115,12 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
     override fun onStop() {
         val profile = Account.with(this).user
 
-        val userDB = FirebaseDatabase.getInstance().getReference("users").child(profile.toString())
-        userDB.keepSynced(false)
-
-        DatabaseHelper.database.eventsDao().getLocalAsSingle(profile).subscribe { localEvents ->
-            localEvents.forEach {
-                println("SET VALUE " + it.event.id)
-                userDB.child("events").child(it.event.id.toString()).setValue(it.asMap())
-            }
+        DatabaseHelper.database.eventsDao().getLocalAsSingle(profile).subscribe { events ->
+            Cloud.api.pushLocal(profile, events)
         }
 
         DatabaseHelper.database.eventsDao().getRemoteInfos(profile).subscribe { remoteInfos ->
-            remoteInfos.forEach {
-                userDB.child("api_events_info").child(it.id.toString()).setValue(it.asMap())
-            }
+            Cloud.api.pushRemote(profile, remoteInfos)
         }
 
         super.onStop()
@@ -189,26 +176,14 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             drawer?.setSelectionAtPosition(drawerToOpen + 1, true)
 
             val profile = Account.with(this).user
-            val events = FirebaseDatabase.getInstance().getReference("users").child(profile.toString())
-            events.keepSynced(false)
-            events.child("events").addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onCancelled(p0: DatabaseError?) {}
-                override fun onDataChange(ref: DataSnapshot?) {
-                    if (ref?.hasChildren()!!) {
-                        //Updated info will be replaced, new ones will be inserted. Nothing has to be deleted
-                        DatabaseHelper.database.eventsDao().insertBulk(ref.children?.map { LocalAgenda(it) }.orEmpty())
-                    }
-                }
-            })
-            events.child("api_events_info").addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onCancelled(p0: DatabaseError?) {}
-                override fun onDataChange(ref: DataSnapshot?) {
-                    if (ref?.hasChildren()!!) {
-                        //Updated info will be replaced, new ones will be inserted. Nothing has to be deleted
-                        DatabaseHelper.database.eventsDao().insertInfos(ref.children?.map { RemoteAgendaInfo(it) }.orEmpty())
-                    }
-                }
-            })
+
+            Cloud.api.pullLocal(profile).subscribe {
+                DatabaseHelper.database.eventsDao().insertBulk(it)
+            }
+
+            Cloud.api.pullRemote(profile).subscribe {
+                DatabaseHelper.database.eventsDao().insertInfos(it)
+            }
         }
     }
 
