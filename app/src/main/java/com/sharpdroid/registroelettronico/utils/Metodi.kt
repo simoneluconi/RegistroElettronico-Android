@@ -401,7 +401,7 @@ object Metodi {
                 .subscribe({
                     val apiAgenda = it.getAgenda(p)
                     DatabaseHelper.database.eventsDao().deleteRemote(p.id)
-                    DatabaseHelper.database.eventsDao().insert(apiAgenda)
+                    DatabaseHelper.database.eventsDao().insertRemote(apiAgenda)
                     handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_AGENDA_OK, null) }
                 }) {
                     handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_AGENDA_KO, null) }

@@ -115,12 +115,12 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
     override fun onStop() {
         val profile = Account.with(this).user
 
-        DatabaseHelper.database.eventsDao().getLocalAsSingle(profile).subscribe { events ->
-            Cloud.api.pushLocal(profile, events)
+        DatabaseHelper.database.eventsDao().getLocalAsSingle(profile).subscribe { localEvent ->
+            Cloud.api.pushLocal(profile, localEvent)
         }
 
-        DatabaseHelper.database.eventsDao().getRemoteInfos(profile).subscribe { remoteInfos ->
-            Cloud.api.pushRemote(profile, remoteInfos)
+        DatabaseHelper.database.eventsDao().getRemoteInfoAsSingle(profile).subscribe { remoteInfo ->
+            Cloud.api.pushRemoteInfo(profile, remoteInfo)
         }
 
         super.onStop()
@@ -171,17 +171,17 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         if (intent.extras != null && intent.extras.containsKey("drawer_open_id")) {
             drawer?.setSelection(intent.extras.getLong("drawer_open_id"), true)
         } else if (savedInstanceState == null) {
-            val drawerToOpen = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getString("drawer_to_open", "0")) ?: 0
+            val drawerToOpen = PreferenceManager.getDefaultSharedPreferences(this).getString("drawer_to_open", "0").toInt()
             drawer?.setSelectionAtPosition(drawerToOpen + 1, true)
 
             val profile = Account.with(this).user
 
             Cloud.api.pullLocal(profile).subscribe {
-                DatabaseHelper.database.eventsDao().insertBulk(it)
+                DatabaseHelper.database.eventsDao().insertLocal(it)
             }
 
-            Cloud.api.pullRemote(profile).subscribe {
-                DatabaseHelper.database.eventsDao().insertInfos(it)
+            Cloud.api.pullRemoteInfo(profile).subscribe {
+                DatabaseHelper.database.eventsDao().insertRemoteInfo(it)
             }
         }
     }

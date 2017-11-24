@@ -27,7 +27,7 @@ class NotificationReceiver : BroadcastReceiver() {
         val content = intent.getSerializableExtra("list") as List<Any>
         val firstElement = content.first()
         when (firstElement) {
-            is RemoteAgenda -> DatabaseHelper.database.eventsDao().insert(content as List<RemoteAgenda>)
+            is RemoteAgenda -> DatabaseHelper.database.eventsDao().insertRemote(content as List<RemoteAgenda>)
             is Grade -> DatabaseHelper.database.gradesDao().insert(content as List<Grade>)
             is Communication -> DatabaseHelper.database.communicationsDao().insert(content as List<Communication>)
             is Note -> DatabaseHelper.database.notesDao().insert(content as List<Note>)

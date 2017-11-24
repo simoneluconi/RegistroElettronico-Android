@@ -271,7 +271,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                         found.completed = !found.completed
                         DatabaseHelper.database.eventsDao().update(found)
                     } else {
-                        DatabaseHelper.database.eventsDao().insert(RemoteAgendaInfo(e.agenda.id, true, false, isEventTest(e)))
+                        DatabaseHelper.database.eventsDao().insertRemoteInfo(RemoteAgendaInfo(e.agenda.id, true, false, isEventTest(e)))
                     }
 
                     e.completed = !e.completed
@@ -282,7 +282,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                         found.test = !found.test
                         DatabaseHelper.database.eventsDao().update(found)
                     } else {
-                        DatabaseHelper.database.eventsDao().insert(RemoteAgendaInfo(e.agenda.id, false, false, !isEventTest(e)))
+                        DatabaseHelper.database.eventsDao().insertRemoteInfo(RemoteAgendaInfo(e.agenda.id, false, false, !isEventTest(e)))
                     }
                 }
                 2 -> {
@@ -298,7 +298,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                         found.archived = true
                         DatabaseHelper.database.eventsDao().update(found)
                     } else {
-                        DatabaseHelper.database.eventsDao().insert(RemoteAgendaInfo(e.agenda.id, false, true, isEventTest(e)))
+                        DatabaseHelper.database.eventsDao().insertRemoteInfo(RemoteAgendaInfo(e.agenda.id, false, true, isEventTest(e)))
                     }
                 }
             }
@@ -306,11 +306,11 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
             when (position) {
                 0 -> {
                     e.completed_date = if (e.completed_date != 0L) 0L else System.currentTimeMillis()
-                    DatabaseHelper.database.eventsDao().insert(e)
+                    DatabaseHelper.database.eventsDao().insertLocal(e)
                 }
                 1 -> {
                     e.type = if (e.type == "verifica") "altro" else "verifica"
-                    DatabaseHelper.database.eventsDao().insert(e)
+                    DatabaseHelper.database.eventsDao().insertLocal(e)
                 }
                 2 -> {
                     val sendIntent = Intent()
@@ -321,7 +321,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                 }
                 3 -> {
                     e.archived = !e.archived
-                    DatabaseHelper.database.eventsDao().insert(e)
+                    DatabaseHelper.database.eventsDao().insertLocal(e)
                 }
             }
         }
