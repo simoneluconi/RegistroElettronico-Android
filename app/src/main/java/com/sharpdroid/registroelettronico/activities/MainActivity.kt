@@ -171,8 +171,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         if (intent.extras != null && intent.extras.containsKey("drawer_open_id")) {
             drawer?.setSelection(intent.extras.getLong("drawer_open_id"), true)
         } else if (savedInstanceState == null) {
-            val default = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getString("drawer_to_open", "0")) ?: 0
-            val drawerToOpen = intent.extras?.getInt("drawer_to_open", default) ?: default
+            val drawerToOpen = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getString("drawer_to_open", "0")) ?: 0
             drawer?.setSelectionAtPosition(drawerToOpen + 1, true)
 
             val profile = Account.with(this).user
