@@ -8,6 +8,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Metodi
+import java.io.Serializable
 import java.util.*
 
 class SuperAgenda(val agenda: RemoteAgenda, var completed: Boolean = false, var test: Boolean)
@@ -82,7 +83,7 @@ data class RemoteAgenda(
         @ColumnInfo(name = "AUTHOR") @Expose @SerializedName("authorName") var author: String = "",
         @ColumnInfo(name = "SUBJECT") @Expose @SerializedName("subjectDesc") var subject: String? = "",
         @ColumnInfo(name = "PROFILE") var profile: Long = -1L
-) {
+) : Serializable {
     fun isTest(info: RemoteAgendaInfo?) = info?.test ?: Metodi.isEventTest(this)
 
     override fun equals(other: Any?): Boolean {

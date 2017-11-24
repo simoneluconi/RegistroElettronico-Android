@@ -9,6 +9,9 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
+    <permission android:name="com.sharpdroid.registroelettronico.permissions.PRIVATE_ACCESS" />
+    <uses-permission android:name="com.sharpdroid.registroelettronico.permissions.PRIVATE_ACCESS" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -75,6 +78,14 @@
                 <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
             </intent-filter>
         </service>
+
+        <receiver
+            android:name=".notification.NotificationReceiver"
+            android:permission="com.sharpdroid.registroelettronico.permissions.PRIVATE_ACCESS">
+            <intent-filter>
+                <action android:name="com.sharpdroid.registroelettronico.NOTIFICATION_DISMISSED" />
+            </intent-filter>
+        </receiver>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
