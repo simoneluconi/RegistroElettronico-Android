@@ -105,6 +105,16 @@ object DatabaseHelper {
                                 execSQL("DROP TABLE SUBJECT_INFO_OLD")
                             }
                         }
+                    }, object : Migration(5, 6) {
+                        override fun migrate(database: SupportSQLiteDatabase) {
+                            with(database) {
+                                execSQL("ALTER TABLE LOCAL_AGENDA RENAME TO LOCAL_AGENDA_OLD")
+                                execSQL("UPDATE LOCAL_AGENDA_OLD SET COMPLETED_DATE=0 WHERE COMPLETED_DATE IS NULL")
+                                execSQL("CREATE TABLE `LOCAL_AGENDA` (`ID` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `TITLE` TEXT NOT NULL, `CONTENT` TEXT NOT NULL, `TYPE` TEXT NOT NULL, `DAY` INTEGER NOT NULL, `SUBJECT` INTEGER NOT NULL, `TEACHER` INTEGER NOT NULL, `COMPLETED_DATE` INTEGER NOT NULL, `PROFILE` INTEGER NOT NULL, `ARCHIVED` INTEGER NOT NULL)")
+                                execSQL("INSERT INTO LOCAL_AGENDA(ID, TITLE, CONTENT, TYPE, DAY, SUBJECT, TEACHER, COMPLETED_DATE, PROFILE, ARCHIVED) SELECT ID, TITLE, CONTENT, TYPE, DAY, SUBJECT, TEACHER, COMPLETED_DATE, PROFILE, ARCHIVED FROM LOCAL_AGENDA_OLD")
+                                execSQL("DROP TABLE LOCAL_AGENDA_OLD")
+                            }
+                        }
                     })
                     .build()
         })

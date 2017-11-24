@@ -125,8 +125,6 @@ dependencies {
     implementation ('com.google.firebase:firebase-core:11.6.0'){
         exclude module: 'firebase-database'
     }
-    implementation 'com.google.firebase:firebase-database:11.6.0'
-
     implementation('com.crashlytics.sdk.android:answers:1.4.1@aar') {
         transitive = true
     }
