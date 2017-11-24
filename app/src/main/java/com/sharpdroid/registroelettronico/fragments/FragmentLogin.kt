@@ -73,56 +73,55 @@ class FragmentLogin : SlideFragment() {
         login_btn.setText(R.string.caricamento)
 
         APIClient.with(null).postLogin(LoginRequest(mPassword, mEmail, ""))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ login ->
-                    val checkedIdents = ArrayList<String>()
-                    if (login.choices != null) {
-                        val builder = MaterialDialog.Builder(context).title("Account multiplo").content("Seleziona gli account che vuoi importare").positiveText("OK").neutralText("Annulla")
-                                .alwaysCallMultiChoiceCallback()
-                                .dividerColor(Color.TRANSPARENT)
-                                .adapter(LoginAdapter(login.choices, context) { checked ->
-                                    checkedIdents.clear()
-                                    checkedIdents.addAll(checked)
-                                    Unit
-                                }, LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false))
-                                .onPositive { _, _ ->
-                                    for (ident in checkedIdents) {
-                                        loginWithIdent(mEmail, mPassword, ident)
-                                    }
-                                    postLogin()
-                                }
-                                .canceledOnTouchOutside(false)
-                                .onNeutral { _, _ ->
-                                    login_btn.setText(R.string.login)
-                                    mail.isEnabled = true
-                                    password.isEnabled = true
-                                    login_btn.isEnabled = true
-                                }
-                        builder.show()
-                    } else {
-                        DatabaseHelper.database.profilesDao().insert(Profile(mEmail, login.firstName + " " + login.lastName, mPassword, "", java.lang.Long.valueOf(login.ident!!.substring(1, 8)), login.token!!, login.expire!!, login.ident, false))
+                .observeOn(AndroidSchedulers.mainThread()).subscribe({ login ->
+            val checkedIdents = ArrayList<String>()
+            if (login.choices != null) {
+                val builder = MaterialDialog.Builder(context).title("Account multiplo").content("Seleziona gli account che vuoi importare").positiveText("OK").neutralText("Annulla")
+                        .alwaysCallMultiChoiceCallback()
+                        .dividerColor(Color.TRANSPARENT)
+                        .adapter(LoginAdapter(login.choices, context) { checked ->
+                            checkedIdents.clear()
+                            checkedIdents.addAll(checked)
+                            Unit
+                        }, LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false))
+                        .onPositive { _, _ ->
+                            for (ident in checkedIdents) {
+                                loginWithIdent(mEmail, mPassword, ident)
+                            }
+                            postLogin()
+                        }
+                        .canceledOnTouchOutside(false)
+                        .onNeutral { _, _ ->
+                            login_btn.setText(R.string.login)
+                            mail.isEnabled = true
+                            password.isEnabled = true
+                            login_btn.isEnabled = true
+                        }
+                builder.show()
+            } else {
+                DatabaseHelper.database.profilesDao().insert(Profile(mEmail, login.firstName + " " + login.lastName, mPassword, "", java.lang.Long.valueOf(login.ident!!.substring(1, 8)), login.token!!, login.expire!!, login.ident, false))
 
-                        Account.with(activity).user = java.lang.Long.valueOf(login.ident.substring(1, 8))
-                        fetchDataOfUser(activity)
-                        PreferenceManager.getDefaultSharedPreferences(mContext).edit()
-                                .putBoolean("first_run", false)
-                                .apply()
+                Account.with(activity).user = java.lang.Long.valueOf(login.ident.substring(1, 8))
+                fetchDataOfUser(activity)
+                PreferenceManager.getDefaultSharedPreferences(mContext).edit()
+                        .putBoolean("first_run", false)
+                        .apply()
 
-                        login_btn.setText(R.string.login_riuscito)
-                        postLogin()
-                    }
-                }) { error ->
-                    if (error is HttpException) {
-                        Log.e("FragmentLogin", error.response().errorBody()?.string())
-                    }
+                login_btn.setText(R.string.login_riuscito)
+                postLogin()
+            }
+        }) { error ->
+            if (error is HttpException) {
+                Log.e("FragmentLogin", error.response().errorBody()?.string())
+            }
 
-                    loginFeedback(error, context)
+            loginFeedback(error, context)
 
-                    login_btn.setText(R.string.login)
-                    mail.isEnabled = true
-                    password.isEnabled = true
-                    login_btn.isEnabled = true
-                }
+            login_btn.setText(R.string.login)
+            mail.isEnabled = true
+            password.isEnabled = true
+            login_btn.isEnabled = true
+        }
     }
 
     private fun postLogin() {
@@ -136,21 +135,20 @@ class FragmentLogin : SlideFragment() {
     private fun loginWithIdent(email: String, password: String, ident: String) {
         val c = context
         APIClient.with(null).postLogin(LoginRequest(password, email, ident))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ login_nested ->
-                    DatabaseHelper.database.profilesDao().insert(Profile(email, login_nested.firstName + " " + login_nested.lastName, password, "", java.lang.Long.valueOf(login_nested.ident!!.substring(1, 8)), login_nested.token!!, login_nested.expire!!, login_nested.ident, true))
-                    Account.with(c).user = java.lang.Long.valueOf(login_nested.ident.substring(1, 8))
-                    fetchDataOfUser(c)
+                .observeOn(AndroidSchedulers.mainThread()).subscribe({ login_nested ->
+            DatabaseHelper.database.profilesDao().insert(Profile(email, login_nested.firstName + " " + login_nested.lastName, password, "", java.lang.Long.valueOf(login_nested.ident!!.substring(1, 8)), login_nested.token!!, login_nested.expire!!, login_nested.ident, true))
+            Account.with(c).user = java.lang.Long.valueOf(login_nested.ident.substring(1, 8))
+            fetchDataOfUser(c)
 
-                    PreferenceManager.getDefaultSharedPreferences(c).edit().putBoolean("first_run", false).apply()
-                    login_btn.setText(R.string.login_riuscito)
-                }) { error ->
-                    loginFeedback(error, c)
+            PreferenceManager.getDefaultSharedPreferences(c).edit().putBoolean("first_run", false).apply()
+            login_btn.setText(R.string.login_riuscito)
+        }) { error ->
+            loginFeedback(error, c)
 
-                    login_btn.setText(R.string.login)
-                    mail.isEnabled = true
-                    this.password.isEnabled = true
-                    login_btn.isEnabled = true
-                }
+            login_btn.setText(R.string.login)
+            mail.isEnabled = true
+            this.password.isEnabled = true
+            login_btn.isEnabled = true
+        }
     }
 }
