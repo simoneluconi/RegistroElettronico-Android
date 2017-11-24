@@ -6,6 +6,7 @@ import android.arch.persistence.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
+import java.io.Serializable
 import java.util.*
 
 @Entity(tableName = "GRADE")
@@ -25,7 +26,7 @@ data class Grade(
         @ColumnInfo(name = "M_VALUE") @Expose @SerializedName("decimalValue") var mValue: Float = 0f,
         @ColumnInfo(name = "M_WEIGHT_FACTOR") @Expose @SerializedName("weightFactor") var mWeightFactor: Double = 0.0,
         @ColumnInfo(name = "PROFILE") var profile: Long = -1L
-) {
+) : Serializable {
     companion object {
         fun hasMarksSecondPeriod(profile: Long): Boolean {
             return DatabaseHelper.database.query("SELECT * FROM GRADE WHERE PROFILE=? AND M_PERIOD!=1", arrayOf(profile)).moveToFirst()

@@ -6,6 +6,7 @@ import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 import java.util.*
 
 /*
@@ -44,7 +45,7 @@ data class Communication(
         @ColumnInfo(name = "CATEGORY") @Expose @SerializedName("cntCategory") var category: String = "",
         @ColumnInfo(name = "HAS_ATTACHMENT") @Expose @SerializedName("cntHasAttach") var hasAttachment: Boolean = false,
         @ColumnInfo(name = "PROFILE") var profile: Long = -1L
-)
+) : Serializable
 
 class CommunicationAPI(@Expose @SerializedName("items") private var communications: List<Communication>) {
     fun getCommunications(profile: Profile): List<Communication> {

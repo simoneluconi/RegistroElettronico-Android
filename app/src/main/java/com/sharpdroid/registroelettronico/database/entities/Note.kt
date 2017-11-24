@@ -5,6 +5,7 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 import java.util.*
 
 @Entity(tableName = "NOTE")
@@ -17,7 +18,7 @@ data class Note(
         @ColumnInfo(name = "M_WARNING") @Expose @SerializedName("warningType") var mWarning: String = "",
         @ColumnInfo(name = "M_TYPE") var mType: String = "",
         @ColumnInfo(name = "PROFILE") var profile: Long = -1L
-)
+) : Serializable
 
 class NoteAPI(
         @Expose @SerializedName("NTTE") private val ntte: List<Note>,

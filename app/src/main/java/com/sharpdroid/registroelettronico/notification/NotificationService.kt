@@ -23,6 +23,7 @@ import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.utils.Metodi.getStartEnd
+import java.io.Serializable
 import java.util.*
 
 class NotificationService : JobService() {
@@ -49,9 +50,9 @@ class NotificationService : JobService() {
             DatabaseHelper.database.profilesDao().update(profile)
         }
 
-        val notificationsList = mutableMapOf<NotificationIDs, List<String>>()
+        val notificationsList = mutableMapOf<NotificationIDs, List<Any>>()
 
-        var diff: List<String>
+        var diff: List<Any>
         diff = getAgendaDiff(profile)
         if (diff.isNotEmpty())
             notificationsList.put(NotificationIDs.AGENGA, diff)
@@ -77,7 +78,7 @@ class NotificationService : JobService() {
         return false //something else to do?
     }
 
-    private fun notify(notificationsList: Map<NotificationIDs, List<String>>, preferences: SharedPreferences) {
+    private fun notify(notificationsList: Map<NotificationIDs, List<Any>>, preferences: SharedPreferences) {
         if (notificationsList.isEmpty()) return
 
         val sound = preferences.getBoolean("notify_sound", true)
@@ -101,7 +102,7 @@ class NotificationService : JobService() {
         }
     }
 
-    private fun getAgendaDiff(profile: Profile): List<String> {
+    private fun getAgendaDiff(profile: Profile): List<RemoteAgenda> {
         val dates = getStartEnd("yyyyMMdd")
 
         var newEvents = emptyList<RemoteAgenda>()
@@ -119,10 +120,10 @@ class NotificationService : JobService() {
         val oldEvents = DatabaseHelper.database.eventsDao().getRemoteList(Account.with(applicationContext).user)
         val diffEvents = newEvents.minus(oldEvents)
         if (diffEvents.isEmpty()) return emptyList()
-        return diffEvents.map { it.notes }
+        return diffEvents
     }
 
-    private fun getVotiDiff(profile: Profile): List<String> {
+    private fun getVotiDiff(profile: Profile): List<Grade> {
         var newGrades = emptyList<Grade>()
         APIClient.with(profile).getGradesBlocking().blockingSubscribe({
             if (it?.isSuccessful == true) {
@@ -138,10 +139,10 @@ class NotificationService : JobService() {
         val oldGrades = DatabaseHelper.database.gradesDao().getGradesList(Account.with(applicationContext).user)
         val diffGrades = if (!debug) newGrades.minus(oldGrades) else newGrades
         if (diffGrades.isEmpty()) return emptyList()
-        return diffGrades.map { getString(R.string.notification_new_grade, it.mStringValue, capitalizeEach(it.mDescription, false)) }
+        return diffGrades
     }
 
-    private fun getComunicazioniDiff(profile: Profile): List<String> {
+    private fun getComunicazioniDiff(profile: Profile): List<Communication> {
         var newCommunications = emptyList<Communication>()
         APIClient.with(profile).getBachecaBlocking().blockingSubscribe({
             if (it?.isSuccessful == true) {
@@ -159,10 +160,10 @@ class NotificationService : JobService() {
         val oldCommunications = DatabaseHelper.database.communicationsDao().getCommunicationsList(Account.with(applicationContext).user)
         val diffCommunications = if (!debug) newCommunications.minus(oldCommunications) else newCommunications
         if (diffCommunications.isEmpty()) return emptyList()
-        return diffCommunications.map { it.title }
+        return diffCommunications
     }
 
-    private fun getNoteDiff(profile: Profile): List<String> {
+    private fun getNoteDiff(profile: Profile): List<Note> {
         var newNotes = emptyList<Note>()
         APIClient.with(profile).getNotesBlocking().blockingSubscribe({
             if (it?.isSuccessful == true) {
@@ -178,30 +179,52 @@ class NotificationService : JobService() {
         val oldNotes = DatabaseHelper.database.notesDao().getNotesList(Account.with(applicationContext).user)
         val diffNotes = newNotes.minus(oldNotes)
         if (diffNotes.isEmpty()) return emptyList()
-        return diffNotes.map { it.mText }
+        return diffNotes
     }
 
-    private fun pushNotification(title: String, type: NotificationIDs, content: List<String>, sound: Boolean, vibrate: Boolean, tabToOpen: Long) {
+    private fun pushNotification(title: String, type: NotificationIDs, content: List<Any>, sound: Boolean, vibrate: Boolean, tabToOpen: Long) {
         val notificationManager = NotificationManagerCompat.from(this)
 
         val intent = Intent(this, MainActivity::class.java)
                 .putExtra("drawer_open_id", tabToOpen)
-                .setAction(type.name)
+                .addCategory(type.name)
         val pi = PendingIntent.getActivity(this, MainActivity.REQUEST_CODE, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT)
+
+        val deleteIntent = Intent(this, NotificationReceiver::class.java)
+                .setAction(NotificationReceiver.ACTION_NOTIFICATION_DISMISSED)
+                .putExtra("list", content as Serializable)
+                .addCategory(type.name)
+        val deletePi = PendingIntent.getBroadcast(this, MainActivity.REQUEST_CODE, deleteIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT)
 
         val style = NotificationCompat.InboxStyle()
 
+        var first: String? = null
+        val firstElement = content.first()
+        when (firstElement) {
+            is RemoteAgenda -> first = firstElement.notes
+            is Grade -> first = getString(R.string.notification_new_grade, firstElement.mStringValue, capitalizeEach(firstElement.mDescription, false))
+            is Communication -> first = firstElement.title
+            is Note -> first = firstElement.mText
+        }
+
         content.forEach {
-            style.addLine(it)
+            when (it) {
+                is RemoteAgenda -> style.addLine(it.notes)
+                is Grade -> style.addLine(getString(R.string.notification_new_grade, it.mStringValue, capitalizeEach(it.mDescription, false)))
+                is Communication -> style.addLine(it.title)
+                is Note -> style.addLine(it.mText)
+            }
         }
 
         val notification = NotificationCompat.Builder(this, type.name)
                 .setAutoCancel(true)
                 .setColor(ContextCompat.getColor(this, R.color.primary))
                 .setContentIntent(pi)
-                .setContentText(content.first())
+                .setContentText(first)
                 .setContentTitle(title)
+                .setDeleteIntent(deletePi)
                 .setNumber(content.size)
                 .setOnlyAlertOnce(true)
                 .setSmallIcon(R.drawable.ic_stat_name)
