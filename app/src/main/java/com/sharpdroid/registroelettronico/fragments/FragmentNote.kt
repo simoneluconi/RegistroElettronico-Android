@@ -57,7 +57,7 @@ class FragmentNote : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notificat
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        NotificationManager.instance.addObserver(this, EventType.UPDATE_NOTES_START, EventType.UPDATE_NOTES_OK, EventType.UPDATE_NOTES_KO)
+        NotificationManager().addObserver(this, EventType.UPDATE_NOTES_START, EventType.UPDATE_NOTES_OK, EventType.UPDATE_NOTES_KO)
 
         swiperefresh.setOnRefreshListener(this)
         swiperefresh.setColorSchemeResources(
@@ -109,6 +109,6 @@ class FragmentNote : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notificat
 
     override fun onDestroyView() {
         super.onDestroyView()
-        NotificationManager.instance.removeObserver(this, EventType.UPDATE_NOTES_START, EventType.UPDATE_NOTES_OK, EventType.UPDATE_NOTES_KO)
+        NotificationManager().removeObserver(this, EventType.UPDATE_NOTES_START, EventType.UPDATE_NOTES_OK, EventType.UPDATE_NOTES_KO)
     }
 }
