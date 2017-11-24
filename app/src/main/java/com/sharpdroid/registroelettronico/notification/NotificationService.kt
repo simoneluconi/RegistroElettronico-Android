@@ -40,7 +40,7 @@ class NotificationService : JobService() {
                 successful = it?.isSuccessful == true
                 login = it.body()
             }, {
-                Log.e("NOTIFICATION", it?.localizedMessage, it)
+                Log.e("NotificationService", it?.localizedMessage, it)
             })
             if (!successful) return false
 
@@ -56,22 +56,22 @@ class NotificationService : JobService() {
         diff = getAgendaDiff(profile)
         if (diff.isNotEmpty())
             notificationsList.put(NotificationIDs.AGENGA, diff)
-        Log.d("NOTIFICATION", "AGENDA - ${diff.size}")
+        Log.d("NotificationService", "${diff.size} eventi")
 
         diff = getVotiDiff(profile)
         if (diff.isNotEmpty())
             notificationsList.put(NotificationIDs.VOTI, diff)
-        Log.d("NOTIFICATION", "VOTI - ${diff.size}")
+        Log.d("NotificationService", "${diff.size} voti")
 
         diff = getComunicazioniDiff(profile)
         if (diff.isNotEmpty())
             notificationsList.put(NotificationIDs.COMUNICAZIONI, diff)
-        Log.d("NOTIFICATION", "COMUNICAZIONI - ${diff.size}")
+        Log.d("NotificationService", "${diff.size} comunicazioni")
 
         diff = getNoteDiff(profile)
         if (diff.isNotEmpty())
             notificationsList.put(NotificationIDs.NOTE, diff)
-        Log.d("NOTIFICATION", "NOTE - ${diff.size}")
+        Log.d("NotificationService", "${diff.size} note")
 
         notify(notificationsList, PreferenceManager.getDefaultSharedPreferences(this))
 
@@ -110,10 +110,10 @@ class NotificationService : JobService() {
             if (it?.isSuccessful == true) {
                 newEvents = it.body()?.getAgenda(profile) ?: emptyList()
             } else {
-                Log.e("NOTIFICATION", "agenda response not successful")
+                Log.e("NotificationService", "agenda response not successful")
             }
         }, {
-            Log.e("NOTIFICATION", it?.localizedMessage, it)
+            Log.e("NotificationService", it?.localizedMessage, it)
         })
         if (newEvents.isEmpty()) return emptyList()
 
@@ -129,10 +129,10 @@ class NotificationService : JobService() {
             if (it?.isSuccessful == true) {
                 newGrades = it.body()?.getGrades(profile) ?: emptyList()
             } else {
-                Log.e("NOTIFICATION", "grade response not successful")
+                Log.e("NotificationService", "grade response not successful")
             }
         }, {
-            Log.e("NOTIFICATION", it?.localizedMessage, it)
+            Log.e("NotificationService", it?.localizedMessage, it)
         })
         if (newGrades.isEmpty()) return emptyList()
 
@@ -148,10 +148,10 @@ class NotificationService : JobService() {
             if (it?.isSuccessful == true) {
                 newCommunications = it.body()?.getCommunications(profile) ?: emptyList()
             } else {
-                Log.e("NOTIFICATION", "communication response not successful")
+                Log.e("NotificationService", "communication response not successful")
             }
         }, {
-            Log.e("NOTIFICATION", it?.localizedMessage, it)
+            Log.e("NotificationService", it?.localizedMessage, it)
         })
         newCommunications = newCommunications.filter { it.cntStatus != "deleted" }
         newCommunications.map { it.cntStatus = "" }
@@ -169,10 +169,10 @@ class NotificationService : JobService() {
             if (it?.isSuccessful == true) {
                 newNotes = it.body()?.getNotes(profile) ?: emptyList()
             } else {
-                Log.e("NOTIFICATION", "note response not successful")
+                Log.e("NotificationService", "note response not successful")
             }
         }, {
-            Log.e("NOTIFICATION", it?.localizedMessage, it)
+            Log.e("NotificationService", it?.localizedMessage, it)
         })
         if (newNotes.isEmpty()) return emptyList()
 
