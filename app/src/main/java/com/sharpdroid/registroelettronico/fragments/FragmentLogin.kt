@@ -19,7 +19,7 @@ import com.heinrichreimersoftware.materialintro.app.SlideFragment
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.LoginAdapter
-import com.sharpdroid.registroelettronico.api.spiaggiari.v2.APIClient
+import com.sharpdroid.registroelettronico.api.spaggiari.v2.Spaggiari
 import com.sharpdroid.registroelettronico.database.entities.LoginRequest
 import com.sharpdroid.registroelettronico.database.entities.Profile
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
@@ -72,7 +72,7 @@ class FragmentLogin : SlideFragment() {
         login_btn.isEnabled = false
         login_btn.setText(R.string.caricamento)
 
-        APIClient.with(null).postLogin(LoginRequest(mPassword, mEmail, ""))
+        Spaggiari(null).api().postLogin(LoginRequest(mPassword, mEmail, ""))
                 .observeOn(AndroidSchedulers.mainThread()).subscribe({ login ->
             val checkedIdents = ArrayList<String>()
             if (login.choices != null) {
@@ -134,7 +134,7 @@ class FragmentLogin : SlideFragment() {
 
     private fun loginWithIdent(email: String, password: String, ident: String) {
         val c = context
-        APIClient.with(null).postLogin(LoginRequest(password, email, ident))
+        Spaggiari(null).api().postLogin(LoginRequest(password, email, ident))
                 .observeOn(AndroidSchedulers.mainThread()).subscribe({ login_nested ->
             DatabaseHelper.database.profilesDao().insert(Profile(email, login_nested.firstName + " " + login_nested.lastName, password, "", java.lang.Long.valueOf(login_nested.ident!!.substring(1, 8)), login_nested.token!!, login_nested.expire!!, login_nested.ident, true))
             Account.with(c).user = java.lang.Long.valueOf(login_nested.ident.substring(1, 8))

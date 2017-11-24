@@ -1,4 +1,4 @@
-package com.sharpdroid.registroelettronico.api.spiaggiari.v2
+package com.sharpdroid.registroelettronico.api.spaggiari.v2
 
 import com.sharpdroid.registroelettronico.database.entities.*
 import io.reactivex.Observable

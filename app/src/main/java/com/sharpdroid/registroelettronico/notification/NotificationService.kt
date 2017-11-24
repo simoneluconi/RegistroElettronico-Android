@@ -17,7 +17,7 @@ import com.firebase.jobdispatcher.JobParameters
 import com.firebase.jobdispatcher.JobService
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.MainActivity
-import com.sharpdroid.registroelettronico.api.spiaggiari.v2.APIClient
+import com.sharpdroid.registroelettronico.api.spaggiari.v2.Spaggiari
 import com.sharpdroid.registroelettronico.database.entities.*
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
@@ -36,7 +36,7 @@ class NotificationService : JobService() {
         if (profile.expire.time < System.currentTimeMillis()) {
             var successful = false
             var login: LoginResponse? = null
-            APIClient.with(profile).postLoginBlocking(LoginRequest(profile.password, profile.username, profile.ident)).blockingSubscribe({
+            Spaggiari(profile).api().postLoginBlocking(LoginRequest(profile.password, profile.username, profile.ident)).blockingSubscribe({
                 successful = it?.isSuccessful == true
                 login = it.body()
             }, {
@@ -106,7 +106,7 @@ class NotificationService : JobService() {
         val dates = getStartEnd("yyyyMMdd")
 
         var newEvents = emptyList<RemoteAgenda>()
-        APIClient.with(profile).getAgendaBlocking(dates[0], dates[1]).blockingSubscribe({
+        Spaggiari(profile).api().getAgendaBlocking(dates[0], dates[1]).blockingSubscribe({
             if (it?.isSuccessful == true) {
                 newEvents = it.body()?.getAgenda(profile) ?: emptyList()
             } else {
@@ -125,7 +125,7 @@ class NotificationService : JobService() {
 
     private fun getVotiDiff(profile: Profile): List<Grade> {
         var newGrades = emptyList<Grade>()
-        APIClient.with(profile).getGradesBlocking().blockingSubscribe({
+        Spaggiari(profile).api().getGradesBlocking().blockingSubscribe({
             if (it?.isSuccessful == true) {
                 newGrades = it.body()?.getGrades(profile) ?: emptyList()
             } else {
@@ -144,7 +144,7 @@ class NotificationService : JobService() {
 
     private fun getComunicazioniDiff(profile: Profile): List<Communication> {
         var newCommunications = emptyList<Communication>()
-        APIClient.with(profile).getBachecaBlocking().blockingSubscribe({
+        Spaggiari(profile).api().getBachecaBlocking().blockingSubscribe({
             if (it?.isSuccessful == true) {
                 newCommunications = it.body()?.getCommunications(profile) ?: emptyList()
             } else {
@@ -165,7 +165,7 @@ class NotificationService : JobService() {
 
     private fun getNoteDiff(profile: Profile): List<Note> {
         var newNotes = emptyList<Note>()
-        APIClient.with(profile).getNotesBlocking().blockingSubscribe({
+        Spaggiari(profile).api().getNotesBlocking().blockingSubscribe({
             if (it?.isSuccessful == true) {
                 newNotes = it.body()?.getNotes(profile) ?: emptyList()
             } else {

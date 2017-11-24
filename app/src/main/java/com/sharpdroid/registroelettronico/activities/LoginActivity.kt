@@ -17,7 +17,7 @@ import com.crashlytics.android.answers.LoginEvent
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.LoginAdapter
-import com.sharpdroid.registroelettronico.api.spiaggiari.v2.APIClient
+import com.sharpdroid.registroelettronico.api.spaggiari.v2.Spaggiari
 import com.sharpdroid.registroelettronico.database.entities.LoginRequest
 import com.sharpdroid.registroelettronico.database.entities.Profile
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
@@ -66,7 +66,7 @@ class LoginActivity : AppCompatActivity() {
         login_btn.isEnabled = false
         login_btn.setText(R.string.caricamento)
 
-        APIClient.with(null).postLogin(LoginRequest(mPassword, mEmail, ""))
+        Spaggiari(null).api().postLogin(LoginRequest(mPassword, mEmail, ""))
                 .observeOn(AndroidSchedulers.mainThread()).subscribe({ login ->
             if (login.choices != null) {
                 val it = DatabaseHelper.database.profilesDao().profilesSync.iterator()
@@ -131,7 +131,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun loginWithIdent(email: String, password: String, ident: String) {
         val c = this
-        APIClient.with(null).postLogin(LoginRequest(password, email, ident))
+        Spaggiari(null).api().postLogin(LoginRequest(password, email, ident))
                 .observeOn(AndroidSchedulers.mainThread()).subscribe({ t ->
             DatabaseHelper.database.profilesDao().insert(Profile(email, t.firstName + " " + t.lastName, password, "", t.ident!!.substring(1, 8).toLong(), t.token!!, t.expire!!, t.ident, true))
             Account.with(c).user = t.ident.substring(1, 8).toLong()

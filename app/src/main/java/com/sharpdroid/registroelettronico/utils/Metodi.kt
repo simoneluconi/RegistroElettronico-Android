@@ -18,7 +18,7 @@ import android.widget.Toast
 import com.github.sundeepk.compactcalendarview.domain.Event
 import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
-import com.sharpdroid.registroelettronico.api.spiaggiari.v2.APIClient
+import com.sharpdroid.registroelettronico.api.spaggiari.v2.Spaggiari
 import com.sharpdroid.registroelettronico.database.entities.*
 import com.sharpdroid.registroelettronico.database.pojos.LocalAgendaPOJO
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
@@ -261,7 +261,7 @@ object Metodi {
         if (p == null) return
 
         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_MARKS_START, null) }
-        APIClient.with(p).getGrades().subscribe({
+        Spaggiari(p).api().getGrades().subscribe({
             DatabaseHelper.database.gradesDao().delete(p.id)
             DatabaseHelper.database.gradesDao().insert(it.getGrades(p))
             handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_MARKS_OK, null) }
@@ -279,7 +279,7 @@ object Metodi {
             NotificationManager.instance.postNotificationName(EventType.UPDATE_TEACHERS_START, null)
         }
 
-        APIClient.with(p).getSubjects().subscribe({
+        Spaggiari(p).api().getSubjects().subscribe({
             val allTeachers = mutableListOf<Teacher>()
             DatabaseHelper.database.subjectsDao().deleteSubjects(p.id)
 
@@ -319,7 +319,7 @@ object Metodi {
 
         val dates = getStartEnd("yyyyMMdd")
         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_LESSONS_START, null) }
-        APIClient.with(p).getLessons(dates[0], dates[1]).subscribe({
+        Spaggiari(p).api().getLessons(dates[0], dates[1]).subscribe({
             DatabaseHelper.database.lessonsDao().delete(p.id)
             DatabaseHelper.database.lessonsDao().insert(it.getLessons(p))
             handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_LESSONS_OK, null) }
@@ -339,7 +339,7 @@ object Metodi {
         if (p == null) return
 
         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_FOLDERS_START, null) }
-        APIClient.with(p).getDidactics().subscribe({
+        Spaggiari(p).api().getDidactics().subscribe({
             val files = mutableListOf<File>()
 
             DatabaseHelper.database.foldersDao().deleteFiles(p.id)
@@ -370,10 +370,10 @@ object Metodi {
             //Download informations if not file
             for (f in DatabaseHelper.database.foldersDao().getNoFiles(p.id)) {
                 if (f.type == "link")
-                    APIClient.with(p).getAttachmentUrl(f.id)
+                    Spaggiari(p).api().getAttachmentUrl(f.id)
                             .subscribe({ downloadURL -> DatabaseHelper.database.foldersDao().insert(FileInfo(f.objectId, downloadURL.item.link)) }, { it.printStackTrace() })
                 else
-                    APIClient.with(p).getAttachmentTxt(f.id)
+                    Spaggiari(p).api().getAttachmentTxt(f.id)
                             .subscribe { downloadTXT -> DatabaseHelper.database.foldersDao().insert(FileInfo(f.objectId, downloadTXT.item.text)) }
             }
             handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_FOLDERS_OK, null) }
@@ -394,7 +394,7 @@ object Metodi {
 
         val dates = getStartEnd("yyyyMMdd")
         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_AGENDA_START, null) }
-        APIClient.with(p).getAgenda(dates[0], dates[1]).subscribe({
+        Spaggiari(p).api().getAgenda(dates[0], dates[1]).subscribe({
             val apiAgenda = it.getAgenda(p)
             DatabaseHelper.database.eventsDao().deleteRemote(p.id)
             DatabaseHelper.database.eventsDao().insertRemote(apiAgenda)
@@ -415,7 +415,7 @@ object Metodi {
         if (p == null) return
 
         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_ABSENCES_START, null) }
-        APIClient.with(p).getAbsences().subscribe({
+        Spaggiari(p).api().getAbsences().subscribe({
             DatabaseHelper.database.absencesDao().delete(p.id)
             DatabaseHelper.database.absencesDao().insert(it.getEvents(p))
             handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_ABSENCES_OK, null) }
@@ -435,7 +435,7 @@ object Metodi {
         if (p == null) return
 
         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_BACHECA_START, null) }
-        APIClient.with(p).getBacheca().subscribe({
+        Spaggiari(p).api().getBacheca().subscribe({
             val list = it.getCommunications(p).toMutableList()
             val toRemove = mutableListOf<Communication>()
 
@@ -448,7 +448,7 @@ object Metodi {
                 val info = DatabaseHelper.database.communicationsDao().getInfo(communication.myId)
                 if (info == null || !communication.isRead || info.content.isEmpty()) {
                     println("REQUEST - " + communication.title)
-                    APIClient.with(p).readBacheca(communication.evtCode, communication.id).subscribe { readResponse ->
+                    Spaggiari(p).api().readBacheca(communication.evtCode, communication.id).subscribe { readResponse ->
                         communication.isRead = true
                         DatabaseHelper.database.communicationsDao().insert(communication)
 
@@ -483,7 +483,7 @@ object Metodi {
         if (p == null) return
 
         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_NOTES_START, null) }
-        APIClient.with(p).getNotes().subscribe({
+        Spaggiari(p).api().getNotes().subscribe({
             DatabaseHelper.database.notesDao().delete(p.id)
             DatabaseHelper.database.notesDao().insert(it.getNotes(p))
             handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_NOTES_OK, null) }
@@ -508,7 +508,7 @@ object Metodi {
                         "Registro Elettronico" + JavaFile.separator + "Circolari")
 
         handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_START, arrayOf(communication.myId)) }
-        APIClient.with(p).getBachecaAttachment(communication.evtCode, communication.id).subscribe({
+        Spaggiari(p).api().getBachecaAttachment(communication.evtCode, communication.id).subscribe({
             if (it.isSuccessful) {
                 val filename = getFileNameFromHeaders(it.headers())
                 if (!dir.exists()) dir.mkdirs()
@@ -544,7 +544,7 @@ object Metodi {
                         "Registro Elettronico" + JavaFile.separator + "Didattica")
 
         handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_START, arrayOf(f.objectId)) }
-        APIClient.with(p).getAttachmentFile(f.id.toInt().toLong()).subscribe({
+        Spaggiari(p).api().getAttachmentFile(f.id.toInt().toLong()).subscribe({
             if (it.isSuccessful) {
                 val filename = getFileNameFromHeaders(it.headers())
                 if (!dir.exists()) dir.mkdirs()
