@@ -18,7 +18,7 @@ import com.crashlytics.android.answers.ContentViewEvent
 import com.github.mikephil.charting.data.Entry
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
-import com.sharpdroid.registroelettronico.api.SpiaggiariAPI
+import com.sharpdroid.registroelettronico.api.spiaggiari.SpiaggiariConst
 import com.sharpdroid.registroelettronico.database.entities.Grade
 import com.sharpdroid.registroelettronico.database.entities.LocalGrade
 import com.sharpdroid.registroelettronico.database.entities.SubjectInfo
@@ -133,9 +133,9 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
     }
 
     private fun initOverall(avgTypes: List<AverageType>) {
-        avgTypes.filter { it.type.equals(SpiaggiariAPI.ORALE, false) }.getOrNull(0)?.let { if (it.count > 0) overall.setOrale(it.sum / it.count) }
-        avgTypes.filter { it.type.equals(SpiaggiariAPI.SCRITTO, false) }.getOrNull(0)?.let { if (it.count > 0) overall.setScritto(it.sum / it.count) }
-        avgTypes.filter { it.type.equals(SpiaggiariAPI.PRATICO, false) }.getOrNull(0)?.let { if (it.count > 0) overall.setPratico(it.sum / it.count) }
+        avgTypes.filter { it.type.equals(SpiaggiariConst.ORALE, false) }.getOrNull(0)?.let { if (it.count > 0) overall.setOrale(it.sum / it.count) }
+        avgTypes.filter { it.type.equals(SpiaggiariConst.SCRITTO, false) }.getOrNull(0)?.let { if (it.count > 0) overall.setScritto(it.sum / it.count) }
+        avgTypes.filter { it.type.equals(SpiaggiariConst.PRATICO, false) }.getOrNull(0)?.let { if (it.count > 0) overall.setPratico(it.sum / it.count) }
 
         overall.visibility = if (avgTypes.isNotEmpty()) View.VISIBLE else View.GONE
     }

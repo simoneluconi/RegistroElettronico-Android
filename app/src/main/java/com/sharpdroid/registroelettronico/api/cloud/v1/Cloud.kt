@@ -1,4 +1,4 @@
-package com.sharpdroid.registroelettronico.api
+package com.sharpdroid.registroelettronico.api.cloud.v1
 
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
@@ -7,11 +7,11 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 object Cloud {
-    private val okHttp: OkHttpClient by lazy {
+    private val okHttp by lazy {
         OkHttpClient.Builder().build()
     }
 
-    private val retrofit: Retrofit by lazy {
+    private val retrofit by lazy {
         Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))

@@ -19,7 +19,7 @@ import com.heinrichreimersoftware.materialintro.app.SlideFragment
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.LoginAdapter
-import com.sharpdroid.registroelettronico.api.v2.APIClient
+import com.sharpdroid.registroelettronico.api.spiaggiari.v2.APIClient
 import com.sharpdroid.registroelettronico.database.entities.LoginRequest
 import com.sharpdroid.registroelettronico.database.entities.Profile
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
