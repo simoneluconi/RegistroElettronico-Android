@@ -260,13 +260,13 @@ object Metodi {
     fun updateMarks(p: Profile?) {
         if (p == null) return
 
-        handler.post { NotificationManager().postNotificationName(EventType.UPDATE_MARKS_START, null) }
+        handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_MARKS_START, null) }
         APIClient.with(p).getGrades().subscribe({
             DatabaseHelper.database.gradesDao().delete(p.id)
             DatabaseHelper.database.gradesDao().insert(it.getGrades(p))
-            handler.post { NotificationManager().postNotificationName(EventType.UPDATE_MARKS_OK, null) }
+            handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_MARKS_OK, null) }
         }) {
-            handler.post { NotificationManager().postNotificationName(EventType.UPDATE_MARKS_KO, null) }
+            handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_MARKS_KO, null) }
             it.printStackTrace()
         }
     }
@@ -275,8 +275,8 @@ object Metodi {
         if (p == null) return
 
         handler.post {
-            NotificationManager().postNotificationName(EventType.UPDATE_SUBJECTS_START, null)
-            NotificationManager().postNotificationName(EventType.UPDATE_TEACHERS_START, null)
+            NotificationManager.instance.postNotificationName(EventType.UPDATE_SUBJECTS_START, null)
+            NotificationManager.instance.postNotificationName(EventType.UPDATE_TEACHERS_START, null)
         }
 
         APIClient.with(p).getSubjects().subscribe({
@@ -296,13 +296,13 @@ object Metodi {
             DatabaseHelper.database.subjectsDao().insert(it.subjects)
 
             handler.post {
-                NotificationManager().postNotificationName(EventType.UPDATE_SUBJECTS_OK, null)
-                NotificationManager().postNotificationName(EventType.UPDATE_TEACHERS_OK, null)
+                NotificationManager.instance.postNotificationName(EventType.UPDATE_SUBJECTS_OK, null)
+                NotificationManager.instance.postNotificationName(EventType.UPDATE_TEACHERS_OK, null)
             }
         }) {
             handler.post {
-                NotificationManager().postNotificationName(EventType.UPDATE_TEACHERS_KO, null)
-                NotificationManager().postNotificationName(EventType.UPDATE_SUBJECTS_KO, null)
+                NotificationManager.instance.postNotificationName(EventType.UPDATE_TEACHERS_KO, null)
+                NotificationManager.instance.postNotificationName(EventType.UPDATE_SUBJECTS_KO, null)
             }
             it.printStackTrace()
         }
@@ -318,14 +318,14 @@ object Metodi {
         if (p == null) return
 
         val dates = getStartEnd("yyyyMMdd")
-        handler.post { NotificationManager().postNotificationName(EventType.UPDATE_LESSONS_START, null) }
+        handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_LESSONS_START, null) }
         APIClient.with(p).getLessons(dates[0], dates[1])
                 .subscribe({
                     DatabaseHelper.database.lessonsDao().delete(p.id)
                     DatabaseHelper.database.lessonsDao().insert(it.getLessons(p))
-                    handler.post { NotificationManager().postNotificationName(EventType.UPDATE_LESSONS_OK, null) }
+                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_LESSONS_OK, null) }
                 }) {
-                    handler.post { NotificationManager().postNotificationName(EventType.UPDATE_LESSONS_KO, null) }
+                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_LESSONS_KO, null) }
                     it.printStackTrace()
                 }
     }
@@ -339,7 +339,7 @@ object Metodi {
     fun updateFolders(p: Profile?) {
         if (p == null) return
 
-        handler.post { NotificationManager().postNotificationName(EventType.UPDATE_FOLDERS_START, null) }
+        handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_FOLDERS_START, null) }
         APIClient.with(p).getDidactics()
                 .subscribe({
                     val files = mutableListOf<File>()
@@ -379,9 +379,9 @@ object Metodi {
                             APIClient.with(p).getAttachmentTxt(f.id)
                                     .subscribe { downloadTXT -> DatabaseHelper.database.foldersDao().insert(FileInfo(f.objectId, downloadTXT.item.text)) }
                     }
-                    handler.post { NotificationManager().postNotificationName(EventType.UPDATE_FOLDERS_OK, null) }
+                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_FOLDERS_OK, null) }
                 }) {
-                    handler.post { NotificationManager().postNotificationName(EventType.UPDATE_FOLDERS_KO, null) }
+                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_FOLDERS_KO, null) }
                     it.printStackTrace()
                 }
     }
@@ -396,15 +396,15 @@ object Metodi {
         if (p == null) return
 
         val dates = getStartEnd("yyyyMMdd")
-        handler.post { NotificationManager().postNotificationName(EventType.UPDATE_AGENDA_START, null) }
+        handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_AGENDA_START, null) }
         APIClient.with(p).getAgenda(dates[0], dates[1])
                 .subscribe({
                     val apiAgenda = it.getAgenda(p)
                     DatabaseHelper.database.eventsDao().deleteRemote(p.id)
                     DatabaseHelper.database.eventsDao().insert(apiAgenda)
-                    handler.post { NotificationManager().postNotificationName(EventType.UPDATE_AGENDA_OK, null) }
+                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_AGENDA_OK, null) }
                 }) {
-                    handler.post { NotificationManager().postNotificationName(EventType.UPDATE_AGENDA_KO, null) }
+                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_AGENDA_KO, null) }
                     it.printStackTrace()
                 }
     }
@@ -418,14 +418,14 @@ object Metodi {
     fun updateAbsence(p: Profile?) {
         if (p == null) return
 
-        handler.post { NotificationManager().postNotificationName(EventType.UPDATE_ABSENCES_START, null) }
+        handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_ABSENCES_START, null) }
         APIClient.with(p).getAbsences()
                 .subscribe({
                     DatabaseHelper.database.absencesDao().delete(p.id)
                     DatabaseHelper.database.absencesDao().insert(it.getEvents(p))
-                    handler.post { NotificationManager().postNotificationName(EventType.UPDATE_ABSENCES_OK, null) }
+                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_ABSENCES_OK, null) }
                 }) {
-                    handler.post { NotificationManager().postNotificationName(EventType.UPDATE_ABSENCES_KO, null) }
+                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_ABSENCES_KO, null) }
                     it.printStackTrace()
                 }
     }
@@ -439,7 +439,7 @@ object Metodi {
     private fun updateBacheca(p: Profile?) {
         if (p == null) return
 
-        handler.post { NotificationManager().postNotificationName(EventType.UPDATE_BACHECA_START, null) }
+        handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_BACHECA_START, null) }
         APIClient.with(p).getBacheca()
                 .subscribe({
                     val list = it.getCommunications(p).toMutableList()
@@ -474,9 +474,9 @@ object Metodi {
 
                     DatabaseHelper.database.communicationsDao().delete(p.id)
                     DatabaseHelper.database.communicationsDao().insert(list)
-                    handler.post { NotificationManager().postNotificationName(EventType.UPDATE_BACHECA_OK, null) }
+                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_BACHECA_OK, null) }
                 }) {
-                    handler.post { NotificationManager().postNotificationName(EventType.UPDATE_BACHECA_KO, null) }
+                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_BACHECA_KO, null) }
                     it.printStackTrace()
                 }
     }
@@ -490,14 +490,14 @@ object Metodi {
     fun updateNote(p: Profile?) {
         if (p == null) return
 
-        handler.post { NotificationManager().postNotificationName(EventType.UPDATE_NOTES_START, null) }
+        handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_NOTES_START, null) }
         APIClient.with(p).getNotes()
                 .subscribe({
                     DatabaseHelper.database.notesDao().delete(p.id)
                     DatabaseHelper.database.notesDao().insert(it.getNotes(p))
-                    handler.post { NotificationManager().postNotificationName(EventType.UPDATE_NOTES_OK, null) }
+                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_NOTES_OK, null) }
                 }) {
-                    handler.post { NotificationManager().postNotificationName(EventType.UPDATE_NOTES_KO, null) }
+                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_NOTES_KO, null) }
                     it.printStackTrace()
                 }
     }
@@ -516,7 +516,7 @@ object Metodi {
                         JavaFile.separator +
                         "Registro Elettronico" + JavaFile.separator + "Circolari")
 
-        handler.post { NotificationManager().postNotificationName(EventType.DOWNLOAD_FILE_START, arrayOf(communication.myId)) }
+        handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_START, arrayOf(communication.myId)) }
         APIClient.with(p).getBachecaAttachment(communication.evtCode, communication.id)
                 .subscribe({
                     if (it.isSuccessful) {
@@ -532,15 +532,15 @@ object Metodi {
                         if (fileDir.exists() || writeResponseBodyToDisk(it.body(), fileDir)) {
                             communicationInfo.path = fileDir.absolutePath
                             DatabaseHelper.database.communicationsDao().update(communicationInfo)
-                            handler.post { NotificationManager().postNotificationName(EventType.DOWNLOAD_FILE_OK, arrayOf(communication.myId)) }
+                            handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_OK, arrayOf(communication.myId)) }
                         } else {
-                            handler.post { NotificationManager().postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(communication.myId)) }
+                            handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(communication.myId)) }
                         }
                     } else {
-                        handler.post { NotificationManager().postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(communication.myId)) }
+                        handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(communication.myId)) }
                     }
                 }, {
-                    handler.post { NotificationManager().postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(communication.myId)) }
+                    handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(communication.myId)) }
                     it.printStackTrace()
                 })
     }
@@ -553,7 +553,7 @@ object Metodi {
                         JavaFile.separator +
                         "Registro Elettronico" + JavaFile.separator + "Didattica")
 
-        handler.post { NotificationManager().postNotificationName(EventType.DOWNLOAD_FILE_START, arrayOf(f.objectId)) }
+        handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_START, arrayOf(f.objectId)) }
         APIClient.with(p).getAttachmentFile(f.id.toInt().toLong())
                 .subscribe({
                     if (it.isSuccessful) {
@@ -564,16 +564,16 @@ object Metodi {
                         val info = FileInfo(f.objectId, fileDir.absolutePath)
                         val id = DatabaseHelper.database.foldersDao().insert(info)
                         if (id > 0 && writeResponseBodyToDisk(it.body(), fileDir))
-                            handler.post { NotificationManager().postNotificationName(EventType.DOWNLOAD_FILE_OK, arrayOf(f.objectId)) }
+                            handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_OK, arrayOf(f.objectId)) }
                         else
-                            handler.post { NotificationManager().postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(f.objectId)) }
+                            handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(f.objectId)) }
                     } else {
-                        handler.post { NotificationManager().postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(f.objectId)) }
+                        handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(f.objectId)) }
                     }
 
                 }, {
                     it.printStackTrace()
-                    handler.post { NotificationManager().postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(f.objectId)) }
+                    handler.post { NotificationManager.instance.postNotificationName(EventType.DOWNLOAD_FILE_KO, arrayOf(f.objectId)) }
                 })
     }
 

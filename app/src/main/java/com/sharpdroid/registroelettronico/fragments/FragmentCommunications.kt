@@ -84,7 +84,7 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        NotificationManager().addObserver(this, EventType.UPDATE_BACHECA_START, EventType.UPDATE_BACHECA_OK, EventType.UPDATE_BACHECA_KO, EventType.DOWNLOAD_FILE_START, EventType.DOWNLOAD_FILE_OK, EventType.DOWNLOAD_FILE_KO)
+        NotificationManager.instance.addObserver(this, EventType.UPDATE_BACHECA_START, EventType.UPDATE_BACHECA_OK, EventType.UPDATE_BACHECA_KO, EventType.DOWNLOAD_FILE_START, EventType.DOWNLOAD_FILE_OK, EventType.DOWNLOAD_FILE_KO)
         setHasOptionsMenu(true)
 
         swiperefresh.setOnRefreshListener(this)
@@ -166,7 +166,7 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
 
     override fun onDestroyView() {
         super.onDestroyView()
-        NotificationManager().removeObserver(this, EventType.UPDATE_BACHECA_START, EventType.UPDATE_BACHECA_OK, EventType.UPDATE_BACHECA_KO, EventType.DOWNLOAD_FILE_START, EventType.DOWNLOAD_FILE_OK, EventType.DOWNLOAD_FILE_KO)
+        NotificationManager.instance.removeObserver(this, EventType.UPDATE_BACHECA_START, EventType.UPDATE_BACHECA_OK, EventType.UPDATE_BACHECA_KO, EventType.DOWNLOAD_FILE_START, EventType.DOWNLOAD_FILE_OK, EventType.DOWNLOAD_FILE_KO)
     }
 
     override fun onQueryTextSubmit(query: String): Boolean {
