@@ -31,7 +31,7 @@ class Spaggiari(val profile: Profile?) {
         Interceptor { chain ->
             val original = chain.request()
             if (profile != null && original.url().toString() != API_URL + "auth/login" && profile.expire.time < System.currentTimeMillis()) {
-                Log.d("LOGIN INTERCEPTOR", "TOKEN EXPIRED, REQUESTING NEW TOKEN")
+                Log.d("Spaggiari", "token expired, requesting new token")
 
                 val loginRes = chain.proceed(original.newBuilder()
                         .url(API_URL + "auth/login")
@@ -48,7 +48,7 @@ class Spaggiari(val profile: Profile?) {
                 if (loginRes.isSuccessful) {
                     val loginResponse = Gson().fromJson(loginRes.body()?.string(), LoginResponse::class.java)
 
-                    Log.d("LOGIN INTERCEPTOR", "UPDATE TOKEN: " + loginResponse.token)
+                    Log.d("Spaggiari", "token updated: " + loginResponse.token)
 
                     profile.expire = loginResponse.expire ?: throw IllegalStateException("Cannot achieve expire.time from:\n${loginRes.body()?.string()}")
                     profile.token = loginResponse.token ?: throw IllegalStateException("Cannot achieve token from:\n${loginRes.body()?.string()}")
