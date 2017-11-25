@@ -2,20 +2,16 @@ package com.sharpdroid.registroelettronico.api.spaggiari.v2
 
 import android.util.Log
 import android.util.SparseArray
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.sharpdroid.registroelettronico.Info.API_URL
 import com.sharpdroid.registroelettronico.api.spaggiari.v2.deserializer.DateDeserializer
 import com.sharpdroid.registroelettronico.api.spaggiari.v2.deserializer.LongDeserializer
 import com.sharpdroid.registroelettronico.database.entities.LoginRequest
-import com.sharpdroid.registroelettronico.database.entities.LoginResponse
 import com.sharpdroid.registroelettronico.database.entities.Profile
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import io.reactivex.schedulers.Schedulers
 import okhttp3.Interceptor
-import okhttp3.MediaType
 import okhttp3.OkHttpClient
-import okhttp3.RequestBody
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -33,28 +29,17 @@ class Spaggiari(val profile: Profile?) {
             if (profile != null && original.url().toString() != API_URL + "auth/login" && profile.expire.time < System.currentTimeMillis()) {
                 Log.d("Spaggiari", "token expired, requesting new token")
 
-                val loginRes = chain.proceed(original.newBuilder()
-                        .url(API_URL + "auth/login")
-                        .method("POST",
-                                RequestBody.create(
-                                        MediaType.parse("application/json"),
-                                        LoginRequest(profile.password, profile.username, profile.ident).toString() //properly override to provide a json-like string
-                                )
-                        )
-                        .header("User-Agent", "zorro/1.0")
-                        .header("Z-Dev-Apikey", "+zorro+")
-                        .build())
+                api().postLoginBlocking(LoginRequest(profile.password, profile.username, profile.ident)).blockingSubscribe({
+                    if (it?.isSuccessful == true) {
+                        profile.token = it.body()?.token ?: throw IllegalStateException("token not in response body")
+                        profile.expire = it.body()?.expire ?: throw IllegalStateException("expire not in response body")
 
-                if (loginRes.isSuccessful) {
-                    val loginResponse = Gson().fromJson(loginRes.body()?.string(), LoginResponse::class.java)
-
-                    Log.d("Spaggiari", "token updated: " + loginResponse.token)
-
-                    profile.expire = loginResponse.expire ?: throw IllegalStateException("Cannot achieve expire.time from:\n${loginRes.body()?.string()}")
-                    profile.token = loginResponse.token ?: throw IllegalStateException("Cannot achieve token from:\n${loginRes.body()?.string()}")
-
-                    DatabaseHelper.database.profilesDao().update(profile)
-                }
+                        Log.d("Spaggiari", "token updated: " + it.body()?.token)
+                        DatabaseHelper.database.profilesDao().update(profile)
+                    }
+                }, {
+                    Log.e("Spaggiari", it?.localizedMessage, it)
+                })
             }
             try {
                 return@Interceptor chain.proceed(original)
