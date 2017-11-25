@@ -111,7 +111,6 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         }
     }
 
-
     override fun onStop() {
         val profile = Account.with(this).user
 
@@ -333,8 +332,6 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
      */
     override fun onItemClick(view: View?, position: Int, drawerItem: IDrawerItem<*, *>): Boolean {
         val fragment: Fragment
-
-        params?.scrollFlags = 0
         when (drawerItem.identifier.toInt()) {
             R.id.today -> {
                 fragment = FragmentToday()
@@ -343,8 +340,6 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                 fragment = FragmentAgenda()
             }
             R.id.medie -> {
-                tab_layout?.visibility = View.VISIBLE
-                params?.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS or AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP
                 fragment = FragmentMediePager()
             }
             R.id.lessons -> {
@@ -390,6 +385,8 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         }
 
         clearBackstack()
+
+        params?.scrollFlags = 0
         calendar.visibility = View.GONE
         tab_layout.visibility = View.GONE
         fab_big_add.visibility = View.GONE

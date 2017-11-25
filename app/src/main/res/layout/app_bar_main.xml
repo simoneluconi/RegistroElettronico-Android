@@ -20,7 +20,6 @@
             android:layout_height="?android:attr/actionBarSize"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-
         <com.github.sundeepk.compactcalendarview.CompactCalendarView
             android:id="@+id/calendar"
             android:layout_width="match_parent"
@@ -48,6 +47,5 @@
     </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/content_main" />
-
 
 </android.support.design.widget.CoordinatorLayout>
