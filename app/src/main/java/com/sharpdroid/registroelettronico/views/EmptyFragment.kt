@@ -3,7 +3,6 @@ package com.sharpdroid.registroelettronico.views
 import android.content.Context
 import android.graphics.PorterDuff
 import android.support.annotation.DrawableRes
-import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.widget.RelativeLayout
 import com.sharpdroid.registroelettronico.R
@@ -19,9 +18,8 @@ class EmptyFragment(context: Context, attributeSet: AttributeSet?, defStyleAttr:
     }
 
     fun setTextAndDrawable(text: String, @DrawableRes drawableRes: Int) {
-        val drawable = ContextCompat.getDrawable(context, drawableRes)
-        drawable?.setColorFilter(0xff636363.toInt(), PorterDuff.Mode.SRC_ATOP)
-        place_holder_image.setImageDrawable(drawable)
+        place_holder_image.setImageResource(drawableRes)
+        place_holder_image.setColorFilter(0xff636363.toInt(), PorterDuff.Mode.SRC_ATOP)
         place_holder_text.text = text
     }
 }
