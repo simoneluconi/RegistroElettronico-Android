@@ -83,72 +83,6 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         init(savedInstanceState)
     }
 
-    /**
-     * Watch for profile changes. If needed, show login activity
-     */
-    override fun onResume() {
-        super.onResume()
-        val profile = Profile.getProfile(this)
-
-        when {
-            PreferenceManager.getDefaultSharedPreferences(this).getBoolean("first_run", true) -> // first time task
-                startActivityForResult(Intent(this, Intro::class.java), 1)
-
-            profile == null -> {
-                val otherProfile = DatabaseHelper.database.profilesDao().randomProfile
-
-                //Found another user logged in
-                if (otherProfile != null) {
-                    onProfileChanged(null, otherProfile.asIProfile(), false)
-                } else {
-                    startActivityForResult(Intent(this, LoginActivity::class.java), 2)
-                }
-            }
-            else -> {
-                headerResult?.setActiveProfile(profile.id, true)
-                ifHuaweiAlert()
-                updateSubjects(profile)
-            }
-        }
-    }
-
-    override fun onStop() {
-        val profile = Account.with(this).user
-
-        DatabaseHelper.database.eventsDao().getLocalAsSingle(profile).subscribe { localEvent ->
-            Cloud.api.pushLocal(profile, localEvent).subscribe({}, { Log.e("Cloud", it.localizedMessage) })
-        }
-
-        DatabaseHelper.database.eventsDao().getRemoteInfoAsSingle(profile).subscribe { remoteInfo ->
-            Cloud.api.pushRemoteInfo(profile, remoteInfo).subscribe({}, { Log.e("Cloud", it.localizedMessage) })
-        }
-
-        super.onStop()
-        savedInstanceState = null
-    }
-
-    /**
-     * Listener for login activities
-     */
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1) {
-            if (resultCode == Activity.RESULT_OK) {
-                PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("first_run", false).apply()
-                init(null)
-            } else {
-                PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("first_run", true).apply()
-                //User cancelled the intro so we'll finish this activity too.
-                finish()
-            }
-        } else if (requestCode == 2) {
-            if (resultCode == Activity.RESULT_OK) {
-                init(null)
-            } else if (Profile.getProfile(this) == null) {
-                finish()
-            }
-        }
-    }
 
     private fun init(savedInstanceState: Bundle?) {
         initDrawer(savedInstanceState)
@@ -183,90 +117,6 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             Cloud.api.pullRemoteInfo(profile).subscribe({
                 DatabaseHelper.database.eventsDao().insertRemoteInfo(it)
             }, { Log.e("Cloud", it.localizedMessage) })
-        }
-    }
-
-    /**
-     * Animate Back button / Hamburger depending on backstack size
-     */
-    private fun initBackButton() {
-        canOpenDrawer = fragmentManager?.backStackEntryCount == 0
-        if (toggle == null) return
-
-        with(ObjectAnimator.ofFloat(toggle?.drawerArrowDrawable, "progress", if (!canOpenDrawer) 1f else 0f)) {
-            interpolator = DecelerateInterpolator(1f)
-            duration = 250
-            start()
-        }
-
-        if (!canOpenDrawer) {
-            //drawer!!.drawerLayout?.removeDrawerListener(toggle!!)
-            drawer!!.drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-
-        } else {
-            drawer!!.drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-            //drawer!!.drawerLayout?.addDrawerListener(toggle!!)
-        }
-    }
-
-    /**
-     * Animate title change
-     */
-    override fun setTitle(title: CharSequence) {
-        TransitionManager.beginDelayedTransition(toolbar, ChangeText().setChangeBehavior(ChangeText.CHANGE_BEHAVIOR_IN).setDuration(250))
-        super.setTitle(title)
-    }
-
-    /**
-     * Save drawer's state
-     */
-    override fun onSaveInstanceState(outState: Bundle?) {
-        if (drawer != null) {
-            drawer?.saveInstanceState(outState)
-            headerResult?.saveInstanceState(outState)
-        }
-
-        super.onSaveInstanceState(outState)
-    }
-
-    private fun ifHuaweiAlert() {
-        val intent = Intent()
-        intent.component = ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.optimize.process.ProtectActivity")
-
-        if (intent.resolveActivityInfo(packageManager, 0) != null &&
-                !PreferenceManager.getDefaultSharedPreferences(this).getBoolean("huawei_do_not_ask_again", false) &&
-                "huawei".equals(android.os.Build.MANUFACTURER, true) &&
-                !PreferenceManager.getDefaultSharedPreferences(this).getBoolean("huawei_protected", false)) {
-
-            val doNotAskAgain = CheckBox(this)
-            val l = LinearLayout(this)
-            with(doNotAskAgain) {
-                text = context.getString(R.string.do_not_ask_again)
-                isChecked = false
-                gravity = Gravity.CENTER_VERTICAL
-            }
-            val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            params.setMargins(dp(16), dp(16), dp(16), dp(0))
-            l.addView(doNotAskAgain, params)
-
-            if (huaweiAlert == null)
-                huaweiAlert = AlertDialog.Builder(this)
-                        .setTitle(R.string.huawei_headline)
-                        .setMessage(R.string.huawei_text)
-                        .setView(l)
-                        .setPositiveButton("OK") { _, _ ->
-                            try {
-                                startActivity(intent)
-                                PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("huawei_protected", true).apply()
-                            } catch (e: ActivityNotFoundException) {
-                                Toast.makeText(applicationContext, "Non è possibile aggiungere l'app fra le app protette.", Toast.LENGTH_SHORT).show()
-                                PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("huawei_do_not_ask_again", true).apply()
-                            }
-                        }.setNegativeButton(android.R.string.cancel) { _, _ ->
-                    PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("huawei_do_not_ask_again", doNotAskAgain.isChecked).apply()
-
-                }.show()
-
         }
     }
 
@@ -316,12 +166,123 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
     }
 
+    /**
+     * Watch for profile changes. If needed, show login activity
+     */
+    override fun onResume() {
+        super.onResume()
+        val profile = Profile.getProfile(this)
+
+        when {
+        // First time opening the app
+            PreferenceManager.getDefaultSharedPreferences(this).getBoolean("first_run", true) ->
+                startActivityForResult(Intent(this, Intro::class.java), 1)
+
+        // Last user has logged out
+            profile == null -> {
+                val otherProfile = DatabaseHelper.database.profilesDao().randomProfile
+
+                //Found another user logged in
+                if (otherProfile != null) {
+                    onProfileChanged(null, otherProfile.asIProfile(), false)
+                } else {
+                    startActivityForResult(Intent(this, LoginActivity::class.java), 2)
+                }
+            }
+        // Everything's OK
+            else -> {
+                headerResult?.setActiveProfile(profile.id, true)
+                ifHuaweiAlert()
+                updateSubjects(profile)
+            }
+        }
+    }
+
+    override fun onStop() {
+        val profile = Account.with(this).user
+
+        DatabaseHelper.database.eventsDao().getLocalAsSingle(profile).subscribe { localEvent ->
+            Cloud.api.pushLocal(profile, localEvent).subscribe({}, { Log.e("Cloud", it.localizedMessage) })
+        }
+
+        DatabaseHelper.database.eventsDao().getRemoteInfoAsSingle(profile).subscribe { remoteInfo ->
+            Cloud.api.pushRemoteInfo(profile, remoteInfo).subscribe({}, { Log.e("Cloud", it.localizedMessage) })
+        }
+
+        super.onStop()
+        savedInstanceState = null
+    }
+
     override fun onBackPressed() {
         if (drawer?.drawerLayout?.isDrawerOpen(GravityCompat.START) == true) {
             drawer?.drawerLayout?.closeDrawer(GravityCompat.START)
         } else {
             super.onBackPressed()
         }
+    }
+
+    /**
+     * Listener for login activities
+     */
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        //User is coming from Intro
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("first_run", false).apply()
+                init(null)
+            } else {
+                PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("first_run", true).apply()
+                //User cancelled the intro so we'll finish this activity too.
+                finish()
+            }
+        }
+
+        //User is coming from LoginActivity or FragmentLogin
+        else if (requestCode == 2) {
+            if (resultCode == Activity.RESULT_OK) {
+                init(null)
+            } else if (Profile.getProfile(this) == null) {
+                finish()
+            }
+        }
+    }
+
+    /**
+     * Animate Back button / Hamburger depending on backstack size
+     */
+    private fun initBackButton() {
+        canOpenDrawer = fragmentManager?.backStackEntryCount == 0
+        if (toggle == null) return
+
+        with(ObjectAnimator.ofFloat(toggle?.drawerArrowDrawable, "progress", if (!canOpenDrawer) 1f else 0f)) {
+            interpolator = DecelerateInterpolator(1f)
+            duration = 250
+            start()
+        }
+
+        drawer!!.drawerLayout?.setDrawerLockMode(if (canOpenDrawer) DrawerLayout.LOCK_MODE_LOCKED_CLOSED else DrawerLayout.LOCK_MODE_UNLOCKED)
+    }
+
+    /**
+     * Animate title change
+     */
+    override fun setTitle(title: CharSequence) {
+        TransitionManager.beginDelayedTransition(toolbar, ChangeText().setChangeBehavior(ChangeText.CHANGE_BEHAVIOR_IN).setDuration(250))
+        super.setTitle(title)
+    }
+
+    /**
+     * Save drawer's state
+     */
+    override fun onSaveInstanceState(outState: Bundle?) {
+        if (drawer != null) {
+            drawer?.saveInstanceState(outState)
+            headerResult?.saveInstanceState(outState)
+        }
+
+        super.onSaveInstanceState(outState)
     }
 
     private fun clearBackstack() {
@@ -439,6 +400,48 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             }.show()
         }
         return false
+    }
+
+
+    private fun ifHuaweiAlert() {
+        val intent = Intent()
+        intent.component = ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.optimize.process.ProtectActivity")
+
+        if (intent.resolveActivityInfo(packageManager, 0) != null &&
+                !PreferenceManager.getDefaultSharedPreferences(this).getBoolean("huawei_do_not_ask_again", false) &&
+                "huawei".equals(android.os.Build.MANUFACTURER, true) &&
+                !PreferenceManager.getDefaultSharedPreferences(this).getBoolean("huawei_protected", false)) {
+
+            val doNotAskAgain = CheckBox(this)
+            val l = LinearLayout(this)
+            with(doNotAskAgain) {
+                text = context.getString(R.string.do_not_ask_again)
+                isChecked = false
+                gravity = Gravity.CENTER_VERTICAL
+            }
+            val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            params.setMargins(dp(16), dp(16), dp(16), dp(0))
+            l.addView(doNotAskAgain, params)
+
+            if (huaweiAlert == null)
+                huaweiAlert = AlertDialog.Builder(this)
+                        .setTitle(R.string.huawei_headline)
+                        .setMessage(R.string.huawei_text)
+                        .setView(l)
+                        .setPositiveButton("OK") { _, _ ->
+                            try {
+                                startActivity(intent)
+                                PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("huawei_protected", true).apply()
+                            } catch (e: ActivityNotFoundException) {
+                                Toast.makeText(applicationContext, "Non è possibile aggiungere l'app fra le app protette.", Toast.LENGTH_SHORT).show()
+                                PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("huawei_do_not_ask_again", true).apply()
+                            }
+                        }.setNegativeButton(android.R.string.cancel) { _, _ ->
+                    PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("huawei_do_not_ask_again", doNotAskAgain.isChecked).apply()
+
+                }.show()
+
+        }
     }
 
     companion object {
