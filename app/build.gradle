@@ -135,7 +135,7 @@ dependencies {
         transitive = true
     }
 
-    kapt 'com.android.databinding:compiler:3.0.0'
+    kapt 'com.android.databinding:compiler:3.0.1'
 
     implementation 'com.afollestad.material-dialogs:core:0.9.4.7'
     implementation 'com.akexorcist:RoundCornerProgressBar:2.0.3'

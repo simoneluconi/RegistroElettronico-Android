@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="48dp"
-    android:background="?attr/selectableItemBackground"
+    android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:gravity="center_vertical"
     android:orientation="horizontal"
@@ -18,7 +18,7 @@
         android:layout_height="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
-        android:contentDescription="TODO"
+        android:contentDescription="@string/abc"
         android:tint="@color/icon_on_white"
         app:srcCompat="@drawable/ic_timeline" />
 

@@ -5,7 +5,7 @@
     <item
         android:id="@+id/apply"
         android:icon="@drawable/ic_check"
-        android:title="Applica modifiche"
+        android:title="@string/applica_modifiche"
         app:showAsAction="always" />
 
 </menu>

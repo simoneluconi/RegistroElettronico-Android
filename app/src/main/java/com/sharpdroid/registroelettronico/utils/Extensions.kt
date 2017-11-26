@@ -2,18 +2,7 @@
 
 package com.sharpdroid.registroelettronico.utils
 
-import android.os.Build
-import android.support.annotation.StyleRes
-import android.widget.TextView
 import java.util.*
-
-fun TextView.setTextAppearanceCompat(@StyleRes style: Int) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        setTextAppearance(style)
-    } else {
-        setTextAppearance(context, style)
-    }
-}
 
 fun String?.or(s: String): String = if (isNullOrEmpty()) s else this!!
 

@@ -1,5 +1,6 @@
 package com.sharpdroid.registroelettronico.activities
 
+import android.annotation.SuppressLint
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
@@ -150,6 +151,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
         return target
     }
 
+    @SuppressLint("InflateParams")
     private fun initTarget(avg: AverageType, subject: SubjectPOJO?, animate: Boolean) {
         target.setTarget(avg.avg(), getTarget(subject), animate)
         target.setButtonsListener(View.OnClickListener { _ ->

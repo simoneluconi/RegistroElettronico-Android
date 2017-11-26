@@ -17,7 +17,7 @@
         android:layout_marginRight="32dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:contentDescription="TODO" />
+        android:contentDescription="@string/abc" />
 
     <LinearLayout
         android:layout_width="match_parent"
