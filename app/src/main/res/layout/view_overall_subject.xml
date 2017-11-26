@@ -37,7 +37,7 @@
                 android:id="@+id/orale"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="-"
+                android:text="@string/dash"
                 android:textColor="@color/textcolorgrey"
                 android:textSize="18sp" />
 
@@ -61,7 +61,7 @@
                 android:id="@+id/scritto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="-"
+                android:text="@string/dash"
                 android:textColor="@color/textcolorgrey"
                 android:textSize="18sp" />
 
@@ -85,7 +85,7 @@
                 android:id="@+id/pratico"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="-"
+                android:text="@string/dash"
                 android:textColor="@color/textcolorgrey"
                 android:textSize="18sp" />
 

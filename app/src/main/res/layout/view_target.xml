@@ -46,7 +46,7 @@
                 android:id="@+id/media"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="-"
+                android:text="@string/dash"
                 android:textColor="@color/textcolorgrey"
                 android:textSize="14sp" />
         </LinearLayout>
@@ -72,7 +72,7 @@
                 android:id="@+id/obiettivo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="-"
+                android:text="@string/dash"
                 android:textColor="@color/textcolorgrey"
                 android:textSize="14sp" />
         </LinearLayout>
@@ -96,7 +96,7 @@
             style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?selectableItemBackgroundBorderless"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:text="@string/imposta" />
 
         <Button
@@ -104,7 +104,7 @@
             style="@style/Base.Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?selectableItemBackgroundBorderless"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:text="@string/dettagli"
             android:textColor="@color/textcolorgrey" />
     </LinearLayout>

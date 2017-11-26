@@ -14,7 +14,7 @@
         android:layout_marginTop="8dp"
         android:layout_toLeftOf="@+id/date"
         android:layout_toStartOf="@+id/date"
-        android:text="-" />
+        android:text="@string/dash" />
 
     <TextView
         android:id="@+id/date"
@@ -26,5 +26,5 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="8dp"
-        android:text="-" />
+        android:text="@string/dash" />
 </RelativeLayout>
