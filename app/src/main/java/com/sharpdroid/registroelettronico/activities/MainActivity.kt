@@ -16,6 +16,7 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.animation.DecelerateInterpolator
@@ -115,11 +116,11 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         val profile = Account.with(this).user
 
         DatabaseHelper.database.eventsDao().getLocalAsSingle(profile).subscribe { localEvent ->
-            Cloud.api.pushLocal(profile, localEvent)
+            Cloud.api.pushLocal(profile, localEvent).subscribe({}, { Log.e("Cloud", it.localizedMessage) })
         }
 
         DatabaseHelper.database.eventsDao().getRemoteInfoAsSingle(profile).subscribe { remoteInfo ->
-            Cloud.api.pushRemoteInfo(profile, remoteInfo)
+            Cloud.api.pushRemoteInfo(profile, remoteInfo).subscribe({}, { Log.e("Cloud", it.localizedMessage) })
         }
 
         super.onStop()
@@ -175,13 +176,13 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
             val profile = Account.with(this).user
 
-            Cloud.api.pullLocal(profile).subscribe {
+            Cloud.api.pullLocal(profile).subscribe({
                 DatabaseHelper.database.eventsDao().insertLocal(it)
-            }
+            }, { Log.e("Cloud", it.localizedMessage) })
 
-            Cloud.api.pullRemoteInfo(profile).subscribe {
+            Cloud.api.pullRemoteInfo(profile).subscribe({
                 DatabaseHelper.database.eventsDao().insertRemoteInfo(it)
-            }
+            }, { Log.e("Cloud", it.localizedMessage) })
         }
     }
 
