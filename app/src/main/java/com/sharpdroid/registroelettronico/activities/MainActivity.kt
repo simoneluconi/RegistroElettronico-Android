@@ -149,6 +149,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                             PrimaryDrawerItem().withIdentifier(R.id.absences.toLong()).withName(R.string.absences).withIcon(R.drawable.ic_supervisor).withIconTintingEnabled(true),
                             PrimaryDrawerItem().withIdentifier(R.id.notes.toLong()).withName(R.string.note).withIcon(R.drawable.ic_error).withIconTintingEnabled(true),
                             PrimaryDrawerItem().withIdentifier(R.id.communications.toLong()).withName(R.string.communications).withIcon(R.drawable.ic_assignment).withIconTintingEnabled(true),
+                            PrimaryDrawerItem().withIdentifier(R.id.schedule.toLong()).withName(R.string.schedule).withIcon(R.drawable.ic_schedule_black_24dp).withIconTintingEnabled(true),
                             PrimaryDrawerItem().withIdentifier(R.id.settings.toLong()).withName(R.string.settings).withIcon(R.drawable.ic_settings).withIconTintingEnabled(true))
                     .addDrawerItems(DividerDrawerItem(),
                             PrimaryDrawerItem().withIdentifier(R.id.nav_share.toLong()).withName(R.string.share).withIcon(R.drawable.ic_menu_share).withIconTintingEnabled(true).withSelectable(false),
@@ -262,7 +263,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             start()
         }
 
-        drawer!!.drawerLayout?.setDrawerLockMode(if (canOpenDrawer) DrawerLayout.LOCK_MODE_LOCKED_CLOSED else DrawerLayout.LOCK_MODE_UNLOCKED)
+        drawer!!.drawerLayout?.setDrawerLockMode(if (!canOpenDrawer) DrawerLayout.LOCK_MODE_LOCKED_CLOSED else DrawerLayout.LOCK_MODE_UNLOCKED)
     }
 
     /**
@@ -318,6 +319,9 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             }
             R.id.communications -> {
                 fragment = FragmentCommunications()
+            }
+            R.id.schedule -> {
+                fragment = FragmentSchedule()
             }
             R.id.settings -> fragment = FragmentSettings()
             R.id.nav_share -> {

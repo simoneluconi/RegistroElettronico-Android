@@ -12,6 +12,7 @@
     <string name="communicate">Communicate</string>
     <string name="justifications">Assenze</string>
     <string name="communications">Comunicazioni</string>
+    <string name="schedule">Orario</string>
     <string name="lessons">Lezioni</string>
     <string name="note">Note</string>
     <string name="settings">Impostazioni</string>
@@ -155,4 +156,7 @@
     <string name="ordina_per">Ordina Per</string>
     <string name="applica_modifiche">Applica modifiche</string>
     <string name="voto">Voto</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

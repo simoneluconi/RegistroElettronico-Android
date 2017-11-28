@@ -77,6 +77,9 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="3124a44c739be03092b7db7c9c44a5052bd37fa5" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
         <service
             android:name=".notification.FirebaseReceiver"
