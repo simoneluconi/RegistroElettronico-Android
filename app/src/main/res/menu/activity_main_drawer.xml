@@ -35,6 +35,10 @@
             android:icon="@drawable/ic_assignment"
             android:title="@string/communications" />
         <item
+            android:id="@+id/schedule"
+            android:icon="@drawable/ic_assignment"
+            android:title="@string/communications" />
+        <item
             android:id="@+id/settings"
             android:icon="@drawable/ic_settings"
             android:title="@string/settings" />
