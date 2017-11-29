@@ -128,7 +128,7 @@ class FragmentToday : Fragment() {
 
         if (savedInstanceState != null && savedInstanceState["scrollY"] != null) {
             nested_scroll_view.postDelayed({
-                nested_scroll_view.scrollY = savedInstanceState.getInt("scrollY")
+                nested_scroll_view?.scrollY = savedInstanceState.getInt("scrollY")
             }, 20)
         }
 
