@@ -3,7 +3,7 @@ package com.sharpdroid.registroelettronico.views.timetable
 import android.content.Context
 import android.view.View
 
-class Divider(context: Context, val mode: Int, thick: Boolean) : View(context) {
+class Divider(context: Context, val mode: Int, var thick: Boolean) : View(context) {
 
     init {
         if (thick) setBackgroundColor(thick_color) else setBackgroundColor(thin_color)
