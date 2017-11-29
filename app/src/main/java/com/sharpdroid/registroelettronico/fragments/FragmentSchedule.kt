@@ -19,7 +19,13 @@ class FragmentSchedule : Fragment() {
         val ll = NestedScrollView(context)
         ll.layoutParams = LayoutHelper.createFrame(MATCH_PARENT, WRAP_CONTENT, 0, 0f, 0f, 0f, 0f)
         ll.addView(l)
+        ll.setBackgroundColor(0xffffffff.toInt())
         return ll
+    }
+
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        activity.title = "Orario"
     }
 
 }
