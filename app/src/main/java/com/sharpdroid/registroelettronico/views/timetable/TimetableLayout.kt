@@ -75,12 +75,13 @@ class TimetableLayout : ViewGroup {
     }
 
     init {
+        //Vertical dividers
         for (i in 0 until 5) {
             addView(Divider(context, Divider.VERTICAL, true))
         }
+        //Primary dividers w/ TextViews
         for (i in 0 until 23) {
             addView(Divider(context, Divider.HORIZONTAL, true))
-            addView(Divider(context, Divider.HORIZONTAL, false))
 
             val textHour = TextView(context)
             textHour.text = (i + 1).toString()
@@ -88,6 +89,10 @@ class TimetableLayout : ViewGroup {
             textHour.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
             textHour.typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
             addView(textHour)
+        }
+        //Secondary dividers
+        for (i in 0 until 24) {
+            addView(Divider(context, Divider.HORIZONTAL, false))
         }
     }
 
