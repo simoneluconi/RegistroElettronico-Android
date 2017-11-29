@@ -11,7 +11,6 @@ class TimetableLayout : ViewGroup {
     var tileWidth = dp(20)
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        println("layout")
         var hDividers = 0
         var vDividers = 0
         for (i in 0 until childCount) {
@@ -37,13 +36,12 @@ class TimetableLayout : ViewGroup {
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        println("measure")
         val specWidth = MeasureSpec.getSize(widthMeasureSpec)
         val specHeight = 23 * tileHeight
 
         tileWidth = (specWidth - marginLeft) / 6
 
-        setMeasuredDimension(specWidth, specWidth)
+        setMeasuredDimension(specWidth, specHeight)
 
         for (i in 0 until childCount) {
             with(getChildAt(i)) {
