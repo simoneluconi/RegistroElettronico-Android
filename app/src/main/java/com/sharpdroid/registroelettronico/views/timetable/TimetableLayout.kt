@@ -2,6 +2,7 @@ package com.sharpdroid.registroelettronico.views.timetable
 
 import android.content.Context
 import android.graphics.Typeface
+import android.os.Bundle
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.GestureDetector
@@ -20,10 +21,13 @@ class TimetableLayout : ViewGroup {
     private val addView: AddView
     private val addViewMargin = dp(8)
 
+    private var addViewColumn = -1
+    private var addViewRow = -1
+
     private val detector by lazy {
         GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
             override fun onSingleTapUp(e: MotionEvent): Boolean {
-                updateAddView(e.x, e.y)
+                updateAddView(column(e.x), row(e.y))
                 return true
             }
         })
@@ -101,8 +105,10 @@ class TimetableLayout : ViewGroup {
                     }
                 }
             }
-
         }
+
+        if (addViewRow != -1 && addViewColumn != -1)
+            updateAddView(addViewColumn, addViewRow)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -129,21 +135,41 @@ class TimetableLayout : ViewGroup {
         }
     }
 
-    private fun updateAddView(x: Float, y: Float) {
-        val column = column(x)
-        val row = row(y)
+    private fun updateAddView(column: Int, row: Int) {
+        addViewColumn = column
+        addViewRow = row
 
         with(addView) {
             visibility = View.VISIBLE
-            translationX = (marginLeft + tileWidth * column + divider + addViewMargin / 2).toFloat()
-            translationY = (tileHeight * row + divider + addViewMargin / 2).toFloat()
+            translationX = marginLeft + tileWidth * column + divider + addViewMargin / 2f
+            translationY = tileHeight * row + divider + addViewMargin / 2f
             setOnClickListener {
-                it.postDelayed({ it?.visibility = GONE }, 300)
+                clearAddView()
                 //startActivity
             }
         }
 
         bringChildToFront(addView)
+    }
+
+    private fun clearAddView() {
+        addViewRow = -1
+        addViewColumn = -1
+        addView.visibility = View.GONE
+    }
+
+    fun saveInstanceState(out: Bundle?) {
+        if (addViewColumn != -1 && addViewRow != -1) {
+            out?.putInt(columnBundleKey, addViewColumn)
+            out?.putInt(rowBundleKey, addViewRow)
+        }
+    }
+
+    fun restoreInstanceState(out: Bundle?) {
+        if (out?.containsKey(columnBundleKey) == true && out.containsKey(rowBundleKey)) {
+            addViewColumn = out[columnBundleKey] as Int
+            addViewRow = out[rowBundleKey] as Int
+        }
     }
 
     private fun x(columnIndex: Int): Int = marginLeft + tileWidth * columnIndex
@@ -154,4 +180,9 @@ class TimetableLayout : ViewGroup {
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+
+    companion object {
+        private val columnBundleKey = "com.sharpdroid.registroelettronico.views.timetable.TimetableLayout.addViewColumn"
+        private val rowBundleKey = "com.sharpdroid.registroelettronico.views.timetable.TimetableLayout.addViewRow"
+    }
 }
