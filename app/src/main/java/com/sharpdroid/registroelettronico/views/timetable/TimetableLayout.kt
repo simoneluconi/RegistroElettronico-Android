@@ -20,9 +20,12 @@ class TimetableLayout : ViewGroup {
 
     private val addView: AddView
     private val addViewMargin = dp(8)
+    private val itemMargin = dp(4)
 
     private var addViewColumn = -1
     private var addViewRow = -1
+
+    private val itemViews = mutableListOf<SingleTimeLayout>()
 
     private val detector by lazy {
         GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
@@ -66,6 +69,13 @@ class TimetableLayout : ViewGroup {
             detector.onTouchEvent(motionEvent)
             true
         }
+
+        val item = SingleTimeLayout(context)
+        item.setOnClickListener {
+            println("click item")
+        }
+        itemViews.add(item)
+        addView(item)
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
@@ -92,6 +102,9 @@ class TimetableLayout : ViewGroup {
                                 }
                             }
                         }
+                    }
+                    is SingleTimeLayout -> {
+                        layout(marginLeft + itemMargin / 2 + divider, itemMargin / 2, tileWidth + marginLeft - itemMargin / 2, measuredHeight - itemMargin / 2)
                     }
                     is TextView -> {
                         if (id in 1 until 24) {
@@ -121,15 +134,17 @@ class TimetableLayout : ViewGroup {
         for (i in 0 until childCount) {
             with(getChildAt(i)) {
                 when (this) {
-                    is Divider ->
+                    is Divider -> {
                         when (mode) {
                             Divider.VERTICAL -> measure(MeasureSpec.makeMeasureSpec(divider, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(specHeight, MeasureSpec.EXACTLY))
                             Divider.HORIZONTAL -> measure(MeasureSpec.makeMeasureSpec(specWidth - marginLeft, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(divider, MeasureSpec.EXACTLY))
                         }
-                    is TextView ->
-                        measure(MeasureSpec.getSize(getWidth()), MeasureSpec.getSize(getHeight()))
-                    is AddView ->
-                        measure(MeasureSpec.makeMeasureSpec(tileWidth - divider - addViewMargin, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(tileHeight - divider - addViewMargin, MeasureSpec.EXACTLY))
+                    }
+                    is SingleTimeLayout -> {
+                        measure(MeasureSpec.makeMeasureSpec(tileWidth - itemMargin, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec((tileHeight * 1.2).toInt() - itemMargin, MeasureSpec.EXACTLY))
+                    }
+                    is TextView -> measure(MeasureSpec.getSize(getWidth()), MeasureSpec.getSize(getHeight()))
+                    is AddView -> measure(MeasureSpec.makeMeasureSpec(tileWidth - divider - addViewMargin, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(tileHeight - divider - addViewMargin, MeasureSpec.EXACTLY))
                 }
             }
         }
