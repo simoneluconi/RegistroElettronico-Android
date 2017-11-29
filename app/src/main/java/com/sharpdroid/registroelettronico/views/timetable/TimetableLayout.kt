@@ -54,6 +54,8 @@ class TimetableLayout : ViewGroup {
         //AddView
         addView = AddView(context)
         addView.visibility = View.GONE
+        addView.pivotX = measuredWidth / 2f
+        addView.pivotY = measuredHeight / 2f
         addView(addView)
 
         setOnTouchListener { _, motionEvent ->
@@ -136,7 +138,7 @@ class TimetableLayout : ViewGroup {
             translationX = (marginLeft + tileWidth * column + divider + addViewMargin / 2).toFloat()
             translationY = (tileHeight * row + divider + addViewMargin / 2).toFloat()
             setOnClickListener {
-                visibility = View.GONE
+                it.postDelayed({ it?.visibility = GONE }, 300)
                 //startActivity
             }
         }

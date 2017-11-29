@@ -1,14 +1,14 @@
 package com.sharpdroid.registroelettronico.views.timetable
 
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
+import com.sharpdroid.registroelettronico.R
 
 class AddView : View {
 
     init {
-        setBackgroundColor(Color.RED)
+        setBackgroundResource(R.drawable.add_view)
     }
 
     constructor(context: Context?) : super(context)
