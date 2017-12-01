@@ -10,7 +10,7 @@ import android.widget.TextView
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.utils.Metodi.dp
 
-class SingleTimeLayout : TextView {
+class TimetableItem : TextView {
     private val padding = dp(4)
 
     init {

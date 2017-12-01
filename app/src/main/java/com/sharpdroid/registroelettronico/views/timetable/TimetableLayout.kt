@@ -25,7 +25,7 @@ class TimetableLayout : ViewGroup {
     private var addViewColumn = -1
     private var addViewRow = -1
 
-    private val itemViews = mutableListOf<SingleTimeLayout>()
+    private val itemViews = mutableListOf<TimetableItem>()
 
     private val detector by lazy {
         GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
@@ -70,7 +70,7 @@ class TimetableLayout : ViewGroup {
             true
         }
 
-        val item = SingleTimeLayout(context)
+        val item = TimetableItem(context)
         item.setOnClickListener {
             println("click item")
         }
@@ -103,7 +103,7 @@ class TimetableLayout : ViewGroup {
                             }
                         }
                     }
-                    is SingleTimeLayout -> {
+                    is TimetableItem -> {
                         layout(marginLeft + itemMargin / 2 + divider, itemMargin / 2, tileWidth + marginLeft - itemMargin / 2, measuredHeight - itemMargin / 2)
                     }
                     is TextView -> {
@@ -140,7 +140,7 @@ class TimetableLayout : ViewGroup {
                             Divider.HORIZONTAL -> measure(MeasureSpec.makeMeasureSpec(specWidth - marginLeft, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(divider, MeasureSpec.EXACTLY))
                         }
                     }
-                    is SingleTimeLayout -> {
+                    is TimetableItem -> {
                         measure(MeasureSpec.makeMeasureSpec(tileWidth - itemMargin, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec((tileHeight * 1.2).toInt() - itemMargin, MeasureSpec.EXACTLY))
                     }
                     is TextView -> measure(MeasureSpec.getSize(getWidth()), MeasureSpec.getSize(getHeight()))
