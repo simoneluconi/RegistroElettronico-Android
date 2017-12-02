@@ -26,7 +26,6 @@ class TimetableItemView : TextView {
                 disposable = DatabaseHelper.database.subjectsDao().getSubjectInfoSingle(value!!.subject).observeOn(AndroidSchedulers.mainThread()).subscribe { it ->
                     val t = it.getOrNull(0)
                     text = capitalizeEach(t?.subjectInfo?.getOrNull(0)?.description.or(t?.subject?.description.orEmpty()), false)
-                    println(text)
                 }
             }
         }

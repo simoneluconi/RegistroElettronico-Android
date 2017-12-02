@@ -35,11 +35,17 @@ class FragmentSchedule : Fragment() {
         DatabaseHelper.database.timetableDao().queryProfile(Account.with(context).user).observe(this, Observer {
             timetable.setupData(it.orEmpty())
         })
+
+        if (savedInstanceState != null && savedInstanceState["scrollY"] != null)
+            (timetable.parent as NestedScrollView).postDelayed({
+                (timetable.parent as NestedScrollView?)?.scrollY = savedInstanceState["scrollY"] as Int
+            }, 20)
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
         timetable.saveInstanceState(outState)
+        outState?.putInt("scrollY", (timetable.parent as NestedScrollView).scrollY)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
