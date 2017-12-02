@@ -26,6 +26,8 @@ class TimetableLayout : ViewGroup {
     private var addViewColumn = -1
     private var addViewRow = -1
 
+    var addListener: ((col: Int, row: Int) -> Unit)? = null
+
     private val data = mutableListOf<TimetableItem>()
 
     private val detector by lazy {
@@ -175,7 +177,7 @@ class TimetableLayout : ViewGroup {
             translationY = tileHeight * row + divider + addViewMargin / 2f
             setOnClickListener {
                 clearAddView()
-                //startActivity
+                addListener?.invoke(column, row)
             }
         }
 

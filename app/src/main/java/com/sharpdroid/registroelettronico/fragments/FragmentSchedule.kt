@@ -8,6 +8,7 @@ import android.support.v4.widget.NestedScrollView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.afollestad.materialdialogs.MaterialDialog
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.LayoutHelper
@@ -31,6 +32,10 @@ class FragmentSchedule : Fragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity.title = "Orario"
+
+        timetable.addListener = { col, row ->
+            MaterialDialog.Builder(context).title("Aggiungi lezioni").content("Seleziona la materia della lezione").show()
+        }
 
         DatabaseHelper.database.timetableDao().queryProfile(Account.with(context).user).observe(this, Observer {
             timetable.setupData(it.orEmpty())
