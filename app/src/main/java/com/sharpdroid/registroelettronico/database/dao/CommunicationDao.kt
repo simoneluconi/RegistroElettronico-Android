@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.*
 import com.sharpdroid.registroelettronico.database.entities.Communication
 import com.sharpdroid.registroelettronico.database.entities.CommunicationInfo
+import io.reactivex.Flowable
 
 @Dao
 interface CommunicationDao {
@@ -13,6 +14,9 @@ interface CommunicationDao {
 
     @Query("SELECT * FROM COMMUNICATION WHERE PROFILE = :profile ORDER BY DATE DESC")
     fun loadCommunications(profile: Long): LiveData<List<Communication>>
+
+    @Query("SELECT * FROM COMMUNICATION WHERE PROFILE = :profile ORDER BY DATE DESC")
+    fun loadCommunicationsFlow(profile: Long): Flowable<List<Communication>>
 
     @Query("SELECT * FROM COMMUNICATION WHERE PROFILE = :profile ORDER BY DATE DESC")
     fun getCommunicationsList(profile: Long): List<Communication>

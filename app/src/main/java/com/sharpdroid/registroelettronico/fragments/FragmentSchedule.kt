@@ -1,12 +1,15 @@
 package com.sharpdroid.registroelettronico.fragments
 
 
+import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.NestedScrollView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
+import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.LayoutHelper
 import com.sharpdroid.registroelettronico.utils.LayoutHelper.MATCH_PARENT
 import com.sharpdroid.registroelettronico.utils.LayoutHelper.WRAP_CONTENT
@@ -28,6 +31,10 @@ class FragmentSchedule : Fragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity.title = "Orario"
+
+        DatabaseHelper.database.timetableDao().queryProfile(Account.with(context).user).observe(this, Observer {
+            timetable.setupData(it.orEmpty())
+        })
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {

@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.*
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.ContentViewEvent
@@ -15,6 +16,7 @@ import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.AddEventActivity
 import com.sharpdroid.registroelettronico.adapters.AgendaAdapter
+import com.sharpdroid.registroelettronico.api.cloud.v1.Cloud
 import com.sharpdroid.registroelettronico.database.entities.LocalAgenda
 import com.sharpdroid.registroelettronico.database.entities.RemoteAgendaInfo
 import com.sharpdroid.registroelettronico.database.entities.SuperAgenda
@@ -142,6 +144,17 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
             updateCalendar()
         })
 
+
+        val profile = Account.with(context).user
+
+        Cloud.api.pullLocal(profile).subscribe({
+            DatabaseHelper.database.eventsDao().insertLocal(it)
+        }, { Log.e("Cloud", it.localizedMessage) })
+
+        Cloud.api.pullRemoteInfo(profile).subscribe({
+            DatabaseHelper.database.eventsDao().insertRemoteInfo(it)
+        }, { Log.e("Cloud", it.localizedMessage) })
+
         if (!BuildConfig.DEBUG)
             Answers.getInstance().logContentView(ContentViewEvent().putContentId("Agenda"))
     }
@@ -159,6 +172,20 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         super.onResume()
         activity.calendar.visibility = View.VISIBLE
         setTitleSubtitle(mDate)
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        val profile = Account.with(context).user
+
+        DatabaseHelper.database.eventsDao().getLocalAsSingle(profile).subscribe { localEvent ->
+            Cloud.api.pushLocal(profile, localEvent).subscribe({}, { Log.e("Cloud", it.localizedMessage) })
+        }
+
+        DatabaseHelper.database.eventsDao().getRemoteInfoAsSingle(profile).subscribe { remoteInfo ->
+            Cloud.api.pushRemoteInfo(profile, remoteInfo).subscribe({}, { Log.e("Cloud", it.localizedMessage) })
+        }
     }
 
     private fun prepareDate(predictNextDay: Boolean) {
