@@ -9,6 +9,7 @@ import com.sharpdroid.registroelettronico.database.entities.Teacher
 import com.sharpdroid.registroelettronico.database.pojos.AverageType
 import com.sharpdroid.registroelettronico.database.pojos.SubjectPOJO
 import com.sharpdroid.registroelettronico.database.pojos.SubjectWithLessons
+import io.reactivex.Single
 
 @Dao
 interface SubjectDao {
@@ -22,6 +23,9 @@ interface SubjectDao {
 
     @Query("SELECT * FROM SUBJECT WHERE ID = :id LIMIT 1")
     fun getSubjectInfo(id: Long): LiveData<SubjectPOJO>
+
+    @Query("SELECT * FROM SUBJECT WHERE ID = :id LIMIT 1")
+    fun getSubjectInfoSingle(id: Long): Single<SubjectPOJO>
 
     @Query("select * from SUBJECT where SUBJECT.ID IN (SELECT  SUBJECT_TEACHER.SUBJECT from SUBJECT_TEACHER WHERE SUBJECT_TEACHER.PROFILE=:profile) ORDER BY DESCRIPTION ASC")
     fun getSubjects(profile: Long): LiveData<List<Subject>>
