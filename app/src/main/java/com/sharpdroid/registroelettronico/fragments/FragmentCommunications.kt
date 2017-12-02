@@ -71,6 +71,9 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
 
     lateinit private var mRVAdapter: CommunicationAdapter
     lateinit private var emptyHolder: EmptyFragment
+    private val viewModel by lazy {
+        ViewModelProviders.of(this)[CommunicationViewModel::class.java]
+    }
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -109,7 +112,7 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
         if (savedInstanceState == null)
             download()
 
-        ViewModelProviders.of(this)[CommunicationViewModel::class.java]
+        viewModel
                 .getCommunications(Account.with(context).user)
                 .observe(this, Observer {
                     println("OBSERVED")

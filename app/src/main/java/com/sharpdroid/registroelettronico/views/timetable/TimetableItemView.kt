@@ -8,15 +8,20 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.widget.TextView
 import com.sharpdroid.registroelettronico.R
+import com.sharpdroid.registroelettronico.database.entities.TimetableItem
 import com.sharpdroid.registroelettronico.utils.Metodi.dp
 
-class TimetableItem : TextView {
+class TimetableItemView : TextView {
     private val padding = dp(4)
+    var item: TimetableItem? = null
+        set(value) {
+            field = value
+            text = value?.subject.toString()
+        }
 
     init {
         setTextColor(Color.WHITE)
         setPadding(padding, padding, padding, padding)
-        text = "Storia"
         typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
         TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(this, 4, 18, 1, TypedValue.COMPLEX_UNIT_SP)
         setBackgroundResource(R.drawable.timetable_item)

@@ -18,7 +18,8 @@ import com.sharpdroid.registroelettronico.database.entities.*
         Subject::class,
         SubjectInfo::class,
         SubjectTeacher::class,
-        Teacher::class), version = 6)
+        TimetableItem::class,
+        Teacher::class), version = 7)
 @TypeConverters(Converters::class)
 abstract class RoomDB : RoomDatabase() {
     abstract fun absencesDao(): AbsenceDao
@@ -38,4 +39,6 @@ abstract class RoomDB : RoomDatabase() {
     abstract fun profilesDao(): ProfileDao
 
     abstract fun subjectsDao(): SubjectDao
+
+    abstract fun timetableDao(): TimetableDao
 }
