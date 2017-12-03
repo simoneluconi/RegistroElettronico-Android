@@ -37,6 +37,9 @@ class FragmentSchedule : Fragment() {
         timetable.addListener = { col, row ->
             MaterialDialog.Builder(context).title("Aggiungi lezioni").content("Seleziona la materia della lezione").show()
         }
+        timetable.itemListener = { item ->
+
+        }
 
         DatabaseHelper.database.timetableDao().queryProfile(Account.with(context).user).observe(this, Observer {
             timetable.setupData(it.orEmpty())
@@ -49,7 +52,6 @@ class FragmentSchedule : Fragment() {
         } else {
             (timetable.parent as NestedScrollView).postDelayed({
                 val minY = Math.max(timetable.data.minBy { it.start }?.start?.times(timetable.tileHeight)?.minus(dp(6)) ?: 0f, 0f)
-
                 (timetable.parent as NestedScrollView?)?.scrollY = Math.round(minY)
             }, 20)
         }
