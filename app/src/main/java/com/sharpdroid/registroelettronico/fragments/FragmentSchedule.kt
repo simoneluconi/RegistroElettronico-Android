@@ -14,6 +14,7 @@ import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.LayoutHelper
 import com.sharpdroid.registroelettronico.utils.LayoutHelper.MATCH_PARENT
 import com.sharpdroid.registroelettronico.utils.LayoutHelper.WRAP_CONTENT
+import com.sharpdroid.registroelettronico.utils.Metodi.dp
 import com.sharpdroid.registroelettronico.views.timetable.TimetableLayout
 
 class FragmentSchedule : Fragment() {
@@ -41,10 +42,17 @@ class FragmentSchedule : Fragment() {
             timetable.setupData(it.orEmpty())
         })
 
-        if (savedInstanceState != null && savedInstanceState["scrollY"] != null)
+        if (savedInstanceState != null && savedInstanceState["scrollY"] != null) {
             (timetable.parent as NestedScrollView).postDelayed({
                 (timetable.parent as NestedScrollView?)?.scrollY = savedInstanceState["scrollY"] as Int
             }, 20)
+        } else {
+            (timetable.parent as NestedScrollView).postDelayed({
+                val minY = Math.max(timetable.data.minBy { it.start }?.start?.times(timetable.tileHeight)?.minus(dp(6)) ?: 0f, 0f)
+
+                (timetable.parent as NestedScrollView?)?.scrollY = Math.round(minY)
+            }, 20)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {

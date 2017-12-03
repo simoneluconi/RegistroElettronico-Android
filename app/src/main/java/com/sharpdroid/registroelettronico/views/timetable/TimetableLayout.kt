@@ -15,7 +15,7 @@ import com.sharpdroid.registroelettronico.utils.Metodi.dp
 
 class TimetableLayout : ViewGroup {
     private var marginLeft = dp(24)
-    private var tileHeight = dp(70)
+    var tileHeight = dp(70)
     private var tileWidth = dp(20)
     private val divider = dp(1)
 
@@ -28,7 +28,7 @@ class TimetableLayout : ViewGroup {
 
     var addListener: ((col: Int, row: Int) -> Unit)? = null
 
-    private val data = mutableListOf<TimetableItem>()
+    val data = mutableListOf<TimetableItem>()
 
     private val detector by lazy {
         GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
