@@ -11,7 +11,6 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.database.pojos.SubjectWithLessons
 import com.sharpdroid.registroelettronico.fragments.FragmentSubjects
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
-import com.sharpdroid.registroelettronico.utils.or
 import kotlinx.android.synthetic.main.adapter_subject.view.*
 
 class SubjectsAdapter(fragmentAgenda: FragmentSubjects) : RecyclerView.Adapter<SubjectsAdapter.SubjectHolder>() {
@@ -27,7 +26,7 @@ class SubjectsAdapter(fragmentAgenda: FragmentSubjects) : RecyclerView.Adapter<S
         val temp = item.lessons.map { it.mAuthorName }.groupBy { it }
         val teachers = if (temp.keys.size >= 2) temp.filter { it.value.size >= 2 }.keys else temp.keys
 
-        holder.subject.text = capitalizeEach(item.subjectInfo.getOrNull(0)?.description.or(item.subject.description))
+        holder.subject.text = capitalizeEach(item.getSubjectName())
 
         holder.prof.visibility = View.VISIBLE
         holder.prof.text = capitalizeEach(TextUtils.join(", ", teachers), true)

@@ -30,7 +30,6 @@ import com.sharpdroid.registroelettronico.database.viewModels.SubjectDetailsView
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.utils.Metodi.getMessaggioVoto
-import com.sharpdroid.registroelettronico.utils.or
 import com.sharpdroid.registroelettronico.views.subjectDetails.HypotheticalView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_mark_subject_detail.*
@@ -77,7 +76,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
         //DETTAGLI
         viewModel.getSubject(subjectId).observe(this, Observer {
             it?.subject?.teachers = DatabaseHelper.database.subjectsDao().getTeachersOfSubject(it?.subject?.id ?: 0)
-            title = capitalizeEach(it?.subjectInfo?.getOrNull(0)?.description.or(it?.subject?.description.or("")))
+            title = capitalizeEach(it?.getSubjectName().orEmpty())
             initInfo(it ?: return@Observer)
 
             //set animateTarget to true for the next observe

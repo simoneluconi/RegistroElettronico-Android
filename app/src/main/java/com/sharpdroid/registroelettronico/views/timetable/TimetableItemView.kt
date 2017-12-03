@@ -9,9 +9,7 @@ import android.widget.TextView
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.database.entities.TimetableItem
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
-import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.utils.Metodi.dp
-import com.sharpdroid.registroelettronico.utils.or
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 
@@ -23,9 +21,9 @@ class TimetableItemView : TextView {
         set(value) {
             field = value
             if (disposable == null) {
-                disposable = DatabaseHelper.database.subjectsDao().getSubjectInfoSingle(value!!.subject).observeOn(AndroidSchedulers.mainThread()).subscribe { it ->
+                disposable = DatabaseHelper.database.subjectsDao().getSubjectInfoFlowable(value!!.subject).observeOn(AndroidSchedulers.mainThread()).subscribe { it ->
                     val t = it.getOrNull(0)
-                    text = capitalizeEach(t?.subjectInfo?.getOrNull(0)?.description.or(t?.subject?.description.orEmpty()), false)
+                    text = t?.getSubjectName().orEmpty()
                 }
             }
         }

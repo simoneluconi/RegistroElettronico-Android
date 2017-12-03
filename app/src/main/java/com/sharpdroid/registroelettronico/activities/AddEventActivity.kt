@@ -24,7 +24,6 @@ import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeFirst
 import com.sharpdroid.registroelettronico.utils.flat
-import com.sharpdroid.registroelettronico.utils.or
 import com.sharpdroid.registroelettronico.views.localEvent.OptionView
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import kotlinx.android.synthetic.main.activity_add_event.*
@@ -42,7 +41,7 @@ class AddEventActivity : AppCompatActivity() {
 
     private val subjectList by lazy {
         DatabaseHelper.database.subjectsDao().getSubjectsWithInfoBlocking(Account.with(this).user).sortedBy {
-            it.subjectInfo.getOrNull(0)?.description?.or(it.subject.description)
+            it.getSubjectName()
         }
     }
     private val professorList by lazy {
@@ -115,7 +114,7 @@ class AddEventActivity : AppCompatActivity() {
     private fun subjectDialog(v: View) {
         MaterialDialog.Builder(this)
                 .title("Seleziona una materia")
-                .items(subjectList.map { capitalizeEach(it.subjectInfo.getOrNull(0)?.description.or(it.subject.description), false) })
+                .items(subjectList.map { capitalizeEach(it.getSubjectName()) })
                 .itemsCallbackSingleChoice(subjectList.indexOf(selectedSubject)) { _, _, which, text ->
                     selectedSubject = subjectList[which]
                     v.findViewById<TextView>(R.id.content).text = text
