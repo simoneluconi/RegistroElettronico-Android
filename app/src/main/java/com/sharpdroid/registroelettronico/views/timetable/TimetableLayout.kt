@@ -27,6 +27,7 @@ class TimetableLayout : ViewGroup {
     private var addViewRow = -1
 
     var addListener: ((col: Int, row: Int) -> Unit)? = null
+    var itemListener: ((item: TimetableItem) -> Unit)? = null
 
     val data = mutableListOf<TimetableItem>()
 
@@ -73,7 +74,6 @@ class TimetableLayout : ViewGroup {
             true
         }
 
-
     }
 
     fun setupData(list: List<TimetableItem>) {
@@ -86,8 +86,9 @@ class TimetableLayout : ViewGroup {
             val t = TimetableItemView(context)
             t.item = it
             t.id = it.hashCode()
-            t.setOnClickListener {
-
+            t.setOnClickListener { view ->
+                view as TimetableItemView
+                itemListener?.invoke(view.item!!)
             }
             t
         }.forEach { addView(it) }
