@@ -38,7 +38,12 @@ class FragmentSchedule : Fragment() {
             MaterialDialog.Builder(context).title("Aggiungi lezioni").content("Seleziona la materia della lezione").show()
         }
         timetable.itemListener = { item ->
+            DatabaseHelper.database.subjectsDao().getSubjectInfoBlocking(item.id)?.let {
+                MaterialDialog.Builder(context)
+                        .title(it.getSubjectName())
 
+                        .show()
+            }
         }
 
         DatabaseHelper.database.timetableDao().queryProfile(Account.with(context).user).observe(this, Observer {

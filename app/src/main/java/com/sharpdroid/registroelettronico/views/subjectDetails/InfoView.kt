@@ -17,7 +17,6 @@ import com.sharpdroid.registroelettronico.database.pojos.SubjectPOJO
 import com.sharpdroid.registroelettronico.utils.Metodi
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.utils.Metodi.dp
-import com.sharpdroid.registroelettronico.utils.or
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import kotlinx.android.synthetic.main.adapter_view_info.view.*
 import kotlinx.android.synthetic.main.view_info.view.*
@@ -86,7 +85,7 @@ class InfoView : CardView {
         private fun convertToList(data: SubjectPOJO): MutableList<Pair<Int, String>> {
             val list = ArrayList<Pair<Int, String>>()
 
-            list.add(Pair(R.drawable.ic_title, capitalizeEach(data.subjectInfo.getOrNull(0)?.description.or(data.subject.description))))
+            list.add(Pair(R.drawable.ic_title, capitalizeEach(data.getSubjectName())))
 
             if (data.subject.teachers.isNotEmpty()) {
                 val prof = data.subject.teachers.map { it.teacherName }

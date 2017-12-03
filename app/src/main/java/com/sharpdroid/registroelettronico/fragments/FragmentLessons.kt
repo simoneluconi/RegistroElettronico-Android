@@ -18,9 +18,7 @@ import com.sharpdroid.registroelettronico.adapters.AllLessonsAdapter
 import com.sharpdroid.registroelettronico.database.pojos.LessonMini
 import com.sharpdroid.registroelettronico.database.viewModels.LessonsViewModel
 import com.sharpdroid.registroelettronico.utils.EventType
-import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.utils.Metodi.updateLessons
-import com.sharpdroid.registroelettronico.utils.or
 import com.sharpdroid.registroelettronico.views.EmptyFragment
 import kotlinx.android.synthetic.main.coordinator_swipe_recycler.view.*
 import kotlinx.android.synthetic.main.fragment_recycler_refresh_scrollbar.*
@@ -72,7 +70,7 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
 
 
         ViewModelProviders.of(activity)[LessonsViewModel::class.java].selected.observe(this, Observer {
-            activity.title = capitalizeEach(it?.subjectInfo?.getOrNull(0)?.description.or(it?.subject?.description.orEmpty()))
+            activity.title = it?.getSubjectName().orEmpty()
             addLessons(it?.lessons.orEmpty())
         })
 

@@ -25,7 +25,10 @@ interface SubjectDao {
     fun getSubjectInfo(id: Long): LiveData<SubjectPOJO>
 
     @Query("SELECT * FROM SUBJECT WHERE ID = :id LIMIT 1")
-    fun getSubjectInfoSingle(id: Long): Flowable<List<SubjectPOJO>>
+    fun getSubjectInfoFlowable(id: Long): Flowable<List<SubjectPOJO>>
+
+    @Query("SELECT * FROM SUBJECT WHERE ID = :id LIMIT 1")
+    fun getSubjectInfoBlocking(id: Long): SubjectPOJO?
 
     @Query("select * from SUBJECT where SUBJECT.ID IN (SELECT  SUBJECT_TEACHER.SUBJECT from SUBJECT_TEACHER WHERE SUBJECT_TEACHER.PROFILE=:profile) ORDER BY DESCRIPTION ASC")
     fun getSubjects(profile: Long): LiveData<List<Subject>>
