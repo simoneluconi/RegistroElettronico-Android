@@ -23,7 +23,9 @@ class TimetableItemView : TextView {
             if (disposable == null) {
                 disposable = DatabaseHelper.database.subjectsDao().getSubjectInfoFlowable(value!!.subject).observeOn(AndroidSchedulers.mainThread()).subscribe { it ->
                     val t = it.getOrNull(0)
-                    text = t?.getSubjectName().orEmpty()
+                    t?.getSubjectName()?.let {
+                        text = it
+                    }
                 }
             }
         }
