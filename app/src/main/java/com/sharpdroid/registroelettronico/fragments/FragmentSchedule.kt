@@ -9,6 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.afollestad.materialdialogs.MaterialDialog
+import com.sharpdroid.registroelettronico.R
+import com.sharpdroid.registroelettronico.database.entities.TimetableItem
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.LayoutHelper
@@ -35,13 +37,38 @@ class FragmentSchedule : Fragment() {
         activity.title = "Orario"
 
         timetable.addListener = { col, row ->
-            MaterialDialog.Builder(context).title("Aggiungi lezioni").content("Seleziona la materia della lezione").show()
+            val data = DatabaseHelper.database.subjectsDao().getSubjectsWithInfoBlocking(Account.with(context).user)
+            MaterialDialog.Builder(context)
+                    .title("Aggiungi lezione")
+                    .items(data.map { it.getSubjectName() })
+                    .itemsIds(data.map { it.subject.id.toInt() }.toIntArray())
+                    .itemsCallback({ _, itemView, _, _ ->
+                        DatabaseHelper.database.timetableDao().insert(TimetableItem(0, Account.with(context).user.toInt(), row.toFloat(), row + 1f, col, itemView.id.toLong()))
+                    })
+                    .show()
         }
         timetable.itemListener = { item ->
-            DatabaseHelper.database.subjectsDao().getSubjectInfoBlocking(item.id)?.let {
+            DatabaseHelper.database.subjectsDao().getSubjectInfoBlocking(item.subject)?.let {
                 MaterialDialog.Builder(context)
                         .title(it.getSubjectName())
-
+                        .positiveText("OK")
+                        .neutralText("Elimina")
+                        .onNeutral { _, _ ->
+                            DatabaseHelper.database.timetableDao().delete(item)
+                        }
+                        .show()
+            }
+        }
+        timetable.itemLongListener = { item ->
+            DatabaseHelper.database.subjectsDao().getSubjectInfoBlocking(item.subject)?.let {
+                MaterialDialog.Builder(context)
+                        .title("Eliminare?")
+                        .content("Sei sicuro di eliminare \"" + it.getSubjectName() + "\" dal ${resources.getStringArray(R.array.days_of_week)[item.dayOfWeek]}?")
+                        .positiveText("SI")
+                        .neutralText("NO")
+                        .onPositive { _, _ ->
+                            DatabaseHelper.database.timetableDao().delete(item)
+                        }
                         .show()
             }
         }
