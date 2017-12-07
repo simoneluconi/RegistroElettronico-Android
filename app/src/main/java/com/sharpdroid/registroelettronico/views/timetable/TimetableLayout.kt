@@ -65,8 +65,6 @@ class TimetableLayout : ViewGroup {
         //AddView
         addView = AddView(context)
         addView.visibility = View.GONE
-        addView.pivotX = measuredWidth / 2f
-        addView.pivotY = measuredHeight / 2f
         addView(addView)
 
         setOnTouchListener { _, motionEvent ->
