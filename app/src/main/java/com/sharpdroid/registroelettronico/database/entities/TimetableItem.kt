@@ -11,14 +11,4 @@ class TimetableItem(
         var end: Float,
         var dayOfWeek: Int,
         var subject: Long
-) {
-    override fun hashCode(): Int {
-        var result = id.hashCode()
-        result = 31 * result + profile
-        result = 31 * result + start.hashCode()
-        result = 31 * result + end.hashCode()
-        result = 31 * result + dayOfWeek
-        result = 31 * result + subject.hashCode()
-        return result
-    }
-}
+)
