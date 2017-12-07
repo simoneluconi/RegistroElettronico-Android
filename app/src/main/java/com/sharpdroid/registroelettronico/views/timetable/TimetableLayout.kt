@@ -28,6 +28,7 @@ class TimetableLayout : ViewGroup {
 
     var addListener: ((col: Int, row: Int) -> Unit)? = null
     var itemListener: ((item: TimetableItem) -> Unit)? = null
+    var itemLongListener: ((item: TimetableItem) -> Unit)? = null
 
     val data = mutableListOf<TimetableItem>()
 
@@ -39,7 +40,6 @@ class TimetableLayout : ViewGroup {
             }
         })
     }
-
 
     init {
         //Vertical dividers
@@ -81,6 +81,7 @@ class TimetableLayout : ViewGroup {
             removeView(findViewById<TimetableItemView>(it.hashCode()))
         }
 
+        data.clear()
         data.addAll(list)
         data.map {
             val t = TimetableItemView(context)
@@ -89,6 +90,11 @@ class TimetableLayout : ViewGroup {
             t.setOnClickListener { view ->
                 view as TimetableItemView
                 itemListener?.invoke(view.item!!)
+            }
+            t.setOnLongClickListener { view ->
+                view as TimetableItemView
+                itemLongListener?.invoke(view.item!!)
+                true
             }
             t
         }.forEach { addView(it) }

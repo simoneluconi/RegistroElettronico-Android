@@ -2,13 +2,12 @@
 <resources>
 
     <string-array name="days_of_week">
-        <item>Dom</item>
-        <item>Lun</item>
-        <item>Mar</item>
-        <item>Mer</item>
-        <item>Gio</item>
-        <item>Ven</item>
-        <item>Sab</item>
+        <item>lunedì</item>
+        <item>martedì</item>
+        <item>mercoledì</item>
+        <item>giovedì</item>
+        <item>venerdì</item>
+        <item>sabato</item>
     </string-array>
 
     <string-array name="voti_list">
