@@ -72,34 +72,18 @@ class AllAbsencesAdapter(private val mContext: Context) : RecyclerView.Adapter<R
 
     override fun getItemCount() = data.size
 
-    fun addAll(absences: Array<in Any>) {
+    fun addAll(absences: Array<Any>) {
         if (absences.isEmpty()) return
-        val list = absences.sortedWith(kotlin.Comparator { t: Any?, t1: Any? ->
-            if (t is MyAbsence && t1 is MyAbsence) {
-                // Already ordered
-                return@Comparator -1
-            }
 
-            var val1: Date? = null
-            var val2: Date? = null
-            if (t is Absence)
-                val1 = t.date
-            else if (t is MyAbsence)
-                val1 = t.absence.date
-
-            if (t1 is Absence)
-                val2 = t1.date
-            else if (t1 is MyAbsence)
-                val2 = t1.absence.date
-
-            val1?.compareTo(val2!!) ?: 0
-        }) //ASC
-        val hashmap = hashMapOf<String, MutableCollection<Any>>()
+        val list = absences.sortedByDescending {
+            (it as? Absence)?.date ?: ((it as? MyAbsence)?.absence?.date ?: Date(0))
+        }
+        val hashmap = linkedMapOf<String, MutableCollection<Any>>()
 
         list.forEach {
-            val date = (it as? Absence)?.date ?: ((it as? MyAbsence)?.absence?.date ?: Date())
+            val date = (it as? Absence)?.date ?: ((it as? MyAbsence)?.absence?.date ?: Date(0))
             val l = (hashmap[month_year.format(date)] ?: emptyList<Any>()).toMutableList()
-            l.add(it!!)
+            l.add(it)
             hashmap.put(month_year.format(date), l)
         }
 

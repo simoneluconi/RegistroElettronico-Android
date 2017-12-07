@@ -14,10 +14,10 @@ interface AbsenceDao {
     @Query("SELECT * FROM ABSENCE WHERE DATE = :date AND PROFILE = :profile")
     fun getAbsences(date: Date, profile: Long): LiveData<List<Absence>>
 
-    @Query("SELECT * FROM ABSENCE WHERE PROFILE=:profile AND TYPE='ABA0' ORDER BY DATE DESC")
+    @Query("SELECT * FROM ABSENCE WHERE PROFILE=:profile AND TYPE='ABA0'")
     fun getAbsences(profile: Long): List<Absence>
 
-    @Query("SELECT * FROM ABSENCE WHERE PROFILE=:profile AND TYPE!='ABA0' ORDER BY DATE DESC")
+    @Query("SELECT * FROM ABSENCE WHERE PROFILE=:profile AND TYPE!='ABA0'")
     fun getNoAbsences(profile: Long): List<Absence>
 
     @Query("DELETE FROM ABSENCE WHERE PROFILE=:profile")
