@@ -78,7 +78,7 @@ class FragmentAllAbsences : Fragment(), SwipeRefreshLayout.OnRefreshListener, No
             Answers.getInstance().logContentView(ContentViewEvent().putContentId("Assenze"))
     }
 
-    private fun addAbsence(absence: Array<in Any>) {
+    private fun addAbsence(absence: Array<Any>) {
         adapter.clear()
         adapter.addAll(absence)
 
@@ -88,7 +88,10 @@ class FragmentAllAbsences : Fragment(), SwipeRefreshLayout.OnRefreshListener, No
 
     private fun load() {
         val absencesAndDurations = Absence.getAbsences(Account.with(context).user)
-        val list: MutableList<in Any> = DatabaseHelper.database.absencesDao().getNoAbsences(Account.with(context).user).toMutableList()
+        val list = mutableListOf<Any>()
+        //Add delays/exits
+        list.addAll(DatabaseHelper.database.absencesDao().getNoAbsences(Account.with(context).user))
+        //Add collapsed absences
         list.addAll(absencesAndDurations.map { MyAbsence(it.key, it.value) })
         addAbsence(list.toTypedArray())
     }
