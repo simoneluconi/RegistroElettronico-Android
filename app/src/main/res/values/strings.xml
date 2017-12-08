@@ -157,7 +157,8 @@
     <string name="applica_modifiche">Applica modifiche</string>
     <string name="voto">Voto</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="choose_color">Seleziona un colore</string>
+    <string name="back">Indietro</string>
+    <string name="custom">Personale</string>
+    <string name="presets">Predefiniti</string>
 </resources>
