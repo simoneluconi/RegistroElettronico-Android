@@ -15,11 +15,11 @@ import com.sharpdroid.registroelettronico.adapters.MedieAdapter
 import com.sharpdroid.registroelettronico.database.entities.Average
 import com.sharpdroid.registroelettronico.database.entities.Profile
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
-import com.sharpdroid.registroelettronico.database.viewModels.GradesViewModel
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.ItemOffsetDecoration
 import com.sharpdroid.registroelettronico.utils.Metodi.calculateScholasticCredits
 import com.sharpdroid.registroelettronico.utils.or
+import com.sharpdroid.registroelettronico.viewModels.GradesViewModel
 import com.sharpdroid.registroelettronico.views.EmptyFragment
 import kotlinx.android.synthetic.main.coordinator_swipe_recycler_padding.*
 import kotlinx.android.synthetic.main.fragment_medie_pager.*

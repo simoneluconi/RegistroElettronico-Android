@@ -16,11 +16,11 @@ import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.NoteAdapter
 import com.sharpdroid.registroelettronico.database.entities.Note
-import com.sharpdroid.registroelettronico.database.viewModels.NoteViewModel
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.EventType
 import com.sharpdroid.registroelettronico.utils.Metodi.dp
 import com.sharpdroid.registroelettronico.utils.Metodi.updateNote
+import com.sharpdroid.registroelettronico.viewModels.NoteViewModel
 import com.sharpdroid.registroelettronico.views.EmptyFragment
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import kotlinx.android.synthetic.main.coordinator_swipe_recycler.*

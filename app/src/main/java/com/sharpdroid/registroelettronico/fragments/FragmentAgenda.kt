@@ -22,7 +22,6 @@ import com.sharpdroid.registroelettronico.database.entities.RemoteAgendaInfo
 import com.sharpdroid.registroelettronico.database.entities.SuperAgenda
 import com.sharpdroid.registroelettronico.database.pojos.LocalAgendaPOJO
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
-import com.sharpdroid.registroelettronico.database.viewModels.AgendaViewModel
 import com.sharpdroid.registroelettronico.fragments.bottomSheet.AgendaBS
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi
@@ -32,6 +31,7 @@ import com.sharpdroid.registroelettronico.utils.Metodi.eventToString
 import com.sharpdroid.registroelettronico.utils.Metodi.isEventTest
 import com.sharpdroid.registroelettronico.utils.Metodi.updateAgenda
 import com.sharpdroid.registroelettronico.utils.add
+import com.sharpdroid.registroelettronico.viewModels.AgendaViewModel
 import com.transitionseverywhere.ChangeText
 import com.transitionseverywhere.TransitionManager
 import kotlinx.android.synthetic.main.activity_main.*

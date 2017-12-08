@@ -1,4 +1,4 @@
-package com.sharpdroid.registroelettronico.database.viewModels
+package com.sharpdroid.registroelettronico.viewModels
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel

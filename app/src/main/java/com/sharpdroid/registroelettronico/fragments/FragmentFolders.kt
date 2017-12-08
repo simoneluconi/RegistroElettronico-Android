@@ -19,10 +19,10 @@ import com.sharpdroid.registroelettronico.adapters.FolderAdapter
 import com.sharpdroid.registroelettronico.database.pojos.FolderPOJO
 import com.sharpdroid.registroelettronico.database.pojos.TeacherDidacticPOJO
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
-import com.sharpdroid.registroelettronico.database.viewModels.DidatticaViewModel
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.EventType
 import com.sharpdroid.registroelettronico.utils.Metodi.updateFolders
+import com.sharpdroid.registroelettronico.viewModels.DidatticaViewModel
 import com.sharpdroid.registroelettronico.views.EmptyFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.coordinator_swipe_recycler.*
