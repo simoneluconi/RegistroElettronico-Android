@@ -16,9 +16,9 @@ import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.AllLessonsAdapter
 import com.sharpdroid.registroelettronico.database.pojos.LessonMini
-import com.sharpdroid.registroelettronico.database.viewModels.LessonsViewModel
 import com.sharpdroid.registroelettronico.utils.EventType
 import com.sharpdroid.registroelettronico.utils.Metodi.updateLessons
+import com.sharpdroid.registroelettronico.viewModels.LessonsViewModel
 import com.sharpdroid.registroelettronico.views.EmptyFragment
 import kotlinx.android.synthetic.main.coordinator_swipe_recycler.view.*
 import kotlinx.android.synthetic.main.fragment_recycler_refresh_scrollbar.*

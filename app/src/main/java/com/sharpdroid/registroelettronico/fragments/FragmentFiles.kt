@@ -20,12 +20,12 @@ import com.sharpdroid.registroelettronico.database.entities.File
 import com.sharpdroid.registroelettronico.database.entities.FileInfo
 import com.sharpdroid.registroelettronico.database.entities.Profile
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
-import com.sharpdroid.registroelettronico.database.viewModels.DidatticaViewModel
 import com.sharpdroid.registroelettronico.utils.EventType
 import com.sharpdroid.registroelettronico.utils.Metodi.downloadFile
 import com.sharpdroid.registroelettronico.utils.Metodi.dp
 import com.sharpdroid.registroelettronico.utils.Metodi.openFile
 import com.sharpdroid.registroelettronico.utils.Metodi.openLink
+import com.sharpdroid.registroelettronico.viewModels.DidatticaViewModel
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import kotlinx.android.synthetic.main.coordinator_recycler.*
 import java.io.File as JavaFile

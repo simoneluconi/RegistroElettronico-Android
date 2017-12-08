@@ -22,10 +22,10 @@ import com.sharpdroid.registroelettronico.database.entities.Lesson
 import com.sharpdroid.registroelettronico.database.entities.Profile
 import com.sharpdroid.registroelettronico.database.pojos.SubjectWithLessons
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
-import com.sharpdroid.registroelettronico.database.viewModels.LessonsViewModel
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.updateLessons
 import com.sharpdroid.registroelettronico.utils.Metodi.updateSubjects
+import com.sharpdroid.registroelettronico.viewModels.LessonsViewModel
 import com.sharpdroid.registroelettronico.views.EmptyFragment
 import com.sharpdroid.registroelettronico.views.cells.BigHeader
 import com.sharpdroid.registroelettronico.views.cells.LessonCellMini

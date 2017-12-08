@@ -26,10 +26,10 @@ import com.sharpdroid.registroelettronico.database.entities.SubjectInfo
 import com.sharpdroid.registroelettronico.database.pojos.AverageType
 import com.sharpdroid.registroelettronico.database.pojos.SubjectPOJO
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
-import com.sharpdroid.registroelettronico.database.viewModels.SubjectDetailsViewModel
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.utils.Metodi.getMessaggioVoto
+import com.sharpdroid.registroelettronico.viewModels.SubjectDetailsViewModel
 import com.sharpdroid.registroelettronico.views.subjectDetails.HypotheticalView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_mark_subject_detail.*

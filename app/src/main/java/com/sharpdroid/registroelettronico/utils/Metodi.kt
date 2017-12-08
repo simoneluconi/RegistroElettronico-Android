@@ -14,6 +14,7 @@ import android.os.Handler
 import android.os.Looper
 import android.support.design.widget.Snackbar
 import android.support.v4.content.FileProvider
+import android.util.TypedValue
 import android.widget.Toast
 import com.github.sundeepk.compactcalendarview.domain.Event
 import com.sharpdroid.registroelettronico.NotificationManager
@@ -108,9 +109,9 @@ object Metodi {
         return reg.replace(input.toLowerCase()) { matchResult -> matchResult.value.substring(0, 1).toUpperCase() + matchResult.value.substring(1).toLowerCase() }
     }
 
-    fun dp(dp: Int) = (dp * Resources.getSystem().displayMetrics.density).toInt()
+    fun dp(dp: Number) = (dp.toFloat() * Resources.getSystem().displayMetrics.density).toInt()
 
-    fun dp(dp: Float) = (dp * Resources.getSystem().displayMetrics.density).toInt()
+    fun sp(sp: Number) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp.toFloat(), Resources.getSystem().displayMetrics).toInt()
 
     fun calculateScholasticCredits(year: Int, average: Float): Int {
         when (year) {

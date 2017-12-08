@@ -2,6 +2,7 @@ package com.sharpdroid.registroelettronico.fragments
 
 
 import android.arch.lifecycle.Observer
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.NestedScrollView
@@ -10,7 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.afollestad.materialdialogs.MaterialDialog
 import com.sharpdroid.registroelettronico.R
-import com.sharpdroid.registroelettronico.database.entities.TimetableItem
+import com.sharpdroid.registroelettronico.activities.AddTimetableItemActivity
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.LayoutHelper
@@ -37,15 +38,7 @@ class FragmentTimetable : Fragment() {
         activity.title = "Orario"
 
         timetable.addListener = { col, row ->
-            val data = DatabaseHelper.database.subjectsDao().getSubjectsWithInfoBlocking(Account.with(context).user)
-            MaterialDialog.Builder(context)
-                    .title("Aggiungi lezione")
-                    .items(data.map { it.getSubjectName() })
-                    .itemsIds(data.map { it.subject.id.toInt() }.toIntArray())
-                    .itemsCallback({ _, itemView, _, _ ->
-                        DatabaseHelper.database.timetableDao().insert(TimetableItem(0, Account.with(context).user.toInt(), row.toFloat(), row + 1f, col, itemView.id.toLong()))
-                    })
-                    .show()
+            startActivity(Intent(context, AddTimetableItemActivity::class.java).putExtra("day", col).putExtra("start", row))
         }
         timetable.itemListener = { item ->
             DatabaseHelper.database.subjectsDao().getSubjectInfoBlocking(item.subject)?.let {

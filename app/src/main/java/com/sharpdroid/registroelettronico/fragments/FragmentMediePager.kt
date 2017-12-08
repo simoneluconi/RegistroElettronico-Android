@@ -18,11 +18,11 @@ import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.MainActivity
 import com.sharpdroid.registroelettronico.database.entities.Grade
-import com.sharpdroid.registroelettronico.database.viewModels.GradesViewModel
 import com.sharpdroid.registroelettronico.fragments.bottomSheet.OrderMedieBS
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.EventType
 import com.sharpdroid.registroelettronico.utils.Metodi.updateMarks
+import com.sharpdroid.registroelettronico.viewModels.GradesViewModel
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.fragment_medie_pager.*
 
