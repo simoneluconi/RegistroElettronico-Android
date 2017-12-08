@@ -19,7 +19,7 @@ import com.sharpdroid.registroelettronico.utils.LayoutHelper.WRAP_CONTENT
 import com.sharpdroid.registroelettronico.utils.Metodi.dp
 import com.sharpdroid.registroelettronico.views.timetable.TimetableLayout
 
-class FragmentSchedule : Fragment() {
+class FragmentTimetable : Fragment() {
     lateinit var timetable: TimetableLayout
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
