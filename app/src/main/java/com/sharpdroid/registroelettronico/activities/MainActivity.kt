@@ -103,7 +103,8 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         if (intent.extras != null && intent.extras.containsKey("drawer_open_id")) {
             drawer?.setSelection(intent.extras.getLong("drawer_open_id"), true)
         } else if (savedInstanceState == null) {
-            val drawerToOpen = PreferenceManager.getDefaultSharedPreferences(this).getString("drawer_to_open", "0").toInt()
+            val default = PreferenceManager.getDefaultSharedPreferences(this).getString("drawer_to_open", "0").toInt()
+            val drawerToOpen = intent.extras?.getInt("drawer_to_open", default) ?: default
             drawer?.setSelectionAtPosition(drawerToOpen + 1, true)
         }
     }
