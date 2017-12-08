@@ -2,6 +2,7 @@ package com.sharpdroid.registroelettronico.activities
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
@@ -98,7 +99,9 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
             val view = holder.itemView as ComplexCell
             when (data[position]) {
                 "subject" -> {
-                    view.setup(viewModel.subject.value?.getSubjectName() ?: "Seleziona una materia", "Materia", null) { _ ->
+                    val drawable = ContextCompat.getDrawable(this@AddTimetableItemActivity, R.drawable.ic_school_black_24dp)
+                    drawable.setColorFilter(0xff636363.toInt(), PorterDuff.Mode.SRC_ATOP)
+                    view.setup(viewModel.subject.value?.getSubjectName() ?: "Seleziona una materia", "Materia", drawable) { _ ->
                         MaterialDialog.Builder(this@AddTimetableItemActivity)
                                 .title("Seleziona una materia")
                                 .items(viewModel.subjects.map { it.getSubjectName() })
@@ -118,7 +121,15 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
                             PorterDuff.Mode.SRC_ATOP
                     )
                     view.setup("Seleziona un colore", oval) { _ ->
-                        ColorChooserDialog.Builder(this@AddTimetableItemActivity, R.string.choose_color).show(supportFragmentManager)
+                        ColorChooserDialog.Builder(this@AddTimetableItemActivity, R.string.choose_color)
+                                .preselect(viewModel.color.value ?: ContextCompat.getColor(this@AddTimetableItemActivity, R.color.primary))
+                                .doneButton(R.string.ok)
+                                .allowUserColorInputAlpha(false)
+                                .cancelButton(android.R.string.cancel)
+                                .backButton(R.string.back)
+                                .customButton(R.string.edit)
+                                .presetsButton(R.string.presets)
+                                .show(supportFragmentManager)
                     }
                 }
                 "day" -> {
@@ -143,6 +154,10 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
                 "end" -> {
                     val start = viewModel.start.value?.split(":")!!.map { it.toInt(10) }
                     val end = viewModel.end.value?.split(":")!!.map { it.toInt(10) }
+                    val oval = ShapeDrawable(OvalShape())
+                    oval.intrinsicWidth = dp(24)
+                    oval.intrinsicHeight = dp(24)
+                    oval.setColorFilter(Color.TRANSPARENT, PorterDuff.Mode.SRC_ATOP)
                     view.setup(viewModel.end.value ?: "Seleziona un'orario", "Fine", null, "Orario non valido", (start[0] * 60 + start[1]) >= (end[0] * 60 + end[1])) { _ ->
                         val current = viewModel.end.value?.split(":")!!.map { it.toInt(10) }
 
