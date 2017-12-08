@@ -69,8 +69,10 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
         })
         viewModel.start.observe(this, Observer {
             recycler.adapter.notifyItemChanged(3)
+            recycler.adapter.notifyItemChanged(4)
         })
         viewModel.end.observe(this, Observer {
+            recycler.adapter.notifyItemChanged(3)
             recycler.adapter.notifyItemChanged(4)
         })
         if (viewModel.day.value == null)
@@ -139,7 +141,9 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
                     }
                 }
                 "end" -> {
-                    view.setup(viewModel.end.value ?: "Seleziona un'orario", "Fine", null) { _ ->
+                    val start = viewModel.start.value?.split(":")!!.map { it.toInt(10) }
+                    val end = viewModel.end.value?.split(":")!!.map { it.toInt(10) }
+                    view.setup(viewModel.end.value ?: "Seleziona un'orario", "Fine", null, "Orario non valido", (start[0] * 60 + start[1]) >= (end[0] * 60 + end[1])) { _ ->
                         val current = viewModel.end.value?.split(":")!!.map { it.toInt(10) }
 
                         TimePickerDialog.newInstance({ _, hourOfDay, minute, _ ->

@@ -9,7 +9,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import com.sharpdroid.registroelettronico.R
-import com.sharpdroid.registroelettronico.utils.Metodi.dp
 import kotlinx.android.synthetic.main.view_complex.view.*
 
 class ComplexCell : FrameLayout {
@@ -35,6 +34,17 @@ class ComplexCell : FrameLayout {
         textView.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
         setOnClickListener(listener)
     }
+
+    fun setup(title: String, content: String, drawable: Drawable?, errorText: String, isError: Boolean, listener: ((View) -> Unit)?) {
+        val spannable = SpannableString(title + "\n" + if (!isError) content else errorText)
+        spannable.setSpan(TextAppearanceSpan(context, R.style.TextAppearance_AppCompat_Body1), 0, title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannable.setSpan(TextAppearanceSpan(context, if (!isError) R.style.TextAppearance_AppCompat_Caption else R.style.TextAppearance_Design_Error), title.length + 1, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textView.text = spannable
+
+        textView.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
+        setOnClickListener(listener)
+    }
+
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(MeasureSpec.makeMeasureSpec(widthMeasureSpec, MeasureSpec.EXACTLY), MeasureSpec.getSize(heightMeasureSpec))
