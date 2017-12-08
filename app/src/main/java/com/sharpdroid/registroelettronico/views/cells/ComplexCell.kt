@@ -33,7 +33,6 @@ class ComplexCell : FrameLayout {
         textView.text = spannable
 
         textView.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
-        textView.compoundDrawablePadding = if (drawable == null) 0 else dp(16)
         setOnClickListener(listener)
     }
 
