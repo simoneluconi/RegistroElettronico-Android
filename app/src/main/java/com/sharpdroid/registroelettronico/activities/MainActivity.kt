@@ -299,7 +299,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                 fragment = FragmentCommunications()
             }
             R.id.schedule -> {
-                fragment = FragmentSchedule()
+                fragment = FragmentTimetable()
             }
             R.id.settings -> fragment = FragmentSettings()
             R.id.nav_share -> {
