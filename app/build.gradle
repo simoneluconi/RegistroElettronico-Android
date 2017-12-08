@@ -122,7 +122,7 @@ dependencies {
     implementation('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
         transitive = true
     }
-    implementation('com.google.firebase:firebase-core:11.6.0') {
+    implementation('com.google.firebase:firebase-core:11.6.2') {
         exclude module: 'firebase-database'
     }
     implementation('com.crashlytics.sdk.android:answers:1.4.1@aar') {
@@ -138,7 +138,13 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     kapt 'com.android.databinding:compiler:3.0.1'
 
-    implementation 'com.afollestad.material-dialogs:core:0.9.4.7'
+    implementation('com.afollestad.material-dialogs:core:0.9.6.0') {
+        exclude group: 'com.android.support'
+    }
+    implementation('com.afollestad.material-dialogs:commons:0.9.6.0') {
+        exclude group: 'com.android.support'
+    }
+
     implementation 'com.akexorcist:RoundCornerProgressBar:2.0.3'
     implementation 'com.andkulikov:transitionseverywhere:1.7.6'
     implementation 'com.android.support:appcompat-v7:26.1.0'
@@ -175,7 +181,7 @@ dependencies {
     //For Lifecycles Java8 Lanaguage support, add:
     implementation "android.arch.lifecycle:common-java8:1.0.0"
 
-    implementation 'com.google.firebase:firebase-messaging:11.6.0'
+    implementation 'com.google.firebase:firebase-messaging:11.6.2'
     implementation 'com.firebase:firebase-jobdispatcher:0.8.4'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
