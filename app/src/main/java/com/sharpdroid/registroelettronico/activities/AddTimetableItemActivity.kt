@@ -75,7 +75,7 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
         })
 
         if (viewModel.subjects.isEmpty()) {
-            viewModel.subjects.addAll(DatabaseHelper.database.subjectsDao().getSubjectsWithInfoBlocking(Account.with(this@AddTimetableItemActivity).user))
+            viewModel.subjects.addAll(DatabaseHelper.database.subjectsDao().getSubjectsWithInfoBlocking(Account.with(this@AddTimetableItemActivity).user).sortedBy { it.getSubjectName() })
         }
 
         //IF EDITING EXISTING LESSON
@@ -147,7 +147,7 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
                     view.setup(viewModel.subject.value?.getSubjectName() ?: "Seleziona una materia", "Materia", drawable, "Materia non selezionata", viewModel.subject.value == null) { _ ->
                         MaterialDialog.Builder(this@AddTimetableItemActivity)
                                 .title("Seleziona una materia")
-                                .items(viewModel.subjects.map { it.getSubjectName() }.sortedBy { it })
+                                .items(viewModel.subjects.map { it.getSubjectName() })
                                 .itemsCallbackSingleChoice(viewModel.subjects.indexOf(viewModel.subject.value), { _, _, which, _ ->
                                     viewModel.subject.value = viewModel.subjects[which]
                                     true
