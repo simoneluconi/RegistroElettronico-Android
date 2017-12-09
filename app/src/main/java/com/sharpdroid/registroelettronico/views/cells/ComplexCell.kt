@@ -1,7 +1,11 @@
 package com.sharpdroid.registroelettronico.views.cells
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.OvalShape
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.TextAppearanceSpan
@@ -22,6 +26,7 @@ class ComplexCell : FrameLayout {
     fun setup(title: String, drawable: Drawable, listener: ((View) -> Unit)?) {
         textView.text = title
 
+        drawable.setColorFilter(0xff636363.toInt(), PorterDuff.Mode.SRC_ATOP)
         textView.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
         textView.compoundDrawablePadding = dp(40) - drawable.intrinsicWidth
         setOnClickListener(listener)
@@ -33,6 +38,7 @@ class ComplexCell : FrameLayout {
         spannable.setSpan(TextAppearanceSpan(context, R.style.TextAppearance_AppCompat_Caption), title.length + 1, title.length + 1 + content.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         textView.text = spannable
 
+        drawable?.setColorFilter(0xff636363.toInt(), PorterDuff.Mode.SRC_ATOP)
         textView.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
         setOnClickListener(listener)
     }
@@ -42,8 +48,16 @@ class ComplexCell : FrameLayout {
         spannable.setSpan(TextAppearanceSpan(context, R.style.TextAppearance_AppCompat_Body1), 0, title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannable.setSpan(TextAppearanceSpan(context, if (!isError) R.style.TextAppearance_AppCompat_Caption else R.style.TextAppearance_Design_Error), title.length + 1, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         textView.text = spannable
-
-        textView.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
+        if (drawable != null) {
+            drawable.setColorFilter(0xff636363.toInt(), PorterDuff.Mode.SRC_ATOP)
+            textView.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
+        } else {
+            val oval = ShapeDrawable(OvalShape())
+            oval.intrinsicWidth = dp(24)
+            oval.intrinsicHeight = dp(24)
+            oval.setColorFilter(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+            textView.setCompoundDrawablesWithIntrinsicBounds(oval, null, null, null)
+        }
         setOnClickListener(listener)
     }
 

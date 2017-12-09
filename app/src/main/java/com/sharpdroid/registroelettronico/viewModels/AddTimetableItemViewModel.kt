@@ -11,5 +11,7 @@ class AddTimetableItemViewModel : ViewModel() {
     val start = MutableLiveData<String>()
     val end = MutableLiveData<String>()
     val subject = MutableLiveData<SubjectPOJO>()
+    val where = MutableLiveData<String>()
+    val notes = MutableLiveData<String>()
     val subjects = mutableListOf<SubjectPOJO>()
 }

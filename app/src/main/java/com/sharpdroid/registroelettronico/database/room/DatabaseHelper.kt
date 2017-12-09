@@ -106,6 +106,12 @@ object DatabaseHelper {
             database.execSQL("ALTER TABLE `TimetableItem` ADD COLUMN `color` INTEGER NOT NULL DEFAULT 0")
         }
     }
+    private val MIGRATION_8_9 = object : Migration(8, 9) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("ALTER TABLE `TimetableItem` ADD COLUMN `where` TEXT")
+            database.execSQL("ALTER TABLE `TimetableItem` ADD COLUMN `notes` TEXT")
+        }
+    }
 
     fun createDb(context: Context) {
         if (initialized.compareAndSet(false, true)) {
@@ -116,7 +122,8 @@ object DatabaseHelper {
                             MIGRATION_4_5,
                             MIGRATION_5_6,
                             MIGRATION_6_7,
-                            MIGRATION_7_8
+                            MIGRATION_7_8,
+                            MIGRATION_8_9
                     )
                     .build()
         }

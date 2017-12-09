@@ -11,5 +11,7 @@ class TimetableItem(
         var end: Float,
         var dayOfWeek: Int,
         var subject: Long,
-        var color: Int
+        var color: Int,
+        var where: String?,
+        var notes: String?
 )
