@@ -57,8 +57,7 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
         viewModel.subject.observe(this, Observer {
             recycler.adapter.notifyItemChanged(0)
 
-            if (viewModel.color.value == null)
-                viewModel.subject.value?.let { viewModel.color.value = DatabaseHelper.database.timetableDao().colors(it.subject.id) }
+            viewModel.subject.value?.let { viewModel.color.value = DatabaseHelper.database.timetableDao().colors(it.subject.id) }
         })
         viewModel.color.observe(this, Observer {
             recycler.adapter.notifyItemChanged(1)
@@ -128,7 +127,7 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
     private fun save() {
         if (viewModel.subject.value == null || start() >= end()) return
 
-        DatabaseHelper.database.timetableDao().insert(TimetableItem(viewModel.id.value ?: 0, Account.with(this).user.toInt(), start(), end(), viewModel.day.value!!, viewModel.subject.value!!.subject.id, viewModel.color.value!!))
+        DatabaseHelper.database.timetableDao().insert(TimetableItem(viewModel.id.value ?: 0, Account.with(this).user.toInt(), start(), end(), viewModel.day.value!!, viewModel.subject.value!!.subject.id, viewModel.color.value ?: ContextCompat.getColor(this@AddTimetableItemActivity, R.color.primary)))
         super.onBackPressed()
     }
 
@@ -148,7 +147,7 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
                     view.setup(viewModel.subject.value?.getSubjectName() ?: "Seleziona una materia", "Materia", drawable, "Materia non selezionata", viewModel.subject.value == null) { _ ->
                         MaterialDialog.Builder(this@AddTimetableItemActivity)
                                 .title("Seleziona una materia")
-                                .items(viewModel.subjects.map { it.getSubjectName() })
+                                .items(viewModel.subjects.map { it.getSubjectName() }.sortedBy { it })
                                 .itemsCallbackSingleChoice(viewModel.subjects.indexOf(viewModel.subject.value), { _, _, which, _ ->
                                     viewModel.subject.value = viewModel.subjects[which]
                                     true
