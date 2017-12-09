@@ -41,18 +41,8 @@ class FragmentTimetable : Fragment() {
             startActivity(Intent(context, AddTimetableItemActivity::class.java).putExtra("day", col).putExtra("start", row))
         }
         timetable.itemListener = { item ->
-            DatabaseHelper.database.subjectsDao().getSubjectInfoBlocking(item.subject)?.let {
-                MaterialDialog.Builder(context)
-                        .title(it.getSubjectName())
-                        .positiveText("OK")
-                        .neutralText("Elimina")
-                        .onNeutral { _, _ ->
-                            DatabaseHelper.database.timetableDao().delete(item)
-                        }
-                        .show()
-            }
-        }
-        timetable.itemLongListener = { item ->
+            //TODO: Show details + delete button
+
             DatabaseHelper.database.subjectsDao().getSubjectInfoBlocking(item.subject)?.let {
                 MaterialDialog.Builder(context)
                         .title("Eliminare?")
@@ -64,6 +54,9 @@ class FragmentTimetable : Fragment() {
                         }
                         .show()
             }
+        }
+        timetable.itemLongListener = { item ->
+            startActivity(Intent(context, AddTimetableItemActivity::class.java).putExtra("id", item.id))
         }
 
         DatabaseHelper.database.timetableDao().queryProfile(Account.with(context).user).observe(this, Observer {

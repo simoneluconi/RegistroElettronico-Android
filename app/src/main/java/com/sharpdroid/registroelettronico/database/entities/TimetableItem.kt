@@ -10,5 +10,6 @@ class TimetableItem(
         var start: Float,
         var end: Float,
         var dayOfWeek: Int,
-        var subject: Long
+        var subject: Long,
+        var color: Int
 )

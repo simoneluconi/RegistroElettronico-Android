@@ -12,6 +12,13 @@ interface TimetableDao {
     @Query("SELECT * FROM TimetableItem WHERE profile=:profile")
     fun queryProfile(profile: Long): LiveData<List<TimetableItem>>
 
+
+    @Query("SELECT * FROM TimetableItem WHERE id=:id LIMIT 1")
+    fun findById(id: Long): TimetableItem?
+
+    @Query("SELECT color FROM TimetableItem WHERE subject=:subject GROUP BY color ORDER BY id DESC LIMIT 1")
+    fun colors(subject: Long): Int?
+
     @Delete
     fun delete(timetableItem: TimetableItem)
 }
