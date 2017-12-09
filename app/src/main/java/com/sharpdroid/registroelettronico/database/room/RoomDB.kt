@@ -19,7 +19,7 @@ import com.sharpdroid.registroelettronico.database.entities.*
         SubjectInfo::class,
         SubjectTeacher::class,
         TimetableItem::class,
-        Teacher::class), version = 8)
+        Teacher::class), version = 9)
 @TypeConverters(Converters::class)
 abstract class RoomDB : RoomDatabase() {
     abstract fun absencesDao(): AbsenceDao
