@@ -9,6 +9,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import com.sharpdroid.registroelettronico.R
+import com.sharpdroid.registroelettronico.utils.Metodi.dp
 import kotlinx.android.synthetic.main.view_complex.view.*
 
 class ComplexCell : FrameLayout {
@@ -18,10 +19,11 @@ class ComplexCell : FrameLayout {
         isFocusable = true
     }
 
-    fun setup(title: String, drawable: Drawable?, listener: ((View) -> Unit)?) {
+    fun setup(title: String, drawable: Drawable, listener: ((View) -> Unit)?) {
         textView.text = title
 
         textView.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
+        textView.compoundDrawablePadding = dp(40) - drawable.intrinsicWidth
         setOnClickListener(listener)
     }
 
