@@ -21,23 +21,27 @@ interface SubjectDao {
     @Query("SELECT * FROM SUBJECT WHERE ID = :id LIMIT 1")
     fun getSubject(id: Long): Subject?
 
+    @Transaction
     @Query("SELECT * FROM SUBJECT WHERE ID = :id LIMIT 1")
     fun getSubjectInfo(id: Long): LiveData<SubjectPOJO>
 
+    @Transaction
     @Query("SELECT * FROM SUBJECT WHERE ID = :id LIMIT 1")
     fun getSubjectInfoFlowable(id: Long): Flowable<List<SubjectPOJO>>
 
+    @Transaction
     @Query("SELECT * FROM SUBJECT WHERE ID = :id LIMIT 1")
     fun getSubjectInfoBlocking(id: Long): SubjectPOJO?
 
     @Query("select * from SUBJECT where SUBJECT.ID IN (SELECT  SUBJECT_TEACHER.SUBJECT from SUBJECT_TEACHER WHERE SUBJECT_TEACHER.PROFILE=:profile) ORDER BY DESCRIPTION ASC")
     fun getSubjects(profile: Long): LiveData<List<Subject>>
 
+    @Transaction
     @Query("select * from SUBJECT where SUBJECT.ID IN (SELECT  SUBJECT_TEACHER.SUBJECT from SUBJECT_TEACHER WHERE SUBJECT_TEACHER.PROFILE=:profile) ORDER BY DESCRIPTION ASC")
     fun getSubjectsWithInfoBlocking(profile: Long): List<SubjectPOJO>
 
-    @Query("SELECT SUM(M_VALUE) as `SUM` , 'Generale' as `M_TYPE`, COUNT(M_VALUE) as `COUNT`  FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=:subject LIMIT 1")
-    fun getAverage(subject: Long): AverageType
+    @Query("SELECT SUM(M_VALUE) as `SUM` , 'Generale' as `M_TYPE`, COUNT(M_VALUE) as `COUNT`  FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=:subject AND PROFILE=:profile LIMIT 1")
+    fun getAverage(subject: Long, profile: Long): AverageType
 
     @Query("select * from TEACHER where TEACHER.ID IN (SELECT  SUBJECT_TEACHER.TEACHER from SUBJECT_TEACHER WHERE SUBJECT_TEACHER.SUBJECT=:subjectId) ORDER BY TEACHER_NAME ASC")
     fun getTeachersOfSubject(subjectId: Long): List<Teacher>
