@@ -79,12 +79,19 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
         DatabaseHelper.database.foldersDao().getDidattica(Account.with(context).user).toObservable().observeOn(AndroidSchedulers.mainThread()).subscribe {
             addFiles(it.orEmpty())
 
-            if (savedInstanceState == null)
+            if (viewModel.scrollPosition.value == null)
                 download()
+            else
+                recycler?.layoutManager?.scrollToPosition(viewModel.scrollPosition.value!!)
         }
 
         if (!BuildConfig.DEBUG)
             Answers.getInstance().logContentView(ContentViewEvent().putContentId("Didattica").putContentType("Cartelle"))
+    }
+
+    override fun onPause() {
+        viewModel.scrollPosition.value = (recycler.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
+        super.onPause()
     }
 
     override fun onResume() {
