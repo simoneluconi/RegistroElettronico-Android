@@ -38,6 +38,9 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
     override fun onColorChooserDismissed(dialog: ColorChooserDialog) {
     }
 
+    /**
+     * Structure of the recyclerView
+     */
     val data = arrayOf("subject", "subject_color", "day", "start", "end", "where", "notes")
 
     val viewModel by lazy { ViewModelProviders.of(this)[AddTimetableItemViewModel::class.java] }
@@ -140,6 +143,9 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
         }
     }
 
+    /**
+     * This is gonna save the new TimetableItem ONLY IF all conditions are OK
+     */
     private fun save() {
         if (viewModel.subject.value == null || start() >= end()) return
 
@@ -256,11 +262,17 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
         }
     }
 
+    /**
+     * Converts hh:mm into float
+     */
     private fun start(): Float {
         val start = viewModel.start.value?.split(":")!!.map { it.toInt(10) }
         return start[0] + start[1] / 60f
     }
 
+    /**
+     * Converts hh:mm into float
+     */
     private fun end(): Float {
         val end = viewModel.end.value?.split(":")!!.map { it.toInt(10) }
         return end[0] + end[1] / 60f
