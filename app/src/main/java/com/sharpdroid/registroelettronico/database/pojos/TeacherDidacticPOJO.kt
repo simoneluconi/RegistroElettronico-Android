@@ -2,7 +2,6 @@ package com.sharpdroid.registroelettronico.database.pojos
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Embedded
-import android.arch.persistence.room.PrimaryKey
 import android.arch.persistence.room.Relation
 import com.sharpdroid.registroelettronico.database.entities.File
 import com.sharpdroid.registroelettronico.database.entities.Folder
@@ -15,7 +14,7 @@ data class TeacherDidacticPOJO(
 )
 
 data class FolderPOJO(
-        @ColumnInfo(name = "ID") @PrimaryKey(autoGenerate = true) var id: Long = 0L,
+        @ColumnInfo(name = "ID") var id: Long = 0L,
         @ColumnInfo(name = "FOLDER_ID") var folderId: Int = -1,
         @ColumnInfo(name = "NAME") var name: String = "",
         @ColumnInfo(name = "LAST_UPDATE") var lastUpdate: Date = Date(0),
