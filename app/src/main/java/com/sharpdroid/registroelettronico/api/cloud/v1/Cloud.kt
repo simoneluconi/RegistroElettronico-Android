@@ -28,7 +28,7 @@ object Cloud {
         Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
-                .baseUrl("https://registrocloud.bortolan.ml/v1/")
+                .baseUrl("https://registrocloud.bortolan.online/v1/")
                 .client(okHttp)
                 .build()
     }
