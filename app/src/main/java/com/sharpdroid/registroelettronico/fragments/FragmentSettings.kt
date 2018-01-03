@@ -30,9 +30,6 @@ import io.reactivex.schedulers.Schedulers
 class FragmentSettings : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     override fun onCreatePreferences(bundle: Bundle?, s: String?) {
-
-        PushDatabase(context)
-
         //add xml
         addPreferencesFromResource(R.xml.preferences)
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -46,6 +43,7 @@ class FragmentSettings : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         findPreference("clear_archive").setOnPreferenceClickListener { _ ->
             DatabaseHelper.database.eventsDao().setLocalNotArchived()
             DatabaseHelper.database.eventsDao().setRemoteNotArchived()
+            PushDatabase(context)
             true
         }
 
