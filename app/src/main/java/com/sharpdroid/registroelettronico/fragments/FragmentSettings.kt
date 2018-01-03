@@ -19,6 +19,8 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.database.entities.Profile
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
+import com.sharpdroid.registroelettronico.utils.Metodi
+import com.sharpdroid.registroelettronico.utils.Metodi.PushDatabase
 import io.reactivex.Completable
 import io.reactivex.schedulers.Schedulers
 
@@ -28,6 +30,9 @@ import io.reactivex.schedulers.Schedulers
 class FragmentSettings : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     override fun onCreatePreferences(bundle: Bundle?, s: String?) {
+
+        PushDatabase(context)
+
         //add xml
         addPreferencesFromResource(R.xml.preferences)
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
