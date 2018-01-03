@@ -25,6 +25,7 @@ import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.fragments.bottomSheet.AgendaBS
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi
+import com.sharpdroid.registroelettronico.utils.Metodi.PushDatabase
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.utils.Metodi.convertEvents
 import com.sharpdroid.registroelettronico.utils.Metodi.eventToString
@@ -177,15 +178,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
     override fun onStop() {
         super.onStop()
 
-        val profile = Account.with(context).user
-
-        DatabaseHelper.database.eventsDao().getLocalAsSingle(profile).subscribe { localEvent ->
-            Cloud.api.pushLocal(profile, localEvent).subscribe({}, { Log.e("Cloud", it.localizedMessage) })
-        }
-
-        DatabaseHelper.database.eventsDao().getRemoteInfoAsSingle(profile).subscribe { remoteInfo ->
-            Cloud.api.pushRemoteInfo(profile, remoteInfo).subscribe({}, { Log.e("Cloud", it.localizedMessage) })
-        }
+        PushDatabase(context)
     }
 
     private fun prepareDate(predictNextDay: Boolean) {

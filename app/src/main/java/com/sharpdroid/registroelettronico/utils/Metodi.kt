@@ -14,11 +14,13 @@ import android.os.Handler
 import android.os.Looper
 import android.support.design.widget.Snackbar
 import android.support.v4.content.FileProvider
+import android.util.Log
 import android.util.TypedValue
 import android.widget.Toast
 import com.github.sundeepk.compactcalendarview.domain.Event
 import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
+import com.sharpdroid.registroelettronico.api.cloud.v1.Cloud
 import com.sharpdroid.registroelettronico.api.spaggiari.v2.Spaggiari
 import com.sharpdroid.registroelettronico.database.entities.*
 import com.sharpdroid.registroelettronico.database.pojos.LocalAgendaPOJO
@@ -649,5 +651,18 @@ object Metodi {
         val height = (src.height / 2 + 33).toFloat()
         cs.drawText(nomef.toString(), x, height, tPaint)
         return src
+    }
+
+    fun PushDatabase(context: Context)
+    {
+        val profile = Account.with(context).user
+
+        DatabaseHelper.database.eventsDao().getLocalAsSingle(profile).subscribe { localEvent ->
+            Cloud.api.pushLocal(profile, localEvent).subscribe({}, { Log.e("Cloud", it.localizedMessage) })
+        }
+
+        DatabaseHelper.database.eventsDao().getRemoteInfoAsSingle(profile).subscribe { remoteInfo ->
+            Cloud.api.pushRemoteInfo(profile, remoteInfo).subscribe({}, { Log.e("Cloud", it.localizedMessage) })
+        }
     }
 }
