@@ -62,7 +62,7 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, SearchView
         activity.title = getString(R.string.lessons)
 
         searchAdapter = SearchAdapter()
-        adapter = SubjectsAdapter(this)
+        adapter = SubjectsAdapter(this, Account.with(context).user)
         recycler.layoutManager = LinearLayoutManager(context)
         recycler.addItemDecoration(HorizontalDividerItemDecoration.Builder(context).colorResId(R.color.divider).build())
         recycler.adapter = adapter

@@ -9,11 +9,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.database.pojos.SubjectWithLessons
+import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.fragments.FragmentSubjects
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import kotlinx.android.synthetic.main.adapter_subject.view.*
 
-class SubjectsAdapter(fragmentAgenda: FragmentSubjects) : RecyclerView.Adapter<SubjectsAdapter.SubjectHolder>() {
+class SubjectsAdapter(fragmentAgenda: FragmentSubjects, val profile: Long) : RecyclerView.Adapter<SubjectsAdapter.SubjectHolder>() {
     private val data: MutableList<SubjectWithLessons> = mutableListOf()
     private val subjectListener: SubjectListener = fragmentAgenda
 
@@ -23,13 +24,10 @@ class SubjectsAdapter(fragmentAgenda: FragmentSubjects) : RecyclerView.Adapter<S
     override fun onBindViewHolder(holder: SubjectHolder, position: Int) {
         val item = data[position]
 
-        val temp = item.lessons.map { it.mAuthorName }.groupBy { it }
-        val teachers = if (temp.keys.size >= 2) temp.filter { it.value.size >= 2 }.keys else temp.keys
-
         holder.subject.text = capitalizeEach(item.getSubjectName())
 
         holder.prof.visibility = View.VISIBLE
-        holder.prof.text = capitalizeEach(TextUtils.join(", ", teachers), true)
+        holder.prof.text = capitalizeEach(TextUtils.join(", ", DatabaseHelper.database.subjectsDao().getTeachersOfSubject(item.subject.id, profile).map { it.teacherName }), true)
 
         holder.layout.setOnClickListener { view ->
             view.layout.postDelayed({ subjectListener.onSubjectClick(item) }, ViewConfiguration.getTapTimeout().toLong())

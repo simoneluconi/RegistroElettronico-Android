@@ -14,6 +14,7 @@ class LessonsViewModel : ViewModel() {
     var query = MutableLiveData<String>()
 
     fun getSubjectsWithLessons(profile: Long): LiveData<List<SubjectWithLessons>> {
+        //if profile has changed, then re-create
         if (subjects == null || this.profile != profile) {
             subjects = DatabaseHelper.database.subjectsDao().getSubjectWithLessons(profile)
             this.profile = profile
