@@ -112,6 +112,11 @@ object DatabaseHelper {
             database.execSQL("ALTER TABLE `TimetableItem` ADD COLUMN `notes` TEXT")
         }
     }
+    private val MIGRATION_9_10 = object : Migration(9, 10) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("ALTER TABLE `REMOTE_AGENDA` ADD COLUMN `SUBJECT_ID` INTEGER")
+        }
+    }
 
     fun createDb(context: Context) {
         if (initialized.compareAndSet(false, true)) {
@@ -123,7 +128,8 @@ object DatabaseHelper {
                             MIGRATION_5_6,
                             MIGRATION_6_7,
                             MIGRATION_7_8,
-                            MIGRATION_8_9
+                            MIGRATION_8_9,
+                            MIGRATION_9_10
                     )
                     .build()
         }
