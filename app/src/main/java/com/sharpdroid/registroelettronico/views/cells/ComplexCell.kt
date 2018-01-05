@@ -23,7 +23,12 @@ class ComplexCell : FrameLayout {
         isFocusable = true
     }
 
+    fun setPaddingDp(left: Int, top: Int, right: Int, bottom: Int) {
+        setPadding(dp(left), dp(top), dp(right), dp(bottom))
+    }
+
     fun setup(title: String, drawable: Drawable, color: Boolean, listener: ((View) -> Unit)?) {
+        setPaddingDp(16, 16, 16, 16)
         textView.text = title
 
         if (color)
@@ -31,9 +36,11 @@ class ComplexCell : FrameLayout {
         textView.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
         textView.compoundDrawablePadding = dp(40) - drawable.intrinsicWidth
         setOnClickListener(listener)
+        isClickable = listener != null
     }
 
     fun setup(title: String, content: String, drawable: Drawable?, listener: ((View) -> Unit)?) {
+        setPaddingDp(16, 16, 16, 16)
         val spannable = SpannableString(title + "\n" + content)
         spannable.setSpan(TextAppearanceSpan(context, R.style.TextAppearance_AppCompat_Body1), 0, title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannable.setSpan(TextAppearanceSpan(context, R.style.TextAppearance_AppCompat_Caption), title.length + 1, title.length + 1 + content.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -42,9 +49,11 @@ class ComplexCell : FrameLayout {
         drawable?.setColorFilter(0xff636363.toInt(), PorterDuff.Mode.SRC_ATOP)
         textView.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
         setOnClickListener(listener)
+        isClickable = listener != null
     }
 
     fun setup(title: String, content: String, drawable: Drawable?, errorText: String, isError: Boolean, listener: ((View) -> Unit)?) {
+        setPaddingDp(16, 16, 16, 16)
         val spannable = SpannableString(title + "\n" + if (!isError) content else errorText)
         spannable.setSpan(TextAppearanceSpan(context, R.style.TextAppearance_AppCompat_Body1), 0, title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannable.setSpan(TextAppearanceSpan(context, if (!isError) R.style.TextAppearance_AppCompat_Caption else R.style.TextAppearance_Design_Error), title.length + 1, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -60,6 +69,7 @@ class ComplexCell : FrameLayout {
             textView.setCompoundDrawablesWithIntrinsicBounds(oval, null, null, null)
         }
         setOnClickListener(listener)
+        isClickable = listener != null
     }
 
 
