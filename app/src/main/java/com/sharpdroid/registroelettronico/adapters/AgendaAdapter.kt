@@ -66,7 +66,13 @@ class AgendaAdapter(private val place_holder: View) : RecyclerView.Adapter<Recyc
                 }
 
                 eventHolder.date.text = dateFormat.format(event.day)
-                eventHolder.subject.text = Metodi.capitalizeEach(entry.teacher.getOrNull(0)?.teacherName ?: entry.subjectInfo.getOrNull(0)?.description ?: entry.subject.getOrNull(0)?.description ?: "")
+                eventHolder.subject.text = Metodi.capitalizeEach(
+                        //custom name
+                        entry.subjectInfo.getOrNull(0)?.description
+                                //default name
+                                .or(entry.subject.getOrNull(0)?.description
+                                        //teacher name
+                                        .or(entry.teacher.getOrNull(0)?.teacherName.orEmpty())))
                 eventHolder.title.text = title
                 eventHolder.notes.text = event.content.trim { it <= ' ' }
 
