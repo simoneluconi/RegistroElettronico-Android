@@ -10,6 +10,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.afollestad.materialdialogs.MaterialDialog
+import com.crashlytics.android.answers.Answers
+import com.crashlytics.android.answers.ContentViewEvent
+import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.AddTimetableItemActivity
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
@@ -62,6 +65,11 @@ class FragmentTimetable : Fragment() {
         DatabaseHelper.database.timetableDao().queryProfile(Account.with(context).user).observe(this, Observer {
             timetable.setupData(it.orEmpty())
         })
+
+
+        if (!BuildConfig.DEBUG)
+            Answers.getInstance().logContentView(ContentViewEvent().putContentId("Orario"))
+
 
         if (savedInstanceState != null && savedInstanceState["scrollY"] != null) {
             (timetable.parent as NestedScrollView).postDelayed({
