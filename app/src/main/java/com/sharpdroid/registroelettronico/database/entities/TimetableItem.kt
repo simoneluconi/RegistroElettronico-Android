@@ -5,13 +5,13 @@ import android.arch.persistence.room.PrimaryKey
 
 @Entity
 class TimetableItem(
-        @PrimaryKey(autoGenerate = true) var id: Long,
-        var profile: Int,
-        var start: Float,
-        var end: Float,
-        var dayOfWeek: Int,
-        var subject: Long,
-        var color: Int,
-        var where: String?,
-        var notes: String?
+        @PrimaryKey(autoGenerate = true) var id: Long = 0,
+        var profile: Int = -1,
+        var start: Float = 0f,
+        var end: Float = 0f,
+        var dayOfWeek: Int = 0,
+        var subject: Long = 0,
+        var color: Int = 0,
+        var where: String? = null,
+        var notes: String? = null
 )
