@@ -14,7 +14,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class RoomTest {
-    lateinit var db: RoomDB
+    private lateinit var db: RoomDB
 
     @Before
     fun createDb() {
