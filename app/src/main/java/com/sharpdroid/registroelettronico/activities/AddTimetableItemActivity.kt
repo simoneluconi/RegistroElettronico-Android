@@ -195,7 +195,7 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
                             viewModel.color.value ?: ContextCompat.getColor(this@AddTimetableItemActivity, R.color.primary),
                             PorterDuff.Mode.SRC_ATOP
                     )
-                    view.setup("Seleziona un colore", oval) { _ ->
+                    view.setup("Seleziona un colore", oval, false) { _ ->
                         ColorChooserDialog.Builder(this@AddTimetableItemActivity, R.string.choose_color)
                                 .preselect(viewModel.color.value ?: ContextCompat.getColor(this@AddTimetableItemActivity, R.color.primary))
                                 .doneButton(R.string.ok)
@@ -239,7 +239,7 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
                     }
                 }
                 "where" -> {
-                    view.setup(viewModel.where.value.or("Luogo"), ContextCompat.getDrawable(this@AddTimetableItemActivity, R.drawable.ic_place_black_24dp)) {
+                    view.setup(viewModel.where.value.or("Luogo"), ContextCompat.getDrawable(this@AddTimetableItemActivity, R.drawable.ic_place_black_24dp), true) {
                         MaterialDialog.Builder(this@AddTimetableItemActivity)
                                 .title("Aggiungi il luogo")
                                 .input("Aula", viewModel.where.value, true) { _, input ->
@@ -248,7 +248,7 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
                     }
                 }
                 "notes" -> {
-                    view.setup(viewModel.notes.value.or("Note"), ContextCompat.getDrawable(this@AddTimetableItemActivity, R.drawable.ic_filter_list_black_24dp)) {
+                    view.setup(viewModel.notes.value.or("Note"), ContextCompat.getDrawable(this@AddTimetableItemActivity, R.drawable.ic_filter_list_black_24dp), true) {
                         MaterialDialog.Builder(this@AddTimetableItemActivity)
                                 .title("Aggiungi note")
                                 .input("Note", viewModel.notes.value, true) { _, input ->

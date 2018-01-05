@@ -23,10 +23,11 @@ class ComplexCell : FrameLayout {
         isFocusable = true
     }
 
-    fun setup(title: String, drawable: Drawable, listener: ((View) -> Unit)?) {
+    fun setup(title: String, drawable: Drawable, color: Boolean, listener: ((View) -> Unit)?) {
         textView.text = title
 
-        drawable.setColorFilter(0xff636363.toInt(), PorterDuff.Mode.SRC_ATOP)
+        if (color)
+            drawable.setColorFilter(0xff636363.toInt(), PorterDuff.Mode.SRC_ATOP)
         textView.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
         textView.compoundDrawablePadding = dp(40) - drawable.intrinsicWidth
         setOnClickListener(listener)
