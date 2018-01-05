@@ -161,4 +161,5 @@
     <string name="back">Indietro</string>
     <string name="custom">Personale</string>
     <string name="presets">Predefiniti</string>
+    <string name="elimina">Elimina</string>
 </resources>

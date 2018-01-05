@@ -3,24 +3,32 @@ package com.sharpdroid.registroelettronico.fragments
 
 import android.arch.lifecycle.Observer
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v4.widget.NestedScrollView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import com.afollestad.materialdialogs.MaterialDialog
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.ContentViewEvent
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.AddTimetableItemActivity
+import com.sharpdroid.registroelettronico.database.entities.TimetableItem
+import com.sharpdroid.registroelettronico.database.pojos.SubjectPOJO
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.LayoutHelper
 import com.sharpdroid.registroelettronico.utils.LayoutHelper.MATCH_PARENT
 import com.sharpdroid.registroelettronico.utils.LayoutHelper.WRAP_CONTENT
+import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
+import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeFirst
 import com.sharpdroid.registroelettronico.utils.Metodi.dp
+import com.sharpdroid.registroelettronico.views.cells.ComplexCell
 import com.sharpdroid.registroelettronico.views.timetable.TimetableLayout
 
 class FragmentTimetable : Fragment() {
@@ -44,17 +52,14 @@ class FragmentTimetable : Fragment() {
             startActivity(Intent(context, AddTimetableItemActivity::class.java).putExtra("day", col).putExtra("start", row))
         }
         timetable.itemListener = { item ->
-            //TODO: Show details + delete button
-
             DatabaseHelper.database.subjectsDao().getSubjectInfoBlocking(item.subject)?.let {
+                val details = getDetailsListView(it, item)
                 MaterialDialog.Builder(context)
-                        .title("Eliminare?")
-                        .content("Sei sicuro di eliminare \"" + it.getSubjectName() + "\" dal ${resources.getStringArray(R.array.days_of_week)[item.dayOfWeek]}?")
-                        .positiveText("SI")
-                        .neutralText("NO")
-                        .onPositive { _, _ ->
-                            DatabaseHelper.database.timetableDao().delete(item)
-                        }
+                        .customView(details, true)
+                        .title(capitalizeEach(it.getSubjectName(), false))
+                        .neutralText(R.string.elimina)
+                        .positiveText(android.R.string.ok)
+                        .onNeutral { _, _ -> DatabaseHelper.database.timetableDao().delete(item) }
                         .show()
             }
         }
@@ -82,6 +87,51 @@ class FragmentTimetable : Fragment() {
             }, 20)
         }
     }
+
+    private fun getDetailsListView(subject: SubjectPOJO, item: TimetableItem): LinearLayout {
+        val days = arrayOf("lunedì", "martedì", "mercoledì", "giovedì", "venerdì", "sabato", "domenica")
+
+        val linear = LinearLayout(context)
+        linear.orientation = LinearLayout.VERTICAL
+
+        var complexCell = ComplexCell(context)
+        complexCell.setup(subject.getSubjectName(), ContextCompat.getDrawable(context, R.drawable.event_subject), true, null)
+        complexCell.setPaddingDp(16, 8, 0, 8)
+        linear.addView(complexCell, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT))
+
+
+        complexCell = ComplexCell(context)
+        complexCell.setup(capitalizeFirst(days[item.dayOfWeek]), ContextCompat.getDrawable(context, R.drawable.ic_today_black_24dp), true, null)
+        complexCell.setPaddingDp(16, 8, 0, 8)
+        linear.addView(complexCell, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT))
+
+        complexCell = ComplexCell(context)
+        complexCell.setup("${hhmm(item.start)} - ${hhmm(item.end)}", ContextCompat.getDrawable(context, R.drawable.ic_access_time_black_24dp), true, null)
+        complexCell.setPaddingDp(16, 8, 0, 8)
+        linear.addView(complexCell, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT))
+
+        if (!item.where.isNullOrEmpty()) {
+            complexCell = ComplexCell(context)
+            complexCell.setup(item.where!!, ContextCompat.getDrawable(context, R.drawable.ic_place_black_24dp), true, null)
+            complexCell.setPaddingDp(16, 8, 0, 8)
+            linear.addView(complexCell, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT))
+        }
+
+        if (!item.notes.isNullOrEmpty()) {
+            complexCell = ComplexCell(context)
+            complexCell.setup(item.notes!!, ContextCompat.getDrawable(context, R.drawable.ic_filter_list_black_24dp), true, null)
+            complexCell.setPaddingDp(16, 8, 0, 8)
+            linear.addView(complexCell, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT))
+
+        }
+
+        linear.setBackgroundColor(Color.parseColor("#FEFEFE"))
+        return linear
+    }
+
+    fun hhmm(time: Float) = hhmm(time.toDouble())
+    fun hhmm(time: Double) = hhmm(Math.floor(time).toInt(), ((time - Math.floor(time).toInt()) * 60).toInt())
+    fun hhmm(hourOfDay: Int, minute: Int) = "$hourOfDay:${if (minute >= 10) minute.toString() else "0$minute"}"
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)

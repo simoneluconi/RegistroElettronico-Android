@@ -14,4 +14,8 @@ object LayoutHelper {
         layoutParams.setMargins(Metodi.dp(leftMargin), Metodi.dp(topMargin), Metodi.dp(rightMargin), Metodi.dp(bottomMargin))
         return layoutParams
     }
+
+    fun createFrame(width: Int, height: Int): FrameLayout.LayoutParams {
+        return FrameLayout.LayoutParams(getSize(width), getSize(height), 0)
+    }
 }
