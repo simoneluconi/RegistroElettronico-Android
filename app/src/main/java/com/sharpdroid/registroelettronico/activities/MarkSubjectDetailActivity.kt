@@ -75,7 +75,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
 
         //DETTAGLI
         viewModel.getSubject(subjectId).observe(this, Observer {
-            it?.subject?.teachers = DatabaseHelper.database.subjectsDao().getTeachersOfSubject(it?.subject?.id ?: 0)
+            it?.subject?.teachers = DatabaseHelper.database.subjectsDao().getTeachersOfSubject(it?.subject?.id ?: 0, account)
             title = capitalizeEach(it?.getSubjectName().orEmpty())
             initInfo(it ?: return@Observer)
 

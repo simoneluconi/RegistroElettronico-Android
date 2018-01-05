@@ -14,6 +14,7 @@ import com.sharpdroid.registroelettronico.database.entities.SuperAgenda
 import com.sharpdroid.registroelettronico.database.pojos.LocalAgendaPOJO
 import com.sharpdroid.registroelettronico.utils.Metodi
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
+import com.sharpdroid.registroelettronico.utils.or
 import kotlinx.android.synthetic.main.adapter_event.view.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -41,19 +42,18 @@ class AgendaAdapter(private val place_holder: View) : RecyclerView.Adapter<Recyc
                     title.setSpan(StrikethroughSpan(), 0, entry.agenda.notes.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
 
-                eventHolder.date.text = dateFormat.format(entry.agenda.start)
-                eventHolder.subject.text = capitalizeEach(entry.agenda.author, true)
-                eventHolder.subject.text = capitalizeEach(
-                        if (entry.agenda.subject.isNullOrEmpty()) entry.agenda.author else entry.agenda.subject!!, true)
-                eventHolder.title.text = title
+                with(eventHolder) {
+                    date.text = dateFormat.format(entry.agenda.start)
+                    subject.text = capitalizeEach(entry.agenda.subject.or(entry.agenda.author), true)
+                    this.title.text = title
 
-                eventHolder.notes.visibility = View.GONE
-                eventHolder.divider.visibility = if (data[position - 1] is String) View.INVISIBLE else View.VISIBLE
-                eventHolder.subject.visibility = if (eventHolder.subject.text.isEmpty()) View.GONE else View.VISIBLE
+                    notes.visibility = View.GONE
+                    divider.visibility = if (data[position - 1] is String) View.INVISIBLE else View.VISIBLE
+                    subject.visibility = if (eventHolder.subject.text.isEmpty()) View.GONE else View.VISIBLE
 
-                eventHolder.itemView.setOnClickListener {
-                    if (mClickListener != null)
-                        mClickListener!!.onAgendaItemClicked(entry)
+                    itemView.setOnClickListener {
+                        mClickListener?.onAgendaItemClicked(entry)
+                    }
                 }
             }
             is LocalAgendaPOJO -> {
@@ -75,8 +75,7 @@ class AgendaAdapter(private val place_holder: View) : RecyclerView.Adapter<Recyc
                 eventHolder.divider.visibility = if (getItemViewType(position - 1) == R.layout.adapter_header) View.INVISIBLE else View.VISIBLE
 
                 eventHolder.itemView.setOnClickListener {
-                    if (mClickListener != null)
-                        mClickListener!!.onAgendaItemClicked(event)
+                    mClickListener?.onAgendaItemClicked(event)
                 }
 
             }
