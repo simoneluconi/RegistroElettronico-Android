@@ -28,7 +28,7 @@ class MedieHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         }
         itemView.materia.text = capitalizeEach(average.name)
 
-        if (average.count > 0) {
+        if (average.count > 0 && !(average.name.toLowerCase().contains(("religione")) || average.name.toLowerCase().contains(("cattolica")))) {
             itemView.media.text = String.format(Locale.getDefault(), "%.2f", average.sum / average.count)
 
             var target = average.target
