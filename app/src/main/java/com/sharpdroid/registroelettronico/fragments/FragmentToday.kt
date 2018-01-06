@@ -88,7 +88,7 @@ class FragmentToday : Fragment() {
         tomorrow_empty.setTextAndDrawable("Giornata libera", R.drawable.ic_event_available)
         week_empty.setTextAndDrawable("Settimana libera", R.drawable.ic_event_available)
 
-        DatabaseHelper.database.lessonsDao().loadLessons(Account.with(context).user, Date().flat().time).observe(this, Observer {
+        DatabaseHelper.database.lessonsDao().loadLessonsLiveData(Account.with(context).user, Date().flat().time).observe(this, Observer {
             lessons.clear()
             lessons.addAll(it ?: emptyList())
             lessons_empty.visibility = if (lessons.isEmpty()) View.VISIBLE else View.GONE

@@ -86,7 +86,7 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
                 recycler.adapter.notifyItemChanged(6)
             })
             if (viewModel.subjects.isEmpty()) {
-                viewModel.subjects.addAll(DatabaseHelper.database.subjectsDao().getSubjectsWithInfoBlocking(Account.with(this@AddTimetableItemActivity).user).sortedBy { it.getSubjectName() })
+                viewModel.subjects.addAll(DatabaseHelper.database.subjectsDao().getAllSubjectsPOJOBlocking(Account.with(this@AddTimetableItemActivity).user).sortedBy { it.getSubjectName() })
             }
         }
 
@@ -101,7 +101,7 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
 
                 //query subject
                 if (viewModel.subject.value == null)
-                    viewModel.subject.value = DatabaseHelper.database.subjectsDao().getSubjectInfoBlocking(it.subject)
+                    viewModel.subject.value = DatabaseHelper.database.subjectsDao().getSubjectPOJOBlocking(it.subject, Account.with(this).user)
 
                 //convert start value to h:mm format
                 var h: Int

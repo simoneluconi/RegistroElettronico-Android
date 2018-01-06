@@ -74,7 +74,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
         }
 
         //DETTAGLI
-        viewModel.getSubject(subjectId).observe(this, Observer {
+        viewModel.getSubject(subjectId, Account.with(this).user).observe(this, Observer {
             it?.subject?.teachers = DatabaseHelper.database.subjectsDao().getTeachersOfSubject(it?.subject?.id ?: 0, account)
             title = capitalizeEach(it?.getSubjectName().orEmpty())
             initInfo(it ?: return@Observer)
@@ -107,7 +107,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
         }
 
         //LESSONS
-        DatabaseHelper.database.lessonsDao().loadLastLessons(subjectId).observe(this, Observer {
+        DatabaseHelper.database.lessonsDao().loadLastLessons(subjectId, account).observe(this, Observer {
             lessons.update(it.orEmpty(), subjectId.toInt())
         })
 

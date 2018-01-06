@@ -56,7 +56,7 @@ class EditSubjectDetailsActivity : AppCompatActivity() {
         teachers.clear()
         teachers.addAll(DatabaseHelper.database.subjectsDao().getTeachersOfSubject(intent.getLongExtra("code", 0L), Account.with(this).user).map { it.teacherName })
 
-        DatabaseHelper.database.subjectsDao().getSubjectInfo(intent.getLongExtra("code", 0L)).observe(this, Observer {
+        DatabaseHelper.database.subjectsDao().getSubjectPOJO(intent.getLongExtra("code", 0L), Account.with(this).user).observe(this, Observer {
             it?.let { it1 -> init(it1, teachers) }
         })
 

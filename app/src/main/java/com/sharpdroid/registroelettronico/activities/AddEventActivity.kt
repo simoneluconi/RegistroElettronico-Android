@@ -40,7 +40,7 @@ class AddEventActivity : AppCompatActivity() {
     private var selectedDay: Date? = null
 
     private val subjectList by lazy {
-        DatabaseHelper.database.subjectsDao().getSubjectsWithInfoBlocking(Account.with(this).user).sortedBy {
+        DatabaseHelper.database.subjectsDao().getAllSubjectsPOJOBlocking(Account.with(this).user).sortedBy {
             it.getSubjectName()
         }
     }
