@@ -27,7 +27,8 @@ import com.sharpdroid.registroelettronico.database.entities.*
             (SubjectInfo::class),
             (SubjectTeacher::class),
             (TimetableItem::class),
-            (Teacher::class)
+            (Teacher::class),
+            (ExcludedMark::class)
         ],
         version = 12)
 @TypeConverters(Converters::class)

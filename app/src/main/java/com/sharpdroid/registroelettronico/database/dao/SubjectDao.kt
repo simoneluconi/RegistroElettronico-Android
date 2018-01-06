@@ -89,7 +89,7 @@ abstract class SubjectDao {
     @Query("select SUBJECT.* from SUBJECT left join SUBJECT_TEACHER ON SUBJECT.ID = SUBJECT_TEACHER.SUBJECT where SUBJECT_TEACHER.PROFILE=:profile order by DESCRIPTION asc")
     abstract fun getSubjects(profile: Long): List<Subject>
 
-    @Query("SELECT SUM(M_VALUE) as `SUM` , 'Generale' as `M_TYPE`, COUNT(M_VALUE) as `COUNT`  FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=:subject AND PROFILE=:profile LIMIT 1")
+    @Query("SELECT SUM(M_VALUE) as `SUM` , 'Generale' as `M_TYPE`, COUNT(M_VALUE) as `COUNT`  FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=:subject AND PROFILE=:profile AND ID NOT IN (SELECT ID FROM EXCLUDED_MARKS) LIMIT 1")
     abstract fun getAverage(subject: Long, profile: Long): AverageType
 
 

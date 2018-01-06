@@ -41,4 +41,9 @@ class RoomTest {
         assertNotNull(inserted)
     }
 
+    @Test
+    fun excludedMarks() {
+
+    }
+
 }

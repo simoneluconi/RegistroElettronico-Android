@@ -22,6 +22,7 @@ class MarkAdapter(private val mContext: Context) : RecyclerView.Adapter<MarkAdap
     internal var target: Float = 0f
     private val format = SimpleDateFormat("d MMMM yyyy", Locale.ITALIAN)
     private val data = mutableListOf<Grade>()
+    var listener: ((Grade) -> Unit)? = null
 
     fun addAll(list: List<Grade>) {
         data.addAll(sortMarksByDate(list))
@@ -44,7 +45,7 @@ class MarkAdapter(private val mContext: Context) : RecyclerView.Adapter<MarkAdap
     override fun onBindViewHolder(holder: MarkHolder, position: Int) {
 
         val mark = data[position]
-        holder.color.setImageDrawable(ColorDrawable(ContextCompat.getColor(mContext, getMarkColor(mark.mValue, target))))
+        holder.color.setImageDrawable(ColorDrawable(ContextCompat.getColor(mContext, getMarkColor(if (mark.isExcluded()) 0f else mark.mValue, target))))
         holder.mark.text = mark.mStringValue
 
         holder.content.text = mark.mNotes.trim { it <= ' ' }
@@ -53,6 +54,10 @@ class MarkAdapter(private val mContext: Context) : RecyclerView.Adapter<MarkAdap
 
         holder.type.text = mark.mType
         holder.date.text = format.format(mark.mDate)
+
+        holder.itemView.setOnClickListener {
+            listener?.invoke(mark)
+        }
     }
 
     override fun getItemCount() = data.size

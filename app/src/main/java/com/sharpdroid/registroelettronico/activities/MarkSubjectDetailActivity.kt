@@ -31,7 +31,6 @@ import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.utils.Metodi.getMessaggioVoto
 import com.sharpdroid.registroelettronico.viewModels.SubjectDetailsViewModel
 import com.sharpdroid.registroelettronico.views.subjectDetails.HypotheticalView
-import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_mark_subject_detail.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.fragment_imposta_obiettivo.view.*
@@ -82,7 +81,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
             //set animateTarget to true for the next observe
             initTarget(avg, it, viewModel.animateTarget.value == true)
             viewModel.animateTarget.value = true
-            marks.setSubject(it.subjectInfo.getOrNull(0), avg.avg())
+            marks.setupAvgAndTarget(it.subjectInfo.getOrNull(0), avg.avg())
             hypothetical.setTarget(getTarget(viewModel.subjectInfo?.value))
         })
 
@@ -91,6 +90,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
             initOverall(it.orEmpty())
         })
 
+        //MARKS - CHART & LIST
         viewModel.getGrades(account, subjectId, p).observe(this, Observer {
             initMarks(it.orEmpty())
         })
@@ -100,20 +100,22 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
             setRealData(avg)
             setTarget(getTarget(viewModel.subjectInfo?.value))
         }
-        //HYPOTHETICAL
-        viewModel.getLocalGrades(account, subjectId, p).observeOn(AndroidSchedulers.mainThread()).subscribe {
+        //HYPOTHETICAL MARKS
+        viewModel.getLocalGrades(account, subjectId, p).observe(this, Observer { it ->
             hypothetical.setHypoGrades(it.orEmpty(), viewModel.animateLocalMarks.value == true)
             viewModel.animateLocalMarks.value = true
-        }
+        })
 
         //LESSONS
         DatabaseHelper.database.lessonsDao().loadLastLessons(subjectId, account).observe(this, Observer {
             lessons.update(it.orEmpty(), subjectId.toInt())
         })
 
+        //STATS
         if (!BuildConfig.DEBUG)
             Answers.getInstance().logContentView(ContentViewEvent().putContentId("Materia").putContentType("Dettagli"))
 
+        //RESTORE SCROLL
         if (savedInstanceState != null && savedInstanceState["scrollY"] != null) {
             nested_scroll_view.postDelayed({
                 nested_scroll_view.scrollY = savedInstanceState.getInt("scrollY")
@@ -200,20 +202,48 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
         DatabaseHelper.database.subjectsDao().insert(subject)
 
         //Update chart and marks' colors
-        marks.setSubject(subject, avg.avg())
+        marks.setupAvgAndTarget(subject, avg.avg())
         hypothetical.setTarget(getTarget(viewModel.subjectInfo?.value))
     }
 
     private fun initMarks(data: List<Grade>) {
-        marks.setSubject(viewModel.subjectInfo?.value?.subjectInfo?.getOrNull(0), avg.avg())
+        marks.setupAvgAndTarget(viewModel.subjectInfo?.value?.subjectInfo?.getOrNull(0), avg.avg())
 
-        val filter = data.filter { it.mValue != 0f }.map { Entry(it.mDate.time.toFloat(), it.mValue) }.sortedWith(kotlin.Comparator { n1, n2 ->
-            return@Comparator n1.x.compareTo(n2.x)
-        }).toMutableList()
+        //List -> Adapter load
+        marks.addAll(data.reversed())
 
-        marks.addAll(data)
-        marks.setShowChart(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("show_chart", true) && filter.size > 1)
+        //List -> Click listener
+        marks.markClickListener = { grade ->
+            if (grade.isExcluded()) {
+                MaterialDialog.Builder(this)
+                        .title("Ripristinare?")
+                        .content("Vuoi ripristinare il voto selezionato nelle medie dei voti?")
+                        .positiveText("Sì")
+                        .neutralText("No")
+                        .onPositive { _, _ ->
+                            grade.exclude(false)
+                            initMarks(viewModel.grades?.value.orEmpty())
+                        }.show()
+            } else {
+                MaterialDialog.Builder(this)
+                        .title("Escludere?")
+                        .content("Vuoi escludere il voto selezionato dalle medie dei voti?")
+                        .positiveText("Sì")
+                        .neutralText("No")
+                        .onPositive { _, _ ->
+                            grade.exclude(true)
+                            initMarks(viewModel.grades?.value.orEmpty())
+                        }.show()
+            }
+        }
+
+
+        //Exclude not significant marks
+        val filter = data.filter { it.mValue != 0f && !it.isExcluded() }.map { Entry(it.mDate.time.toFloat(), it.mValue) }.sortedBy { it.x }
+
+        //Setup chart
         marks.setChart(filter)
+        marks.setShowChart(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("show_chart", true) && filter.size > 1)
     }
 
     override fun hypotheticalAddListener() {

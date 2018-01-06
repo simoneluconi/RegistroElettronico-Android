@@ -19,7 +19,6 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.database.entities.Profile
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
-import com.sharpdroid.registroelettronico.utils.Metodi
 import com.sharpdroid.registroelettronico.utils.Metodi.PushDatabase
 import io.reactivex.Completable
 import io.reactivex.schedulers.Schedulers
@@ -52,6 +51,10 @@ class FragmentSettings : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             true
         }
 
+        findPreference("voto_obiettivo").setOnPreferenceClickListener { _ ->
+            DatabaseHelper.database.query("DELETE FROM EXCLUDED_MARKS", arrayOf())
+            true
+        }
 
         findPreference("credits").setOnPreferenceClickListener { _ ->
             val transaction = activity.supportFragmentManager.beginTransaction()
