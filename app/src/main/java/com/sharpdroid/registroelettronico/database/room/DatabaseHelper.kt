@@ -83,7 +83,6 @@ object DatabaseHelper {
             }
         }
     }
-
     private val MIGRATION_5_6 = object : Migration(5, 6) {
         override fun migrate(database: SupportSQLiteDatabase) {
             with(database) {
@@ -95,7 +94,6 @@ object DatabaseHelper {
             }
         }
     }
-
     private val MIGRATION_6_7 = object : Migration(6, 7) {
         override fun migrate(database: SupportSQLiteDatabase) {
             database.execSQL("CREATE TABLE `TimetableItem` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `profile` INTEGER NOT NULL, `start` REAL NOT NULL, `end` REAL NOT NULL, `dayOfWeek` INTEGER NOT NULL, `subject` INTEGER NOT NULL)")
