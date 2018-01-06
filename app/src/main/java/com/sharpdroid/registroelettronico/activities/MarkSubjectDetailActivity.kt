@@ -1,6 +1,7 @@
 package com.sharpdroid.registroelettronico.activities
 
 import android.annotation.SuppressLint
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
@@ -48,7 +49,7 @@ import java.util.*
 
 class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.HypotheticalDelegate {
     var p: Int = 0
-    private lateinit var avg: AverageType
+    private lateinit var avg: LiveData<AverageType>
     private lateinit var viewModel: SubjectDetailsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,6 +73,22 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
             viewModel.animateTarget.value = false
         }
 
+        avg.observe(this, Observer { avg ->
+            if (avg == null) return@Observer
+
+            //chart
+            subjectInfo()?.let {
+                marks.setupAvgAndTarget(it, avg.avg())
+            }
+            subjectPojo()?.let {
+                target.setTarget(avg.avg(), getTarget(it), viewModel.animateTarget.value == true)
+                viewModel.animateTarget.value == true
+            }
+
+            //hypothetical
+            hypothetical.setRealData(avg)
+        })
+
         //DETTAGLI
         viewModel.getSubject(subjectId, Account.with(this).user).observe(this, Observer {
             it?.subject?.teachers = DatabaseHelper.database.subjectsDao().getTeachersOfSubject(it?.subject?.id ?: 0, account)
@@ -79,11 +96,14 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
             initInfo(it ?: return@Observer)
 
             //set animateTarget to true for the next observe
-            initTarget(avg, it, viewModel.animateTarget.value == true)
-            viewModel.animateTarget.value = true
-            marks.setupAvgAndTarget(it.subjectInfo.getOrNull(0), avg.avg())
-            hypothetical.setTarget(getTarget(viewModel.subjectInfo?.value))
+            avg.value?.let { avg ->
+                initTarget(avg, it, viewModel.animateTarget.value == true)
+            }
+            //viewModel.animateTarget.value = true
+            //marks.setupAvgAndTarget(it.subjectInfo.getOrNull(0), avg.avg())
+            hypothetical.setTarget(getTarget(it))
         })
+
 
         //AVERAGES
         viewModel.getAverages(account, subjectId, p).observe(this, Observer {
@@ -97,8 +117,8 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
 
         with(hypothetical) {
             delegate = this@MarkSubjectDetailActivity
-            setRealData(avg)
-            setTarget(getTarget(viewModel.subjectInfo?.value))
+            //setRealData(avg.value)
+            //setTarget(getTarget(viewModel.subjectInfo?.value))  ----- ALREADY CALLING IN viewModel.getSubject.observe
         }
         //HYPOTHETICAL MARKS
         viewModel.getLocalGrades(account, subjectId, p).observe(this, Observer { it ->
@@ -143,18 +163,22 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
     }
 
     private fun getTarget(subject: SubjectPOJO?): Float {
-        var target = subject?.subjectInfo?.getOrNull(0)?.target ?: -1f
+        var target = subjectInfo()?.target ?: -1f
         if (target <= 0) {
             val pref = PreferenceManager.getDefaultSharedPreferences(this)
                     .getString("voto_obiettivo", "8")
-            target = if (pref == "Auto") Math.ceil(avg.avg().toDouble()).toFloat() else pref.toFloat()
+            target = if (pref == "Auto") Math.ceil(avg.value?.avg()?.toDouble() ?: .0).toFloat() else pref.toFloat()
         }
         return target
     }
 
     @SuppressLint("InflateParams")
     private fun initTarget(avg: AverageType, subject: SubjectPOJO?, animate: Boolean) {
+
+        //update label, progress bar and color
         target.setTarget(avg.avg(), getTarget(subject), animate)
+
+        //update listeners
         target.setButtonsListener(View.OnClickListener { _ ->
             val alert = AlertDialog.Builder(this)
             alert.setTitle(getString(R.string.obiettivo_title))
@@ -167,7 +191,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
             alert.setView(v)
 
             alert.setPositiveButton(android.R.string.ok
-            ) { _, _ -> updateTarget(v.seekbar.progress.toFloat()) }
+            ) { _, _ -> updateTarget(v.seekbar.progress.toFloat(), avg.avg()) }
 
 
             v.seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -193,8 +217,8 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
         })
     }
 
-    private fun updateTarget(new_target: Float) {
-        val subject = viewModel.subjectInfo?.value?.subjectInfo?.getOrNull(0) ?: SubjectInfo()
+    private fun updateTarget(new_target: Float, avg: Float) {
+        val subject = subjectInfo() ?: SubjectInfo()
         subject.target = new_target
         subject.profile = Account.with(this).user
         viewModel.subjectInfo?.value?.subject?.id?.let { subject.subject = it }
@@ -202,12 +226,12 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
         DatabaseHelper.database.subjectsDao().insert(subject)
 
         //Update chart and marks' colors
-        marks.setupAvgAndTarget(subject, avg.avg())
+        marks.setupAvgAndTarget(subject, avg)
         hypothetical.setTarget(getTarget(viewModel.subjectInfo?.value))
     }
 
     private fun initMarks(data: List<Grade>) {
-        marks.setupAvgAndTarget(viewModel.subjectInfo?.value?.subjectInfo?.getOrNull(0), avg.avg())
+        marks.setupAvgAndTarget(subjectInfo(), avg.value?.avg() ?: 0f)
 
         //List -> Adapter load
         marks.addAll(data.reversed())
@@ -246,6 +270,9 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
         marks.setShowChart(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("show_chart", true) && filter.size > 1)
     }
 
+    /**
+     * Listener for "Add" button
+     */
     override fun hypotheticalAddListener() {
         val view = LayoutInflater.from(this).inflate(R.layout.view_dialog_add_grade, null)
         val grade = LocalGrade(0f, "", viewModel.subjectInfo?.value?.subject?.id ?: 0, p, "Generale", Account.with(this).user, 0)
@@ -276,6 +303,9 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
                 }.show()
     }
 
+    /**
+     * Click listener for hypothetical grades
+     */
     override fun hypotheticalClickListener(grade: LocalGrade, position: Int) {
         MaterialDialog.Builder(this).title("Eliminare?")
                 .content("Sei sicuro di voler eliminare il voto ipotetico selezionato?")
@@ -295,5 +325,8 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
 
         return super.onOptionsItemSelected(item)
     }
+
+    fun subjectInfo() = viewModel.subjectInfo?.value?.subjectInfo?.getOrNull(0)
+    fun subjectPojo() = viewModel.subjectInfo?.value
 
 }
