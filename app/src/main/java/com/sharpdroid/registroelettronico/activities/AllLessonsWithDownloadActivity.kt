@@ -10,8 +10,8 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.AllLessonsAdapter
 import com.sharpdroid.registroelettronico.database.pojos.LessonMini
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
+import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi
-import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_recycler_refresh_scrollbar.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
@@ -48,12 +48,7 @@ class AllLessonsWithDownloadActivity : AppCompatActivity(), SwipeRefreshLayout.O
                     R.color.orangematerial)
         }
 
-        DatabaseHelper.database.lessonsDao().loadLessons(code.toLong()).observeOn(AndroidSchedulers.mainThread()).subscribe {
-            if (it.isNotEmpty()) {
-                addLessons(it)
-            }
-        }
-
+        addLessons(DatabaseHelper.database.lessonsDao().loadLessons(code.toLong(), Account.with(this).user))
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

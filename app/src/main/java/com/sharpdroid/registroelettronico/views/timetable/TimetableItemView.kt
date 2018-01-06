@@ -17,6 +17,7 @@ import android.widget.TextView
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.database.entities.TimetableItem
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
+import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.dp
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -30,7 +31,7 @@ class TimetableItemView : TextView {
         set(value) {
             field = value
             if (disposable == null) {
-                disposable = DatabaseHelper.database.subjectsDao().getSubjectInfoFlowable(value!!.subject).observeOn(AndroidSchedulers.mainThread()).subscribe { it ->
+                disposable = DatabaseHelper.database.subjectsDao().getSubjectPOJOFlowable(value!!.subject, Account.with(context).user).observeOn(AndroidSchedulers.mainThread()).subscribe { it ->
                     val t = it.getOrNull(0)
                     if (!t?.getSubjectName().isNullOrEmpty())
                         text = t?.getSubjectName()

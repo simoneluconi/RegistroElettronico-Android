@@ -17,7 +17,7 @@ class SubjectDetailsViewModel : ViewModel() {
     var subjectInfo: LiveData<SubjectPOJO>? = null
     var animateTarget = MutableLiveData<Boolean>()
     var animateLocalMarks = MutableLiveData<Boolean>()
-    private var profile = Array<Long>(3, { 0 })
+    private var profile = Array<Long>(4, { 0 })
 
     fun getAverages(profile: Long, subject: Long, period: Int): LiveData<List<AverageType>> {
         if (averages == null || this.profile[0] != profile) {
@@ -43,9 +43,10 @@ class SubjectDetailsViewModel : ViewModel() {
         return localGrades ?: throw NullPointerException("Averages' liveData not yet initialized")
     }
 
-    fun getSubject(subject: Long): LiveData<SubjectPOJO> {
-        if (subjectInfo == null) {
-            subjectInfo = DatabaseHelper.database.subjectsDao().getSubjectInfo(subject)
+    fun getSubject(subject: Long, profile: Long): LiveData<SubjectPOJO> {
+        if (subjectInfo == null || this.profile[3] != profile) {
+            subjectInfo = DatabaseHelper.database.subjectsDao().getSubjectPOJO(subject, profile)
+            this.profile[3] = profile
         }
         return subjectInfo ?: throw NullPointerException("Subject liveData not yet initialized")
     }

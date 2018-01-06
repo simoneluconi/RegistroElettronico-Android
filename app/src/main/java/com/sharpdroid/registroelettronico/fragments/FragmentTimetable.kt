@@ -52,7 +52,7 @@ class FragmentTimetable : Fragment() {
             startActivity(Intent(context, AddTimetableItemActivity::class.java).putExtra("day", col).putExtra("start", row))
         }
         timetable.itemListener = { item ->
-            DatabaseHelper.database.subjectsDao().getSubjectInfoBlocking(item.subject)?.let {
+            DatabaseHelper.database.subjectsDao().getSubjectPOJOBlocking(item.subject, Account.with(context).user)?.let {
                 val details = getDetailsListView(it, item)
                 MaterialDialog.Builder(context)
                         .customView(details, true)

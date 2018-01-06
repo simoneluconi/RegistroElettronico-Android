@@ -40,6 +40,7 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, SearchView
     private lateinit var emptyHolder: EmptyFragment
     private lateinit var viewModel: LessonsViewModel
     private var queryDisposable: Disposable? = null
+    private var allDisposable: Disposable? = null
     private var querying = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -73,10 +74,12 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, SearchView
         if (savedInstanceState == null)
             download()
 
-        viewModel.getSubjectsWithLessons(Account.with(context).user).observe(this, Observer {
-            if (it?.isNotEmpty() == true)
+        allDisposable = viewModel.getSubjectsWithLessons(Account.with(context).user).observeOn(AndroidSchedulers.mainThread()).subscribe({
+            if (it.isNotEmpty() && !querying) {
                 setAdapterData(it)
-        })
+                recycler.adapter = adapter
+            }
+        }, Throwable::printStackTrace)
 
         viewModel.query.observe(this, Observer { query ->
             if (query == null) return@Observer
@@ -99,6 +102,7 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, SearchView
     override fun onStop() {
         super.onStop()
         queryDisposable?.dispose()
+        allDisposable?.dispose()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -147,7 +151,10 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, SearchView
     override fun onSubjectClick(subject: SubjectWithLessons) {
         viewModel.selected.postValue(subject)
         val transaction = activity.supportFragmentManager.beginTransaction()
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)/*setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)*/.replace(R.id.fragment_container,
+        transaction
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                //.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
+                .replace(R.id.fragment_container,
                 FragmentLessons()
         ).addToBackStack(null)
         transaction.commit()
