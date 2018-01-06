@@ -38,8 +38,10 @@ abstract class SubjectDao {
 
     //filter all SubjectInfos by Profile
     open fun getSubjectPOJO(id: Long, profile: Long): LiveData<SubjectPOJO> {
-        return Transformations.map(_getSubjectPOJO(id), { input: SubjectPOJO ->
-            input.subjectInfo = input.subjectInfo.filter { it.profile == profile }
+        return Transformations.map(_getSubjectPOJO(id), { input: SubjectPOJO? ->
+            input?.apply {
+                input.subjectInfo = input.subjectInfo.filter { it.profile == profile }
+            }
             input
         })
     }
