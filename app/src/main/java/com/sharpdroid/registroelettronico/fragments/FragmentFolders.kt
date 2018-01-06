@@ -77,7 +77,9 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
         recycler.adapter = mRVAdapter
 
         DatabaseHelper.database.foldersDao().getDidattica(Account.with(context).user).toObservable().observeOn(AndroidSchedulers.mainThread()).subscribe {
-            addFiles(it.orEmpty())
+            if (it == null) return@subscribe
+
+            addFiles(it.sortedByDescending { it.folders.maxBy { it.lastUpdate }?.lastUpdate })
 
             if (viewModel.scrollPosition.value == null)
                 download()
