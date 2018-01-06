@@ -68,7 +68,7 @@ class FragmentMedie : Fragment() {
             var count = 0
 
             it.orEmpty().forEach {
-                if (it.count > 0 && !(it.name.toLowerCase().contains(("religione")) || it.name.toLowerCase().contains(("cattolica")))) {
+                if (it.count > 0 && !(it.name.toLowerCase().contains(("religione")) || it.name.toLowerCase().contains(("cattolica"))) && !it.isExcluded()) {
                     acc += it.sum / it.count
                     count++
                 }

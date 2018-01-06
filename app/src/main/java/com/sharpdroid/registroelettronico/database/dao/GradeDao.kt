@@ -7,7 +7,6 @@ import com.sharpdroid.registroelettronico.database.entities.ExcludedMark
 import com.sharpdroid.registroelettronico.database.entities.Grade
 import com.sharpdroid.registroelettronico.database.entities.LocalGrade
 import com.sharpdroid.registroelettronico.database.pojos.AverageType
-import io.reactivex.Flowable
 
 @Dao
 interface GradeDao {
@@ -49,10 +48,10 @@ interface GradeDao {
     fun allPeriodsGrades(profile: Long, subject: Long): LiveData<List<Grade>>
 
     @Query("SELECT * FROM LOCAL_GRADE WHERE PROFILE=:profile AND SUBJECT=:subject AND PERIOD=:period")
-    fun periodLocalGrades(profile: Long, subject: Long, period: Int): Flowable<List<LocalGrade>>
+    fun periodLocalGrades(profile: Long, subject: Long, period: Int): LiveData<List<LocalGrade>>
 
     @Query("SELECT * FROM LOCAL_GRADE WHERE PROFILE=:profile AND SUBJECT=:subject")
-    fun allPeriodsLocalGrades(profile: Long, subject: Long): Flowable<List<LocalGrade>>
+    fun allPeriodsLocalGrades(profile: Long, subject: Long): LiveData<List<LocalGrade>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(grades: List<Grade>)

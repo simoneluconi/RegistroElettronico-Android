@@ -40,6 +40,13 @@ class MarksView : CardView, PopupMenu.OnMenuItemClickListener {
     lateinit internal var adapter: MarkAdapter
     private var showChart: Boolean = false
 
+    var markClickListener: ((Grade) -> Unit)? = null
+        set(value) {
+            field = value
+            adapter.listener = value
+            adapter.notifyDataSetChanged()
+        }
+
     val itemCount: Int
         get() = adapter.itemCount
 
@@ -98,7 +105,7 @@ class MarksView : CardView, PopupMenu.OnMenuItemClickListener {
         chart.legend.isEnabled = false
     }
 
-    fun setSubject(subject: SubjectInfo?, media: Float) {
+    fun setupAvgAndTarget(subject: SubjectInfo?, media: Float) {
         val pref = PreferenceManager.getDefaultSharedPreferences(mContext).getString("voto_obiettivo", "8")
         val prefTarget = if (pref == "Auto") Math.ceil(media.toDouble()).toFloat() else pref.toFloat()
 
@@ -111,6 +118,7 @@ class MarksView : CardView, PopupMenu.OnMenuItemClickListener {
     }
 
     fun addAll(marks: List<Grade>) {
+        adapter.clear()
         adapter.addAll(marks)
     }
 
@@ -145,10 +153,6 @@ class MarksView : CardView, PopupMenu.OnMenuItemClickListener {
         chart.axisLeft.addLimitLine(ll1)
         chart.axisLeft.addLimitLine(ll2)
         chart.invalidate()
-    }
-
-    fun clear() {
-        adapter.clear()
     }
 
     fun setShowChart(show: Boolean) {

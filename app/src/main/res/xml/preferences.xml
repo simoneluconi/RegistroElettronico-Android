@@ -28,6 +28,10 @@
         android:key="clear_archive"
         android:summary="@string/restore_archived_summary"
         android:title="@string/restore_archived_title" />
+    <Preference
+        android:key="excluded_marks"
+        android:summary="@string/restore_excluded_marks_summary"
+        android:title="@string/restore_excluded_marks_title" />
 
     <PreferenceCategory
         android:key="notifuche_preference"

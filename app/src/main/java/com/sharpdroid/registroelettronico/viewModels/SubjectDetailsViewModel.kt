@@ -8,12 +8,11 @@ import com.sharpdroid.registroelettronico.database.entities.LocalGrade
 import com.sharpdroid.registroelettronico.database.pojos.AverageType
 import com.sharpdroid.registroelettronico.database.pojos.SubjectPOJO
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
-import io.reactivex.Flowable
 
 class SubjectDetailsViewModel : ViewModel() {
-    private var averages: LiveData<List<AverageType>>? = null
-    private var grades: LiveData<List<Grade>>? = null
-    private var localGrades: Flowable<List<LocalGrade>>? = null
+    var averages: LiveData<List<AverageType>>? = null
+    var grades: LiveData<List<Grade>>? = null
+    var localGrades: LiveData<List<LocalGrade>>? = null
     var subjectInfo: LiveData<SubjectPOJO>? = null
     var animateTarget = MutableLiveData<Boolean>()
     var animateLocalMarks = MutableLiveData<Boolean>()
@@ -35,7 +34,7 @@ class SubjectDetailsViewModel : ViewModel() {
         return grades ?: throw NullPointerException("Grades' liveData not yet initialized")
     }
 
-    fun getLocalGrades(profile: Long, subject: Long, period: Int): Flowable<List<LocalGrade>> {
+    fun getLocalGrades(profile: Long, subject: Long, period: Int): LiveData<List<LocalGrade>> {
         if (localGrades == null || this.profile[2] != profile) {
             localGrades = if (period != -1) DatabaseHelper.database.gradesDao().periodLocalGrades(profile, subject, period) else DatabaseHelper.database.gradesDao().allPeriodsLocalGrades(profile, subject)
             this.profile[2] = profile

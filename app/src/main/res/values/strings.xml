@@ -162,4 +162,6 @@
     <string name="custom">Personale</string>
     <string name="presets">Predefiniti</string>
     <string name="elimina">Elimina</string>
+    <string name="restore_excluded_marks_summary">Ripristina tutti i voti esclusi dalle medie</string>
+    <string name="restore_excluded_marks_title">Ripristina voti</string>
 </resources>
