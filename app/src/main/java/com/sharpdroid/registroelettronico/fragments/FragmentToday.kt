@@ -18,6 +18,7 @@ import com.sharpdroid.registroelettronico.database.entities.Absence
 import com.sharpdroid.registroelettronico.database.entities.Lesson
 import com.sharpdroid.registroelettronico.database.entities.LocalAgenda
 import com.sharpdroid.registroelettronico.database.entities.Profile
+import com.sharpdroid.registroelettronico.database.pojos.GradeWithSubjectName
 import com.sharpdroid.registroelettronico.database.pojos.RemoteAgendaPOJO
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
@@ -27,6 +28,7 @@ import com.sharpdroid.registroelettronico.utils.add
 import com.sharpdroid.registroelettronico.utils.flat
 import com.sharpdroid.registroelettronico.views.cells.AbsenceCell
 import com.sharpdroid.registroelettronico.views.cells.EventCell
+import com.sharpdroid.registroelettronico.views.cells.GradeCell
 import com.sharpdroid.registroelettronico.views.cells.LessonCell
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import kotlinx.android.synthetic.main.fragment_today.*
@@ -34,9 +36,14 @@ import java.util.*
 
 class FragmentToday : Fragment() {
     private val absences = mutableListOf<Absence>()
+    private val grades = mutableListOf<GradeWithSubjectName>()
     private val lessons = mutableListOf<Lesson>()
     private val remoteEvents = mutableListOf<RemoteAgendaPOJO>()
     private val localEvents = mutableListOf<LocalAgenda>()
+
+    private val gradesAdapter by lazy {
+        MarkAdapter()
+    }
 
     private val lessonsAdapter by lazy {
         LessonsAdapter()
@@ -65,18 +72,27 @@ class FragmentToday : Fragment() {
             adapter = absenceAdapter
         }
 
+        with(grades_recycler) {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            isNestedScrollingEnabled = false
+            adapter = gradesAdapter
+            addItemDecoration(HorizontalDividerItemDecoration.Builder(context).margin(dp(0), dp(0)).colorResId(R.color.divider).build())
+        }
+
         with(lessons_recycler) {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             isNestedScrollingEnabled = false
             adapter = lessonsAdapter
             addItemDecoration(HorizontalDividerItemDecoration.Builder(context).margin(dp(0), dp(0)).colorResId(R.color.divider).build())
         }
+
         with(tomorrow_recycler) {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             isNestedScrollingEnabled = false
             adapter = tomorrowAdapter
             addItemDecoration(HorizontalDividerItemDecoration.Builder(context).margin(dp(0), dp(0)).colorResId(R.color.divider).build())
         }
+
         with(week_recycler) {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             isNestedScrollingEnabled = false
@@ -88,18 +104,30 @@ class FragmentToday : Fragment() {
         tomorrow_empty.setTextAndDrawable("Giornata libera", R.drawable.ic_event_available)
         week_empty.setTextAndDrawable("Settimana libera", R.drawable.ic_event_available)
 
-        DatabaseHelper.database.lessonsDao().loadLessonsLiveData(Account.with(context).user, Date().flat().time).observe(this, Observer {
-            lessons.clear()
-            lessons.addAll(it ?: emptyList())
-            lessons_empty.visibility = if (lessons.isEmpty()) View.VISIBLE else View.GONE
-            lessons_recycler.adapter.notifyDataSetChanged()
-        })
-
+        //Assenze
         DatabaseHelper.database.absencesDao().getAbsences(Date().flat(), Account.with(context).user).observe(this, Observer {
             absences.clear()
             absences.addAll(it ?: emptyList())
             absence_card.visibility = if (absences.isNotEmpty()) View.VISIBLE else View.GONE
             absence_recycler.adapter.notifyDataSetChanged()
+        })
+
+        //Voti
+        DatabaseHelper.database.gradesDao().getGrades(Account.with(context).user).observe(this, Observer {
+            grades.clear()
+            val flatDate = Date().flat()
+            grades.addAll(it.orEmpty().filter { it.grade.mDate.flat() == flatDate }.sortedByDescending { it.grade.mValue })
+            textView1.visibility = if (grades.isNotEmpty()) View.VISIBLE else View.GONE
+            grades_card.visibility = if (grades.isNotEmpty()) View.VISIBLE else View.GONE
+            grades_recycler.adapter.notifyDataSetChanged()
+        })
+
+        //Lezioni
+        DatabaseHelper.database.lessonsDao().loadLessonsLiveData(Account.with(context).user, Date().flat().time).observe(this, Observer {
+            lessons.clear()
+            lessons.addAll(it ?: emptyList())
+            lessons_empty.visibility = if (lessons.isEmpty()) View.VISIBLE else View.GONE
+            lessons_recycler.adapter.notifyDataSetChanged()
         })
 
         val mediatorLiveData = MediatorLiveData<List<Any>>()
@@ -144,6 +172,7 @@ class FragmentToday : Fragment() {
     private fun download() {
         val p = Profile.getProfile(context)
         Metodi.updateAbsence(p)
+        Metodi.updateMarks(p)
         Metodi.updateLessons(p)
         Metodi.updateAgenda(p)
     }
@@ -192,6 +221,12 @@ class FragmentToday : Fragment() {
 
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) = Holder(AbsenceCell(context))
         override fun getItemCount() = absences.size
+    }
+
+    inner class MarkAdapter : RecyclerView.Adapter<Holder>() {
+        override fun getItemCount() = grades.size
+        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) = Holder(GradeCell(context))
+        override fun onBindViewHolder(holder: Holder, position: Int) = (holder.itemView as GradeCell).bind(grades[position], 6f)
     }
 
     inner class LessonsAdapter : RecyclerView.Adapter<Holder>() {
