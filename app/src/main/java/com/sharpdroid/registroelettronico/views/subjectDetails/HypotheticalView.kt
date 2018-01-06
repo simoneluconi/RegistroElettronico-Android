@@ -71,7 +71,9 @@ class HypotheticalView : CardView {
     fun setRealData(avg: AverageType) {
         realGradeSum = avg.sum
         realCount = avg.count
-        invalidate()
+        updateHypoAvg()
+        updatePercentage()
+        recycler.adapter.notifyDataSetChanged()
     }
 
     fun setTarget(target: Float) {
