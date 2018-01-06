@@ -27,6 +27,19 @@ data class Grade(
         @ColumnInfo(name = "M_WEIGHT_FACTOR") @Expose @SerializedName("weightFactor") var mWeightFactor: Double = 0.0,
         @ColumnInfo(name = "PROFILE") var profile: Long = -1L
 ) : Serializable {
+
+    fun isExcluded(): Boolean {
+        return DatabaseHelper.database.gradesDao().countExcluded(id) == 1L
+    }
+
+    fun exclude(exclude: Boolean) {
+        if (exclude) {
+            DatabaseHelper.database.gradesDao().exclude(ExcludedMark(id))
+        } else {
+            DatabaseHelper.database.gradesDao().dontExclude(ExcludedMark(id))
+        }
+    }
+
     companion object {
         fun hasMarksSecondPeriod(profile: Long): Boolean {
             return DatabaseHelper.database.query("SELECT * FROM GRADE WHERE PROFILE=? AND M_PERIOD!=1", arrayOf(profile)).moveToFirst()
