@@ -1,5 +1,6 @@
 package com.sharpdroid.registroelettronico.activities
 
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
@@ -12,11 +13,14 @@ import android.support.v7.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.animation.DecelerateInterpolator
 import android.widget.AdapterView
 import android.widget.SeekBar
 import com.afollestad.materialdialogs.MaterialDialog
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.ContentViewEvent
+import com.getkeepsafe.taptargetview.TapTarget
+import com.getkeepsafe.taptargetview.TapTargetView
 import com.github.mikephil.charting.data.Entry
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
@@ -29,13 +33,16 @@ import com.sharpdroid.registroelettronico.database.pojos.SubjectPOJO
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
+import com.sharpdroid.registroelettronico.utils.Metodi.dp
 import com.sharpdroid.registroelettronico.utils.Metodi.getMessaggioVoto
 import com.sharpdroid.registroelettronico.viewModels.SubjectDetailsViewModel
 import com.sharpdroid.registroelettronico.views.subjectDetails.HypotheticalView
 import kotlinx.android.synthetic.main.activity_mark_subject_detail.*
+import kotlinx.android.synthetic.main.adapter_mark.view.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.fragment_imposta_obiettivo.view.*
 import kotlinx.android.synthetic.main.view_dialog_add_grade.view.*
+import kotlinx.android.synthetic.main.view_marks.view.*
 import java.util.*
 
 // DONE: 03/12/2016 Dettagli (nome, aula, prof, ora, note, colore)
@@ -113,6 +120,27 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
         //MARKS - CHART & LIST
         viewModel.getGrades(account, subjectId, p).observe(this, Observer {
             initMarks(it.orEmpty())
+
+            nested_scroll_view.postDelayed({
+                //Let em load
+                val pref = PreferenceManager.getDefaultSharedPreferences(this)
+                if (!pref.getBoolean("has_seen_feature_HIDE_MARKS_", false) && marks.count() > 0 && savedInstanceState == null) {
+                    val location = Array(2, { 0 }).toIntArray()
+                    marks.header.getLocationOnScreen(location)
+                    val animator = ObjectAnimator.ofInt(nested_scroll_view, "scrollY", location[1] - dp(80)).setDuration(1000)
+                    animator.interpolator = DecelerateInterpolator(1.4f)
+                    animator.start()
+
+                    nested_scroll_view.postDelayed({
+                        TapTargetView.showFor(this,
+                                TapTarget.forView(marks.recycler.getChildAt(0).relativeLayout, "Nascondi voti", "Cliccando puoi scegliere i voti che desideri escludere dalle medie.")
+                                        .transparentTarget(true)
+                                , object : TapTargetView.Listener() {})
+
+                        pref.edit().putBoolean("has_seen_feature_HIDE_MARKS_", true).apply()
+                    }, animator.duration)
+                }
+            }, 400)
         })
 
         with(hypothetical) {
