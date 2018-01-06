@@ -117,6 +117,14 @@ object DatabaseHelper {
             database.execSQL("ALTER TABLE `REMOTE_AGENDA` ADD COLUMN `SUBJECT_ID` INTEGER")
         }
     }
+    private val MIGRATION_10_11 = object : Migration(10, 11) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("ALTER TABLE `COMMUNICATION` RENAME TO `_`")
+            database.execSQL("CREATE TABLE `COMMUNICATION` (`ID` INTEGER NOT NULL, `DATE` INTEGER NOT NULL, `IS_READ` INTEGER NOT NULL, `EVT_CODE` TEXT NOT NULL, `MY_ID` INTEGER NOT NULL, `TITLE` TEXT NOT NULL, `CATEGORY` TEXT, `HAS_ATTACHMENT` INTEGER NOT NULL, `PROFILE` INTEGER NOT NULL, PRIMARY KEY(`ID`))")
+            database.execSQL("INSERT INTO COMMUNICATION(`ID`, `DATE`, `IS_READ`, `EVT_CODE`, `MY_ID`, `TITLE`, `CATEGORY`, `HAS_ATTACHMENT`, `PROFILE`) SELECT `ID`, `DATE`, `IS_READ`, `EVT_CODE`, `MY_ID`, `TITLE`, `CATEGORY`, `HAS_ATTACHMENT`, `PROFILE` FROM `_`")
+            database.execSQL("DROP TABLE `_`")
+        }
+    }
 
     fun createDb(context: Context) {
         if (initialized.compareAndSet(false, true)) {
@@ -129,7 +137,8 @@ object DatabaseHelper {
                             MIGRATION_6_7,
                             MIGRATION_7_8,
                             MIGRATION_8_9,
-                            MIGRATION_9_10
+                            MIGRATION_9_10,
+                            MIGRATION_10_11
                     )
                     .build()
         }

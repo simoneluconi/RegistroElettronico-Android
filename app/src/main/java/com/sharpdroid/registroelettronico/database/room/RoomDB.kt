@@ -6,20 +6,29 @@ import android.arch.persistence.room.TypeConverters
 import com.sharpdroid.registroelettronico.database.dao.*
 import com.sharpdroid.registroelettronico.database.entities.*
 
-@Database(entities = arrayOf(
-        Absence::class,
-        RemoteAgenda::class, RemoteAgendaInfo::class,
-        LocalAgenda::class, Communication::class,
-        CommunicationInfo::class,
-        File::class, FileInfo::class,
-        Folder::class, Grade::class,
-        LocalGrade::class, Lesson::class,
-        Note::class, Period::class, Profile::class,
-        Subject::class,
-        SubjectInfo::class,
-        SubjectTeacher::class,
-        TimetableItem::class,
-        Teacher::class), version = 10)
+@Database(
+        entities = [
+            (Absence::class),
+            (RemoteAgenda::class),
+            (RemoteAgendaInfo::class),
+            (LocalAgenda::class),
+            (Communication::class),
+            (CommunicationInfo::class),
+            (File::class),
+            (FileInfo::class),
+            (Folder::class),
+            (Grade::class),
+            (LocalGrade::class),
+            (Lesson::class),
+            (Note::class),
+            (Period::class),
+            (Profile::class),
+            (Subject::class),
+            (SubjectInfo::class),
+            (SubjectTeacher::class),
+            (TimetableItem::class),
+            (Teacher::class)],
+        version = 11)
 @TypeConverters(Converters::class)
 abstract class RoomDB : RoomDatabase() {
     abstract fun absencesDao(): AbsenceDao
