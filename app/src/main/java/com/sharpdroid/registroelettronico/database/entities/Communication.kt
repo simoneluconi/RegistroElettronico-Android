@@ -42,7 +42,7 @@ data class Communication(
         @ColumnInfo(name = "MY_ID") @Expose @SerializedName("cntId") var myId: Long = 0L,
         @ColumnInfo(name = "TITLE") @Expose @SerializedName("cntTitle") var title: String = "",
         @Ignore @Expose @SerializedName("cntStatus") var cntStatus: String = "",
-        @ColumnInfo(name = "CATEGORY") @Expose @SerializedName("cntCategory") var category: String = "",
+        @ColumnInfo(name = "CATEGORY") @Expose @SerializedName("cntCategory") var category: String? = null,
         @ColumnInfo(name = "HAS_ATTACHMENT") @Expose @SerializedName("cntHasAttach") var hasAttachment: Boolean = false,
         @ColumnInfo(name = "PROFILE") var profile: Long = -1L
 ) : Serializable

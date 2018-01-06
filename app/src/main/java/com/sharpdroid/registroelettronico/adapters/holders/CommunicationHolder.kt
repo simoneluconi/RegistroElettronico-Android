@@ -18,7 +18,7 @@ class CommunicationHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
                listener: CommunicationAdapter.DownloadListener) {
         itemView.title.text = communication.title
         itemView.date.text = formatter.format(communication.date)
-        itemView.type.text = communication.category
+        itemView.type.text = communication.category.orEmpty()
         itemView.attachment.visibility = if (communication.hasAttachment) View.VISIBLE else View.GONE
         itemView.relative_layout.setOnClickListener({
             itemView.relative_layout.postDelayed({
