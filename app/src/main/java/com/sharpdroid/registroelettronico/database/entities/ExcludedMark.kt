@@ -5,8 +5,8 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
 
 @Entity(tableName = "EXCLUDED_MARKS")
-class ExcludedMarks {
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "ID")
-    var id = 0L
-}
+data class ExcludedMark(
+        @PrimaryKey(autoGenerate = true)
+        @ColumnInfo(name = "ID")
+        var id: Long = 0L
+)
