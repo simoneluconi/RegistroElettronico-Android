@@ -119,7 +119,7 @@ class MarksView : CardView, PopupMenu.OnMenuItemClickListener {
 
     fun addAll(marks: List<Grade>) {
         adapter.clear()
-        adapter.addAll(marks)
+        adapter.addAll(marks.sortedByDescending { it.mDate })
     }
 
     private fun setLimitLines(target: Float, media: Float) {

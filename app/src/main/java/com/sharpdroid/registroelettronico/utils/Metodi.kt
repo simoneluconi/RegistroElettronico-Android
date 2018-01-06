@@ -197,11 +197,6 @@ object Metodi {
         return contentd
     }
 
-    fun sortMarksByDate(marks: List<Grade>): List<Grade> {
-        Collections.sort(marks) { (_, _, o1), (_, _, o2) -> o1.compareTo(o2) }
-        return marks
-    }
-
     fun isEventTest(event: SuperAgenda) = isEventTest(event.agenda)
 
     fun isEventTest(event: RemoteAgenda): Boolean {

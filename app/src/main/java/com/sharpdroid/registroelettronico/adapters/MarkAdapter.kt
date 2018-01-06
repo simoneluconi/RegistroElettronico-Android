@@ -12,7 +12,6 @@ import android.widget.TextView
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.database.entities.Grade
 import com.sharpdroid.registroelettronico.utils.Metodi.getMarkColor
-import com.sharpdroid.registroelettronico.utils.Metodi.sortMarksByDate
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.adapter_mark.view.*
 import java.text.SimpleDateFormat
@@ -25,7 +24,7 @@ class MarkAdapter(private val mContext: Context) : RecyclerView.Adapter<MarkAdap
     var listener: ((Grade) -> Unit)? = null
 
     fun addAll(list: List<Grade>) {
-        data.addAll(sortMarksByDate(list))
+        data.addAll(list)
         notifyDataSetChanged()
     }
 
