@@ -5,6 +5,7 @@ import android.arch.persistence.room.testing.MigrationTestHelper
 import android.database.sqlite.SQLiteConstraintException
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
+import com.sharpdroid.registroelettronico.database.Migrations
 import com.sharpdroid.registroelettronico.database.room.RoomDB
 import org.junit.Rule
 import org.junit.Test
@@ -23,11 +24,22 @@ class MigrationTest {
     fun communicationCategoryNull9() {
         val db = helper.createDatabase(TEST_DB_NAME, 9)
         db.execSQL("insert into COMMUNICATION values(1,1,1,'CF',1,'circ. n. 2', NULL, 1, 1)")
+        db.close()
     }
 
-    @Test()
+    @Test
     fun communicationCategoryNull10() {
         val db = helper.createDatabase(TEST_DB_NAME, 10)
         db.execSQL("insert into COMMUNICATION values(1,1,1,'CF',1,'circ. n. 2', NULL, 1, 1)")
+        db.close()
+    }
+
+    @Test
+    fun validateMigration11To12() {
+        var db = helper.createDatabase(TEST_DB_NAME, 11)
+        db.close()
+        db = helper.runMigrationsAndValidate(TEST_DB_NAME, 12, false, Migrations.MIGRATION_11_12)
+        db.execSQL("insert into `EXCLUDED_MARKS` default values")
+        db.close()
     }
 }
