@@ -27,7 +27,8 @@ import com.sharpdroid.registroelettronico.database.entities.*
             (SubjectInfo::class),
             (SubjectTeacher::class),
             (TimetableItem::class),
-            (Teacher::class)],
+            (Teacher::class)
+        ],
         version = 11)
 @TypeConverters(Converters::class)
 abstract class RoomDB : RoomDatabase() {
