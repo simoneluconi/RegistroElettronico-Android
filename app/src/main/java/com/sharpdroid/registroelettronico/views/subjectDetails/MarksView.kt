@@ -185,6 +185,8 @@ class MarksView : CardView, PopupMenu.OnMenuItemClickListener {
         chart.invalidate()
     }
 
+    fun count() = adapter.itemCount
+
     override fun onMenuItemClick(item: MenuItem): Boolean {
         if (item.itemId == R.id.show && showChart) {
             item.isChecked = !item.isChecked
