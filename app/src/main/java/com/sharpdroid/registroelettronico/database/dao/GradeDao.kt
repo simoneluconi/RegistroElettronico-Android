@@ -7,12 +7,13 @@ import com.sharpdroid.registroelettronico.database.entities.ExcludedMark
 import com.sharpdroid.registroelettronico.database.entities.Grade
 import com.sharpdroid.registroelettronico.database.entities.LocalGrade
 import com.sharpdroid.registroelettronico.database.pojos.AverageType
+import com.sharpdroid.registroelettronico.database.pojos.GradeWithSubjectName
 
 @Dao
 interface GradeDao {
 
-    @Query("SELECT * FROM GRADE WHERE PROFILE = :profile")
-    fun getGrades(profile: Long): LiveData<List<Grade>>
+    @Query("SELECT GRADE.*, SUBJECT.DESCRIPTION AS subject FROM GRADE LEFT JOIN SUBJECT ON SUBJECT.ID=GRADE.M_SUBJECT_ID WHERE PROFILE = :profile")
+    fun getGrades(profile: Long): LiveData<List<GradeWithSubjectName>>
 
     @Query("SELECT * FROM GRADE WHERE PROFILE = :profile")
     fun getGradesList(profile: Long): List<Grade>
