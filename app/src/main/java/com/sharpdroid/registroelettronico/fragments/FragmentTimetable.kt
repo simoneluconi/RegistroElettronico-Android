@@ -5,6 +5,7 @@ import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.NestedScrollView
@@ -13,6 +14,8 @@ import android.widget.LinearLayout
 import com.afollestad.materialdialogs.MaterialDialog
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.ContentViewEvent
+import com.getkeepsafe.taptargetview.TapTarget
+import com.getkeepsafe.taptargetview.TapTargetView
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.AddTimetableItemActivity
@@ -30,6 +33,7 @@ import com.sharpdroid.registroelettronico.utils.Metodi.dp
 import com.sharpdroid.registroelettronico.utils.Metodi.mapColorsToSubjects
 import com.sharpdroid.registroelettronico.views.cells.ComplexCell
 import com.sharpdroid.registroelettronico.views.timetable.TimetableLayout
+import kotlinx.android.synthetic.main.app_bar_main.*
 
 class FragmentTimetable : Fragment() {
     lateinit var timetable: TimetableLayout
@@ -87,6 +91,14 @@ class FragmentTimetable : Fragment() {
                 (timetable.parent as NestedScrollView?)?.scrollY = Math.round(minY)
             }, 20)
         }
+
+        timetable.postDelayed({
+            val pref = PreferenceManager.getDefaultSharedPreferences(context)
+            if (!pref.getBoolean("has_seen_feature_AUTO_TIMETABLE", false)) {
+                TapTargetView.showFor(activity, TapTarget.forToolbarMenuItem(activity.toolbar, R.id.sync, "Genera orario", "Ora puoi generare automaticamente il tuo orario scolastico in modo intelligente!").transparentTarget(false))
+            }
+            pref.edit().putBoolean("has_seen_feature_AUTO_TIMETABLE", true).apply()
+        }, 200)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -95,24 +107,32 @@ class FragmentTimetable : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.sync) {
-            MaterialDialog.Builder(context)
-                    .title("Cancellare orario?")
-                    .content("L'orario corrente sarà eliminato e ne verrà generato uno automaticamente.")
-                    .positiveText("SI")
-                    .neutralText("NO")
-                    .onPositive { _, _ ->
-                        val profile = Account.with(context).user
-                        val subjects = DatabaseHelper.database.subjectsDao().getSubjects(profile).map { it.id.toInt() }
-
-                        val genius = DatabaseHelper.database.lessonsDao().geniusTimetable(profile)
-                        val convertedGenius = convertGeniusToTimetable(profile, genius, mapColorsToSubjects(subjects))
-
-                        DatabaseHelper.database.timetableDao().deleteProfile(profile)
-                        DatabaseHelper.database.timetableDao().insert(convertedGenius)
-                    }.show()
+            if (timetable.data.size > 0) {
+                MaterialDialog.Builder(context)
+                        .title("Cancellare orario?")
+                        .content("L'orario corrente sarà eliminato e ne verrà generato uno automaticamente.")
+                        .positiveText("SI")
+                        .neutralText("NO")
+                        .onPositive { _, _ ->
+                            generateGeniusTimetable()
+                        }.show()
+            } else {
+                generateGeniusTimetable()
+            }
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun generateGeniusTimetable() {
+        val profile = Account.with(context).user
+        val subjects = DatabaseHelper.database.subjectsDao().getSubjects(profile).map { it.id.toInt() }
+
+        val genius = DatabaseHelper.database.lessonsDao().geniusTimetable(profile)
+        val convertedGenius = convertGeniusToTimetable(profile, genius, mapColorsToSubjects(subjects))
+
+        DatabaseHelper.database.timetableDao().deleteProfile(profile)
+        DatabaseHelper.database.timetableDao().insert(convertedGenius)
     }
 
     private fun getDetailsListView(subject: SubjectPOJO, item: TimetableItem): LinearLayout {
