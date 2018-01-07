@@ -9,6 +9,9 @@ interface TimetableDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(timetableItem: TimetableItem)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(timetableItem: List<TimetableItem>)
+
     @Query("SELECT * FROM TimetableItem WHERE profile=:profile")
     fun queryProfile(profile: Long): LiveData<List<TimetableItem>>
 
@@ -21,4 +24,7 @@ interface TimetableDao {
 
     @Delete
     fun delete(timetableItem: TimetableItem)
+
+    @Query("DELETE FROM TimetableItem WHERE PROFILE=:profile")
+    fun deleteProfile(profile: Long)
 }

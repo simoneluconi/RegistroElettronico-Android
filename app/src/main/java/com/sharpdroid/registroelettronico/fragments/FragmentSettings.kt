@@ -19,7 +19,7 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.database.entities.Profile
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
-import com.sharpdroid.registroelettronico.utils.Metodi.PushDatabase
+import com.sharpdroid.registroelettronico.utils.Metodi.pushDatabase
 import io.reactivex.Completable
 import io.reactivex.schedulers.Schedulers
 
@@ -42,7 +42,7 @@ class FragmentSettings : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         findPreference("clear_archive").setOnPreferenceClickListener { _ ->
             DatabaseHelper.database.eventsDao().setLocalNotArchived()
             DatabaseHelper.database.eventsDao().setRemoteNotArchived()
-            PushDatabase(context)
+            pushDatabase(context)
             true
         }
 

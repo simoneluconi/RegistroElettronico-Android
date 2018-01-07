@@ -8,9 +8,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.NestedScrollView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.LinearLayout
 import com.afollestad.materialdialogs.MaterialDialog
 import com.crashlytics.android.answers.Answers
@@ -27,7 +25,9 @@ import com.sharpdroid.registroelettronico.utils.LayoutHelper.MATCH_PARENT
 import com.sharpdroid.registroelettronico.utils.LayoutHelper.WRAP_CONTENT
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeFirst
+import com.sharpdroid.registroelettronico.utils.Metodi.convertGeniusToTimetable
 import com.sharpdroid.registroelettronico.utils.Metodi.dp
+import com.sharpdroid.registroelettronico.utils.Metodi.mapColorsToSubjects
 import com.sharpdroid.registroelettronico.views.cells.ComplexCell
 import com.sharpdroid.registroelettronico.views.timetable.TimetableLayout
 
@@ -47,6 +47,7 @@ class FragmentTimetable : Fragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity.title = "Orario"
+        setHasOptionsMenu(true)
 
         timetable.addListener = { col, row ->
             startActivity(Intent(context, AddTimetableItemActivity::class.java).putExtra("day", col).putExtra("start", row))
@@ -86,6 +87,32 @@ class FragmentTimetable : Fragment() {
                 (timetable.parent as NestedScrollView?)?.scrollY = Math.round(minY)
             }, 20)
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.sync_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.sync) {
+            MaterialDialog.Builder(context)
+                    .title("Cancellare orario?")
+                    .content("L'orario corrente sarà eliminato e ne verrà generato uno automaticamente.")
+                    .positiveText("SI")
+                    .neutralText("NO")
+                    .onPositive { _, _ ->
+                        val profile = Account.with(context).user
+                        val subjects = DatabaseHelper.database.subjectsDao().getSubjects(profile).map { it.id.toInt() }
+
+                        val genius = DatabaseHelper.database.lessonsDao().geniusTimetable(profile)
+                        val convertedGenius = convertGeniusToTimetable(profile, genius, mapColorsToSubjects(subjects))
+
+                        DatabaseHelper.database.timetableDao().deleteProfile(profile)
+                        DatabaseHelper.database.timetableDao().insert(convertedGenius)
+                    }.show()
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
     private fun getDetailsListView(subject: SubjectPOJO, item: TimetableItem): LinearLayout {

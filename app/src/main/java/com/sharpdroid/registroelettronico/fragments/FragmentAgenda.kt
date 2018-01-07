@@ -25,11 +25,11 @@ import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.fragments.bottomSheet.AgendaBS
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi
-import com.sharpdroid.registroelettronico.utils.Metodi.PushDatabase
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.utils.Metodi.convertEvents
 import com.sharpdroid.registroelettronico.utils.Metodi.eventToString
 import com.sharpdroid.registroelettronico.utils.Metodi.isEventTest
+import com.sharpdroid.registroelettronico.utils.Metodi.pushDatabase
 import com.sharpdroid.registroelettronico.utils.Metodi.updateAgenda
 import com.sharpdroid.registroelettronico.utils.add
 import com.sharpdroid.registroelettronico.viewModels.AgendaViewModel
@@ -178,7 +178,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
     override fun onStop() {
         super.onStop()
 
-        PushDatabase(context)
+        pushDatabase(context)
     }
 
     private fun prepareDate(predictNextDay: Boolean) {

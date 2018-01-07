@@ -23,6 +23,7 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.api.cloud.v1.Cloud
 import com.sharpdroid.registroelettronico.api.spaggiari.v2.Spaggiari
 import com.sharpdroid.registroelettronico.database.entities.*
+import com.sharpdroid.registroelettronico.database.pojos.GeniusTimetable
 import com.sharpdroid.registroelettronico.database.pojos.LocalAgendaPOJO
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import okhttp3.Headers
@@ -648,8 +649,7 @@ object Metodi {
         return src
     }
 
-    fun PushDatabase(context: Context)
-    {
+    fun pushDatabase(context: Context) {
         val profile = Account.with(context).user
 
         DatabaseHelper.database.eventsDao().getLocalAsSingle(profile).subscribe { localEvent ->
@@ -660,4 +660,67 @@ object Metodi {
             Cloud.api.pushRemoteInfo(profile, remoteInfo).subscribe({}, { Log.e("Cloud", it.localizedMessage) })
         }
     }
+
+    fun convertGeniusToTimetable(profile: Long, genius: List<GeniusTimetable>, subjectColors: Map<Int, Long> /*Map<Subject,Color>*/): List<TimetableItem> {
+        val timetable = mutableListOf<TimetableItem>()
+
+        //Per ogni giorno della settimana
+        genius.groupBy { it.dayOfWeek }.entries.forEach { entry: Map.Entry<Int, List<GeniusTimetable>> ->
+            Log.d("Day ${entry.key}", "ENTRY")
+            val today = entry.value.sortedBy { it.start }.toMutableList()
+
+            //finchè ci sono duplicati
+            while (today.groupBy { it.subject }.count { it.value.size > 1 } > 0) {
+                Log.d("Day ${entry.key}", "duplicates: ${today.groupBy { it.subject }.count { it.value.size > 1 }}")
+
+                //controlla da cima a fondo e rimuovi un duplicato. Ripeti
+                for (i in 0 until today.size - 1) {
+                    if (today[i].subject != today[i + 1].subject) continue
+
+                    val temp = today[i]
+                    temp.end = today[i + 1].end
+                    today.removeAt(i + 1)
+                    today[i] = temp
+                    Log.d("Day ${entry.key}", "Deleted duplicate, now range: ${temp.start}-${temp.end}")
+
+                    //chiudi loop per sicurezza, ripeti aggiornando today.size
+                    break
+                }
+            }
+
+            today.forEach {
+                timetable.add(TimetableItem(
+                        0,
+                        profile.toInt(),
+                        it.start.toFloat(),
+                        it.end.toFloat(),
+                        it.dayOfWeek,
+                        it.subject.toLong(),
+                        subjectColors[it.subject]?.toInt() ?: throw IllegalStateException("Color not found in Map"),
+                        null, null
+                ))
+            }
+            Log.d("Day ${entry.key}", "EXIT")
+        }
+
+        return timetable
+    }
+
+    fun mapColorsToSubjects(subjects: List<Int>): Map<Int, Long> {
+        val map = mutableMapOf<Int, Long>()
+
+        subjects.forEachIndexed { index, it ->
+            map.put(it, materialColors[index % materialColors.size])
+        }
+
+        return map
+    }
+
+    private val materialColors = arrayOf(
+            0xFFF44336, 0xFFE91E63, 0xFF9C27B0,
+            0xFF7E57C2, 0xFF1A237E, 0xFF2196F3,
+            0xFF0097A7, 0xFF00796B, 0xFF43A047,
+            0xFFAFB42B, 0xFFFB8C00, 0xFFF4511E,
+            0xFF6D4C41, 0xFF607D8B, 0xFFBDBDBD
+    )
 }
