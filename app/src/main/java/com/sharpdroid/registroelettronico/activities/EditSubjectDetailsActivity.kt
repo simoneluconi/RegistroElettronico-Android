@@ -90,20 +90,20 @@ class EditSubjectDetailsActivity : AppCompatActivity() {
                     builder.title("Nome")
                     builder.content("Modifica il nome della materia")
                     builder.input("Inserisci un nuovo nome", Metodi.capitalizeEach(subject.subjectInfo[0].description.or(subject.subject.description)), true, { _, _ -> })
-                    builder.onPositive { dialog, _ -> subject.subjectInfo[0].description = dialog.inputEditText!!.text.toString(); adapter.notifyDataSetChanged() }
+                    builder.onPositive { dialog, _ -> subject.subjectInfo[0].description = dialog.inputEditText!!.text.toString().trim(); adapter.notifyDataSetChanged() }
                 }
                 rowNotes -> {
                     builder.title("Dettagli")
                     builder.content("Modifica i dettagli della materia")
                     builder.input("Inserisci i dettagli", subject.subjectInfo[0].details, true, { _, _ -> })
-                    builder.onPositive { dialog, _ -> subject.subjectInfo[0].details = dialog.inputEditText!!.text.toString(); adapter.notifyDataSetChanged() }
+                    builder.onPositive { dialog, _ -> subject.subjectInfo[0].details = dialog.inputEditText!!.text.toString().trim(); adapter.notifyDataSetChanged() }
 
                 }
                 rowClassroom -> {
                     builder.title("Classe")
                     builder.content("Modifica la classe della materia")
                     builder.input("Inserisci una nuova classe", subject.subjectInfo[0].classroom, true, { _, _ -> })
-                    builder.onPositive { dialog, _ -> subject.subjectInfo[0].classroom = dialog.inputEditText!!.text.toString(); adapter.notifyDataSetChanged() }
+                    builder.onPositive { dialog, _ -> subject.subjectInfo[0].classroom = dialog.inputEditText!!.text.toString().trim(); adapter.notifyDataSetChanged() }
                 }
             }
 

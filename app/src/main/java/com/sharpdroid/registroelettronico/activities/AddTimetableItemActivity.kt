@@ -239,11 +239,11 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
                     }
                 }
                 "where" -> {
-                    view.setup(viewModel.where.value.or("Luogo"), ContextCompat.getDrawable(this@AddTimetableItemActivity, R.drawable.ic_place_black_24dp), true) {
+                    view.setup(viewModel.where.value.or("Aula"), ContextCompat.getDrawable(this@AddTimetableItemActivity, R.drawable.ic_place_black_24dp), true) {
                         MaterialDialog.Builder(this@AddTimetableItemActivity)
-                                .title("Aggiungi il luogo")
+                                .title("Aggiungi l'aula")
                                 .input("Aula", viewModel.where.value, true) { _, input ->
-                                    viewModel.where.value = input.toString()
+                                    viewModel.where.value = capitalizeFirst(input.toString())
                                 }.show()
                     }
                 }
@@ -252,7 +252,7 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
                         MaterialDialog.Builder(this@AddTimetableItemActivity)
                                 .title("Aggiungi note")
                                 .input("Note", viewModel.notes.value, true) { _, input ->
-                                    viewModel.notes.value = input.toString()
+                                    viewModel.notes.value = capitalizeFirst(input.toString())
                                 }
                                 .show()
                     }

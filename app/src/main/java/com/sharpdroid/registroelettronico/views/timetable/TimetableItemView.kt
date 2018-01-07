@@ -11,6 +11,8 @@ import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.os.Build
 import android.support.v4.content.ContextCompat
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.widget.TextView
@@ -18,6 +20,7 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.database.entities.TimetableItem
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
+import com.sharpdroid.registroelettronico.utils.CustomTypefaceSpan
 import com.sharpdroid.registroelettronico.utils.Metodi.dp
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -33,8 +36,13 @@ class TimetableItemView : TextView {
             if (disposable == null) {
                 disposable = DatabaseHelper.database.subjectsDao().getSubjectPOJOFlowable(value!!.subject, Account.with(context).user).observeOn(AndroidSchedulers.mainThread()).subscribe { it ->
                     val t = it.getOrNull(0)
-                    if (!t?.getSubjectName().isNullOrEmpty())
-                        text = t?.getSubjectName()
+                    if (!t?.getSubjectName().isNullOrEmpty()) {
+                        val spannable = SpannableString(t?.getSubjectName().orEmpty() + "\n" + value.where.orEmpty())
+                        spannable.setSpan(CustomTypefaceSpan("", Typeface.create("sans-serif-medium", Typeface.NORMAL)), 0, t?.getSubjectName().orEmpty().length, 0)
+                        spannable.setSpan(CustomTypefaceSpan("", Typeface.create("sans-serif-regular", Typeface.NORMAL)), spannable.length - (value.where.orEmpty().length), spannable.length, 0)
+                        spannable.setSpan(ForegroundColorSpan(Color.parseColor("#DDDDDD")), spannable.length - (value.where.orEmpty().length), spannable.length, 0)
+                        text = spannable
+                    }
                 }
             }
             getRoundedRectangle(value!!.color).let {
@@ -49,7 +57,6 @@ class TimetableItemView : TextView {
     init {
         setTextColor(Color.WHITE)
         setPadding(padding, padding, padding, padding)
-        typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
         setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
     }
 
