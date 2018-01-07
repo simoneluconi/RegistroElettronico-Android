@@ -117,7 +117,7 @@ object Migrations {
     }
     val MIGRATION_11_12 = object : Migration(11, 12) {
         override fun migrate(database: SupportSQLiteDatabase) {
-            database.execSQL("DROP TABLE `EXCLUDED_MARKS` IF EXISTS")
+            database.execSQL("DROP TABLE IF EXISTS `EXCLUDED_MARKS`")
             database.execSQL("CREATE TABLE `EXCLUDED_MARKS` (`ID` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)")
         }
     }
