@@ -74,7 +74,7 @@ abstract class SubjectDao {
     }
 
     @Transaction
-    @Query("select SUBJECT.* from SUBJECT left join SUBJECT_TEACHER ON SUBJECT.ID = SUBJECT_TEACHER.SUBJECT where SUBJECT_TEACHER.PROFILE=:profile order by DESCRIPTION asc")
+    @Query("select SUBJECT.* from SUBJECT left join SUBJECT_TEACHER ON SUBJECT.ID = SUBJECT_TEACHER.SUBJECT where SUBJECT_TEACHER.PROFILE=:profile group by SUBJECT.ID order by DESCRIPTION asc")
     abstract fun _getAllSubjectsPOJOBlocking(profile: Long): List<SubjectPOJO>
 
     //filter all SubjectInfos by Profile
