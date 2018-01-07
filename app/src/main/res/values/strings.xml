@@ -165,4 +165,5 @@
     <string name="restore_excluded_marks_summary">Ripristina tutti i voti esclusi dalle medie</string>
     <string name="restore_excluded_marks_title">Ripristina voti</string>
     <string name="voti">Voti</string>
+    <string name="sync">Sincronizza</string>
 </resources>

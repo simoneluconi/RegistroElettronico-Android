@@ -3,6 +3,7 @@ package com.sharpdroid.registroelettronico.database.dao
 import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.*
 import com.sharpdroid.registroelettronico.database.entities.Lesson
+import com.sharpdroid.registroelettronico.database.pojos.GeniusTimetable
 import com.sharpdroid.registroelettronico.database.pojos.LessonMini
 import io.reactivex.Flowable
 
@@ -33,5 +34,20 @@ interface LessonDao {
 
     @Query("SELECT M_CLASS_DESCRIPTION FROM LESSON WHERE PROFILE = :profile LIMIT 1")
     fun getClassDescription(profile: Long): String
+
+    @Transaction
+    @Query("select `dayOfWeek`,`teacher`,`subject`,`start`,`end` from ( select " +
+            "strftime('%w', M_DATE/1000, 'unixepoch') as `dayOfWeek`, " +
+            "`TEACHER`.`ID` as `teacher`, " +
+            "`M_SUBJECT_ID` as `subject`, " +
+            "M_HOUR_POSITION+7 as `start`, " +
+            "M_HOUR_POSITION+8 as `end`, " +
+            "COUNT(M_DURATION) as `totalHours` " +
+            "from `LESSON` LEFT JOIN `TEACHER` ON `M_AUTHOR_NAME`=`TEACHER_NAME` " +
+            "where PROFILE = :profile AND M_SUBJECT_CODE!='SUPZ' AND M_DATE>(strftime('%s', 'now', 'localtime') - 45*24*3600)*1000 " +
+            "group by `dayOfWeek`,M_HOUR_POSITION, M_SUBJECT_CODE " +
+            "order by `dayOfWeek`, M_HOUR_POSITION  asc) where `totalHours`>1 " +
+            "group by `dayOfWeek`, `start`")
+    fun geniusTimetable(profile: Long): List<GeniusTimetable>
 
 }
