@@ -60,7 +60,7 @@ class FolderAdapter(private val listener: Listener?) : RecyclerView.Adapter<Recy
         list.clear()
         for (teacher in teachers) {
             list.add(teacher.teacher.teacherName)
-            list.addAll(teacher.folders)
+            list.addAll(teacher.folders.sortedByDescending { it.name })
         }
         notifyDataSetChanged()
     }
