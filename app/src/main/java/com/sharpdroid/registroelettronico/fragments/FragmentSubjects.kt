@@ -67,6 +67,7 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, SearchView
         recycler.layoutManager = LinearLayoutManager(context)
         recycler.addItemDecoration(HorizontalDividerItemDecoration.Builder(context).colorResId(R.color.divider).build())
         recycler.adapter = adapter
+        empty_subjects.setTextAndDrawable("Nessuna lezione", R.drawable.ic_view_agenda)
 
         if (!BuildConfig.DEBUG)
             Answers.getInstance().logContentView(ContentViewEvent().putContentId("Lezioni").putContentType("Materie"))
@@ -75,8 +76,8 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, SearchView
             download()
 
         allDisposable = viewModel.getSubjectsWithLessons(Account.with(context).user).observeOn(AndroidSchedulers.mainThread()).subscribe({
-            if (it.isNotEmpty() && !querying) {
-                setAdapterData(it)
+            if (!querying) {
+                setAdapterData(it.orEmpty())
                 recycler.adapter = adapter
             }
         }, Throwable::printStackTrace)
@@ -87,8 +88,10 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, SearchView
 
             if (query.isEmpty()) {
                 emptyHolder.visibility = View.GONE
+                empty_subjects.visibility = if (recycler.adapter.itemCount > 0) View.VISIBLE else View.GONE
                 recycler.adapter = adapter
             } else {
+                empty_subjects.visibility = View.GONE
                 recycler.adapter = searchAdapter
                 searchAdapter.query = query
                 queryDisposable = DatabaseHelper.database.lessonsDao().query("%$query%", Account.with(context).user).observeOn(AndroidSchedulers.mainThread()).subscribe({
@@ -146,6 +149,8 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, SearchView
     private fun setAdapterData(data: List<SubjectWithLessons>) {
         adapter.clear()
         adapter.addAll(data)
+
+        empty_subjects.visibility = if (data.isEmpty()) View.VISIBLE else View.GONE
     }
 
     override fun onSubjectClick(subject: SubjectWithLessons) {
@@ -155,8 +160,8 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, SearchView
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 //.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
                 .replace(R.id.fragment_container,
-                FragmentLessons()
-        ).addToBackStack(null)
+                        FragmentLessons()
+                ).addToBackStack(null)
         transaction.commit()
     }
 

@@ -9,4 +9,10 @@
         android:clipToPadding="false"
         android:paddingTop="4dp" />
 
+    <com.sharpdroid.registroelettronico.views.EmptyFragment
+        android:id="@+id/empty_subjects"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
 </FrameLayout>
