@@ -102,6 +102,84 @@ class NotificationService : JobService() {
         }
     }
 
+    private fun pushNotification(title: String, type: NotificationIDs, content: List<Any>, sound: Boolean, vibrate: Boolean, tabToOpen: Long) {
+        val notificationManager = NotificationManagerCompat.from(this)
+
+        val intent = Intent(this, MainActivity::class.java)
+                .putExtra("drawer_open_id", tabToOpen)
+                .addCategory(type.name)
+        val pendingIntent = PendingIntent.getActivity(this, MainActivity.REQUEST_CODE, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT)
+
+        val deleteIntent = Intent(this, NotificationReceiver::class.java)
+                .setAction(NotificationReceiver.ACTION_NOTIFICATION_DISMISSED)
+                .putExtra("list", content as Serializable)
+                .addCategory(type.name)
+        val deletePendingIntent = PendingIntent.getBroadcast(this, MainActivity.REQUEST_CODE, deleteIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT)
+
+        val style = NotificationCompat.InboxStyle()
+
+        content.forEach {
+            when (it) {
+                is RemoteAgenda -> style.addLine(it.notes)
+                is Grade -> style.addLine(getString(R.string.notification_new_grade, it.mStringValue, capitalizeEach(it.mDescription, false)))
+                is Communication -> style.addLine(it.title)
+                is Note -> style.addLine(it.mText)
+            }
+        }
+
+        val caption = getCaption(content.first())
+
+        val notification = NotificationCompat.Builder(this, type.name)
+                .setAutoCancel(true)
+                .setColor(ContextCompat.getColor(this, R.color.primary))
+                .setContentIntent(pendingIntent)
+                .setContentText(caption)
+                .setContentTitle(title)
+                .setDeleteIntent(deletePendingIntent)
+                .setNumber(content.size)
+                .setOnlyAlertOnce(true)
+                .setSmallIcon(R.drawable.ic_stat_name)
+                .setStyle(style)
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            if (vibrate)
+                notification.setVibrate(longArrayOf(250, 250, 250, 250))
+            if (sound)
+                notification.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+
+            notification.setLights(Color.BLUE, 3000, 3000)
+        } else {
+            val channelName = when (type) {
+                NotificationIDs.AGENGA -> "Agenda"
+                NotificationIDs.VOTI -> "Voti"
+                NotificationIDs.COMUNICAZIONI -> "Comunicazioni"
+                NotificationIDs.NOTE -> "Note"
+            }
+
+            val channel = NotificationChannel(type.name, channelName, NotificationManager.IMPORTANCE_DEFAULT)
+            channel.enableLights(true)
+            channel.enableVibration(true)
+            channel.lightColor = Color.BLUE
+            channel.setShowBadge(true)
+
+            getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
+        }
+
+        notificationManager.notify(type.ordinal, notification.build())
+    }
+
+    private fun getCaption(firstElement: Any): String {
+        return when (firstElement) {
+            is RemoteAgenda -> firstElement.notes
+            is Grade -> getString(R.string.notification_new_grade, firstElement.mStringValue, capitalizeEach(firstElement.mDescription, false))
+            is Communication -> firstElement.title
+            is Note -> firstElement.mText
+            else -> ""
+        }
+    }
+
     private fun getAgendaDiff(profile: Profile): List<RemoteAgenda> {
         val dates = getStartEnd("yyyyMMdd")
 
@@ -180,81 +258,6 @@ class NotificationService : JobService() {
         val diffNotes = newNotes.minus(oldNotes)
         if (diffNotes.isEmpty()) return emptyList()
         return diffNotes
-    }
-
-    private fun pushNotification(title: String, type: NotificationIDs, content: List<Any>, sound: Boolean, vibrate: Boolean, tabToOpen: Long) {
-        val notificationManager = NotificationManagerCompat.from(this)
-
-        val intent = Intent(this, MainActivity::class.java)
-                .putExtra("drawer_open_id", tabToOpen)
-                .addCategory(type.name)
-        val pi = PendingIntent.getActivity(this, MainActivity.REQUEST_CODE, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT)
-
-        val deleteIntent = Intent(this, NotificationReceiver::class.java)
-                .setAction(NotificationReceiver.ACTION_NOTIFICATION_DISMISSED)
-                .putExtra("list", content as Serializable)
-                .addCategory(type.name)
-        val deletePi = PendingIntent.getBroadcast(this, MainActivity.REQUEST_CODE, deleteIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT)
-
-        val style = NotificationCompat.InboxStyle()
-
-        var first: String? = null
-        val firstElement = content.first()
-        when (firstElement) {
-            is RemoteAgenda -> first = firstElement.notes
-            is Grade -> first = getString(R.string.notification_new_grade, firstElement.mStringValue, capitalizeEach(firstElement.mDescription, false))
-            is Communication -> first = firstElement.title
-            is Note -> first = firstElement.mText
-        }
-
-        content.forEach {
-            when (it) {
-                is RemoteAgenda -> style.addLine(it.notes)
-                is Grade -> style.addLine(getString(R.string.notification_new_grade, it.mStringValue, capitalizeEach(it.mDescription, false)))
-                is Communication -> style.addLine(it.title)
-                is Note -> style.addLine(it.mText)
-            }
-        }
-
-        val notification = NotificationCompat.Builder(this, type.name)
-                .setAutoCancel(true)
-                .setColor(ContextCompat.getColor(this, R.color.primary))
-                .setContentIntent(pi)
-                .setContentText(first)
-                .setContentTitle(title)
-                .setDeleteIntent(deletePi)
-                .setNumber(content.size)
-                .setOnlyAlertOnce(true)
-                .setSmallIcon(R.drawable.ic_stat_name)
-                .setStyle(style)
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            if (vibrate)
-                notification.setVibrate(longArrayOf(250, 250, 250, 250))
-            if (sound)
-                notification.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-
-            notification.setLights(Color.BLUE, 3000, 3000)
-        } else {
-            val channelName = when (type) {
-                NotificationIDs.AGENGA -> "Agenda"
-                NotificationIDs.VOTI -> "Voti"
-                NotificationIDs.COMUNICAZIONI -> "Comunicazioni"
-                NotificationIDs.NOTE -> "Note"
-            }
-
-            val channel = NotificationChannel(type.name, channelName, NotificationManager.IMPORTANCE_DEFAULT)
-            channel.enableLights(true)
-            channel.enableVibration(true)
-            channel.lightColor = Color.BLUE
-            channel.setShowBadge(true)
-
-            getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
-        }
-
-        notificationManager.notify(type.ordinal, notification.build())
     }
 
     companion object {
