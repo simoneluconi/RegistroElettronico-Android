@@ -19,6 +19,7 @@ import com.getkeepsafe.taptargetview.TapTargetView
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.AddTimetableItemActivity
+import com.sharpdroid.registroelettronico.database.entities.Profile
 import com.sharpdroid.registroelettronico.database.entities.TimetableItem
 import com.sharpdroid.registroelettronico.database.pojos.SubjectPOJO
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
@@ -31,6 +32,8 @@ import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeFirst
 import com.sharpdroid.registroelettronico.utils.Metodi.convertGeniusToTimetable
 import com.sharpdroid.registroelettronico.utils.Metodi.dp
 import com.sharpdroid.registroelettronico.utils.Metodi.mapColorsToSubjects
+import com.sharpdroid.registroelettronico.utils.Metodi.updateLessons
+import com.sharpdroid.registroelettronico.utils.Metodi.updateSubjects
 import com.sharpdroid.registroelettronico.views.cells.ComplexCell
 import com.sharpdroid.registroelettronico.views.timetable.TimetableLayout
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -99,6 +102,10 @@ class FragmentTimetable : Fragment() {
             }
             pref.edit().putBoolean("has_seen_feature_AUTO_TIMETABLE", true).apply()
         }, 200)
+
+        val p = Profile.getProfile(context)
+        updateSubjects(p)
+        updateLessons(p)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -128,8 +135,12 @@ class FragmentTimetable : Fragment() {
         val profile = Account.with(context).user
         val subjects = DatabaseHelper.database.subjectsDao().getSubjects(profile).map { it.id.toInt() }
 
+        if (subjects.isEmpty()) return
+
         val genius = DatabaseHelper.database.lessonsDao().geniusTimetable(profile)
         val convertedGenius = convertGeniusToTimetable(profile, genius, mapColorsToSubjects(subjects))
+
+        if (convertedGenius.isEmpty()) return
 
         DatabaseHelper.database.timetableDao().deleteProfile(profile)
         DatabaseHelper.database.timetableDao().insert(convertedGenius)
