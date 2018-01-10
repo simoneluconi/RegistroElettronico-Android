@@ -37,6 +37,7 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
             EventType.UPDATE_FOLDERS_OK,
             EventType.UPDATE_FOLDERS_KO -> {
                 if (swiperefresh.isRefreshing) swiperefresh.isRefreshing = false
+                load()
             }
             else -> { // Ignore
             }
@@ -76,17 +77,8 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
         mRVAdapter = FolderAdapter(this)
         recycler.adapter = mRVAdapter
 
-        DatabaseHelper.database.foldersDao().getDidattica(Account.with(context).user).toObservable().observeOn(AndroidSchedulers.mainThread()).subscribe {
-            if (it == null) return@subscribe
-
-            addFiles(it.sortedByDescending { it.folders.maxBy { it.lastUpdate }?.lastUpdate })
-
-            if (viewModel.scrollPosition.value == null)
-                download()
-            else
-                recycler?.layoutManager?.scrollToPosition(viewModel.scrollPosition.value!!)
-        }
-
+        load()
+        download()
         if (!BuildConfig.DEBUG)
             Answers.getInstance().logContentView(ContentViewEvent().putContentId("Didattica").putContentType("Cartelle"))
     }
@@ -113,6 +105,17 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
 
     private fun download() {
         updateFolders(context)
+    }
+
+    private fun load() {
+        DatabaseHelper.database.foldersDao().getDidattica(Account.with(context).user).toObservable().observeOn(AndroidSchedulers.mainThread()).subscribe {
+            if (it == null) return@subscribe
+
+            addFiles(it.sortedByDescending { it.folders.maxBy { it.lastUpdate }?.lastUpdate })
+
+            if (viewModel.scrollPosition.value != null)
+                recycler?.layoutManager?.scrollToPosition(viewModel.scrollPosition.value!!)
+        }
     }
 
     override fun onDestroyView() {
