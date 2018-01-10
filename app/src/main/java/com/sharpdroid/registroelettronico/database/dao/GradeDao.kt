@@ -75,4 +75,7 @@ interface GradeDao {
 
     @Query("SELECT COUNT(*) FROM EXCLUDED_MARKS WHERE ID=:id")
     fun countExcluded(id: Long): Long
+
+    @Query("DELETE FROM EXCLUDED_MARKS WHERE ID IN (SELECT EXCLUDED_MARKS.ID FROM EXCLUDED_MARKS LEFT JOIN GRADE ON EXCLUDED_MARKS.ID=GRADE.ID WHERE PROFILE=:profile)")
+    fun cleanExcludedMarks(profile: Long)
 }

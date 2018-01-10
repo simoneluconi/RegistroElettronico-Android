@@ -51,8 +51,8 @@ class FragmentSettings : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             true
         }
 
-        findPreference("voto_obiettivo").setOnPreferenceClickListener { _ ->
-            DatabaseHelper.database.query("DELETE FROM EXCLUDED_MARKS", arrayOf())
+        findPreference("excluded_marks").setOnPreferenceClickListener { _ ->
+            DatabaseHelper.database.gradesDao().cleanExcludedMarks(Account.with(context).user)
             true
         }
 
