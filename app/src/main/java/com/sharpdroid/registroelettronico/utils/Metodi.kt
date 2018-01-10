@@ -584,7 +584,7 @@ object Metodi {
         return arrayOf(simpleDateFormat.format(from.time), simpleDateFormat.format(to.time))
     }
 
-    fun capitalizeFirst(a: String) = a.substring(0, 1).toUpperCase() + a.substring(1)
+    fun capitalizeFirst(a: String) = if (a.isNotEmpty()) a.substring(0, 1).toUpperCase() + a.substring(1) else a
 
     fun loginFeedback(error: Throwable, c: Context) {
         error.printStackTrace()
