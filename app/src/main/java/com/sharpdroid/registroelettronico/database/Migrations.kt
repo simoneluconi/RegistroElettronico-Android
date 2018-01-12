@@ -121,4 +121,11 @@ object Migrations {
             database.execSQL("CREATE TABLE `EXCLUDED_MARKS` (`ID` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)")
         }
     }
+    val MIGRATION_12_13 = object : Migration(12, 13) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("DROP TABLE IF EXISTS `GRADE`")
+            database.execSQL("CREATE TABLE `GRADE` (`M_CODE` TEXT NOT NULL, `M_DATE` INTEGER NOT NULL, `M_DESCRIPTION` TEXT NOT NULL, `ID` INTEGER NOT NULL, `M_NOTES` TEXT NOT NULL, `M_PERIOD` INTEGER NOT NULL, `M_STRING_VALUE` TEXT NOT NULL, `M_SUBJECT_ID` INTEGER NOT NULL, `M_TYPE` TEXT NOT NULL, `M_VALUE` REAL NOT NULL, `PROFILE` INTEGER NOT NULL, PRIMARY KEY(`ID`))")
+
+        }
+    }
 }
