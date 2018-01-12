@@ -25,6 +25,7 @@ import com.sharpdroid.registroelettronico.database.entities.*
 import com.sharpdroid.registroelettronico.database.pojos.GeniusTimetable
 import com.sharpdroid.registroelettronico.database.pojos.LocalAgendaPOJO
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
+import io.reactivex.Observable
 import okhttp3.Headers
 import okhttp3.ResponseBody
 import retrofit2.HttpException
@@ -482,9 +483,24 @@ object Metodi {
 
         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_NOTES_START, null) }
         Spaggiari(p).api().getNotes().subscribe({
-            DatabaseHelper.database.notesDao().delete(p.id)
-            DatabaseHelper.database.notesDao().insert(it.getNotes(p))
-            handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_NOTES_OK, null) }
+            val notes = it.getNotes(p)
+            val notRead = notes.filter { !it.mStatus || it.mText == "..." }
+
+            if (notRead.isNotEmpty()) {
+                Observable.merge(notRead.map {
+                    Spaggiari(p).api().markNote(it.mType, it.id.toInt())
+                }).blockingSubscribe({
+                    DatabaseHelper.database.notesDao().delete(p.id)
+                    DatabaseHelper.database.notesDao().insert(notes)
+                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_NOTES_OK, null) }
+                }, {
+                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_NOTES_KO, null) }
+                })
+            } else {
+                DatabaseHelper.database.notesDao().delete(p.id)
+                DatabaseHelper.database.notesDao().insert(notes)
+                handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_NOTES_OK, null) }
+            }
         }) {
             handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_NOTES_KO, null) }
             it.printStackTrace()
