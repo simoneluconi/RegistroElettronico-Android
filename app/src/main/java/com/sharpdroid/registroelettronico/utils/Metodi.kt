@@ -1,6 +1,5 @@
 package com.sharpdroid.registroelettronico.utils
 
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
@@ -607,7 +606,7 @@ object Metodi {
 
         try {
             context.startActivity(intent)
-        } catch (e: ActivityNotFoundException) {
+        } catch (e: Exception) {
             bar.show()
         }
     }
@@ -619,7 +618,7 @@ object Metodi {
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(newUrl))
         try {
             context.startActivity(browserIntent)
-        } catch (e: ActivityNotFoundException) {
+        } catch (e: Exception) {
             snackbar.show()
         }
 
