@@ -77,23 +77,22 @@ class FragmentTimetable : Fragment() {
 
         DatabaseHelper.database.timetableDao().queryProfile(Account.with(context).user).observe(this, Observer {
             timetable.setupData(it.orEmpty())
+
+            if ((timetable.parent as NestedScrollView?)?.scrollY == 0) {
+                if (savedInstanceState != null && savedInstanceState["scrollY"] != null) {
+                    (timetable.parent as NestedScrollView).postDelayed({
+                        (timetable.parent as NestedScrollView?)?.scrollY = savedInstanceState["scrollY"] as Int
+                    }, 20)
+                } else {
+                    val minY = Math.max(timetable.data.minBy { it.start }?.start?.times(timetable.tileHeight)?.minus(dp(6)) ?: 0f, 0f)
+                    (timetable.parent as NestedScrollView?)?.scrollY = Math.round(minY)
+                }
+            }
         })
 
 
         if (!BuildConfig.DEBUG)
             Answers.getInstance().logContentView(ContentViewEvent().putContentId("Orario"))
-
-
-        if (savedInstanceState != null && savedInstanceState["scrollY"] != null) {
-            (timetable.parent as NestedScrollView).postDelayed({
-                (timetable.parent as NestedScrollView?)?.scrollY = savedInstanceState["scrollY"] as Int
-            }, 20)
-        } else {
-            (timetable.parent as NestedScrollView).postDelayed({
-                val minY = Math.max(timetable.data.minBy { it.start }?.start?.times(timetable.tileHeight)?.minus(dp(6)) ?: 0f, 0f)
-                (timetable.parent as NestedScrollView?)?.scrollY = Math.round(minY)
-            }, 20)
-        }
 
         timetable.postDelayed({
             val pref = PreferenceManager.getDefaultSharedPreferences(context)
@@ -121,29 +120,38 @@ class FragmentTimetable : Fragment() {
                         .positiveText("SI")
                         .neutralText("NO")
                         .onPositive { _, _ ->
-                            generateGeniusTimetable()
+                            handleGeniusTimetableResult()
                         }.show()
             } else {
-                generateGeniusTimetable()
+                handleGeniusTimetableResult()
             }
         }
 
         return super.onOptionsItemSelected(item)
     }
 
-    private fun generateGeniusTimetable() {
-        val profile = Account.with(context).user
-        val subjects = DatabaseHelper.database.subjectsDao().getSubjects(profile).map { it.id.toInt() }
+    private fun handleGeniusTimetableResult() {
+        if (generateGeniusTimetable() != 0)
+            MaterialDialog.Builder(context)
+                    .title("Errore")
+                    .content("Non sono state trovate lezioni sufficienti per rilevare l'orario.")
+                    .show()
 
-        if (subjects.isEmpty()) return
+    }
+
+    private fun generateGeniusTimetable(): Int {
+        val profile = Account.with(context).user
 
         val genius = DatabaseHelper.database.lessonsDao().geniusTimetable(profile)
-        val convertedGenius = convertGeniusToTimetable(profile, genius, mapColorsToSubjects(subjects))
+        val subjects = genius.map { it.subject }.groupBy { it }.keys.toList()
+        val mapColorsSubjects = mapColorsToSubjects(subjects)
+        if (mapColorsSubjects.isEmpty()) return -1
 
-        if (convertedGenius.isEmpty()) return
+        val convertedGenius = convertGeniusToTimetable(profile, genius, mapColorsSubjects)
+        if (convertedGenius.isEmpty()) return 1
 
-        DatabaseHelper.database.timetableDao().deleteProfile(profile)
-        DatabaseHelper.database.timetableDao().insert(convertedGenius)
+        DatabaseHelper.database.timetableDao().removeAndInsert(profile, convertedGenius)
+        return 0
     }
 
     private fun getDetailsListView(subject: SubjectPOJO, item: TimetableItem): LinearLayout {
