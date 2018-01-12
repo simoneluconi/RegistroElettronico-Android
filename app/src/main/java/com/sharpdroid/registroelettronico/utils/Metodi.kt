@@ -490,9 +490,7 @@ object Metodi {
                 Observable.merge(notRead.map {
                     Spaggiari(p).api().markNote(it.mType, it.id.toInt())
                 }).blockingSubscribe({
-                    DatabaseHelper.database.notesDao().delete(p.id)
-                    DatabaseHelper.database.notesDao().insert(notes)
-                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_NOTES_OK, null) }
+                    updateNote(p)
                 }, {
                     handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_NOTES_KO, null) }
                 })
