@@ -88,7 +88,7 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, SearchView
 
             if (query.isEmpty()) {
                 emptyHolder.visibility = View.GONE
-                empty_subjects.visibility = if (recycler.adapter.itemCount > 0) View.VISIBLE else View.GONE
+                empty_subjects.visibility = if (recycler.adapter.itemCount > 0) View.GONE else View.VISIBLE
                 recycler.adapter = adapter
             } else {
                 empty_subjects.visibility = View.GONE
