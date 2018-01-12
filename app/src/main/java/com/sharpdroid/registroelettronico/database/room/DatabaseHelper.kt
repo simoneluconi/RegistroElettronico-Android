@@ -4,6 +4,7 @@ import android.arch.persistence.room.Room
 import android.content.Context
 import com.sharpdroid.registroelettronico.database.Migrations.MIGRATION_10_11
 import com.sharpdroid.registroelettronico.database.Migrations.MIGRATION_11_12
+import com.sharpdroid.registroelettronico.database.Migrations.MIGRATION_12_13
 import com.sharpdroid.registroelettronico.database.Migrations.MIGRATION_4_5
 import com.sharpdroid.registroelettronico.database.Migrations.MIGRATION_5_6
 import com.sharpdroid.registroelettronico.database.Migrations.MIGRATION_6_7
@@ -30,7 +31,8 @@ object DatabaseHelper {
                             MIGRATION_8_9,
                             MIGRATION_9_10,
                             MIGRATION_10_11,
-                            MIGRATION_11_12
+                            MIGRATION_11_12,
+                            MIGRATION_12_13
                     )
                     .build()
         }
