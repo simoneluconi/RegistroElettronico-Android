@@ -7,8 +7,7 @@ import java.util.*
 fun String?.or(s: String): String = if (isNullOrEmpty()) s else this!!
 
 fun Date.flat(): Date {
-    val cal = Calendar.getInstance()
-    cal.time = this
+    val cal = calendar()
     cal.set(Calendar.MILLISECOND, 0)
     cal.set(Calendar.SECOND, 0)
     cal.set(Calendar.MINUTE, 0)
@@ -21,4 +20,10 @@ fun Date.add(type: Int, value: Int): Date {
     cal.time = this
     cal.add(type, value)
     return cal.time
+}
+
+fun Date.calendar(): Calendar {
+    val cal = Calendar.getInstance()
+    cal.time = this
+    return cal
 }
