@@ -24,7 +24,7 @@ class ComplexCell : FrameLayout {
     }
 
     fun setPaddingDp(left: Int, top: Int, right: Int, bottom: Int) {
-        setPadding(dp(left), dp(top), dp(right), dp(bottom))
+        getChildAt(0).setPadding(dp(left), dp(top), dp(right), dp(bottom))
     }
 
     fun setup(title: String, drawable: Drawable, color: Boolean, listener: ((View) -> Unit)?) {
