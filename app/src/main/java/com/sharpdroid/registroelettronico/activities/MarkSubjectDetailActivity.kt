@@ -73,7 +73,6 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
         avg = DatabaseHelper.database.subjectsDao().getAverage(subjectId, account)
         p = intent.getIntExtra("period", 0)
 
-
         //Do not animate layout on rotation change
         if (savedInstanceState != null) {
             viewModel.animateLocalMarks.value = false
@@ -88,7 +87,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
                 marks.setupAvgAndTarget(it, avg.avg())
             }
             subjectPojo()?.let {
-                target.setTarget(avg.avg(), getTarget(it), viewModel.animateTarget.value == true)
+                target.setTarget(avg.avg(), getTarget(), viewModel.animateTarget.value == true)
                 viewModel.animateTarget.value == true
             }
 
@@ -98,19 +97,19 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
 
         //DETTAGLI
         viewModel.getSubject(subjectId, Account.with(this).user).observe(this, Observer {
-            it?.subject?.teachers = DatabaseHelper.database.subjectsDao().getTeachersOfSubject(it?.subject?.id ?: 0, account)
+            it?.subject?.teachers = DatabaseHelper.database.subjectsDao().getTeachersOfSubject(it?.subject?.id
+                    ?: 0, account)
             title = capitalizeEach(it?.getSubjectName().orEmpty())
             initInfo(it ?: return@Observer)
 
             //set animateTarget to true for the next observe
             avg.value?.let { avg ->
-                initTarget(avg, it, viewModel.animateTarget.value == true)
+                initTarget(avg, viewModel.animateTarget.value == true)
             }
             //viewModel.animateTarget.value = true
             //marks.setupAvgAndTarget(it.subjectInfo.getOrNull(0), avg.avg())
-            hypothetical.setTarget(getTarget(it))
+            hypothetical.setTarget(getTarget())
         })
-
 
         //AVERAGES
         viewModel.getAverages(account, subjectId, p).observe(this, Observer {
@@ -179,7 +178,9 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
 
     private fun initInfo(subject: SubjectPOJO) {
         info.setSubjectDetails(subject)
-        info.setEditListener { _ -> startActivity(Intent(this, EditSubjectDetailsActivity::class.java).putExtra("code", subject.subject.id)) }
+        info.setEditListener {
+            startActivity(Intent(this, EditSubjectDetailsActivity::class.java).putExtra("code", subject.subject.id))
+        }
     }
 
     private fun initOverall(avgTypes: List<AverageType>) {
@@ -190,31 +191,32 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
         overall.visibility = if (avgTypes.isNotEmpty()) View.VISIBLE else View.GONE
     }
 
-    private fun getTarget(subject: SubjectPOJO?): Float {
+    private fun getTarget(): Float {
         var target = subjectInfo()?.target ?: -1f
         if (target <= 0) {
             val pref = PreferenceManager.getDefaultSharedPreferences(this)
                     .getString("voto_obiettivo", "8")
-            target = if (pref == "Auto") Math.ceil(avg.value?.avg()?.toDouble() ?: .0).toFloat() else pref.toFloat()
+            target = if (pref == "Auto") Math.ceil(avg.value?.avg()?.toDouble()
+                    ?: .0).toFloat() else pref.toFloat()
         }
         return target
     }
 
     @SuppressLint("InflateParams")
-    private fun initTarget(avg: AverageType, subject: SubjectPOJO?, animate: Boolean) {
+    private fun initTarget(avg: AverageType, animate: Boolean) {
 
         //update label, progress bar and color
-        target.setTarget(avg.avg(), getTarget(subject), animate)
+        target.setTarget(avg.avg(), getTarget(), animate)
 
         //update listeners
-        target.setButtonsListener(View.OnClickListener { _ ->
+        target.setButtonsListener(View.OnClickListener {
             val alert = AlertDialog.Builder(this)
             alert.setTitle(getString(R.string.obiettivo_title))
             alert.setMessage(getString(R.string.obiettivo_summary))
 
             val v = layoutInflater.inflate(R.layout.fragment_imposta_obiettivo, null)
-            v.seekbar.progress = getTarget(subject).toInt()
-            v.value.text = String.format(Locale.getDefault(), "%.0f", getTarget(viewModel.subjectInfo?.value))
+            v.seekbar.progress = getTarget().toInt()
+            v.value.text = String.format(Locale.getDefault(), "%.0f", getTarget())
 
             alert.setView(v)
 
@@ -237,7 +239,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
             })
 
             alert.show()
-        }, View.OnClickListener { _ ->
+        }, View.OnClickListener {
             val alert = AlertDialog.Builder(this)
             alert.setTitle(getString(R.string.obiettivo_title))
             alert.setMessage(getMessaggioVoto(target.target, avg.avg(), avg.count))
@@ -255,7 +257,7 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
 
         //Update chart and marks' colors
         marks.setupAvgAndTarget(subject, avg)
-        hypothetical.setTarget(getTarget(viewModel.subjectInfo?.value))
+        hypothetical.setTarget(getTarget())
     }
 
     private fun initMarks(data: List<Grade>) {
@@ -303,7 +305,8 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
      */
     override fun hypotheticalAddListener() {
         val view = LayoutInflater.from(this).inflate(R.layout.view_dialog_add_grade, null)
-        val grade = LocalGrade(0f, "", viewModel.subjectInfo?.value?.subject?.id ?: 0, p, "Generale", Account.with(this).user, 0)
+        val grade = LocalGrade(0f, "", viewModel.subjectInfo?.value?.subject?.id
+                ?: 0, p, "Generale", Account.with(this).user, 0)
 
         view.voto?.setSelection(resources.getStringArray(R.array.marks_list).size / 2)
         view.voto?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
