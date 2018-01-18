@@ -14,7 +14,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class MigrationTest {
     @get:Rule
-    val helper = MigrationTestHelper(InstrumentationRegistry.getInstrumentation(),
+    private val helper = MigrationTestHelper(InstrumentationRegistry.getInstrumentation(),
             RoomDB::class.java.canonicalName,
             FrameworkSQLiteOpenHelperFactory())
 

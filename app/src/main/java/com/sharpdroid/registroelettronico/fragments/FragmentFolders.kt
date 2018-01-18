@@ -45,8 +45,8 @@ class FragmentFolders : Fragment(), SwipeRefreshLayout.OnRefreshListener, Folder
     }
 
     private lateinit var mRVAdapter: FolderAdapter
-    lateinit private var emptyHolder: EmptyFragment
-    lateinit private var viewModel: DidatticaViewModel
+    private lateinit var emptyHolder: EmptyFragment
+    private lateinit var viewModel: DidatticaViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

@@ -723,7 +723,7 @@ object Metodi {
         val map = mutableMapOf<Int, Long>()
 
         subjects.forEachIndexed { index, it ->
-            map.put(it, materialColors[index % materialColors.size])
+            map[it] = materialColors[index % materialColors.size]
         }
 
         return map

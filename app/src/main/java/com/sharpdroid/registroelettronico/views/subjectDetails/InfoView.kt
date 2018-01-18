@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.view_info.view.*
 class InfoView : CardView {
     internal var mContext: Context
 
-    lateinit private var adapter: InfoAdapter
+    private lateinit var adapter: InfoAdapter
 
     constructor(context: Context) : super(context) {
         mContext = context

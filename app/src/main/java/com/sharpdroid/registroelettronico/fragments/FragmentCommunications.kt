@@ -32,7 +32,7 @@ import kotlinx.android.synthetic.main.coordinator_swipe_recycler.view.*
 import java.io.File
 
 class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener, NotificationManager.NotificationReceiver, CommunicationAdapter.DownloadListener {
-    lateinit private var snackbar: Snackbar
+    private lateinit var snackbar: Snackbar
 
     override fun didReceiveNotification(code: EventType, args: Array<in Any>) {
         snackbar = Snackbar.make(coordinator_layout, R.string.download_in_corso,
@@ -69,8 +69,8 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
         }
     }
 
-    lateinit private var mRVAdapter: CommunicationAdapter
-    lateinit private var emptyHolder: EmptyFragment
+    private lateinit var mRVAdapter: CommunicationAdapter
+    private lateinit var emptyHolder: EmptyFragment
     private val viewModel by lazy {
         ViewModelProviders.of(this)[CommunicationViewModel::class.java]
     }

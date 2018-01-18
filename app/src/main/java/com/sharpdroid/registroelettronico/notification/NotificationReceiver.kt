@@ -12,7 +12,7 @@ import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 
 class NotificationReceiver : BroadcastReceiver() {
     companion object {
-        val ACTION_NOTIFICATION_DISMISSED = "com.sharpdroid.registroelettronico.NOTIFICATION_DISMISSED"
+        const val ACTION_NOTIFICATION_DISMISSED = "com.sharpdroid.registroelettronico.NOTIFICATION_DISMISSED"
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {

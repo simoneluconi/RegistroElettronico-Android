@@ -32,8 +32,8 @@ import java.util.*
 
 class AddEventActivity : AppCompatActivity() {
     internal val format = SimpleDateFormat("EEEE d MMMM yyyy", Locale.ITALIAN)
-    lateinit private var animShake: Animation
-    lateinit private var vibrator: Vibrator
+    private lateinit var animShake: Animation
+    private lateinit var vibrator: Vibrator
 
     private var selectedSubject: SubjectPOJO? = null
     private var selectedProfessor: Teacher? = null

@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.activity_recycler_refresh_scrollbar.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
 class AllLessonsWithDownloadActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
-    lateinit private var mRVAdapter: AllLessonsAdapter
+    private lateinit var mRVAdapter: AllLessonsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -11,11 +11,11 @@ import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.os.Build
 import android.support.v4.content.ContextCompat
+import android.support.v7.widget.AppCompatTextView
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.util.TypedValue
-import android.widget.TextView
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.database.entities.TimetableItem
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
@@ -25,7 +25,7 @@ import com.sharpdroid.registroelettronico.utils.Metodi.dp
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 
-class TimetableItemView : TextView {
+class TimetableItemView : AppCompatTextView {
     private val padding = dp(4)
     private var disposable: Disposable? = null
 

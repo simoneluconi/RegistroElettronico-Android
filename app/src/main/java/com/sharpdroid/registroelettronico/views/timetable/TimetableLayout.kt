@@ -219,7 +219,7 @@ class TimetableLayout : ViewGroup {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     companion object {
-        private val columnBundleKey = "com.sharpdroid.registroelettronico.views.timetable.TimetableLayout.addViewColumn"
-        private val rowBundleKey = "com.sharpdroid.registroelettronico.views.timetable.TimetableLayout.addViewRow"
+        private const val columnBundleKey = "com.sharpdroid.registroelettronico.views.timetable.TimetableLayout.addViewColumn"
+        private const val rowBundleKey = "com.sharpdroid.registroelettronico.views.timetable.TimetableLayout.addViewRow"
     }
 }

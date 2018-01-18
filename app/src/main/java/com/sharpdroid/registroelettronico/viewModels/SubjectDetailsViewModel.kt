@@ -10,9 +10,9 @@ import com.sharpdroid.registroelettronico.database.pojos.SubjectPOJO
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 
 class SubjectDetailsViewModel : ViewModel() {
-    var averages: LiveData<List<AverageType>>? = null
+    private var averages: LiveData<List<AverageType>>? = null
     var grades: LiveData<List<Grade>>? = null
-    var localGrades: LiveData<List<LocalGrade>>? = null
+    private var localGrades: LiveData<List<LocalGrade>>? = null
     var subjectInfo: LiveData<SubjectPOJO>? = null
     var animateTarget = MutableLiveData<Boolean>()
     var animateLocalMarks = MutableLiveData<Boolean>()

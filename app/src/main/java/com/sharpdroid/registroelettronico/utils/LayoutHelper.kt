@@ -4,8 +4,8 @@ import android.widget.FrameLayout
 
 object LayoutHelper {
 
-    val MATCH_PARENT = -1
-    val WRAP_CONTENT = -2
+    const val MATCH_PARENT = -1
+    const val WRAP_CONTENT = -2
 
     private fun getSize(size: Int) = if (size < 0) size else Metodi.dp(size)
 
