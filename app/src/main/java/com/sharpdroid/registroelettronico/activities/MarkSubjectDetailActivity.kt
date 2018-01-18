@@ -82,6 +82,8 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
         if (savedInstanceState != null) {
             viewModel.animateLocalMarks.value = false
             viewModel.animateTarget.value = false
+        } else {
+            viewModel.animateTarget.value = true
         }
 
         avg.observe(this, Observer { avg ->
@@ -93,11 +95,13 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
             }
             subjectPojo()?.let {
                 target.setTarget(avg.avg(), getTarget(), viewModel.animateTarget.value == true)
-                viewModel.animateTarget.value == true
             }
 
             //hypothetical
             hypothetical.setRealData(avg)
+
+            //set animateTarget to true for the next observe
+            initTarget(avg, viewModel.animateTarget.value == true)
         })
 
         //DETTAGLI
@@ -108,9 +112,10 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
             initInfo(it ?: return@Observer)
 
             //set animateTarget to true for the next observe
-            avg.value?.let { avg ->
-                initTarget(avg, viewModel.animateTarget.value == true)
+            avg.value?.let {
+                initTarget(it, viewModel.animateTarget.value == true)
             }
+
             //viewModel.animateTarget.value = true
             //marks.setupAvgAndTarget(it.subjectInfo.getOrNull(0), avg.avg())
             hypothetical.setTarget(getTarget())
