@@ -70,8 +70,13 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
         viewModel = ViewModelProviders.of(this)[SubjectDetailsViewModel::class.java]
         val account = Account.with(this).user
         val subjectId = intent.getIntExtra("subject_id", -1).toLong()
-        avg = DatabaseHelper.database.subjectsDao().getAverage(subjectId, account)
-        p = intent.getIntExtra("period", 0)
+        p = intent.getIntExtra("period", -1)
+        if (p == -1) {
+            avg = DatabaseHelper.database.subjectsDao().getAverage(subjectId, account)
+            p = 0
+        } else {
+            avg = DatabaseHelper.database.subjectsDao().getAverageWithPeriod(subjectId, account, p)
+        }
 
         //Do not animate layout on rotation change
         if (savedInstanceState != null) {
