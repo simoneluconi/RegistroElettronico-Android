@@ -28,7 +28,7 @@ class CircleProgressBar(context: Context, attrs: AttributeSet) : View(context, a
     private var color = Color.DKGRAY
 
     private val rectF = RectF()
-    lateinit private var mProgressPaint: Paint
+    private lateinit var mProgressPaint: Paint
 
     init {
         init(context, attrs)

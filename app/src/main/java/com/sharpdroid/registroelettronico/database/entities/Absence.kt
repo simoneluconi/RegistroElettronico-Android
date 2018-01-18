@@ -61,7 +61,7 @@ class Absence(
             var days = 1
 
             if (absences.size == 1) {
-                map.put(absences[0], 1)
+                map[absences[0]] = 1
                 return map
             }
 
@@ -85,7 +85,7 @@ class Absence(
                 when {
                     delta > 72 -> {
                         //SPLIT absences
-                        map.put(start, days)
+                        map[start] = days
                         start = null
                     }
                     delta == 72L -> {
@@ -94,7 +94,7 @@ class Absence(
                                 next.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
                             days++
                         } else {
-                            map.put(start, days)
+                            map[start] = days
                             start = null
                         }
                     }
@@ -104,7 +104,7 @@ class Absence(
                                 next.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
                             days++
                         } else {
-                            map.put(start, days)
+                            map[start] = days
                             start = null
                         }
                     }
@@ -113,7 +113,7 @@ class Absence(
                         days++
                     }
                     else -> {
-                        map.put(start, days)
+                        map[start] = days
                         start = null
                     }
                 }

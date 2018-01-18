@@ -99,6 +99,6 @@ class AgendaBS : BottomSheetDialogFragment() {
     }
 
     companion object {
-        private val mItemCount = 4
+        private const val mItemCount = 4
     }
 }

@@ -48,7 +48,7 @@ class FragmentCredits : Fragment() {
     }
 
     companion object {
-        val credits = "<h2>Sviluppo Android</h2>" +
+        const val credits = "<h2>Sviluppo Android</h2>" +
                 "Bortolan Marco <br/>bortolanmarco@gmail.com<br/><br/>\n" +
                 "Stefani Luca <br/>luca.stefani.ge1@gmail.com<br/><br/>\n" +
                 "Luconi Simone <br/>info@simoneluconi.com<br/><br/>" +

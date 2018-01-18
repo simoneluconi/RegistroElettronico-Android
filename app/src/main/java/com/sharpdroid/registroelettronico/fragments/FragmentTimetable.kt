@@ -39,7 +39,7 @@ import com.sharpdroid.registroelettronico.views.timetable.TimetableLayout
 import kotlinx.android.synthetic.main.app_bar_main.*
 
 class FragmentTimetable : Fragment() {
-    lateinit var timetable: TimetableLayout
+    private lateinit var timetable: TimetableLayout
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -195,9 +195,9 @@ class FragmentTimetable : Fragment() {
         return linear
     }
 
-    fun hhmm(time: Float) = hhmm(time.toDouble())
-    fun hhmm(time: Double) = hhmm(Math.floor(time).toInt(), ((time - Math.floor(time).toInt()) * 60).toInt())
-    fun hhmm(hourOfDay: Int, minute: Int) = "$hourOfDay:${if (minute >= 10) minute.toString() else "0$minute"}"
+    private fun hhmm(time: Float) = hhmm(time.toDouble())
+    private fun hhmm(time: Double) = hhmm(Math.floor(time).toInt(), ((time - Math.floor(time).toInt()) * 60).toInt())
+    private fun hhmm(hourOfDay: Int, minute: Int) = "$hourOfDay:${if (minute >= 10) minute.toString() else "0$minute"}"
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)

@@ -84,7 +84,7 @@ class AllAbsencesAdapter(private val mContext: Context) : RecyclerView.Adapter<R
             val date = (it as? Absence)?.date ?: ((it as? MyAbsence)?.absence?.date ?: Date(0))
             val l = (hashmap[month_year.format(date)] ?: emptyList<Any>()).toMutableList()
             l.add(it)
-            hashmap.put(month_year.format(date), l)
+            hashmap[month_year.format(date)] = l
         }
 
         val finalList = mutableListOf<Any>()

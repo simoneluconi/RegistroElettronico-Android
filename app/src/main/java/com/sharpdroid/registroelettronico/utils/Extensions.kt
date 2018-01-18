@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION")
-
 package com.sharpdroid.registroelettronico.utils
 
 import java.util.*

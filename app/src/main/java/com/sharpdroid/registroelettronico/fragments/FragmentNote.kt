@@ -42,8 +42,8 @@ class FragmentNote : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notificat
         }
     }
 
-    lateinit private var mRVAdapter: NoteAdapter
-    lateinit private var emptyHolder: EmptyFragment
+    private lateinit var mRVAdapter: NoteAdapter
+    private lateinit var emptyHolder: EmptyFragment
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

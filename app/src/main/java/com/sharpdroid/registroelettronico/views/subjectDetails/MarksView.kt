@@ -36,8 +36,8 @@ class MarksView : CardView, PopupMenu.OnMenuItemClickListener {
     internal lateinit var mContext: Context
     internal var format = SimpleDateFormat("d MMM", Locale.ITALIAN)
 
-    lateinit internal var menu: PopupMenu
-    lateinit internal var adapter: MarkAdapter
+    internal lateinit var menu: PopupMenu
+    internal lateinit var adapter: MarkAdapter
     private var showChart: Boolean = false
 
     var markClickListener: ((Grade) -> Unit)? = null

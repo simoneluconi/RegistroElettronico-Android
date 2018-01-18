@@ -355,6 +355,6 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
     }
 
     fun subjectInfo() = viewModel.subjectInfo?.value?.subjectInfo?.getOrNull(0)
-    fun subjectPojo() = viewModel.subjectInfo?.value
+    private fun subjectPojo() = viewModel.subjectInfo?.value
 
 }
