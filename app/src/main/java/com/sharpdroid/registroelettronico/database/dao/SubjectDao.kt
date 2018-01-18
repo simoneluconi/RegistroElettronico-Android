@@ -92,6 +92,8 @@ abstract class SubjectDao {
     @Query("SELECT SUM(M_VALUE) as `SUM` , 'Generale' as `M_TYPE`, COUNT(M_VALUE) as `COUNT`  FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=:subject AND PROFILE=:profile AND ID NOT IN (SELECT ID FROM EXCLUDED_MARKS) LIMIT 1")
     abstract fun getAverage(subject: Long, profile: Long): LiveData<AverageType>
 
+    @Query("SELECT SUM(M_VALUE) as `SUM` , 'Generale' as `M_TYPE`, COUNT(M_VALUE) as `COUNT`  FROM GRADE WHERE M_VALUE!=0 AND M_SUBJECT_ID=:subject AND PROFILE=:profile AND M_PERIOD=:period AND ID NOT IN (SELECT ID FROM EXCLUDED_MARKS) LIMIT 1")
+    abstract fun getAverageWithPeriod(subject: Long, profile: Long, period: Int): LiveData<AverageType>
 
     @Query("select TEACHER.* from TEACHER left join SUBJECT_TEACHER ON TEACHER.ID = SUBJECT_TEACHER.TEACHER where SUBJECT_TEACHER.PROFILE=:profile order by TEACHER_NAME asc")
     abstract fun getTeachers(profile: Long): Single<List<Teacher>>
