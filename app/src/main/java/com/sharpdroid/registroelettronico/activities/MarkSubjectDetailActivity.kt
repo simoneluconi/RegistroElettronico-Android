@@ -71,11 +71,10 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
         val account = Account.with(this).user
         val subjectId = intent.getIntExtra("subject_id", -1).toLong()
         p = intent.getIntExtra("period", -1)
-        if (p == -1) {
-            avg = DatabaseHelper.database.subjectsDao().getAverage(subjectId, account)
-            p = 0
+        avg = if (p == -1) {
+            DatabaseHelper.database.subjectsDao().getAverage(subjectId, account)
         } else {
-            avg = DatabaseHelper.database.subjectsDao().getAverageWithPeriod(subjectId, account, p)
+            DatabaseHelper.database.subjectsDao().getAverageWithPeriod(subjectId, account, p)
         }
 
         //Do not animate layout on rotation change
