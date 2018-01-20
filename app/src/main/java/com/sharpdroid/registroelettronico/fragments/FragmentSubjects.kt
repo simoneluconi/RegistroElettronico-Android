@@ -40,7 +40,6 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, SearchView
     private lateinit var emptyHolder: EmptyFragment
     private lateinit var viewModel: LessonsViewModel
     private var queryDisposable: Disposable? = null
-    private var allDisposable: Disposable? = null
     private var querying = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -75,12 +74,15 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, SearchView
         if (savedInstanceState == null)
             download()
 
-        allDisposable = viewModel.getSubjectsWithLessons(Account.with(context).user).observeOn(AndroidSchedulers.mainThread()).subscribe({
+        val subjectPojos = DatabaseHelper.database.subjectsDao().getAllSubjectsPOJOBlocking(Account.with(context).user)
+
+        viewModel.getSubjectsWithLessons(Account.with(context).user, subjectPojos).observe(this, Observer {
+            setAdapterData(it.orEmpty())
+
             if (!querying) {
-                setAdapterData(it.orEmpty())
                 recycler.adapter = adapter
             }
-        }, Throwable::printStackTrace)
+        })
 
         viewModel.query.observe(this, Observer { query ->
             if (query == null) return@Observer
@@ -88,8 +90,8 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, SearchView
 
             if (query.isEmpty()) {
                 emptyHolder.visibility = View.GONE
-                empty_subjects.visibility = if (recycler.adapter.itemCount > 0) View.GONE else View.VISIBLE
                 recycler.adapter = adapter
+                empty_subjects.visibility = if (adapter.itemCount > 0) View.GONE else View.VISIBLE
             } else {
                 empty_subjects.visibility = View.GONE
                 recycler.adapter = searchAdapter
@@ -105,7 +107,6 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, SearchView
     override fun onStop() {
         super.onStop()
         queryDisposable?.dispose()
-        allDisposable?.dispose()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -150,7 +151,7 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, SearchView
         adapter.clear()
         adapter.addAll(data)
 
-        empty_subjects.visibility = if (data.isEmpty()) View.VISIBLE else View.GONE
+        empty_subjects.visibility = if (data.isEmpty() && !querying) View.VISIBLE else View.GONE
     }
 
     override fun onSubjectClick(subject: SubjectWithLessons) {

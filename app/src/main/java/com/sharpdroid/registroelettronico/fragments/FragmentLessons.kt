@@ -15,7 +15,7 @@ import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.AllLessonsAdapter
-import com.sharpdroid.registroelettronico.database.pojos.LessonMini
+import com.sharpdroid.registroelettronico.database.entities.Lesson
 import com.sharpdroid.registroelettronico.utils.EventType
 import com.sharpdroid.registroelettronico.utils.Metodi.updateLessons
 import com.sharpdroid.registroelettronico.viewModels.LessonsViewModel
@@ -83,7 +83,7 @@ class FragmentLessons : Fragment(), SwipeRefreshLayout.OnRefreshListener, Notifi
         updateLessons(context)
     }
 
-    private fun addLessons(lessons: List<LessonMini>) {
+    private fun addLessons(lessons: List<Lesson>) {
         mRVAdapter.clear()
         mRVAdapter.addAll(lessons.sortedByDescending { it.mDate })
 

@@ -17,7 +17,7 @@ data class SubjectWithLessons(
         @Relation(parentColumn = "ID", entityColumn = "SUBJECT")
         var subjectInfo: List<SubjectInfo> = emptyList(),
         @Relation(parentColumn = "ID", entityColumn = "M_SUBJECT_ID", entity = Lesson::class)
-        var lessons: List<LessonMini> = emptyList()
+        var lessons: List<Lesson> = emptyList()
 ) {
         fun getSubjectName() = Metodi.capitalizeEach(subjectInfo.getOrNull(0)?.description.or(subject.description))
 }

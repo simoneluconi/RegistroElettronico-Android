@@ -8,7 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.AllLessonsAdapter
-import com.sharpdroid.registroelettronico.database.pojos.LessonMini
+import com.sharpdroid.registroelettronico.database.entities.Lesson
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi
@@ -56,7 +56,7 @@ class AllLessonsWithDownloadActivity : AppCompatActivity(), SwipeRefreshLayout.O
         return super.onOptionsItemSelected(item)
     }
 
-    private fun addLessons(lessons: List<LessonMini>) {
+    private fun addLessons(lessons: List<Lesson>) {
         mRVAdapter.clear()
         mRVAdapter.addAll(lessons)
     }

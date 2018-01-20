@@ -4,7 +4,6 @@ import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.*
 import com.sharpdroid.registroelettronico.database.entities.Lesson
 import com.sharpdroid.registroelettronico.database.pojos.GeniusTimetable
-import com.sharpdroid.registroelettronico.database.pojos.LessonMini
 import io.reactivex.Flowable
 
 @Dao
@@ -17,10 +16,10 @@ interface LessonDao {
     fun loadLastLessons(code: Long, profile: Long): LiveData<List<Lesson>>
 
     @Query("SELECT * FROM LESSON WHERE M_SUBJECT_ID=:code AND PROFILE=:profile GROUP BY M_ARGUMENT, M_AUTHOR_NAME, M_DATE ORDER BY M_DATE DESC")
-    fun loadLessons(code: Long, profile: Long): List<LessonMini>
+    fun loadLessons(code: Long, profile: Long): List<Lesson>
 
     @Query("SELECT * FROM LESSON WHERE PROFILE=:profile GROUP BY M_ARGUMENT, M_AUTHOR_NAME, M_DATE ORDER BY M_DATE DESC")
-    fun flowableLessons(profile: Long): Flowable<List<Lesson>>
+    fun livedataLessons(profile: Long): LiveData<List<Lesson>>
 
     @Transaction
     @Query("SELECT * FROM LESSON WHERE PROFILE=:profile AND (M_ARGUMENT LIKE :query OR M_SUBJECT_DESCRIPTION LIKE :query OR M_AUTHOR_NAME LIKE :query)")
