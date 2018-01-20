@@ -29,7 +29,9 @@ class Spaggiari(val profile: Profile?) {
             if (profile != null && original.url().toString() != API_URL + "auth/login" && profile.expire.time < System.currentTimeMillis()) {
                 Log.d("Spaggiari", "token expired, requesting new token")
 
-                api().postLoginBlocking(LoginRequest(profile.password, profile.username, profile.ident)).blockingSubscribe({
+                val ident = if (profile.isMulti) profile.ident else ""
+
+                api().postLoginBlocking(LoginRequest(profile.password, profile.username, ident)).blockingSubscribe({
                     if (it?.isSuccessful == true) {
                         profile.token = it.body()?.token ?: throw IllegalStateException("token not in response body")
                         profile.expire = it.body()?.expire ?: throw IllegalStateException("expire not in response body")
