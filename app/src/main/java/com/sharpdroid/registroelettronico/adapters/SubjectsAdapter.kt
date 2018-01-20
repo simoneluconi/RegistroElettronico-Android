@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.database.pojos.SubjectWithLessons
-import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.fragments.FragmentSubjects
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import kotlinx.android.synthetic.main.adapter_subject.view.*
@@ -27,7 +26,10 @@ class SubjectsAdapter(fragmentAgenda: FragmentSubjects, val profile: Long) : Rec
         holder.subject.text = capitalizeEach(item.getSubjectName())
 
         holder.prof.visibility = View.VISIBLE
-        holder.prof.text = capitalizeEach(TextUtils.join(", ", DatabaseHelper.database.subjectsDao().getTeachersOfSubject(item.subject.id, profile).map { it.teacherName }), true)
+
+        val prof = item.lessons.groupBy { it.mAuthorName }
+
+        holder.prof.text = capitalizeEach(TextUtils.join(", ", prof.filter { it.value.size > 1 }.keys), true)
 
         holder.layout.setOnClickListener { view ->
             view.layout.postDelayed({ subjectListener.onSubjectClick(item) }, ViewConfiguration.getTapTimeout().toLong())

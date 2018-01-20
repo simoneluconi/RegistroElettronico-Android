@@ -8,7 +8,6 @@ import com.sharpdroid.registroelettronico.database.entities.SubjectInfo
 import com.sharpdroid.registroelettronico.database.entities.SubjectTeacher
 import com.sharpdroid.registroelettronico.database.entities.Teacher
 import com.sharpdroid.registroelettronico.database.pojos.AverageType
-import com.sharpdroid.registroelettronico.database.pojos.LessonMini
 import com.sharpdroid.registroelettronico.database.pojos.SubjectPOJO
 import com.sharpdroid.registroelettronico.database.pojos.SubjectWithLessons
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
@@ -19,10 +18,12 @@ import io.reactivex.Single
 abstract class SubjectDao {
 
     //filter all SubjectInfos by Profile
-    open fun getSubjectsAndLessons(profile: Long): Flowable<List<SubjectWithLessons>> {
-        return DatabaseHelper.database.lessonsDao().flowableLessons(profile).map { allLessons ->
-            getSubjects(profile).map { subject -> SubjectWithLessons(subject, listOfNotNull(getSubjectInfo(subject.id, profile)), allLessons.filter { it.mSubjectId == subject.id.toInt() }.map { LessonMini(it.mArgument, it.mAuthorName, it.mDate, it.mSubjectDescription) }) }
-        }
+    open fun getSubjectsAndLessons(profile: Long, subjects: List<SubjectPOJO>): LiveData<List<SubjectWithLessons>> {
+        return Transformations.map(DatabaseHelper.database.lessonsDao().livedataLessons(profile), { lessons ->
+            subjects.map { subject ->
+                SubjectWithLessons(subject.subject, subject.subjectInfo, lessons.filter { it.mSubjectId.toLong() == subject.subject.id && it.profile == profile })
+            }
+        })
     }
 
     @Query("SELECT * FROM SUBJECT WHERE ID = :id LIMIT 1")

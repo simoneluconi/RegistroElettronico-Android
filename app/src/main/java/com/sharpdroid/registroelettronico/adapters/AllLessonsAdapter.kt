@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.holders.HeaderHolder
 import com.sharpdroid.registroelettronico.adapters.holders.LessonHolder
-import com.sharpdroid.registroelettronico.database.pojos.LessonMini
+import com.sharpdroid.registroelettronico.database.entities.Lesson
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.utils.Metodi.month_year
 import java.text.SimpleDateFormat
@@ -36,19 +36,19 @@ class AllLessonsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         } else {
             val lessonHolder = holder as LessonHolder
 
-            val lesson = types[position] as LessonMini
+            val lesson = types[position] as Lesson
 
             lessonHolder.content.text = lesson.mArgument
             lessonHolder.date.text = capitalizeEach(dateFormat.format(lesson.mDate))
         }
     }
 
-    fun addAll(lessons: List<LessonMini>) {
+    fun addAll(lessons: List<Lesson>) {
         elaborateList(lessons)
         notifyDataSetChanged()
     }
 
-    private fun elaborateList(lessons: List<LessonMini>) {
+    private fun elaborateList(lessons: List<Lesson>) {
         val grouped = lessons.groupBy { month_year.format(it.mDate) }
         grouped.keys.forEach {
             types.add(it)
