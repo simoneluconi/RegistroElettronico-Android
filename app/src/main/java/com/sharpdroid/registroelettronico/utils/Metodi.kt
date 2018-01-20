@@ -683,8 +683,8 @@ object Metodi {
             val today = entry.value.sortedBy { it.start }.toMutableList()
 
             //finchè ci sono duplicati
-            while (today.groupBy { it.subject }.count { it.value.size > 1 } > 0) {
-                Log.d("Day ${entry.key}", "duplicates: ${today.groupBy { it.subject }.count { it.value.size > 1 }}")
+            while ((0 until today.size - 1).any { today[it].subject == today[it + 1].subject }) {
+                Log.d("Day ${entry.key}", "duplicates: ${(0 until today.size - 1).any { today[it].subject == today[it + 1].subject }}")
 
                 //controlla da cima a fondo e rimuovi un duplicato. Ripeti
                 for (i in 0 until today.size - 1) {
