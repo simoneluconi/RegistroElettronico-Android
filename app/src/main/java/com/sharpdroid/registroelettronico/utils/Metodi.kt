@@ -241,13 +241,13 @@ object Metodi {
 
         val p = Profile.getProfile(c)
         updateSubjects(p)
-        //updateLessons(p);
-        //updateFolders(p);
-        //updateAgenda(p);
-        //updateAbsence(p);
-        //updateBacheca(p);
-        //updateNote(p);
-        //updateMarks(p);
+        updateLessons(p)
+        updateFolders(p)
+        updateAgenda(p)
+        updateAbsence(p)
+        updateBacheca(p)
+        updateNote(p)
+        updateMarks(p)
     }
 
     fun updateMarks(c: Context?) {

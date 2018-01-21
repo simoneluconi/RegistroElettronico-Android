@@ -43,6 +43,7 @@ import com.sharpdroid.registroelettronico.fragments.*
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.deleteUser
 import com.sharpdroid.registroelettronico.utils.Metodi.dp
+import com.sharpdroid.registroelettronico.utils.Metodi.fetchDataOfUser
 import com.sharpdroid.registroelettronico.utils.Metodi.updateSubjects
 import com.transitionseverywhere.ChangeText
 import com.transitionseverywhere.TransitionManager
@@ -353,11 +354,11 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
             Account.with(this).user = profile.identifier
 
-            //fetchDataOfUser(this)
-
             //Update fragment
-            if (!current)
+            if (!current) {
                 drawer?.setSelectionAtPosition(drawer?.currentSelectedPosition!!, true)
+                fetchDataOfUser(this)
+            }
         }
         return false
     }
