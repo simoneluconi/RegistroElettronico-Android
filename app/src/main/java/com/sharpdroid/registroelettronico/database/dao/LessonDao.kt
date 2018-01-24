@@ -43,7 +43,7 @@ interface LessonDao {
             "M_HOUR_POSITION+8 as `end`, " +
             "COUNT(M_DURATION) as `totalHours` " +
             "from `LESSON` LEFT JOIN `TEACHER` ON `M_AUTHOR_NAME`=`TEACHER_NAME` " +
-            "where PROFILE = :profile AND M_SUBJECT_CODE!='SUPZ' AND M_DATE>(strftime('%s', 'now', 'localtime') - 45*24*3600)*1000 " +
+            "where PROFILE = :profile AND M_SUBJECT_CODE NOT IN ('SUPZ','SOST') AND M_DATE>(strftime('%s', 'now', 'localtime') - 45*24*3600)*1000 " +
             "group by `dayOfWeek`,M_HOUR_POSITION, M_SUBJECT_CODE " +
             "order by `dayOfWeek`, M_HOUR_POSITION  asc) where `totalHours`>1 " +
             "group by `dayOfWeek`, `start`")
