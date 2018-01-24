@@ -49,7 +49,6 @@ class FragmentMedie : Fragment() {
         periodo = arguments.getInt("q")
 
         with(recycler) {
-            setHasFixedSize(true)
             layoutManager = if (resources.getBoolean(R.bool.isTablet) || resources.configuration.orientation == ORIENTATION_LANDSCAPE) {
                 GridLayoutManager(context, 3)
             } else {
