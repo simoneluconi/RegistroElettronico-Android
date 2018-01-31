@@ -28,8 +28,8 @@ android {
         applicationId "com.sharpdroid.registroelettronico"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 517
-        versionName "2.1.17"
+        versionCode 518
+        versionName "2.1.18"
 
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
