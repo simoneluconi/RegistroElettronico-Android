@@ -102,7 +102,8 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
         // Aperto da notifica
         if (intent.extras != null && intent.extras.containsKey("drawer_open_id")) {
-            drawer?.setSelection(intent.extras.getLong("drawer_open_id"), true)
+            drawer?.setSelection(intent.extras.getLong("drawer_open_id"), false)
+            openFragment(intent.extras.getLong("drawer_open_id"), intent.extras)
         } else if (savedInstanceState == null) {
             val default = PreferenceManager.getDefaultSharedPreferences(this).getString("drawer_to_open", "0").toInt()
             val drawerToOpen = intent.extras?.getInt("drawer_to_open", default) ?: default
@@ -274,36 +275,39 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
      * Click listener for drawer's items
      */
     override fun onItemClick(view: View?, position: Int, drawerItem: IDrawerItem<*, *>): Boolean {
-        val fragment: Fragment
-        when (drawerItem.identifier.toInt()) {
+        return openFragment(drawerItem.identifier, intent.extras)
+    }
+
+    private fun openFragment(tabId: Number, extras: Bundle): Boolean {
+        val fragment: Fragment = when (tabId.toInt()) {
             R.id.today -> {
-                fragment = FragmentToday()
+                FragmentToday()
             }
             R.id.agenda -> {
-                fragment = FragmentAgenda()
+                FragmentAgenda()
             }
             R.id.medie -> {
-                fragment = FragmentMediePager()
+                FragmentMediePager()
             }
             R.id.lessons -> {
-                fragment = FragmentSubjects()
+                FragmentSubjects()
             }
             R.id.files -> {
-                fragment = FragmentFolders()
+                FragmentFolders()
             }
             R.id.absences -> {
-                fragment = FragmentAllAbsences()
+                FragmentAllAbsences()
             }
             R.id.notes -> {
-                fragment = FragmentNote()
+                FragmentNote()
             }
             R.id.communications -> {
-                fragment = FragmentCommunications()
+                FragmentCommunications()
             }
             R.id.schedule -> {
-                fragment = FragmentTimetable()
+                FragmentTimetable()
             }
-            R.id.settings -> fragment = FragmentSettings()
+            R.id.settings -> FragmentSettings()
             R.id.nav_share -> {
                 val intent = Intent(Intent.ACTION_SEND)
                 intent.type = "text/plain"
@@ -330,6 +334,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             else -> return false
         }
 
+        fragment.arguments = extras
         clearBackstack()
 
         params?.scrollFlags = 0
@@ -344,7 +349,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         transaction.replace(R.id.fragment_container, fragment).commit()
 
         drawer?.closeDrawer()
-        return false
+        return true
     }
 
     override fun onProfileChanged(view: View?, profile: IProfile<*>?, current: Boolean): Boolean {
@@ -421,9 +426,9 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                                 PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("huawei_do_not_ask_again", true).apply()
                             }
                         }.setNegativeButton(android.R.string.cancel) { _, _ ->
-                    PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("huawei_do_not_ask_again", doNotAskAgain.isChecked).apply()
+                            PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("huawei_do_not_ask_again", doNotAskAgain.isChecked).apply()
 
-                }.show()
+                        }.show()
 
         }
     }

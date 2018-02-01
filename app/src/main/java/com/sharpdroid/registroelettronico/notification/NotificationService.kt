@@ -108,6 +108,19 @@ class NotificationService : JobService() {
         val intent = Intent(this, MainActivity::class.java)
                 .putExtra("drawer_open_id", tabToOpen)
                 .addCategory(type.name)
+
+        if (content.size == 1) {
+            intent.putExtra("id", with(content[0]) {
+                return@with when (this) {
+                    is RemoteAgenda -> this.id
+                    is Grade -> this.id
+                    is Communication -> this.id
+                    is Note -> this.id
+                    else -> -1L
+                }
+            })
+        }
+
         val pendingIntent = PendingIntent.getActivity(this, MainActivity.REQUEST_CODE, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT)
 

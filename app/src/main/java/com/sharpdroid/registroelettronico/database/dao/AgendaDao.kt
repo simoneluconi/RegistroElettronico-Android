@@ -79,4 +79,7 @@ interface AgendaDao {
 
     @Query("UPDATE REMOTE_AGENDA_INFO SET ARCHIVED=0")
     fun setRemoteNotArchived()
+
+    @Query("SELECT * FROM REMOTE_AGENDA WHERE ID=:id LIMIT 1")
+    fun byIdRemote(id: Long): RemoteAgenda?
 }
