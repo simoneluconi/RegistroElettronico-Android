@@ -71,10 +71,22 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
             setListener(this@FragmentAgenda)
             shouldSelectFirstDayOfMonthOnScroll(false)
 
+            prepareDate(true)
+
+            //already been here
             if (savedInstanceState != null) {
                 mDate = Date(savedInstanceState.getLong("date"))
-            } else {
-                prepareDate(true)
+            }
+            //coming from a single item event notification
+            else if (
+                    arguments != null &&
+                    arguments.containsKey("id") &&
+                    arguments["id"] is Long &&
+                    arguments["id"] != -1L) {
+
+                DatabaseHelper.database.eventsDao().byIdRemote(arguments["id"] as Long)?.let {
+                    mDate = it.start
+                }
             }
             setCurrentDate(mDate)
         }
@@ -85,8 +97,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
             fab_big_add.setClosedOnTouchOutside(true)
             fab_mini_verifica.setOnClickListener {
                 startActivity(Intent(context, AddEventActivity::class.java)
-                        .putExtra("type", "Verifica").
-                        putExtra("time", mDate.time))
+                        .putExtra("type", "Verifica").putExtra("time", mDate.time))
                 fab_big_add.close(true)
             }
             fab_mini_esercizi.setOnClickListener {
