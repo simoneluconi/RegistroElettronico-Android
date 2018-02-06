@@ -24,13 +24,17 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     private fun dismissNotification(intent: Intent) {
-        val content = intent.getSerializableExtra("list") as List<Any>
+        val content = intent.getSerializableExtra("list") as List<*>
         val firstElement = content.first()
         when (firstElement) {
-            is RemoteAgenda -> DatabaseHelper.database.eventsDao().insertRemote(content as List<RemoteAgenda>)
-            is Grade -> DatabaseHelper.database.gradesDao().insert(content as List<Grade>)
-            is Communication -> DatabaseHelper.database.communicationsDao().insert(content as List<Communication>)
-            is Note -> DatabaseHelper.database.notesDao().insert(content as List<Note>)
+            is RemoteAgenda ->
+                DatabaseHelper.database.eventsDao().insertRemote(content as List<RemoteAgenda>)
+            is Grade ->
+                DatabaseHelper.database.gradesDao().insert(content as List<Grade>)
+            is Communication ->
+                DatabaseHelper.database.communicationsDao().insert(content as List<Communication>)
+            is Note ->
+                DatabaseHelper.database.notesDao().insert(content as List<Note>)
         }
         Log.d("NotificationReceiver", "Dismissed ${content.size} items")
     }
