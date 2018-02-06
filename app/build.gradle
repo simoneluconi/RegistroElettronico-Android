@@ -149,7 +149,7 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
-    implementation 'com.getkeepsafe.taptargetview:taptargetview:1.10.0'
+    implementation 'com.getkeepsafe.taptargetview:taptargetview:1.11.0'
     implementation 'com.akexorcist:RoundCornerProgressBar:2.0.3'
     implementation 'com.andkulikov:transitionseverywhere:1.7.6'
     implementation 'com.android.support:appcompat-v7:26.1.0'
@@ -161,19 +161,23 @@ dependencies {
     implementation 'com.android.support:support-v13:26.1.0'
     implementation 'com.android.support:support-v4:26.1.0'
     implementation 'com.github.clans:fab:1.6.4'
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
+    implementation('com.github.PhilJay:MPAndroidChart:v3.0.3') {
+        exclude group: 'com.android.support'
+    }
     implementation 'com.github.sundeepk:compact-calendar-view:2.0.2.2'
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.heinrichreimersoftware:material-intro:1.6.2'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
-    implementation 'com.wdullaer:materialdatetimepicker:3.3.1'
+    implementation('com.wdullaer:materialdatetimepicker:3.5.1') {
+        exclude group: 'com.android.support'
+    }
     implementation 'com.yqritc:recyclerview-flexibledivider:1.4.0'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.8'
-    implementation 'org.apache.commons:commons-lang3:3.6'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
+    implementation 'org.apache.commons:commons-lang3:3.7'
 
     //room
     implementation "android.arch.persistence.room:runtime:1.0.0"
@@ -187,7 +191,7 @@ dependencies {
     implementation "android.arch.lifecycle:common-java8:1.1.0"
 
     implementation 'com.google.firebase:firebase-messaging:11.8.0'
-    implementation 'com.firebase:firebase-jobdispatcher:0.8.4'
+    implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
 
