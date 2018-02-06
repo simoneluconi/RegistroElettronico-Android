@@ -278,7 +278,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         return openFragment(drawerItem.identifier, intent.extras)
     }
 
-    private fun openFragment(tabId: Number, extras: Bundle): Boolean {
+    private fun openFragment(tabId: Number, extras: Bundle?): Boolean {
         val fragment: Fragment = when (tabId.toInt()) {
             R.id.today -> {
                 FragmentToday()
