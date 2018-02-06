@@ -18,11 +18,7 @@ class CustomTypefaceSpan(family: String, private val newType: Typeface) : Typefa
     private fun applyCustomTypeFace(paint: Paint, tf: Typeface) {
         val oldStyle: Int
         val old = paint.typeface
-        oldStyle = if (old == null) {
-            0
-        } else {
-            old.style
-        }
+        oldStyle = old?.style ?: 0
 
         val fake = oldStyle and tf.style.inv()
         if (fake and Typeface.BOLD != 0) {
