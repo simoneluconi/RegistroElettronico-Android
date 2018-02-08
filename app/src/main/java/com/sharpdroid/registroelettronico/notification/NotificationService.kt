@@ -20,6 +20,8 @@ import com.sharpdroid.registroelettronico.activities.MainActivity
 import com.sharpdroid.registroelettronico.api.spaggiari.v2.Spaggiari
 import com.sharpdroid.registroelettronico.database.entities.*
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
+import com.sharpdroid.registroelettronico.fragments.FragmentAgenda
+import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.utils.Metodi.getStartEnd
 import java.io.Serializable
@@ -50,29 +52,35 @@ class NotificationService : JobService() {
         }
 
         val notificationsList = mutableMapOf<NotificationIDs, List<Any>>()
-
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         var diff: List<Any>
-        diff = getAgendaDiff(profile)
-        if (diff.isNotEmpty())
-            notificationsList[NotificationIDs.AGENGA] = diff
-        Log.d("NotificationService", "${diff.size} nuovi eventi")
 
-        diff = getVotiDiff(profile)
-        if (diff.isNotEmpty())
-            notificationsList[NotificationIDs.VOTI] = diff
-        Log.d("NotificationService", "${diff.size} nuovi voti")
+        if (preferences.getBoolean("notify_agenda", true)) {
+            diff = getAgendaDiff(profile)
+            if (diff.isNotEmpty())
+                notificationsList[NotificationIDs.AGENGA] = diff
+            Log.d("NotificationService", "${diff.size} nuovi eventi")
+        }
+        if (preferences.getBoolean("notify_voti", true)) {
+            diff = getVotiDiff(profile)
+            if (diff.isNotEmpty())
+                notificationsList[NotificationIDs.VOTI] = diff
+            Log.d("NotificationService", "${diff.size} nuovi voti")
+        }
+        if (preferences.getBoolean("notify_comunicazioni", true)) {
+            diff = getComunicazioniDiff(profile)
+            if (diff.isNotEmpty())
+                notificationsList[NotificationIDs.COMUNICAZIONI] = diff
+            Log.d("NotificationService", "${diff.size} nuove comunicazioni")
+        }
+        if (preferences.getBoolean("notify_note", true)) {
+            diff = getNoteDiff(profile)
+            if (diff.isNotEmpty())
+                notificationsList[NotificationIDs.NOTE] = diff
+            Log.d("NotificationService", "${diff.size} nuove note")
+        }
 
-        diff = getComunicazioniDiff(profile)
-        if (diff.isNotEmpty())
-            notificationsList[NotificationIDs.COMUNICAZIONI] = diff
-        Log.d("NotificationService", "${diff.size} nuove comunicazioni")
-
-        diff = getNoteDiff(profile)
-        if (diff.isNotEmpty())
-            notificationsList[NotificationIDs.NOTE] = diff
-        Log.d("NotificationService", "${diff.size} nuove note")
-
-        notify(notificationsList, PreferenceManager.getDefaultSharedPreferences(this))
+        notify(notificationsList, preferences)
 
         return false //something else to do?
     }
@@ -109,25 +117,21 @@ class NotificationService : JobService() {
                 .addCategory(type.name)
 
         if (content.size == 1) {
-            intent.putExtra("id", with(content[0]) {
-                return@with when (this) {
-                    is RemoteAgenda -> this.id
-                    is Grade -> this.id
-                    is Communication -> this.id
-                    is Note -> this.id
-                    else -> -1L
+            with(content[0]) {
+                if (this is RemoteAgenda) {
+                    intent.putExtra(FragmentAgenda.INTENT_DATE, start.time)
                 }
-            })
+            }
         }
 
         val pendingIntent = PendingIntent.getActivity(this, MainActivity.REQUEST_CODE, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT)
 
-        val deleteIntent = Intent(this, NotificationReceiver::class.java)
+        val saveDataIntent = Intent(this, NotificationReceiver::class.java)
                 .setAction(NotificationReceiver.ACTION_NOTIFICATION_DISMISSED)
                 .putExtra("list", content as Serializable)
                 .addCategory(type.name)
-        val deletePendingIntent = PendingIntent.getBroadcast(this, MainActivity.REQUEST_CODE, deleteIntent,
+        val saveDataPendingIntent = PendingIntent.getBroadcast(this, MainActivity.REQUEST_CODE, saveDataIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT)
 
         val style = NotificationCompat.InboxStyle()
@@ -149,7 +153,8 @@ class NotificationService : JobService() {
                 .setContentIntent(pendingIntent)
                 .setContentText(caption)
                 .setContentTitle(title)
-                .setDeleteIntent(deletePendingIntent)
+                .setDeleteIntent(saveDataPendingIntent)
+                .setContentIntent(saveDataPendingIntent)
                 .setNumber(content.size)
                 .setOnlyAlertOnce(true)
                 .setSmallIcon(R.drawable.ic_stat_name)
@@ -207,7 +212,7 @@ class NotificationService : JobService() {
         })
         if (newEvents.isEmpty()) return emptyList()
 
-        val oldEvents = DatabaseHelper.database.eventsDao().getRemoteList(profile.id)
+        val oldEvents = DatabaseHelper.database.eventsDao().getRemoteList(Account.with(applicationContext).user)
         val diffEvents = newEvents.minus(oldEvents)
         if (diffEvents.isEmpty()) return emptyList()
         return diffEvents
@@ -226,7 +231,7 @@ class NotificationService : JobService() {
         })
         if (newGrades.isEmpty()) return emptyList()
 
-        val oldGrades = DatabaseHelper.database.gradesDao().getGradesList(profile.id)
+        val oldGrades = DatabaseHelper.database.gradesDao().getGradesList(Account.with(applicationContext).user)
         val diffGrades = if (!debug) newGrades.minus(oldGrades) else newGrades
         if (diffGrades.isEmpty()) return emptyList()
         return diffGrades
@@ -244,9 +249,10 @@ class NotificationService : JobService() {
             Log.e("NotificationService", it?.localizedMessage, it)
         })
         newCommunications = newCommunications.filter { it.cntStatus != "deleted" }
+        newCommunications.map { it.cntStatus = "" }
         if (newCommunications.isEmpty()) return emptyList()
 
-        val oldCommunications = DatabaseHelper.database.communicationsDao().getCommunicationsList(profile.id)
+        val oldCommunications = DatabaseHelper.database.communicationsDao().getCommunicationsList(Account.with(applicationContext).user)
         val diffCommunications = if (!debug) newCommunications.minus(oldCommunications) else newCommunications
         if (diffCommunications.isEmpty()) return emptyList()
         return diffCommunications
@@ -265,7 +271,7 @@ class NotificationService : JobService() {
         })
         if (newNotes.isEmpty()) return emptyList()
 
-        val oldNotes = DatabaseHelper.database.notesDao().getNotesList(profile.id)
+        val oldNotes = DatabaseHelper.database.notesDao().getNotesList(Account.with(applicationContext).user)
         val diffNotes = newNotes.minus(oldNotes)
         if (diffNotes.isEmpty()) return emptyList()
         return diffNotes

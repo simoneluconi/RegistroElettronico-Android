@@ -45,7 +45,12 @@ data class Communication(
         @ColumnInfo(name = "CATEGORY") @Expose @SerializedName("cntCategory") var category: String? = null,
         @ColumnInfo(name = "HAS_ATTACHMENT") @Expose @SerializedName("cntHasAttach") var hasAttachment: Boolean = false,
         @ColumnInfo(name = "PROFILE") var profile: Long = -1L
-) : Serializable
+) : Serializable {
+    override fun equals(other: Any?): Boolean {
+        if (other == null || other !is Communication) return false
+        return id == other.id && myId == other.myId && title == other.title
+    }
+}
 
 class CommunicationAPI(@Expose @SerializedName("items") private var communications: List<Communication>) {
     fun getCommunications(profile: Profile): List<Communication> {
