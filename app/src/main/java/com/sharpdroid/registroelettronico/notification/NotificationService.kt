@@ -21,7 +21,6 @@ import com.sharpdroid.registroelettronico.api.spaggiari.v2.Spaggiari
 import com.sharpdroid.registroelettronico.database.entities.*
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.fragments.FragmentAgenda
-import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.utils.Metodi.getStartEnd
 import java.io.Serializable
@@ -212,7 +211,7 @@ class NotificationService : JobService() {
         })
         if (newEvents.isEmpty()) return emptyList()
 
-        val oldEvents = DatabaseHelper.database.eventsDao().getRemoteList(Account.with(applicationContext).user)
+        val oldEvents = DatabaseHelper.database.eventsDao().getRemoteList(profile.id)
         val diffEvents = newEvents.minus(oldEvents)
         if (diffEvents.isEmpty()) return emptyList()
         return diffEvents
@@ -231,7 +230,7 @@ class NotificationService : JobService() {
         })
         if (newGrades.isEmpty()) return emptyList()
 
-        val oldGrades = DatabaseHelper.database.gradesDao().getGradesList(Account.with(applicationContext).user)
+        val oldGrades = DatabaseHelper.database.gradesDao().getGradesList(profile.id)
         val diffGrades = if (!debug) newGrades.minus(oldGrades) else newGrades
         if (diffGrades.isEmpty()) return emptyList()
         return diffGrades
@@ -252,7 +251,7 @@ class NotificationService : JobService() {
         newCommunications.map { it.cntStatus = "" }
         if (newCommunications.isEmpty()) return emptyList()
 
-        val oldCommunications = DatabaseHelper.database.communicationsDao().getCommunicationsList(Account.with(applicationContext).user)
+        val oldCommunications = DatabaseHelper.database.communicationsDao().getCommunicationsList(profile.id)
         val diffCommunications = if (!debug) newCommunications.minus(oldCommunications) else newCommunications
         if (diffCommunications.isEmpty()) return emptyList()
         return diffCommunications
@@ -271,7 +270,7 @@ class NotificationService : JobService() {
         })
         if (newNotes.isEmpty()) return emptyList()
 
-        val oldNotes = DatabaseHelper.database.notesDao().getNotesList(Account.with(applicationContext).user)
+        val oldNotes = DatabaseHelper.database.notesDao().getNotesList(profile.id)
         val diffNotes = newNotes.minus(oldNotes)
         if (diffNotes.isEmpty()) return emptyList()
         return diffNotes
