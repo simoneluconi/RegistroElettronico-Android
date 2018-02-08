@@ -34,7 +34,7 @@
         android:title="@string/restore_excluded_marks_title" />
 
     <PreferenceCategory
-        android:key="notifuche_preference"
+        android:key="notifiche_category"
         android:title="Notifiche">
         <SwitchPreference
             android:defaultValue="true"
@@ -42,7 +42,7 @@
             android:summary="Ricevi notifiche relative all'account corrente"
             android:title="Notifiche" />
 
-        <SwitchPreference
+        <CheckBoxPreference
             android:defaultValue="true"
             android:dependency="notify"
             android:drawablePadding="8dp"
@@ -50,13 +50,41 @@
             android:key="notify_vibrate"
             android:title="Vibrazione" />
 
-        <SwitchPreference
+        <CheckBoxPreference
             android:defaultValue="true"
             android:dependency="notify"
             android:drawablePadding="8dp"
             android:icon="@drawable/ic_volume_up_black_24dp"
             android:key="notify_sound"
             android:title="Suoni" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:dependency="notify"
+            android:key="notify_agenda"
+            android:summary="Aggiornami se ci sono nuovi eventi"
+            android:title="Agenda" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:dependency="notify"
+            android:key="notify_voti"
+            android:summary="Aggiornami se ci sono nuovi voti"
+            android:title="Voti" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:dependency="notify"
+            android:key="notify_comunicazioni"
+            android:summary="Aggiornami se ci sono nuove comunicazioni"
+            android:title="Comunicazioni" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:dependency="notify"
+            android:key="notify_note"
+            android:summary="Aggiornami se ci sono nuove note"
+            android:title="Note" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Informazioni">
