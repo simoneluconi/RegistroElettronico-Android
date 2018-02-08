@@ -273,13 +273,6 @@ class NotificationService : JobService() {
     }
 
     companion object {
-        enum class NotificationIDs {
-            AGENGA,
-            VOTI,
-            COMUNICAZIONI,
-            NOTE
-        }
-
         val dateFormat = SimpleDateFormat("d MMM", Locale.getDefault())
     }
 }

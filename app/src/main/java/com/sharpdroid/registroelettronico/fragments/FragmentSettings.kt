@@ -1,7 +1,10 @@
 package com.sharpdroid.registroelettronico.fragments
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -20,6 +23,7 @@ import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.database.entities.Profile
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
+import com.sharpdroid.registroelettronico.notification.NotificationIDs
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.pushDatabase
 import io.reactivex.Completable
@@ -104,6 +108,23 @@ class FragmentSettings : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             preference.removePreference(findPreference("notify_note"))
 
             findPreference("notify_settings").setOnPreferenceClickListener {
+                for (type in NotificationIDs.values()) {
+                    val channelName = when (type) {
+                        NotificationIDs.AGENGA -> "Agenda"
+                        NotificationIDs.VOTI -> "Voti"
+                        NotificationIDs.COMUNICAZIONI -> "Comunicazioni"
+                        NotificationIDs.NOTE -> "Note"
+                    }
+
+                    val channel = NotificationChannel(type.name, channelName, NotificationManager.IMPORTANCE_DEFAULT)
+                    channel.enableLights(true)
+                    channel.enableVibration(true)
+                    channel.lightColor = Color.BLUE
+                    channel.setShowBadge(true)
+
+                    context.getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
+                }
+
                 val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
                 intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
                 startActivity(intent)
