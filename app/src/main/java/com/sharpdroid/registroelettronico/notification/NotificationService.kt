@@ -24,6 +24,7 @@ import com.sharpdroid.registroelettronico.fragments.FragmentAgenda
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.utils.Metodi.getStartEnd
 import java.io.Serializable
+import java.text.SimpleDateFormat
 import java.util.*
 
 class NotificationService : JobService() {
@@ -113,6 +114,7 @@ class NotificationService : JobService() {
 
         val intent = Intent(this, MainActivity::class.java)
                 .putExtra("drawer_open_id", tabToOpen)
+                .putExtra("list", content as Serializable)
                 .addCategory(type.name)
 
         if (content.size == 1) {
@@ -136,12 +138,7 @@ class NotificationService : JobService() {
         val style = NotificationCompat.InboxStyle()
 
         content.forEach {
-            when (it) {
-                is RemoteAgenda -> style.addLine(it.notes)
-                is Grade -> style.addLine(getString(R.string.notification_new_grade, it.mStringValue, capitalizeEach(it.mDescription, false)))
-                is Communication -> style.addLine(it.title)
-                is Note -> style.addLine(it.mText)
-            }
+            style.addLine(getCaption(it))
         }
 
         val caption = getCaption(content.first())
@@ -153,7 +150,6 @@ class NotificationService : JobService() {
                 .setContentText(caption)
                 .setContentTitle(title)
                 .setDeleteIntent(saveDataPendingIntent)
-                .setContentIntent(saveDataPendingIntent)
                 .setNumber(content.size)
                 .setOnlyAlertOnce(true)
                 .setSmallIcon(R.drawable.ic_stat_name)
@@ -186,12 +182,12 @@ class NotificationService : JobService() {
         notificationManager.notify(type.ordinal, notification.build())
     }
 
-    private fun getCaption(firstElement: Any): String {
-        return when (firstElement) {
-            is RemoteAgenda -> firstElement.notes
-            is Grade -> getString(R.string.notification_new_grade, firstElement.mStringValue, capitalizeEach(firstElement.mDescription, false))
-            is Communication -> firstElement.title
-            is Note -> firstElement.mText
+    private fun getCaption(item: Any): String {
+        return when (item) {
+            is RemoteAgenda -> " ${dateFormat.format(item.start)} - ${item.notes}"           // 5 feb - Verifica di informatica
+            is Grade -> getString(R.string.notification_new_grade, item.mStringValue, capitalizeEach(item.mDescription, false)) //Hai preso $x in $y
+            is Communication -> item.title              // Circ n.7...
+            is Note -> "${capitalizeEach(item.mAuthor, true)} - ${item.mText}"  //Prof Annunzio - Alunno rompe il cazzo
             else -> ""
         }
     }
@@ -212,7 +208,7 @@ class NotificationService : JobService() {
         if (newEvents.isEmpty()) return emptyList()
 
         val oldEvents = DatabaseHelper.database.eventsDao().getRemoteList(profile.id)
-        val diffEvents = newEvents.minus(oldEvents)
+        val diffEvents = newEvents.minus(if (!debug) oldEvents else oldEvents.drop(1))
         if (diffEvents.isEmpty()) return emptyList()
         return diffEvents
     }
@@ -283,5 +279,7 @@ class NotificationService : JobService() {
             COMUNICAZIONI,
             NOTE
         }
+
+        val dateFormat = SimpleDateFormat("d MMM", Locale.getDefault())
     }
 }
