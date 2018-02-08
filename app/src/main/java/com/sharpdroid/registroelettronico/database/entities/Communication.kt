@@ -48,7 +48,7 @@ data class Communication(
 ) : Serializable {
     override fun equals(other: Any?): Boolean {
         if (other == null || other !is Communication) return false
-        return id == other.id && myId == other.myId && title == other.title
+        return id == other.id && myId == other.myId && title == other.title && date == other.date
     }
 }
 
