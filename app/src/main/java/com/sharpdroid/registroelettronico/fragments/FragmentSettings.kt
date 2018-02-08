@@ -91,7 +91,7 @@ class FragmentSettings : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val preference = findPreference("notifuche_preference") as PreferenceCategory
+            val preference = findPreference("notifiche_category") as PreferenceCategory
             preference.removePreference(findPreference("notify_sound"))
             preference.removePreference(findPreference("notify_vibrate"))
         }
@@ -109,7 +109,8 @@ class FragmentSettings : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        val preference = findPreference(key)
+        val preference = findPreference(key) ?: return
+
         if (preference is ListPreference) {
             val prefIndex = preference.findIndexOfValue(sharedPreferences.getString(key, ""))
             if (prefIndex >= 0) {
