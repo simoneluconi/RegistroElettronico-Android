@@ -28,7 +28,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class NotificationService : JobService() {
-    private val debug = true
+    private val debug = false
 
     override fun onStopJob(job: JobParameters?) = false //need retry?
 
