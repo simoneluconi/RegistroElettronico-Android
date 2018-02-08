@@ -32,6 +32,7 @@ import com.sharpdroid.registroelettronico.utils.Metodi.isEventTest
 import com.sharpdroid.registroelettronico.utils.Metodi.pushDatabase
 import com.sharpdroid.registroelettronico.utils.Metodi.updateAgenda
 import com.sharpdroid.registroelettronico.utils.add
+import com.sharpdroid.registroelettronico.utils.flat
 import com.sharpdroid.registroelettronico.viewModels.AgendaViewModel
 import com.transitionseverywhere.ChangeText
 import com.transitionseverywhere.TransitionManager
@@ -71,22 +72,20 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
             setListener(this@FragmentAgenda)
             shouldSelectFirstDayOfMonthOnScroll(false)
 
-            prepareDate(true)
+
 
             //already been here
             if (savedInstanceState != null) {
-                mDate = Date(savedInstanceState.getLong("date"))
+                mDate = Date(savedInstanceState.getLong(INTENT_DATE))
             }
             //coming from a single item event notification
-            else if (
-                    arguments != null &&
-                    arguments.containsKey("id") &&
-                    arguments["id"] is Long &&
-                    arguments["id"] != -1L) {
+            else if (arguments != null &&
+                    arguments.containsKey(INTENT_DATE)) {
 
-                DatabaseHelper.database.eventsDao().byIdRemote(arguments["id"] as Long)?.let {
-                    mDate = it.start
-                }
+                mDate = Date(arguments[INTENT_DATE] as Long)
+                Log.d(this@FragmentAgenda.tag, mDate.toGMTString())
+            } else {
+                prepareDate(true)
             }
             setCurrentDate(mDate)
         }
@@ -126,6 +125,8 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
 
         val mediator = MediatorLiveData<List<Any>>()
 
+
+        //TODO: Use mediator but only observe when changes happen
         mediator.addSource(viewModel.getLocal(Account.with(context).user), {
             local.clear()
             local.addAll(it.orEmpty())
@@ -133,7 +134,6 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
             events.clear()
             events.addAll(local)
             events.addAll(remote)
-            println("LOCAL OBSERVED total:" + events.size)
             mediator.value = null
         })
 
@@ -146,12 +146,10 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
             events.clear()
             events.addAll(local)
             events.addAll(remote)
-            println("REMOTE OBSERVED total:" + events.size)
             mediator.value = null
         })
 
         mediator.observe(this, Observer {
-            println("ALL OBSERVED " + events.size)
             updateAdapter()
             updateCalendar()
         })
@@ -177,7 +175,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putLong("date", mDate.time)
+        outState.putLong(INTENT_DATE, mDate.time)
     }
 
     override fun onResume() {
@@ -206,12 +204,8 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
             } else if (!isOrarioScolastico)
                 cal.add(Calendar.DATE, 1)
         }
-        cal.set(Calendar.HOUR_OF_DAY, 0)
-        cal.set(Calendar.MINUTE, 0)
-        cal.set(Calendar.SECOND, 0)
-        cal.set(Calendar.MILLISECOND, 0)
 
-        mDate = cal.time
+        mDate = cal.time.flat()
     }
 
     private fun fetch(currentDate: Boolean?): List<Any> {
@@ -356,5 +350,9 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                 }
             }
         }
+    }
+
+    companion object {
+        val INTENT_DATE = "date"
     }
 }

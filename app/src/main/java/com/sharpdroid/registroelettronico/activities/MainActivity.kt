@@ -275,7 +275,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
      * Click listener for drawer's items
      */
     override fun onItemClick(view: View?, position: Int, drawerItem: IDrawerItem<*, *>): Boolean {
-        return openFragment(drawerItem.identifier, intent.extras)
+        return openFragment(drawerItem.identifier, null)
     }
 
     private fun openFragment(tabId: Number, extras: Bundle?): Boolean {
@@ -333,8 +333,9 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             }
             else -> return false
         }
-
-        fragment.arguments = extras
+        extras?.apply {
+            fragment.arguments = this
+        }
         clearBackstack()
 
         params?.scrollFlags = 0
