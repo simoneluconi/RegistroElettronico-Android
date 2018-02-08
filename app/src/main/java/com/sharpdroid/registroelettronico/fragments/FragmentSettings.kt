@@ -1,9 +1,11 @@
 package com.sharpdroid.registroelettronico.fragments
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.provider.Settings
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.preference.ListPreference
 import android.support.v7.preference.PreferenceCategory
@@ -22,6 +24,7 @@ import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.pushDatabase
 import io.reactivex.Completable
 import io.reactivex.schedulers.Schedulers
+
 
 /**
  * shows the settings option for choosing the movie categories in ListPreference.
@@ -43,24 +46,24 @@ class FragmentSettings : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             DatabaseHelper.database.eventsDao().setLocalNotArchived()
             DatabaseHelper.database.eventsDao().setRemoteNotArchived()
             pushDatabase(context)
-            true
+            return@setOnPreferenceClickListener true
         }
 
         findPreference("voto_obiettivo").setOnPreferenceClickListener { _ ->
             DatabaseHelper.database.subjectsDao().removeTargets(Account.with(context).user)
-            true
+            return@setOnPreferenceClickListener true
         }
 
         findPreference("excluded_marks").setOnPreferenceClickListener { _ ->
             DatabaseHelper.database.gradesDao().cleanExcludedMarks(Account.with(context).user)
-            true
+            return@setOnPreferenceClickListener true
         }
 
         findPreference("credits").setOnPreferenceClickListener { _ ->
             val transaction = activity.supportFragmentManager.beginTransaction()
             transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.fragment_container, FragmentCredits()).addToBackStack(null)
             transaction.commit()
-            true
+            return@setOnPreferenceClickListener true
         }
 
         findPreference("classe").setOnPreferenceClickListener { preference ->
@@ -72,7 +75,7 @@ class FragmentSettings : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                     DatabaseHelper.database.profilesDao().update(profile)
                 }
             }.subscribeOn(Schedulers.computation())
-            true
+            return@setOnPreferenceClickListener true
         }
 
         findPreference("attribution").setOnPreferenceClickListener { _ ->
@@ -87,13 +90,27 @@ class FragmentSettings : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                 }
             }).supportFragment()).addToBackStack(null)
             transaction.commit()
-            true
+            return@setOnPreferenceClickListener true
         }
 
+        val preference = findPreference("notifiche_category") as PreferenceCategory
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val preference = findPreference("notifiche_category") as PreferenceCategory
+            preference.removePreference(findPreference("notify"))
             preference.removePreference(findPreference("notify_sound"))
             preference.removePreference(findPreference("notify_vibrate"))
+            preference.removePreference(findPreference("notify_agenda"))
+            preference.removePreference(findPreference("notify_voti"))
+            preference.removePreference(findPreference("notify_comunicazioni"))
+            preference.removePreference(findPreference("notify_note"))
+
+            findPreference("notify_settings").setOnPreferenceClickListener {
+                val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                startActivity(intent)
+                return@setOnPreferenceClickListener true
+            }
+        } else {
+            preference.removePreference(findPreference("notify_settings"))
         }
 
         if (!BuildConfig.DEBUG)

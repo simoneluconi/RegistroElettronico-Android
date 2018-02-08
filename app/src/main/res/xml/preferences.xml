@@ -36,6 +36,12 @@
     <PreferenceCategory
         android:key="notifiche_category"
         android:title="Notifiche">
+
+        <Preference
+            android:key="notify_settings"
+            android:summary="Apri impostazioni delle notifiche"
+            android:title="Notifiche" />
+
         <SwitchPreference
             android:defaultValue="true"
             android:key="notify"
