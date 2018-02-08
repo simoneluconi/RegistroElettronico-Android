@@ -48,7 +48,16 @@ data class Communication(
 ) : Serializable {
     override fun equals(other: Any?): Boolean {
         if (other == null || other !is Communication) return false
-        return id == other.id && myId == other.myId && title == other.title && date == other.date
+        return id == other.id && myId == other.myId && title == other.title && date == other.date && profile == other.profile
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + date.hashCode()
+        result = 31 * result + myId.hashCode()
+        result = 31 * result + title.hashCode()
+        result = 31 * result + profile.hashCode()
+        return result
     }
 }
 
