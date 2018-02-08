@@ -92,6 +92,8 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
             updateCalendar()
         }
 
+        Log.d("FragmentAgenda", mDate.toString())
+
         with(activity) {
             fab_big_add.visibility = View.VISIBLE
 

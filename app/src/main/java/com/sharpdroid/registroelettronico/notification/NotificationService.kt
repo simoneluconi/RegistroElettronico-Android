@@ -28,7 +28,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class NotificationService : JobService() {
-    private val debug = false
+    private val debug = true
 
     override fun onStopJob(job: JobParameters?) = false //need retry?
 
@@ -208,7 +208,7 @@ class NotificationService : JobService() {
         if (newEvents.isEmpty()) return emptyList()
 
         val oldEvents = DatabaseHelper.database.eventsDao().getRemoteList(profile.id)
-        val diffEvents = newEvents.minus(if (!debug) oldEvents else oldEvents.drop(1))
+        val diffEvents = newEvents.minus(if (!debug) oldEvents else oldEvents.dropLast(1))
         if (diffEvents.isEmpty()) return emptyList()
         return diffEvents
     }
@@ -227,7 +227,7 @@ class NotificationService : JobService() {
         if (newGrades.isEmpty()) return emptyList()
 
         val oldGrades = DatabaseHelper.database.gradesDao().getGradesList(profile.id)
-        val diffGrades = if (!debug) newGrades.minus(oldGrades) else newGrades
+        val diffGrades = newGrades.minus(oldGrades)
         if (diffGrades.isEmpty()) return emptyList()
         return diffGrades
     }
@@ -248,7 +248,7 @@ class NotificationService : JobService() {
         if (newCommunications.isEmpty()) return emptyList()
 
         val oldCommunications = DatabaseHelper.database.communicationsDao().getCommunicationsList(profile.id)
-        val diffCommunications = if (!debug) newCommunications.minus(oldCommunications) else newCommunications
+        val diffCommunications = newCommunications.minus(oldCommunications)
         if (diffCommunications.isEmpty()) return emptyList()
         return diffCommunications
     }
