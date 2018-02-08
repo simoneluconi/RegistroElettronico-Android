@@ -37,7 +37,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IProfile
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
-import com.sharpdroid.registroelettronico.database.entities.Profile
+import com.sharpdroid.registroelettronico.database.entities.*
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.fragments.*
 import com.sharpdroid.registroelettronico.utils.Account
@@ -49,6 +49,7 @@ import com.transitionseverywhere.ChangeText
 import com.transitionseverywhere.TransitionManager
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import java.io.Serializable
 
 class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, AccountHeader.OnAccountHeaderListener, AccountHeader.OnAccountHeaderItemLongClickListener {
     private var drawer: Drawer? = null
@@ -104,6 +105,8 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         if (intent.extras != null && intent.extras.containsKey("drawer_open_id")) {
             drawer?.setSelection(intent.extras.getLong("drawer_open_id"), false)
             openFragment(intent.extras.getLong("drawer_open_id"), intent.extras)
+
+            saveContentFromNotification(intent.getSerializableExtra("list") as? List<Serializable>)
         } else if (savedInstanceState == null) {
             val default = PreferenceManager.getDefaultSharedPreferences(this).getString("drawer_to_open", "0").toInt()
             val drawerToOpen = intent.extras?.getInt("drawer_to_open", default) ?: default
@@ -431,6 +434,21 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
                         }.show()
 
+        }
+    }
+
+    private fun saveContentFromNotification(content: List<Serializable>?) {
+        if (content == null) return
+        val firstElement = content.first()
+        when (firstElement) {
+            is RemoteAgenda ->
+                DatabaseHelper.database.eventsDao().insertRemote(content as List<RemoteAgenda>)
+            is Grade ->
+                DatabaseHelper.database.gradesDao().insert(content as List<Grade>)
+            is Communication ->
+                DatabaseHelper.database.communicationsDao().insert(content as List<Communication>)
+            is Note ->
+                DatabaseHelper.database.notesDao().insert(content as List<Note>)
         }
     }
 

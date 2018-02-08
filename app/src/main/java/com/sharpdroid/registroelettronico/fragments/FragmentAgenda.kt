@@ -50,7 +50,7 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
     private var year = SimpleDateFormat("yyyy", Locale.getDefault())
     internal var agenda = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
 
-    private lateinit var adapter: AgendaAdapter
+    private val adapter by lazy { AgendaAdapter(place_holder) }
     private var mDate: Date = Date()
     private val events = ArrayList<Any>()
     private val local = ArrayList<LocalAgendaPOJO>()
@@ -88,6 +88,8 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                 prepareDate(true)
             }
             setCurrentDate(mDate)
+            updateAdapter()
+            updateCalendar()
         }
 
         with(activity) {
@@ -112,8 +114,6 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
                 fab_big_add.close(true)
             }
         }
-
-        adapter = AgendaAdapter(place_holder)
         adapter.setItemClickListener(this)
         recycler.layoutManager = LinearLayoutManager(context)
         recycler.adapter = adapter
