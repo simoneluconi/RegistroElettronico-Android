@@ -11,4 +11,10 @@
     <dimen name="list_item_spacing_half">8dp</dimen>
     <dimen name="agenda_calendar_size">200dp</dimen>
     <integer name="fragment_transition_duration">500</integer>
+
+    <!--
+Refer to App Widget Documentation for margin information
+http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
+    -->
+    <dimen name="widget_margin">8dp</dimen>
 </resources>

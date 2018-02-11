@@ -94,6 +94,14 @@ class FragmentTimetable : Fragment() {
         if (!BuildConfig.DEBUG)
             Answers.getInstance().logContentView(ContentViewEvent().putContentId("Orario"))
 
+        showTutorial()
+
+        val p = Profile.getProfile(context)
+        updateSubjects(p)
+        updateLessons(p)
+    }
+
+    private fun showTutorial() {
         timetable.postDelayed({
             val pref = PreferenceManager.getDefaultSharedPreferences(context)
             if (!pref.getBoolean("has_seen_feature_AUTO_TIMETABLE", false)) {
@@ -101,10 +109,6 @@ class FragmentTimetable : Fragment() {
             }
             pref.edit().putBoolean("has_seen_feature_AUTO_TIMETABLE", true).apply()
         }, 200)
-
-        val p = Profile.getProfile(context)
-        updateSubjects(p)
-        updateLessons(p)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
