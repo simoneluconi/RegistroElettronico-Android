@@ -90,7 +90,7 @@
 
         <activity android:name=".activities.AddTimetableItemActivity" />
 
-        <receiver android:name=".widget.Agenda">
+        <receiver android:name=".widget.agenda.Agenda">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -99,6 +99,11 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/agenda_info" />
         </receiver>
+
+        <service
+            android:name=".widget.agenda.AgendaService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 </manifest>

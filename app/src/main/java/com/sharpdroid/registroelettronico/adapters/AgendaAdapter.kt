@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.sharpdroid.registroelettronico.R
-import com.sharpdroid.registroelettronico.adapters.holders.HeaderHolder
+import com.sharpdroid.registroelettronico.adapters.holders.Holder
 import com.sharpdroid.registroelettronico.database.entities.SuperAgenda
 import com.sharpdroid.registroelettronico.database.pojos.LocalAgendaPOJO
 import com.sharpdroid.registroelettronico.utils.Metodi
@@ -26,7 +26,7 @@ class AgendaAdapter(private val place_holder: View) : RecyclerView.Adapter<Recyc
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == R.layout.adapter_header)
-            HeaderHolder(LayoutInflater.from(parent.context).inflate(viewType, parent, false))
+            Holder(LayoutInflater.from(parent.context).inflate(viewType, parent, false))
         else
             EventHolder(LayoutInflater.from(parent.context).inflate(viewType, parent, false))
     }
@@ -34,7 +34,7 @@ class AgendaAdapter(private val place_holder: View) : RecyclerView.Adapter<Recyc
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val entry = data[position]
         when (entry) {
-            is String -> (holder as HeaderHolder).content.text = entry
+            is String -> (holder.itemView as TextView).text = entry
             is SuperAgenda -> {
                 val eventHolder = holder as EventHolder
                 val title = SpannableString(entry.agenda.notes)

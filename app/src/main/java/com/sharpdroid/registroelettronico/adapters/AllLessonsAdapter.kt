@@ -4,8 +4,9 @@ import android.support.annotation.LayoutRes
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.TextView
 import com.sharpdroid.registroelettronico.R
-import com.sharpdroid.registroelettronico.adapters.holders.HeaderHolder
+import com.sharpdroid.registroelettronico.adapters.holders.Holder
 import com.sharpdroid.registroelettronico.adapters.holders.LessonHolder
 import com.sharpdroid.registroelettronico.database.entities.Lesson
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
@@ -21,7 +22,7 @@ class AllLessonsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == R.layout.adapter_header)
-            HeaderHolder(LayoutInflater.from(parent.context).inflate(viewType, parent, false))
+            Holder(LayoutInflater.from(parent.context).inflate(viewType, parent, false))
         else
             LessonHolder(LayoutInflater.from(parent.context).inflate(viewType, parent, false))
     }
@@ -31,8 +32,8 @@ class AllLessonsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             if (types[position] is String) R.layout.adapter_header else R.layout.adapter_lessons_1
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is HeaderHolder) {
-            holder.content.text = types[position] as String
+        if (types[position] is String) {
+            (holder.itemView as TextView).text = types[position] as String
         } else {
             val lessonHolder = holder as LessonHolder
 

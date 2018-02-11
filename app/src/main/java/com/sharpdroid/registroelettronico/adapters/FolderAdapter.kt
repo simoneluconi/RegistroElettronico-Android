@@ -8,11 +8,11 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.sharpdroid.registroelettronico.R
+import com.sharpdroid.registroelettronico.adapters.holders.Holder
 import com.sharpdroid.registroelettronico.database.pojos.FolderPOJO
 import com.sharpdroid.registroelettronico.database.pojos.TeacherDidacticPOJO
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import kotlinx.android.synthetic.main.adapter_folder.view.*
-import kotlinx.android.synthetic.main.adapter_header.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -23,7 +23,7 @@ class FolderAdapter(private val listener: Listener?) : RecyclerView.Adapter<Recy
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             when (viewType) {
                 1 -> FileTeacherHolder(LayoutInflater.from(parent.context).inflate(R.layout.adapter_folder, parent, false))
-                0 -> SubHeaderHolder(LayoutInflater.from(parent.context).inflate(R.layout.adapter_header, parent, false))
+                0 -> Holder(LayoutInflater.from(parent.context).inflate(R.layout.adapter_header, parent, false))
                 else -> throw IllegalStateException("Cannot create ViewHolder")
             }
 
@@ -41,8 +41,8 @@ class FolderAdapter(private val listener: Listener?) : RecyclerView.Adapter<Recy
                 holder.title.text = f.name.trim { it <= ' ' }
                 holder.date.text = formatter.format(f.lastUpdate)
             }
-            is SubHeaderHolder -> {
-                holder.teacher.text = capitalizeEach(fe as String, true)
+            is Holder -> {
+                (holder.itemView as TextView).text = capitalizeEach(fe as String, true)
             }
         }
 
@@ -67,10 +67,6 @@ class FolderAdapter(private val listener: Listener?) : RecyclerView.Adapter<Recy
 
     interface Listener {
         fun onFolderClick(f: FolderPOJO)
-    }
-
-    internal inner class SubHeaderHolder(layout: View) : RecyclerView.ViewHolder(layout) {
-        var teacher: TextView = layout.content
     }
 
     internal inner class FileTeacherHolder(layout: View) : RecyclerView.ViewHolder(layout) {

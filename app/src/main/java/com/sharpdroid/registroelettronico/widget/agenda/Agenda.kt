@@ -1,13 +1,15 @@
-package com.sharpdroid.registroelettronico.widget
+package com.sharpdroid.registroelettronico.widget.agenda
 
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.widget.RemoteViews
 import com.sharpdroid.registroelettronico.R
 
 /**
- * Implementation of App Widget functionality.
+ * This widget shows current profile's events for the next few days.
  */
 class Agenda : AppWidgetProvider() {
 
@@ -30,11 +32,16 @@ class Agenda : AppWidgetProvider() {
 
         internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager,
                                      appWidgetId: Int) {
-
-            val widgetText = context.getString(R.string.appwidget_text)
             // Construct the RemoteViews object
             val views = RemoteViews(context.packageName, R.layout.agenda)
-            views.setTextViewText(R.id.appwidget_text, widgetText)
+
+            // Setup the intent that will populate the list
+            val i = Intent(context, AgendaService::class.java)
+            i.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            i.data = Uri.parse(i.toUri(Intent.URI_INTENT_SCHEME))
+
+            // Start the adapter
+            views.setRemoteAdapter(R.id.agenda_remote_list, i)
 
             // Instruct the widget manager to update the widget
             appWidgetManager.updateAppWidget(appWidgetId, views)
