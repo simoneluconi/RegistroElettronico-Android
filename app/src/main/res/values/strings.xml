@@ -166,4 +166,6 @@
     <string name="restore_excluded_marks_title">Ripristina voti</string>
     <string name="voti">Voti</string>
     <string name="sync">Sincronizza</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

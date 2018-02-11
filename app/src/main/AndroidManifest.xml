@@ -89,6 +89,16 @@
         </service>
 
         <activity android:name=".activities.AddTimetableItemActivity" />
+
+        <receiver android:name=".widget.Agenda">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/agenda_info" />
+        </receiver>
     </application>
 
 </manifest>
