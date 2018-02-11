@@ -42,6 +42,7 @@ class Agenda : AppWidgetProvider() {
 
             // Start the adapter
             views.setRemoteAdapter(R.id.agenda_remote_list, i)
+            views.setEmptyView(R.id.agenda_remote_list, R.id.empty)
 
             // Instruct the widget manager to update the widget
             appWidgetManager.updateAppWidget(appWidgetId, views)

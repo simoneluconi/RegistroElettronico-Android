@@ -10,4 +10,12 @@
         android:layout_height="match_parent"
         android:listSelector="@android:color/transparent" />
 
+    <TextView
+        android:id="@+id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/no_events"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+
 </RelativeLayout>

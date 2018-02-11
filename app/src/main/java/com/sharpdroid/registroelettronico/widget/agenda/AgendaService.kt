@@ -75,7 +75,9 @@ private class AgendaFactory(val context: Context, val intent: Intent) : RemoteVi
         tempList.addAll(DatabaseHelper.database.eventsDao().getRemoteSync(profile).filter {
             it.event.start.time in currentTime..currentTime + limitDays * 24 * 3600 * 1000
         })
-        val hashMap = tempList.groupBy {
+        val hashMap = tempList.sortedBy {
+            (it as? LocalAgendaPOJO)?.event?.day ?: (it as? RemoteAgendaPOJO)?.event?.start?.time
+        }.groupBy {
             (it as? RemoteAgendaPOJO)?.event?.start?.time ?: (it as? LocalAgendaPOJO)?.event?.day
             ?: 0L
         }

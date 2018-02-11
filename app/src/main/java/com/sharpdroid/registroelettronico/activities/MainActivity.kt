@@ -2,6 +2,7 @@ package com.sharpdroid.registroelettronico.activities
 
 import android.animation.ObjectAnimator
 import android.app.Activity
+import android.appwidget.AppWidgetManager
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Intent
@@ -45,6 +46,7 @@ import com.sharpdroid.registroelettronico.utils.Metodi.deleteUser
 import com.sharpdroid.registroelettronico.utils.Metodi.dp
 import com.sharpdroid.registroelettronico.utils.Metodi.fetchDataOfUser
 import com.sharpdroid.registroelettronico.utils.Metodi.updateSubjects
+import com.sharpdroid.registroelettronico.widget.agenda.Agenda
 import com.transitionseverywhere.ChangeText
 import com.transitionseverywhere.TransitionManager
 import kotlinx.android.synthetic.main.activity_main.*
@@ -196,6 +198,10 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
     override fun onStop() {
         super.onStop()
         savedInstanceState = null
+
+        // Update widgets
+        sendBroadcast(Intent(this, Agenda::class.java).setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE).putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,
+                AppWidgetManager.getInstance(this).getAppWidgetIds(ComponentName(this, Agenda::class.java))))
     }
 
     override fun onBackPressed() {
