@@ -11,6 +11,8 @@
     android:layout_marginRight="16dp"
     android:layout_marginTop="12dp"
     android:letterSpacing=".07"
+    android:clickable="false"
+    android:focusable="false"
     android:textAllCaps="true"
     android:textColor="@color/colorPrimary"
     android:textSize="12sp"
