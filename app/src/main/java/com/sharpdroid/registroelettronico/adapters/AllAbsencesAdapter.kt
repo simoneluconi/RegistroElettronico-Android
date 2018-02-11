@@ -7,9 +7,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.holders.AbsencesHolder
-import com.sharpdroid.registroelettronico.adapters.holders.HeaderHolder
+import com.sharpdroid.registroelettronico.adapters.holders.Holder
 import com.sharpdroid.registroelettronico.database.entities.Absence
 import com.sharpdroid.registroelettronico.database.entities.MyAbsence
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeFirst
@@ -23,7 +24,7 @@ class AllAbsencesAdapter(private val mContext: Context) : RecyclerView.Adapter<R
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == 0)
-            HeaderHolder(LayoutInflater.from(mContext).inflate(R.layout.adapter_header, parent, false))
+            Holder(LayoutInflater.from(mContext).inflate(R.layout.adapter_header, parent, false))
         else
             AbsencesHolder(LayoutInflater.from(mContext).inflate(R.layout.adapter_absence, parent, false))
     }
@@ -31,7 +32,7 @@ class AllAbsencesAdapter(private val mContext: Context) : RecyclerView.Adapter<R
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val entry = data[position]
         when (entry) {
-            is String -> (holder as HeaderHolder).content.text = entry
+            is String -> (holder.itemView as TextView).text = entry
             is Absence -> {
                 val absencesHolder = holder as AbsencesHolder
 

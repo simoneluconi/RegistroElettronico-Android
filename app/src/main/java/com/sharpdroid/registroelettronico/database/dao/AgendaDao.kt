@@ -16,12 +16,18 @@ interface AgendaDao {
     @Query("SELECT REMOTE_AGENDA.* FROM REMOTE_AGENDA LEFT JOIN REMOTE_AGENDA_INFO ON REMOTE_AGENDA.ID=REMOTE_AGENDA_INFO.ID WHERE PROFILE = :profile AND (ARCHIVED IS NULL OR ARCHIVED=0)")
     fun getRemote(profile: Long): LiveData<List<RemoteAgendaPOJO>>
 
+    @Transaction
+    @Query("SELECT REMOTE_AGENDA.* FROM REMOTE_AGENDA LEFT JOIN REMOTE_AGENDA_INFO ON REMOTE_AGENDA.ID=REMOTE_AGENDA_INFO.ID WHERE PROFILE = :profile AND (ARCHIVED IS NULL OR ARCHIVED=0)")
+    fun getRemoteSync(profile: Long): List<RemoteAgendaPOJO>
+
     @Query("SELECT * FROM REMOTE_AGENDA WHERE PROFILE = :profile")
     fun getRemoteList(profile: Long): List<RemoteAgenda>
 
-    @Transaction
     @Query("SELECT * FROM LOCAL_AGENDA WHERE PROFILE = :profile AND ARCHIVED!=1")
     fun getLocal(profile: Long): LiveData<List<LocalAgendaPOJO>>
+
+    @Query("SELECT * FROM LOCAL_AGENDA WHERE PROFILE = :profile AND ARCHIVED!=1")
+    fun getLocalSync(profile: Long): List<LocalAgendaPOJO>
 
     @Query("SELECT * FROM LOCAL_AGENDA WHERE PROFILE = :profile")
     fun getLocalAsSingle(profile: Long): Single<List<LocalAgenda>>
@@ -82,4 +88,5 @@ interface AgendaDao {
 
     @Query("SELECT * FROM REMOTE_AGENDA WHERE ID=:id LIMIT 1")
     fun byIdRemote(id: Long): RemoteAgenda?
+
 }
