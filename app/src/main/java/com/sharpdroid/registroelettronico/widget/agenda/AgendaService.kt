@@ -22,7 +22,7 @@ class AgendaService : RemoteViewsService() {
 private class AgendaFactory(val context: Context, val intent: Intent) : RemoteViewsService.RemoteViewsFactory {
     val list = mutableListOf<Any>()
     val profile = Account.with(context).user
-    val dateFormat = SimpleDateFormat("EEE d", Locale.getDefault())
+    val dateFormat = SimpleDateFormat("EEEE d", Locale.getDefault())
     val limitDays = 7
 
     override fun onCreate() {
