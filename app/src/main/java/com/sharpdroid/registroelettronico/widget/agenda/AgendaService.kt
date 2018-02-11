@@ -10,6 +10,8 @@ import com.sharpdroid.registroelettronico.database.pojos.RemoteAgendaPOJO
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi
+import java.text.SimpleDateFormat
+import java.util.*
 
 class AgendaService : RemoteViewsService() {
     override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
@@ -20,6 +22,8 @@ class AgendaService : RemoteViewsService() {
 private class AgendaFactory(val context: Context, val intent: Intent) : RemoteViewsService.RemoteViewsFactory {
     val list = mutableListOf<Any>()
     val profile = Account.with(context).user
+    val dateFormat = SimpleDateFormat("EEE d", Locale.getDefault())
+    val limitDays = 7
 
     override fun onCreate() {
         //should load data in onDataSetChanged()
@@ -65,10 +69,20 @@ private class AgendaFactory(val context: Context, val intent: Intent) : RemoteVi
     override fun onDataSetChanged() {
         list.clear()
         val currentTime = System.currentTimeMillis()
-        list.addAll(DatabaseHelper.database.eventsDao().getLocalSync(profile).filter { it.event.day - 3 * 24 * 3600000 >= currentTime })
-        list.addAll(DatabaseHelper.database.eventsDao().getRemoteSync(profile).filter {
-            it.event.start.time
-            -3 * 24 * 3600000 >= currentTime
+
+        val tempList = mutableListOf<Any>()
+        tempList.addAll(DatabaseHelper.database.eventsDao().getLocalSync(profile).filter { it.event.day in currentTime..currentTime + limitDays * 24 * 3600 * 1000 })
+        tempList.addAll(DatabaseHelper.database.eventsDao().getRemoteSync(profile).filter {
+            it.event.start.time in currentTime..currentTime + limitDays * 24 * 3600 * 1000
+        })
+        val hashMap = tempList.groupBy {
+            (it as? RemoteAgendaPOJO)?.event?.start?.time ?: (it as? LocalAgendaPOJO)?.event?.day
+            ?: 0L
+        }
+
+        hashMap.forEach({ l, aggregates ->
+            list.add(dateFormat.format(Date(l)))
+            list.addAll(aggregates)
         })
     }
 
