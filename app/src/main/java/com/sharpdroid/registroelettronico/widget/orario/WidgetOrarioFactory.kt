@@ -15,7 +15,7 @@ class WidgetOrarioFactory(private val applicationContext: Context, val intent: I
     val list = mutableListOf<Any>()
     val profile = intent?.getLongExtra("profile", 0L)
             ?: throw IllegalStateException("'profile' not found within the intent's extras")
-    val subjects by lazy { DatabaseHelper.database.subjectsDao().getSubjects(profile) }
+    val subjects by lazy { DatabaseHelper.database.subjectsDao().getAllSubjectsPOJOBlocking(profile) }
 
     override fun onCreate() {
         // Should load data in onDataSetChanged()
@@ -46,7 +46,7 @@ class WidgetOrarioFactory(private val applicationContext: Context, val intent: I
         } else if (!isOrarioScolastico)
             cal.add(Calendar.DATE, 1)
 
-        return cal[Calendar.DAY_OF_WEEK]
+        return cal[Calendar.DAY_OF_WEEK] - 2 //monday: 0, tuesday: 1, ...
     }
 
     override fun getViewAt(i: Int): RemoteViews {
@@ -57,7 +57,7 @@ class WidgetOrarioFactory(private val applicationContext: Context, val intent: I
         } else {
             val current = list[i] as TimetableItem
             val rv = RemoteViews(applicationContext.packageName, R.layout.widget_agenda_event)
-            rv.setTextViewText(R.id.title, Metodi.capitalizeEach(subjects.first { it.id == current.subject }.description, false))
+            rv.setTextViewText(R.id.title, subjects.first { it.subject.id == current.subject }.getSubjectName())
             rv.setTextViewText(R.id.subtitle, convertFloatTimeToString(current.start) + if (current.where != null) " - ${convertFloatTimeToString(current.end)} (${current.where})" else " - ${convertFloatTimeToString(current.end)}") // 9:15 - 10:15 (A205) // 9:15 - 10:15
             rv
         }
