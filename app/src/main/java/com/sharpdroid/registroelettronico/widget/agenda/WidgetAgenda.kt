@@ -11,7 +11,7 @@ import com.sharpdroid.registroelettronico.R
 /**
  * This widget shows current profile's events for the next few days.
  */
-class Agenda : AppWidgetProvider() {
+class WidgetAgenda : AppWidgetProvider() {
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         // There may be multiple widgets active, so update all of them
@@ -36,7 +36,7 @@ class Agenda : AppWidgetProvider() {
             val views = RemoteViews(context.packageName, R.layout.agenda)
 
             // Setup the intent that will populate the list
-            val i = Intent(context, AgendaService::class.java)
+            val i = Intent(context, WidgetAgendaService::class.java)
             i.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
             i.data = Uri.parse(i.toUri(Intent.URI_INTENT_SCHEME))
 

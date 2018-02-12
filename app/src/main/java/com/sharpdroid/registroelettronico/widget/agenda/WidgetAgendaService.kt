@@ -13,7 +13,7 @@ import com.sharpdroid.registroelettronico.utils.Metodi
 import java.text.SimpleDateFormat
 import java.util.*
 
-class AgendaService : RemoteViewsService() {
+class WidgetAgendaService : RemoteViewsService() {
     override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
         return AgendaFactory(applicationContext, intent)
     }
