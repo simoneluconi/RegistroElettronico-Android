@@ -73,7 +73,6 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
             shouldSelectFirstDayOfMonthOnScroll(false)
 
 
-
             //already been here
             if (savedInstanceState != null) {
                 mDate = Date(savedInstanceState.getLong(INTENT_DATE))

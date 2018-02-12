@@ -47,6 +47,7 @@ import com.sharpdroid.registroelettronico.utils.Metodi.dp
 import com.sharpdroid.registroelettronico.utils.Metodi.fetchDataOfUser
 import com.sharpdroid.registroelettronico.utils.Metodi.updateSubjects
 import com.sharpdroid.registroelettronico.widget.agenda.WidgetAgenda
+import com.sharpdroid.registroelettronico.widget.orario.WidgetOrario
 import com.transitionseverywhere.ChangeText
 import com.transitionseverywhere.TransitionManager
 import kotlinx.android.synthetic.main.activity_main.*
@@ -202,6 +203,8 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         // Update widgets
         sendBroadcast(Intent(this, WidgetAgenda::class.java).setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE).putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,
                 AppWidgetManager.getInstance(this).getAppWidgetIds(ComponentName(this, WidgetAgenda::class.java))))
+        sendBroadcast(Intent(this, WidgetOrario::class.java).setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE).putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,
+                AppWidgetManager.getInstance(this).getAppWidgetIds(ComponentName(this, WidgetOrario::class.java))))
     }
 
     override fun onBackPressed() {

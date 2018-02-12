@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:initialKeyguardLayout="@layout/agenda"
-    android:initialLayout="@layout/agenda"
+    android:initialKeyguardLayout="@layout/widget_agenda_layout"
+    android:initialLayout="@layout/widget_agenda_layout"
     android:minHeight="110dp"
-    android:minWidth="110dp"
+    android:minWidth="180dp"
     android:previewImage="@drawable/widget"
     android:resizeMode="vertical|horizontal"
     android:updatePeriodMillis="14400000"

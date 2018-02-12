@@ -15,6 +15,9 @@ abstract class TimetableDao {
     @Query("SELECT * FROM TimetableItem WHERE profile=:profile")
     abstract fun queryProfile(profile: Long): LiveData<List<TimetableItem>>
 
+    @Query("SELECT * FROM TimetableItem WHERE profile=:profile")
+    abstract fun queryProfileSync(profile: Long): List<TimetableItem>
+
 
     @Query("SELECT * FROM TimetableItem WHERE id=:id LIMIT 1")
     abstract fun findById(id: Long): TimetableItem?

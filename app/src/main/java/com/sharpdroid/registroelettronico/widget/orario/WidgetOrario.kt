@@ -1,4 +1,4 @@
-package com.sharpdroid.registroelettronico.widget.agenda
+package com.sharpdroid.registroelettronico.widget.orario
 
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
@@ -9,14 +9,22 @@ import android.widget.RemoteViews
 import com.sharpdroid.registroelettronico.R
 
 /**
- * This widget shows current profile's events for the next few days.
+ * Implementation of App Widget functionality.
+ * App Widget Configuration implemented in [WidgetOrarioConfigureActivity]
  */
-class WidgetAgenda : AppWidgetProvider() {
+class WidgetOrario : AppWidgetProvider() {
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         // There may be multiple widgets active, so update all of them
         for (appWidgetId in appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId)
+        }
+    }
+
+    override fun onDeleted(context: Context, appWidgetIds: IntArray) {
+        // When the user deletes the widget, delete the preference associated with it.
+        for (appWidgetId in appWidgetIds) {
+            WidgetOrarioConfigureActivity.deleteProfilePref(context, appWidgetId)
         }
     }
 
@@ -32,17 +40,17 @@ class WidgetAgenda : AppWidgetProvider() {
 
         internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager,
                                      appWidgetId: Int) {
-            // Construct the RemoteViews object
-            val views = RemoteViews(context.packageName, R.layout.widget_agenda_layout)
 
-            // Setup the intent that will populate the list
-            val i = Intent(context, WidgetAgendaService::class.java)
+            val widgetProfileId = WidgetOrarioConfigureActivity.loadProfilePref(context, appWidgetId)
+            // Construct the RemoteViews object
+            val views = RemoteViews(context.packageName, R.layout.widget_orario)
+
+            val i = Intent(context, WidgetOrarioService::class.java)
             i.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
             i.data = Uri.parse(i.toUri(Intent.URI_INTENT_SCHEME))
-
-            // Start the adapter
-            views.setRemoteAdapter(R.id.agenda_remote_list, i)
-            views.setEmptyView(R.id.agenda_remote_list, R.id.empty)
+            i.putExtra("profile", widgetProfileId)
+            views.setRemoteAdapter(R.id.orario_remote_list, i)
+            views.setEmptyView(R.id.orario_remote_list, R.id.empty)
 
             // Instruct the widget manager to update the widget
             appWidgetManager.updateAppWidget(appWidgetId, views)
