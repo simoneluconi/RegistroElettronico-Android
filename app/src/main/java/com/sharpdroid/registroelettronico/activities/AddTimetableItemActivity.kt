@@ -21,6 +21,7 @@ import com.sharpdroid.registroelettronico.database.entities.TimetableItem
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeFirst
+import com.sharpdroid.registroelettronico.utils.Metodi.convertFloatTimeToString
 import com.sharpdroid.registroelettronico.utils.Metodi.dp
 import com.sharpdroid.registroelettronico.utils.or
 import com.sharpdroid.registroelettronico.viewModels.AddTimetableItemViewModel
@@ -104,18 +105,12 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
                     viewModel.subject.value = DatabaseHelper.database.subjectsDao().getSubjectPOJOBlocking(it.subject, Account.with(this).user)
 
                 //convert start value to h:mm format
-                var h: Int
-                var m: Int
                 if (viewModel.start.value == null) {
-                    h = Math.floor(it.start.toDouble()).toInt()
-                    m = ((it.start * 60f) % 60).toInt()
-                    viewModel.start.value = "$h:${if (m >= 10) m.toString() else "0$m"}"
+                    viewModel.start.value = convertFloatTimeToString(it.start)
                 }
                 //convert end value to h:mm format
                 if (viewModel.end.value == null) {
-                    h = Math.floor(it.end.toDouble()).toInt()
-                    m = ((it.end * 60f) % 60).toInt()
-                    viewModel.end.value = "$h:${if (m >= 10) m.toString() else "0$m"}"
+                    viewModel.end.value = convertFloatTimeToString(it.end)
                 }
                 if (viewModel.day.value == null)
                     viewModel.day.value = it.dayOfWeek

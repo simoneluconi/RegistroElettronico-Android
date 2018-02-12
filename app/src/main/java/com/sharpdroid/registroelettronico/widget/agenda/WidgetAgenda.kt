@@ -33,7 +33,7 @@ class WidgetAgenda : AppWidgetProvider() {
         internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager,
                                      appWidgetId: Int) {
             // Construct the RemoteViews object
-            val views = RemoteViews(context.packageName, R.layout.agenda)
+            val views = RemoteViews(context.packageName, R.layout.widget_agenda_layout)
 
             // Setup the intent that will populate the list
             val i = Intent(context, WidgetAgendaService::class.java)

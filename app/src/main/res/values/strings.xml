@@ -166,8 +166,8 @@
     <string name="restore_excluded_marks_title">Ripristina voti</string>
     <string name="voti">Voti</string>
     <string name="sync">Sincronizza</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
     <string name="title_activity_choose_profile">Scegli un profilo</string>
     <string name="no_events">Non ci sono eventi per i prossimi giorni</string>
+    <string name="configure">Scegli il profilo</string>
+    <string name="no_lesson">Nessuna lezione in programma</string>
 </resources>

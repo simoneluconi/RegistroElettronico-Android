@@ -8,6 +8,7 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IProfile
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
+import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.utils.Metodi.getAccountImage
 import java.util.*
 
@@ -31,6 +32,9 @@ class Profile(
                 .withIcon(getAccountImage(name))
                 .withIdentifier(id)
     }
+
+    // Need to override for spinner usage in Widget's Configuration activity
+    override fun toString() = capitalizeEach(name, true)
 
     companion object {
         fun getIProfiles(): List<IProfile<ProfileDrawerItem>> {

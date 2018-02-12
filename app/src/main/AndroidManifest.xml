@@ -90,9 +90,12 @@
 
         <activity android:name=".activities.AddTimetableItemActivity" />
 
-        <receiver android:name=".widget.agenda.Agenda">
+        <receiver
+            android:name=".widget.agenda.WidgetAgenda"
+            android:label="@string/agenda">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
 
             <meta-data
@@ -101,9 +104,33 @@
         </receiver>
 
         <service
-            android:name=".widget.agenda.AgendaService"
+            android:name=".widget.agenda.WidgetAgendaService"
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <receiver
+            android:name=".widget.orario.WidgetOrario"
+            android:label="@string/schedule">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_orario_info" />
+        </receiver>
+
+        <service
+            android:name=".widget.orario.WidgetOrarioService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <activity android:name=".widget.orario.WidgetOrarioConfigureActivity">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

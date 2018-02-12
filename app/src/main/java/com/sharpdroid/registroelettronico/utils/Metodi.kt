@@ -729,6 +729,12 @@ object Metodi {
         return map
     }
 
+    fun convertFloatTimeToString(time: Float): String {
+        val h = Math.floor(time.toDouble()).toInt()
+        val m = ((time * 60f) % 60).toInt()
+        return "$h:${if (m >= 10) m.toString() else "0$m"}"
+    }
+
     private val materialColors = arrayOf(
             0xFFF44336, 0xFFE91E63, 0xFF9C27B0,
             0xFF7E57C2, 0xFF1A237E, 0xFF2196F3,
