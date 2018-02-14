@@ -14,8 +14,10 @@ import android.widget.FrameLayout
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.database.entities.LocalAgenda
 import com.sharpdroid.registroelettronico.database.pojos.RemoteAgendaPOJO
+import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
 import com.sharpdroid.registroelettronico.utils.Metodi.dp
+import com.sharpdroid.registroelettronico.utils.or
 import kotlinx.android.synthetic.main.adapter_lesson_2.view.*
 import java.util.*
 
@@ -56,9 +58,7 @@ class EventCell(context: Context, private val withDateDiff: Boolean) : FrameLayo
 
                 if (withDateDiff)
                     duration.text = "${(event.day - currentDate.time) / (24 * 3600000)}g"
-                //date.text = dateFormat.format(event.day)
-                //TODO query subject
-                date.text = capitalizeEach("", true)
+                date.text = capitalizeEach(DatabaseHelper.database.subjectsDao().getSubjectPOJOBlocking(event.subject, event.profile)?.getSubjectName().or(DatabaseHelper.database.subjectsDao().getTeacher(event.teacher)?.teacherName.orEmpty()), true)
                 date.visibility = if (date.text.isEmpty()) View.GONE else View.VISIBLE
 
                 content.text = spannableString
