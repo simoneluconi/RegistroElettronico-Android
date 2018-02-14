@@ -106,28 +106,17 @@ class FragmentToday : Fragment() {
 
         //Assenze
         DatabaseHelper.database.absencesDao().getAbsences(Date().flat(), Account.with(context).user).observe(this, Observer {
-            absences.clear()
-            absences.addAll(it ?: emptyList())
-            absence_card.visibility = if (absences.isNotEmpty()) View.VISIBLE else View.GONE
-            absence_recycler.adapter.notifyDataSetChanged()
+            populateAbsences(it.orEmpty())
         })
 
         //Voti
         DatabaseHelper.database.gradesDao().getGrades(Account.with(context).user).observe(this, Observer {
-            grades.clear()
-            val flatDate = Date().flat()
-            grades.addAll(it.orEmpty().filter { it.grade.mDate.flat() == flatDate }.sortedByDescending { it.grade.mValue })
-            textView1.visibility = if (grades.isNotEmpty()) View.VISIBLE else View.GONE
-            grades_card.visibility = if (grades.isNotEmpty()) View.VISIBLE else View.GONE
-            grades_recycler.adapter.notifyDataSetChanged()
+            populateMarks(it.orEmpty())
         })
 
         //Lezioni
         DatabaseHelper.database.lessonsDao().loadLessonsLiveData(Account.with(context).user, Date().flat().time).observe(this, Observer {
-            lessons.clear()
-            lessons.addAll(it ?: emptyList())
-            lessons_empty.visibility = if (lessons.isEmpty()) View.VISIBLE else View.GONE
-            lessons_recycler.adapter.notifyDataSetChanged()
+            populateLessons(it.orEmpty())
         })
 
         val mediatorLiveData = MediatorLiveData<List<Any>>()
@@ -148,7 +137,7 @@ class FragmentToday : Fragment() {
             val list = mutableListOf<Any>()
             list.addAll(remoteEvents)
             list.addAll(localEvents)
-            initializeEvents(Date().flat(), list)
+            populateEvents(Date().flat(), list)
         })
 
         if (savedInstanceState == null)
@@ -177,10 +166,36 @@ class FragmentToday : Fragment() {
         Metodi.updateAgenda(p)
     }
 
-    private fun initializeEvents(date: Date, e: List<Any>) {
+
+    private fun populateLessons(list: List<Lesson>) {
+        lessons.clear()
+        lessons.addAll(list)
+        lessons_empty.visibility = if (lessons.isEmpty()) View.VISIBLE else View.GONE
+        lessons_recycler.adapter.notifyDataSetChanged()
+    }
+
+    private fun populateMarks(list: List<GradeWithSubjectName>) {
+        grades.clear()
+        val flatDate = Date().flat()
+        grades.addAll(list.filter { it.grade.mDate.flat() == flatDate }.sortedByDescending { it.grade.mValue })
+        textView1.visibility = if (grades.isNotEmpty()) View.VISIBLE else View.GONE
+        grades_card.visibility = if (grades.isNotEmpty()) View.VISIBLE else View.GONE
+        grades_recycler.adapter.notifyDataSetChanged()
+    }
+
+    private fun populateAbsences(list: List<Absence>) {
+        absences.clear()
+        absences.addAll(list)
+        absence_card.visibility = if (list.isNotEmpty()) View.VISIBLE else View.GONE
+        absence_recycler.adapter.notifyDataSetChanged()
+    }
+
+    private fun populateEvents(date: Date, e: List<Any>) {
         val events = e.sortedWith(Comparator { t1: Any, t2: Any ->
-            val date1 = (t1 as? RemoteAgendaPOJO)?.event?.start ?: Date((t1 as? LocalAgenda)?.day ?: 0)
-            val date2 = (t2 as? RemoteAgendaPOJO)?.event?.start ?: Date((t2 as? LocalAgenda)?.day ?: 0)
+            val date1 = (t1 as? RemoteAgendaPOJO)?.event?.start ?: Date((t1 as? LocalAgenda)?.day
+                    ?: 0)
+            val date2 = (t2 as? RemoteAgendaPOJO)?.event?.start ?: Date((t2 as? LocalAgenda)?.day
+                    ?: 0)
             return@Comparator date1.flat().compareTo(date2.flat())
         })
 
