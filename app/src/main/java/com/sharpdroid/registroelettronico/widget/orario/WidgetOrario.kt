@@ -54,6 +54,7 @@ class WidgetOrario : AppWidgetProvider() {
 
             // Instruct the widget manager to update the widget
             appWidgetManager.updateAppWidget(appWidgetId, views)
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.orario_remote_list)
         }
     }
 }

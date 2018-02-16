@@ -46,6 +46,7 @@ class WidgetAgenda : AppWidgetProvider() {
 
             // Instruct the widget manager to update the widget
             appWidgetManager.updateAppWidget(appWidgetId, views)
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.agenda_remote_list)
         }
     }
 }
