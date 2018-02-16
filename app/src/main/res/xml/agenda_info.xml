@@ -3,7 +3,7 @@
     android:initialKeyguardLayout="@layout/widget_agenda_layout"
     android:initialLayout="@layout/widget_agenda_layout"
     android:minHeight="110dp"
-    android:minWidth="180dp"
+    android:minWidth="110dp"
     android:previewImage="@drawable/widget"
     android:resizeMode="vertical|horizontal"
     android:updatePeriodMillis="14400000"
