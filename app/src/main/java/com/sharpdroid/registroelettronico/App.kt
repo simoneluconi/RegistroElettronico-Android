@@ -19,20 +19,6 @@ class App : MultiDexApplication() {
     private val DEVELOPER_MODE = false
 
     override fun onCreate() {
-        if (DEVELOPER_MODE) {
-            StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
-                    .detectDiskReads()
-                    .detectDiskWrites()
-                    .detectNetwork()   // or .detectAll() for all detectable problems
-                    .penaltyLog()
-                    .build())
-            StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder()
-                    .detectLeakedSqlLiteObjects()
-                    .detectLeakedClosableObjects()
-                    .penaltyLog()
-                    .penaltyDeath()
-                    .build())
-        }
         super.onCreate()
         DatabaseHelper.createDb(this)
         FirebaseApp.initializeApp(this)
@@ -51,6 +37,19 @@ class App : MultiDexApplication() {
             val notificationManager = getSystemService(NotificationManager::class.java)
             notificationManager.deleteNotificationChannel("sharpdroid_registro_channel_01")
             notificationManager.deleteNotificationChannel("sharpdroid_registro_channel_02")
+        }
+
+        if (DEVELOPER_MODE) {
+            StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
+                    .detectAll()
+                    .penaltyLog()
+                    .penaltyDialog()
+                    .build())
+            StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder()
+                    .detectAll()
+                    .penaltyLog()
+                    .penaltyDeath()
+                    .build())
         }
     }
 
