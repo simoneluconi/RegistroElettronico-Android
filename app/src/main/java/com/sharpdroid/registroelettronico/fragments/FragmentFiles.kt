@@ -31,7 +31,7 @@ import kotlinx.android.synthetic.main.coordinator_recycler.*
 import java.io.File as JavaFile
 
 class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, FileAdapter.DownloadListener {
-    override fun didReceiveNotification(code: EventType, args: Array<in Any>) {
+    override fun didReceiveNotification(code: Int, args: Array<in Any>) {
         when (code) {
             EventType.DOWNLOAD_FILE_START -> {
                 Snackbar.make(coordinator_layout, R.string.download_in_corso, Snackbar.LENGTH_INDEFINITE).show()

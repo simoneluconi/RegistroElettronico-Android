@@ -3,41 +3,40 @@ package com.sharpdroid.registroelettronico
 import android.os.Looper
 import android.util.Log
 import android.util.SparseArray
-import com.sharpdroid.registroelettronico.utils.EventType
 import java.util.*
 
 class NotificationManager {
     interface NotificationReceiver {
-        fun didReceiveNotification(code: EventType, args: Array<in Any>)
+        fun didReceiveNotification(code: Int, args: Array<in Any>)
     }
 
     private val observers: SparseArray<ArrayList<NotificationReceiver>> = SparseArray()
 
-    fun addObserver(receiver: NotificationReceiver, vararg events: EventType) {
+    fun addObserver(receiver: NotificationReceiver, vararg events: Int) {
         checkLooper()
         events.forEach {
-            val rec = observers[it.ordinal] ?: arrayListOf()
+            val rec = observers[it] ?: arrayListOf()
             rec.add(receiver)
-            observers.put(it.ordinal, rec)
+            observers.put(it, rec)
             if (BuildConfig.DEBUG)
-                Log.d("NotificationManager", "registered for event ${it.name}")
+                Log.d("NotificationManager", "registered for event $it")
         }
     }
 
-    fun removeObserver(receiver: NotificationReceiver, vararg events: EventType) {
+    fun removeObserver(receiver: NotificationReceiver, vararg events: Int) {
         checkLooper()
         events.forEach {
-            observers[it.ordinal].remove(receiver)
+            observers[it].remove(receiver)
             if (BuildConfig.DEBUG)
-                Log.d("NotificationManager", "unregistered receiver for event ${it.name}")
+                Log.d("NotificationManager", "unregistered receiver for event $it")
         }
     }
 
-    fun postNotificationName(event: EventType, args: Array<in Any>?) {
+    fun postNotificationName(event: Int, args: Array<in Any>?) {
         checkLooper()
-        observers[event.ordinal]?.forEach { it.didReceiveNotification(event, args ?: emptyArray()) }
+        observers[event]?.forEach { it.didReceiveNotification(event, args ?: emptyArray()) }
         if (BuildConfig.DEBUG)
-            Log.d("NotificationManager", event.name)
+            Log.d("NotificationManager", event.toString())
     }
 
     private fun checkLooper() {

@@ -28,7 +28,7 @@ import kotlinx.android.synthetic.main.coordinator_swipe_recycler.view.*
 
 class FragmentNote : Fragment(), SwipeRefreshLayout.OnRefreshListener, NotificationManager.NotificationReceiver {
 
-    override fun didReceiveNotification(code: EventType, args: Array<in Any>) {
+    override fun didReceiveNotification(code: Int, args: Array<in Any>) {
         when (code) {
             EventType.UPDATE_NOTES_START -> {
                 if (!swiperefresh.isRefreshing) swiperefresh.isRefreshing = true
