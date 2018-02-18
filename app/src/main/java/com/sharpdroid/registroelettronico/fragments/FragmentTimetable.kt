@@ -67,6 +67,8 @@ class FragmentTimetable : Fragment() {
                         .title(capitalizeEach(it.getSubjectName(), false))
                         .neutralText(R.string.elimina)
                         .positiveText(android.R.string.ok)
+                        .negativeText("Modifica")
+                        .onNegative { _, _ -> startActivity(Intent(context, AddTimetableItemActivity::class.java).putExtra("id", item.id)) }
                         .onNeutral { _, _ -> DatabaseHelper.database.timetableDao().delete(item) }
                         .show()
             }
@@ -84,7 +86,8 @@ class FragmentTimetable : Fragment() {
                         (timetable.parent as NestedScrollView?)?.scrollY = savedInstanceState["scrollY"] as Int
                     }, 20)
                 } else {
-                    val minY = Math.max(timetable.data.minBy { it.start }?.start?.times(timetable.tileHeight)?.minus(dp(6)) ?: 0f, 0f)
+                    val minY = Math.max(timetable.data.minBy { it.start }?.start?.times(timetable.tileHeight)?.minus(dp(6))
+                            ?: 0f, 0f)
                     (timetable.parent as NestedScrollView?)?.scrollY = Math.round(minY)
                 }
             }
