@@ -38,7 +38,10 @@ data class Grade(
 
     companion object {
         fun hasMarksSecondPeriod(profile: Long): Boolean {
-            return DatabaseHelper.database.query("SELECT * FROM GRADE WHERE PROFILE=? AND M_PERIOD!=1", arrayOf(profile)).moveToFirst()
+            val cursor = DatabaseHelper.database.query("SELECT * FROM GRADE WHERE PROFILE=? AND M_PERIOD!=1", arrayOf(profile))
+            val hasMarks = cursor.moveToFirst()
+            cursor.close()
+            return hasMarks
         }
     }
 }
