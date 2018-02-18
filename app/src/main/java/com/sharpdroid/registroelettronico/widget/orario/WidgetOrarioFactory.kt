@@ -57,7 +57,7 @@ class WidgetOrarioFactory(private val applicationContext: Context, val intent: I
         } else {
             val current = list[i] as TimetableItem
             val rv = RemoteViews(applicationContext.packageName, R.layout.widget_agenda_event)
-            rv.setTextViewText(R.id.title, subjects.first { it.subject.id == current.subject }.getSubjectName())
+            rv.setTextViewText(R.id.title, subjects.firstOrNull { it.subject.id == current.subject }?.getSubjectName().orEmpty())
             rv.setTextViewText(R.id.subtitle, convertFloatTimeToString(current.start) + if (current.where != null) " - ${convertFloatTimeToString(current.end)} (${current.where})" else " - ${convertFloatTimeToString(current.end)}") // 9:15 - 10:15 (A205) // 9:15 - 10:15
             rv
         }

@@ -709,7 +709,8 @@ object Metodi {
                         it.end.toFloat(),
                         it.dayOfWeek,
                         it.subject.toLong(),
-                        subjectColors[it.subject]?.toInt() ?: throw IllegalStateException("Color not found in Map"),
+                        subjectColors[it.subject]?.toInt()
+                                ?: throw IllegalStateException("Color not found in Map"),
                         null, null
                 ))
             }
