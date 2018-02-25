@@ -92,7 +92,7 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
         }
 
         //IF EDITING EXISTING LESSON
-        if (intent.extras["id"] != null) {
+        if (intent.extras != null && intent.extras["id"] != null) {
             DatabaseHelper.database.timetableDao().findById(intent.extras["id"] as Long)?.let {
                 title = "Modifica lezione"
 
@@ -151,7 +151,8 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
                 end(),
                 viewModel.day.value!!,
                 viewModel.subject.value!!.subject.id,
-                viewModel.color.value ?: ContextCompat.getColor(this@AddTimetableItemActivity, R.color.primary),
+                viewModel.color.value
+                        ?: ContextCompat.getColor(this@AddTimetableItemActivity, R.color.primary),
                 viewModel.where.value,
                 viewModel.notes.value
         ))
@@ -170,7 +171,8 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
             when (data[position]) {
                 "subject" -> {
                     val drawable = ContextCompat.getDrawable(this@AddTimetableItemActivity, R.drawable.ic_school_black_24dp)
-                    view.setup(viewModel.subject.value?.getSubjectName() ?: "Seleziona una materia", "Materia", drawable, "Materia non selezionata", viewModel.subject.value == null) { _ ->
+                    view.setup(viewModel.subject.value?.getSubjectName()
+                            ?: "Seleziona una materia", "Materia", drawable, "Materia non selezionata", viewModel.subject.value == null) { _ ->
                         MaterialDialog.Builder(this@AddTimetableItemActivity)
                                 .title("Seleziona una materia")
                                 .items(viewModel.subjects.map { it.getSubjectName() })
@@ -187,12 +189,14 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
                     oval.intrinsicWidth = dp(16)
                     oval.intrinsicHeight = dp(16)
                     oval.setColorFilter(
-                            viewModel.color.value ?: ContextCompat.getColor(this@AddTimetableItemActivity, R.color.primary),
+                            viewModel.color.value
+                                    ?: ContextCompat.getColor(this@AddTimetableItemActivity, R.color.primary),
                             PorterDuff.Mode.SRC_ATOP
                     )
                     view.setup("Seleziona un colore", oval, false) { _ ->
                         ColorChooserDialog.Builder(this@AddTimetableItemActivity, R.string.choose_color)
-                                .preselect(viewModel.color.value ?: ContextCompat.getColor(this@AddTimetableItemActivity, R.color.primary))
+                                .preselect(viewModel.color.value
+                                        ?: ContextCompat.getColor(this@AddTimetableItemActivity, R.color.primary))
                                 .doneButton(R.string.ok)
                                 .allowUserColorInputAlpha(false)
                                 .cancelButton(android.R.string.cancel)
@@ -204,7 +208,8 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
                 }
                 "day" -> {
                     val drawable = ContextCompat.getDrawable(this@AddTimetableItemActivity, R.drawable.agenda_bsheet_calendar)
-                    view.setup(viewModel.day.value?.let { capitalizeFirst(resources.getStringArray(R.array.days_of_week)[it]) } ?: "Seleziona un giorno", "Giorno", drawable) { _ ->
+                    view.setup(viewModel.day.value?.let { capitalizeFirst(resources.getStringArray(R.array.days_of_week)[it]) }
+                            ?: "Seleziona un giorno", "Giorno", drawable) { _ ->
                         MaterialDialog.Builder(this@AddTimetableItemActivity)
                                 .title("Seleziona un giorno")
                                 .items(resources.getStringArray(R.array.days_of_week).map { capitalizeFirst(it) })
@@ -215,7 +220,8 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
                 }
                 "start" -> {
                     val drawable = ContextCompat.getDrawable(this@AddTimetableItemActivity, R.drawable.ic_access_time_black_24dp)
-                    view.setup(viewModel.start.value ?: "Seleziona un'orario", "Inizio", drawable) { _ ->
+                    view.setup(viewModel.start.value
+                            ?: "Seleziona un'orario", "Inizio", drawable) { _ ->
                         val current = viewModel.start.value?.split(":")!!.map { it.toInt(10) }
 
                         TimePickerDialog.newInstance({ _, hourOfDay, minute, _ ->
@@ -224,7 +230,8 @@ class AddTimetableItemActivity : AppCompatActivity(), ColorChooserDialog.ColorCa
                     }
                 }
                 "end" -> {
-                    view.setup(viewModel.end.value ?: "Seleziona un'orario", "Fine", null, "Orario non valido", start() >= end()) { _ ->
+                    view.setup(viewModel.end.value
+                            ?: "Seleziona un'orario", "Fine", null, "Orario non valido", start() >= end()) { _ ->
                         val current = viewModel.end.value?.split(":")!!.map { it.toInt(10) }
 
                         TimePickerDialog.newInstance({ _, hourOfDay, minute, _ ->

@@ -1,5 +1,6 @@
 package com.sharpdroid.registroelettronico.activities
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -57,6 +58,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("CheckResult")
     private fun login() {
         val mEmail = mail.text.toString()
         val mPassword = password.text.toString()
@@ -129,6 +131,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("CheckResult")
     private fun loginWithIdent(email: String, password: String, ident: String) {
         val c = this
         Spaggiari(null).api().postLogin(LoginRequest(password, email, ident))
