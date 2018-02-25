@@ -230,6 +230,8 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         headerResult.clear()
         headerResult.profiles = Profile.getIProfiles() + Profile.NEW_ACCOUNT_ROW
         drawerView.headerAdapter.notifyDataSetChanged()
+        //headerResult.setActiveProfile(Account.with(this).user,true)
+        Log.i("MainActivity", "current profile: ${headerResult.activeProfile.identifier}")
     }
 
     /**
@@ -382,11 +384,9 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             Account.with(this).user = profile.identifier
 
             //Update fragment
-            //if (!current) {
             drawerView.setSelectionAtPosition(drawerView.currentSelectedPosition, false)
             openFragment(drawerView.currentSelection, intent.extras)
             fetchDataOfUser(this)
-            //}
         }
         return false
     }
@@ -407,7 +407,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
                 // Find any other profile
                 val p = DatabaseHelper.database.profilesDao().randomProfile
                 if (p != null) {
-                    Account.with(this).user = p.id
+                    //Account.with(this).user = p.id
                     headerResult.setActiveProfile(p.id, true)
                 } else {
                     startActivityForResult(Intent(this, LoginActivity::class.java), LOGIN_REQUEST_CODE)

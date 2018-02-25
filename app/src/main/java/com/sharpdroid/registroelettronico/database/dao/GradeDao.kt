@@ -12,6 +12,7 @@ import com.sharpdroid.registroelettronico.database.pojos.GradeWithSubjectName
 @Dao
 interface GradeDao {
 
+    @Transaction
     @Query("SELECT GRADE.*, SUBJECT.DESCRIPTION AS subject FROM GRADE LEFT JOIN SUBJECT ON SUBJECT.ID=GRADE.M_SUBJECT_ID WHERE PROFILE = :profile")
     fun getGrades(profile: Long): LiveData<List<GradeWithSubjectName>>
 
