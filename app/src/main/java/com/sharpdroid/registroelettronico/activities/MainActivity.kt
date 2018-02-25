@@ -276,7 +276,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
      * Save drawer's state
      */
     override fun onSaveInstanceState(outState: Bundle?) {
-        //drawerView.saveInstanceState(outState)
+        //drawerView.saveInstanceState(outState) //This causes UI-bugs, like more item selected at once... leave this commented
         headerResult.saveInstanceState(outState)
         outState?.putInt("drawerView.currentSelectedPosition", drawerView.currentSelectedPosition)
         super.onSaveInstanceState(outState)
