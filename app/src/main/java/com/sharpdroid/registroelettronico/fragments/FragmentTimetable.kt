@@ -105,13 +105,14 @@ class FragmentTimetable : Fragment() {
     }
 
     private fun showTutorial() {
-        timetable.postDelayed({
-            val pref = PreferenceManager.getDefaultSharedPreferences(context)
-            if (!pref.getBoolean("has_seen_feature_AUTO_TIMETABLE", false)) {
+        val pref = PreferenceManager.getDefaultSharedPreferences(context)
+        if (!pref.getBoolean("has_seen_feature_AUTO_TIMETABLE", false)) {
+            timetable.postDelayed({
                 TapTargetView.showFor(activity, TapTarget.forToolbarMenuItem(activity.toolbar, R.id.sync, "Orario automatico", "Ora puoi rilevare automaticamente il tuo orario scolastico in modo intelligente!").transparentTarget(false))
-            }
-            pref.edit().putBoolean("has_seen_feature_AUTO_TIMETABLE", true).apply()
-        }, 200)
+
+                pref.edit().putBoolean("has_seen_feature_AUTO_TIMETABLE", true).apply()
+            }, 200)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

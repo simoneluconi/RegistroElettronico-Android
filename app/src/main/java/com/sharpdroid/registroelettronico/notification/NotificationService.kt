@@ -185,7 +185,7 @@ class NotificationService : JobService() {
     private fun getCaption(item: Any): String {
         return when (item) {
             is RemoteAgenda -> " ${dateFormat.format(item.start)} - ${item.notes}"           // 5 feb - Verifica di informatica
-            is Grade -> getString(R.string.notification_new_grade, item.mStringValue, capitalizeEach(item.mDescription, false)) //Hai preso $x in $y
+            is Grade -> if (item.mValue != 0f) getString(R.string.notification_new_grade, item.mStringValue, capitalizeEach(item.mDescription, false)) else getString(R.string.notification_new_grade_blue, item.mStringValue, capitalizeEach(item.mDescription, false))
             is Communication -> item.title              // Circ n.7...
             is Note -> "${capitalizeEach(item.mAuthor, true)} - ${item.mText}"  //Prof Annunzio - Alunno rompe il cazzo
             else -> ""

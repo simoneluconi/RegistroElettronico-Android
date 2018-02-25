@@ -151,6 +151,7 @@
     <string name="aggiungi">Aggiungi</string>
 
     <string name="notification_new_grade">Hai preso %1$s in %2$s</string>
+    <string name="notification_new_grade_blue">Hai preso %1$s (blu) in %2$s</string>
     <string name="abc">abc</string>
     <string name="dash">-</string>
     <string name="ordina_per">Ordina Per</string>

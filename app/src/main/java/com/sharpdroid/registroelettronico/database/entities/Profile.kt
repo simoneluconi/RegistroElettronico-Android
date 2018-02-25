@@ -5,7 +5,9 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
 import android.content.Context
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem
+import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IProfile
+import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.capitalizeEach
@@ -46,5 +48,10 @@ class Profile(
         fun getProfile(context: Context): Profile? {
             return DatabaseHelper.database.profilesDao().getProfile(Account.with(context).user)
         }
+
+        const val NEW_ACCOUNT = 0L
+        val NEW_ACCOUNT_ROW: ProfileSettingDrawerItem = ProfileSettingDrawerItem().withName("Aggiungi account").withIcon(R.drawable.fab_add).withIconTinted(true).withIdentifier(NEW_ACCOUNT).withSelectable(false)
     }
+
+
 }

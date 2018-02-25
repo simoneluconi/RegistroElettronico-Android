@@ -14,7 +14,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class MigrationTest {
     @get:Rule
-    private val helper = MigrationTestHelper(InstrumentationRegistry.getInstrumentation(),
+    val helper = MigrationTestHelper(InstrumentationRegistry.getInstrumentation(),
             RoomDB::class.java.canonicalName,
             FrameworkSQLiteOpenHelperFactory())
 
@@ -38,7 +38,7 @@ class MigrationTest {
     fun validateMigration11To12() {
         var db = helper.createDatabase(TEST_DB_NAME, 11)
         db.close()
-        db = helper.runMigrationsAndValidate(TEST_DB_NAME, 12, false, Migrations.MIGRATION_11_12)
+        db = helper.runMigrationsAndValidate(TEST_DB_NAME, 12, true, Migrations.MIGRATION_11_12)
         db.execSQL("insert into `EXCLUDED_MARKS` default values")
         db.close()
     }
