@@ -240,6 +240,10 @@ object Metodi {
         if (c == null) return
 
         val p = Profile.getProfile(c)
+        fetchDataOfUser(p)
+    }
+
+    fun fetchDataOfUser(p: Profile?) {
         updateSubjects(p)
         updateLessons(p)
         updateFolders(p)

@@ -3,12 +3,9 @@ package com.sharpdroid.registroelettronico.activities
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.content.res.AppCompatResources
 import android.support.v7.widget.LinearLayoutManager
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
@@ -20,12 +17,15 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.LoginAdapter
 import com.sharpdroid.registroelettronico.api.spaggiari.v2.Spaggiari
 import com.sharpdroid.registroelettronico.database.entities.LoginRequest
+import com.sharpdroid.registroelettronico.database.entities.LoginResponse
 import com.sharpdroid.registroelettronico.database.entities.Profile
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.fetchDataOfUser
 import com.sharpdroid.registroelettronico.utils.Metodi.loginFeedback
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_login.*
 import java.util.*
 
@@ -33,15 +33,6 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.fragment_login)
-
-        val p = AppCompatResources.getDrawable(this, R.drawable.ic_person)
-        val l = AppCompatResources.getDrawable(this, R.drawable.ic_password)
-
-        p?.setColorFilter(ContextCompat.getColor(this, android.R.color.secondary_text_dark), PorterDuff.Mode.SRC_IN)
-        l?.setColorFilter(ContextCompat.getColor(this, android.R.color.secondary_text_dark), PorterDuff.Mode.SRC_IN)
-
-        mail.setCompoundDrawablesWithIntrinsicBounds(p, null, null, null)
-        password.setCompoundDrawablesWithIntrinsicBounds(l, null, null, null)
 
         val s = intent.getStringExtra("user")
         if (s != null)
@@ -91,9 +82,22 @@ class LoginActivity : AppCompatActivity() {
                                 Unit
                             }, LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false))
                             .onPositive { _, _ ->
-                                for (ident in checkedIdents) {
-                                    loginWithIdent(mEmail, mPassword, ident)
-                                }
+                                loginWithIdent(mEmail, mPassword, checkedIdents.toTypedArray()).subscribe({ t ->
+                                    val profile = Profile(mEmail, t.firstName + " " + t.lastName, mPassword, "", t.ident!!.substring(1, 8).toLong(), t.token!!, t.expire!!, t.ident, true)
+                                    DatabaseHelper.database.profilesDao().insert(profile)
+                                    fetchDataOfUser(profile)
+
+                                }, {
+                                    loginFeedback(it, this)
+
+                                    login_btn.setText(R.string.login)
+                                    mail.isEnabled = true
+                                    this.password.isEnabled = true
+                                    login_btn.isEnabled = true
+                                }, {
+                                    setResult(Activity.RESULT_OK)
+                                    finish()
+                                })
                                 if (!BuildConfig.DEBUG)
                                     Answers.getInstance().logLogin(LoginEvent().putMethod("multiple"))
                             }
@@ -107,7 +111,8 @@ class LoginActivity : AppCompatActivity() {
                     builder.show()
                 } else {
                     Toast.makeText(this, "Tutti gli account collegati alla mail sono già in uso", Toast.LENGTH_SHORT).show()
-                    super.onBackPressed()
+                    setResult(Activity.RESULT_CANCELED)
+                    finish()
                 }
             } else {
                 DatabaseHelper.database.profilesDao().insert(Profile(mEmail, login.firstName + " " + login.lastName, mPassword, "", login.ident!!.substring(1, 8).toLong(), login.token!!, login.expire!!, login.ident, false))
@@ -132,26 +137,12 @@ class LoginActivity : AppCompatActivity() {
     }
 
     @SuppressLint("CheckResult")
-    private fun loginWithIdent(email: String, password: String, ident: String) {
-        val c = this
-        Spaggiari(null).api().postLogin(LoginRequest(password, email, ident))
-                .observeOn(AndroidSchedulers.mainThread()).subscribe({ t ->
-            DatabaseHelper.database.profilesDao().insert(Profile(email, t.firstName + " " + t.lastName, password, "", t.ident!!.substring(1, 8).toLong(), t.token!!, t.expire!!, t.ident, true))
-            Account.with(c).user = t.ident.substring(1, 8).toLong()
-            fetchDataOfUser(c)
+    private fun loginWithIdent(email: String, password: String, idents: Array<String>): Observable<LoginResponse> {
+        // This asterisk is called spread operator. It converts an Array to vararg
+        return Observable.fromArray(*idents.map { id -> Spaggiari(null).api().postLogin(LoginRequest(password, email, id)) }.toTypedArray())
+                .flatMap { t -> t.subscribeOn(Schedulers.computation()) }
+                .observeOn(AndroidSchedulers.mainThread())
 
-            PreferenceManager.getDefaultSharedPreferences(c).edit().putBoolean("first_run", false).apply()
-            login_btn.setText(R.string.login_riuscito)
-            setResult(Activity.RESULT_OK)
-            finish()
-        }) { error ->
-            loginFeedback(error, c)
-
-            login_btn.setText(R.string.login)
-            mail.isEnabled = true
-            this.password.isEnabled = true
-            login_btn.isEnabled = true
-        }
     }
 
     override fun onBackPressed() {

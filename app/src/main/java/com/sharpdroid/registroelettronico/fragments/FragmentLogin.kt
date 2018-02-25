@@ -1,5 +1,6 @@
 package com.sharpdroid.registroelettronico.fragments
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
@@ -21,12 +22,14 @@ import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.LoginAdapter
 import com.sharpdroid.registroelettronico.api.spaggiari.v2.Spaggiari
 import com.sharpdroid.registroelettronico.database.entities.LoginRequest
+import com.sharpdroid.registroelettronico.database.entities.LoginResponse
 import com.sharpdroid.registroelettronico.database.entities.Profile
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.fetchDataOfUser
 import com.sharpdroid.registroelettronico.utils.Metodi.loginFeedback
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_login.*
 import retrofit2.HttpException
 import java.util.*
@@ -63,6 +66,7 @@ class FragmentLogin : SlideFragment() {
 
     override fun canGoForward() = loggedIn
 
+    @SuppressLint("CheckResult")
     private fun login() {
         val mEmail = mail.text.toString()
         val mPassword = password.text.toString()
@@ -85,10 +89,26 @@ class FragmentLogin : SlideFragment() {
                             Unit
                         }, LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false))
                         .onPositive { _, _ ->
-                            for (ident in checkedIdents) {
-                                loginWithIdent(mEmail, mPassword, ident)
-                            }
-                            postLogin()
+                            loginWithIdent(mEmail, mPassword, checkedIdents.toTypedArray())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe({ t ->
+                                        val profile = Profile(mEmail, t.firstName + " " + t.lastName, mPassword, "", t.ident!!.substring(1, 8).toLong(), t.token!!, t.expire!!, t.ident, true)
+                                        DatabaseHelper.database.profilesDao().insert(profile)
+                                        fetchDataOfUser(profile)
+                                    }, {
+                                        loginFeedback(it, context)
+
+                                        login_btn.setText(R.string.login)
+                                        mail.isEnabled = true
+                                        this.password.isEnabled = true
+                                        login_btn.isEnabled = true
+                                    }, {
+                                        PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("first_run", false).apply()
+                                        login_btn.setText(R.string.login_riuscito)
+
+                                        postLogin()
+                                    })
+
                         }
                         .canceledOnTouchOutside(false)
                         .onNeutral { _, _ ->
@@ -132,23 +152,10 @@ class FragmentLogin : SlideFragment() {
             Answers.getInstance().logLogin(LoginEvent().putMethod("multiple"))
     }
 
-    private fun loginWithIdent(email: String, password: String, ident: String) {
-        val c = context
-        Spaggiari(null).api().postLogin(LoginRequest(password, email, ident))
-                .observeOn(AndroidSchedulers.mainThread()).subscribe({ login_nested ->
-            DatabaseHelper.database.profilesDao().insert(Profile(email, login_nested.firstName + " " + login_nested.lastName, password, "", java.lang.Long.valueOf(login_nested.ident!!.substring(1, 8)), login_nested.token!!, login_nested.expire!!, login_nested.ident, true))
-            Account.with(c).user = java.lang.Long.valueOf(login_nested.ident.substring(1, 8))
-            fetchDataOfUser(c)
-
-            PreferenceManager.getDefaultSharedPreferences(c).edit().putBoolean("first_run", false).apply()
-            login_btn.setText(R.string.login_riuscito)
-        }) { error ->
-            loginFeedback(error, c)
-
-            login_btn.setText(R.string.login)
-            mail.isEnabled = true
-            this.password.isEnabled = true
-            login_btn.isEnabled = true
-        }
+    private fun loginWithIdent(email: String, password: String, idents: Array<String>): io.reactivex.Observable<LoginResponse> {
+        // This asterisk is called spread operator. It converts an Array to vararg
+        return io.reactivex.Observable.fromArray(*idents.map { id -> Spaggiari(null).api().postLogin(LoginRequest(password, email, id)) }.toTypedArray())
+                .flatMap { t -> t.subscribeOn(Schedulers.computation()) }
+                .observeOn(AndroidSchedulers.mainThread())
     }
 }
