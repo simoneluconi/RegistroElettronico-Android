@@ -35,15 +35,13 @@ import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.DrawerBuilder
 import com.mikepenz.materialdrawer.model.DividerDrawerItem
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
-import com.mikepenz.materialdrawer.model.interfaces.IProfile
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.database.entities.*
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import com.sharpdroid.registroelettronico.fragments.*
 import com.sharpdroid.registroelettronico.utils.Account
-import com.sharpdroid.registroelettronico.utils.Metodi.deleteUser
+import com.sharpdroid.registroelettronico.utils.Metodi
 import com.sharpdroid.registroelettronico.utils.Metodi.dp
 import com.sharpdroid.registroelettronico.utils.Metodi.fetchDataOfUser
 import com.sharpdroid.registroelettronico.utils.Metodi.updateSubjects
@@ -55,11 +53,12 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import java.io.Serializable
 
-class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, AccountHeader.OnAccountHeaderListener, AccountHeader.OnAccountHeaderItemLongClickListener {
+class MainActivity : AppCompatActivity() {
     private var params: AppBarLayout.LayoutParams? = null
     private lateinit var drawerView: Drawer
     private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var headerResult: AccountHeader
+    private var selectedItem: Long = -1
 
     private var huaweiAlert: AlertDialog? = null
 
@@ -71,21 +70,17 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         fab_mini_esercizi.setImageResource(R.drawable.agenda_fab_compiti)
         fab_mini_altro.setImageResource(R.drawable.agenda_fab_altro)
 
-        //  actionBar
+        // ActionBar
         setSupportActionBar(toolbar)
         params = toolbar.layoutParams as AppBarLayout.LayoutParams?
-
-        FirebaseMessaging.getInstance().subscribeToTopic("v491")
-        if (BuildConfig.DEBUG)
-            FirebaseMessaging.getInstance().subscribeToTopic("dev")
 
         // Build Drawer View
         drawerView = DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
-                .withSavedInstance(savedInstanceState)
+                //.withSavedInstance(savedInstanceState)
                 .withActionBarDrawerToggleAnimated(true)
-                .withOnDrawerItemClickListener(this)
+                .withOnDrawerItemClickListener { _, _, drawerItem -> openFragment(drawerItem.identifier, null) }
                 .addDrawerItems(
                         PrimaryDrawerItem().withIdentifier(R.id.today.toLong()).withName(R.string.today_at_school).withIcon(R.drawable.ic_home_black_24dp).withIconTintingEnabled(true),
                         PrimaryDrawerItem().withIdentifier(R.id.agenda.toLong()).withName(R.string.agenda).withIcon(R.drawable.ic_event).withIconTintingEnabled(true),
@@ -106,27 +101,85 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         headerResult = AccountHeaderBuilder()
                 .withActivity(this)
                 .withSavedInstance(savedInstanceState)
+                .withCloseDrawerOnProfileListClick(true)
                 .withHeaderBackground(R.drawable.side_nav_bar)
-                .withOnAccountHeaderItemLongClickListener(this)
-                .withOnAccountHeaderListener(this)
+                .withOnAccountHeaderItemLongClickListener { _, profile, _ ->
+
+                    // Long-press
+
+                    if (profile.identifier != Profile.NEW_ACCOUNT) {
+                        MaterialDialog.Builder(this).title("Eliminare il profilo?").content("Continuare con l'eliminazione di " + profile.email.text + " ?").positiveText("SI").negativeText("NO").onPositive { _, _ ->
+                            Metodi.deleteUser(profile.identifier)
+
+                            drawerView.closeDrawer()
+
+                            // Find any other profile
+                            val p = DatabaseHelper.database.profilesDao().randomProfile
+
+                            if (p != null) {
+                                // Update active user
+                                Account.with(this).user = p.id
+
+                                // Update drawer
+                                headerResult.removeProfile(profile)
+                                headerResult.setActiveProfile(p.id, false)
+                                openFragment(selectedItem, null)
+                                //updateDrawerHeader()
+                            } else {
+                                startActivityForResult(Intent(this, LoginActivity::class.java), LOGIN_REQUEST_CODE)
+                            }
+                        }.show()
+                    }
+                    false
+                }
+                .withOnAccountHeaderListener { _, profile, _ ->
+
+                    // Single-click
+
+                    if (profile == null || profile.identifier == Profile.NEW_ACCOUNT) {
+                        startActivityForResult(Intent(this, LoginActivity::class.java), LOGIN_REQUEST_CODE)
+                    } else {
+                        Account.with(this).user = profile.identifier
+
+                        //Update fragment
+                        drawerView.setSelection(selectedItem, true)
+
+                        fetchDataOfUser(this)
+                    }
+                    false
+                }
                 .withDrawer(drawerView)
                 .build()
 
         // Open specified fragment if any
         if (intent.extras != null && intent.extras.containsKey("drawer_open_id")) {
+
+            // Clicked notification
             drawerView.setSelection(intent.extras.getLong("drawer_open_id"), false)
+            // Pass extras for more in-depth details on the notification
             openFragment(intent.extras.getLong("drawer_open_id"), intent.extras)
+
+            // Update database so user doens't get notified of the same stuff
             saveContentFromNotification(intent.getSerializableExtra("list") as? List<Serializable>)
+
+        } else if (savedInstanceState != null && savedInstanceState[BUNDLE_CURRENT_SELECTION] != null) {
+
+            // Screen Changes
+
+            // Restore last position from bundle
+            selectedItem = savedInstanceState.getLong(BUNDLE_CURRENT_SELECTION)
+            //drawerView.setSelection(selectedItem, false)
+
         } else if (savedInstanceState == null) {
+
+            // Clean start
             val default = PreferenceManager.getDefaultSharedPreferences(this).getString("drawer_to_open", "0").toInt()
             drawerView.setSelectionAtPosition((intent.extras?.getInt("drawer_to_open", default)
                     ?: default) + 1, true)
         }
 
         // Animate Hamburger->Arrow on Drawer swipe
-        // Keep this code after creating drawer
-        toggle = ActionBarDrawerToggle(
-                this, drawerView.drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        toggle = ActionBarDrawerToggle(this, drawerView.drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         with(toggle) {
             isDrawerIndicatorEnabled = true
             drawerView.actionBarDrawerToggle = this
@@ -136,7 +189,6 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
         // Support greater BackStacks (do not fuck up the home button)
         toolbar.setNavigationOnClickListener { _ ->
-            Log.d("MainActivity", "NavigationClick")
             if (canOpenDrawer()) {
                 drawerView.drawerLayout?.openDrawer(GravityCompat.START)
             } else {
@@ -148,37 +200,26 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         // Animate Hamburger on BackStack changes
         supportFragmentManager.addOnBackStackChangedListener {
             Log.d("MainActivity", "BackStack count" + supportFragmentManager.backStackEntryCount.toString())
-            updateDrawerBehaviour()
+            updateDrawerLockMode()
+            updateHamburgerDrawable()
         }
-        if (savedInstanceState != null)
-            updateDrawerBehaviour()
-    }
-
-    private fun updateDrawerBehaviour() {
-        val openDrawer = canOpenDrawer()
-        with(ObjectAnimator.ofFloat(toggle.drawerArrowDrawable, "progress", if (!openDrawer) 1f else 0f)) {
-            interpolator = DecelerateInterpolator(1f)
-            duration = 250
-            start()
+        if (savedInstanceState != null) {
+            updateDrawerLockMode()
+            updateHamburgerDrawable()
         }
 
-        drawerView.drawerLayout?.setDrawerLockMode(if (!openDrawer) DrawerLayout.LOCK_MODE_LOCKED_CLOSED else DrawerLayout.LOCK_MODE_UNLOCKED)
-    }
+        // Notification Channel
+        FirebaseMessaging.getInstance().subscribeToTopic("v491")
+        if (BuildConfig.DEBUG)
+            FirebaseMessaging.getInstance().subscribeToTopic("dev")
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        toggle.onConfigurationChanged(newConfig)
     }
-
-    private fun canOpenDrawer() = supportFragmentManager?.backStackEntryCount == 0
 
     /**
      * Watch for profile changes. If needed, show login activity
      */
     override fun onResume() {
         super.onResume()
-
-        Log.d("MainActivity", "Selected position: " + drawerView.currentSelectedPosition)
 
         val profile = Profile.getProfile(this)
 
@@ -193,7 +234,7 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
 
                 //Found another user logged in
                 if (otherProfile != null) {
-                    onProfileChanged(null, otherProfile.asIProfile(), false)
+                    headerResult.setActiveProfile(otherProfile.id, true)
                 } else {
                     startActivityForResult(Intent(this, LoginActivity::class.java), LOGIN_REQUEST_CODE)
                 }
@@ -201,21 +242,10 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         // Everything's OK
             else -> {
                 updateDrawerHeader()
-                headerResult.setActiveProfile(profile.id, true)
                 ifHuaweiAlert()
                 updateSubjects(profile)
             }
         }
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        // Update widgets
-        sendBroadcast(Intent(this, WidgetAgenda::class.java).setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE).putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,
-                AppWidgetManager.getInstance(this).getAppWidgetIds(ComponentName(this, WidgetAgenda::class.java))))
-        sendBroadcast(Intent(this, WidgetOrario::class.java).setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE).putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,
-                AppWidgetManager.getInstance(this).getAppWidgetIds(ComponentName(this, WidgetOrario::class.java))))
     }
 
     override fun onBackPressed() {
@@ -229,9 +259,11 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
     private fun updateDrawerHeader() {
         headerResult.clear()
         headerResult.profiles = Profile.getIProfiles() + Profile.NEW_ACCOUNT_ROW
-        drawerView.headerAdapter.notifyDataSetChanged()
-        //headerResult.setActiveProfile(Account.with(this).user,true)
-        Log.i("MainActivity", "current profile: ${headerResult.activeProfile.identifier}")
+        headerResult.setActiveProfile(Account.with(this).user, false)
+        Log.d("MainActivity", "Drawer selection: ${drawerView.currentSelection}")
+        Log.d("MainActivity", "Drawer position: ${drawerView.currentSelectedPosition}")
+        Log.d("MainActivity", "Profile selection: ${headerResult.activeProfile.identifier}")
+        Log.d("MainActivity", "Customized selection: $selectedItem")
     }
 
     /**
@@ -245,11 +277,11 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
             if (resultCode == Activity.RESULT_OK) {
                 PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("first_run", false).apply()
                 updateDrawerHeader()
-                Log.i("MainActivity", "Logged in from Intro")
+                Log.d("MainActivity", "Logged in from Intro")
             } else {
                 PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("first_run", true).apply()
                 //User cancelled the intro so we'll finish this activity too.
-                Log.i("MainActivity", "Could not log in from Intro")
+                Log.d("MainActivity", "Could not log in from Intro")
                 finish()
             }
         }
@@ -258,78 +290,38 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         else if (requestCode == LOGIN_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 updateDrawerHeader()
-                Log.i("MainActivity", "Logged in from LoginActivity or FragmentLogin")
+                Log.d("MainActivity", "Logged in from LoginActivity or FragmentLogin")
             } else if (Profile.getProfile(this) == null) {
-                Log.i("MainActivity", "Could not log in from LoginActivity or FragmentLogin")
+                Log.d("MainActivity", "Could not log in from LoginActivity or FragmentLogin")
                 finish()
             }
         }
     }
 
     /**
-     * Animate title change
-     */
-    override fun setTitle(title: CharSequence) {
-        TransitionManager.beginDelayedTransition(toolbar, ChangeText().setChangeBehavior(ChangeText.CHANGE_BEHAVIOR_IN).setDuration(250))
-        super.setTitle(title)
-    }
-
-    /**
      * Save drawer's state
      */
     override fun onSaveInstanceState(outState: Bundle?) {
-        //drawerView.saveInstanceState(outState) //This causes UI-bugs, like more item selected at once... leave this commented
-        headerResult.saveInstanceState(outState)
-        outState?.putInt("drawerView.currentSelectedPosition", drawerView.currentSelectedPosition)
+        drawerView.saveInstanceState(outState) //This causes UI-bugs, like more item selected at once... leave this commented
+        //headerResult.saveInstanceState(outState)
+        outState?.putLong(BUNDLE_CURRENT_SELECTION, selectedItem)
         super.onSaveInstanceState(outState)
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-        super.onRestoreInstanceState(savedInstanceState)
-        drawerView.setSelectionAtPosition(savedInstanceState?.getInt("drawerView.currentSelectedPosition")
-                ?: 0, false)
-    }
-
-    private fun clearBackStack() {
-        supportFragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-    }
-
-    /**
-     * Click listener for drawer's items
-     */
-    override fun onItemClick(view: View?, position: Int, drawerItem: IDrawerItem<*, *>): Boolean {
-        return openFragment(drawerItem.identifier, null)
-    }
-
     private fun openFragment(tabId: Number, extras: Bundle?): Boolean {
+        // Update attribute so I can store to bundle on screen change more safely: https://github.com/mikepenz/MaterialDrawer/issues/2234
+        selectedItem = tabId.toLong()
+
         val fragment: Fragment = when (tabId.toInt()) {
-            R.id.today -> {
-                FragmentToday()
-            }
-            R.id.agenda -> {
-                FragmentAgenda()
-            }
-            R.id.medie -> {
-                FragmentMediePager()
-            }
-            R.id.lessons -> {
-                FragmentSubjects()
-            }
-            R.id.files -> {
-                FragmentFolders()
-            }
-            R.id.absences -> {
-                FragmentAllAbsences()
-            }
-            R.id.notes -> {
-                FragmentNote()
-            }
-            R.id.communications -> {
-                FragmentCommunications()
-            }
-            R.id.schedule -> {
-                FragmentTimetable()
-            }
+            R.id.today -> FragmentToday()
+            R.id.agenda -> FragmentAgenda()
+            R.id.medie -> FragmentMediePager()
+            R.id.lessons -> FragmentSubjects()
+            R.id.files -> FragmentFolders()
+            R.id.absences -> FragmentAllAbsences()
+            R.id.notes -> FragmentNote()
+            R.id.communications -> FragmentCommunications()
+            R.id.schedule -> FragmentTimetable()
             R.id.settings -> FragmentSettings()
             R.id.nav_share -> {
                 val intent = Intent(Intent.ACTION_SEND)
@@ -366,57 +358,49 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
         tab_layout.visibility = View.GONE
         fab_big_add.visibility = View.GONE
 
-        val transaction = supportFragmentManager.beginTransaction()
-
-        // Replace whatever is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack so the user can navigate back
-        transaction.replace(R.id.fragment_container, fragment).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).commit()
 
         drawerView.closeDrawer()
         return true
     }
 
-    override fun onProfileChanged(view: View?, profile: IProfile<*>?, current: Boolean): Boolean {
-        if (profile == null || profile.identifier == Profile.NEW_ACCOUNT) {
-            startActivityForResult(Intent(this, LoginActivity::class.java), LOGIN_REQUEST_CODE)
-        } else {
+    override fun onStop() {
+        super.onStop()
 
-            Account.with(this).user = profile.identifier
-
-            //Update fragment
-            drawerView.setSelectionAtPosition(drawerView.currentSelectedPosition, false)
-            openFragment(drawerView.currentSelection, intent.extras)
-            fetchDataOfUser(this)
-        }
-        return false
+        // Update widgets
+        sendBroadcast(Intent(this, WidgetAgenda::class.java).setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE).putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,
+                AppWidgetManager.getInstance(this).getAppWidgetIds(ComponentName(this, WidgetAgenda::class.java))))
+        sendBroadcast(Intent(this, WidgetOrario::class.java).setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE).putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,
+                AppWidgetManager.getInstance(this).getAppWidgetIds(ComponentName(this, WidgetOrario::class.java))))
     }
 
-    override fun onProfileLongClick(view: View?, profile: IProfile<*>, current: Boolean): Boolean {
-        println(profile.identifier.toString() + " " + Profile.NEW_ACCOUNT.toString())
-        if (profile.identifier != Profile.NEW_ACCOUNT) {
-            MaterialDialog.Builder(this).title("Eliminare il profilo?").content("Continuare con l'eliminazione di " + profile.email.text + " ?").positiveText("SI").negativeText("NO").onPositive { _, _ ->
-                deleteUser(profile.identifier)
-
-                drawerView.closeDrawer()
-                updateDrawerHeader()
-
-                //headerResult.removeProfileByIdentifier(profile.identifier)
-                //drawerView.headerAdapter.notifyDataSetChanged()
-
-
-                // Find any other profile
-                val p = DatabaseHelper.database.profilesDao().randomProfile
-                if (p != null) {
-                    //Account.with(this).user = p.id
-                    headerResult.setActiveProfile(p.id, true)
-                } else {
-                    startActivityForResult(Intent(this, LoginActivity::class.java), LOGIN_REQUEST_CODE)
-                }
-            }.show()
-        }
-        return false
+    private fun updateDrawerLockMode() {
+        drawerView.drawerLayout?.setDrawerLockMode(if (!canOpenDrawer()) DrawerLayout.LOCK_MODE_LOCKED_CLOSED else DrawerLayout.LOCK_MODE_UNLOCKED)
     }
 
+    private fun updateHamburgerDrawable() {
+        with(ObjectAnimator.ofFloat(toggle.drawerArrowDrawable, "progress", if (!canOpenDrawer()) 1f else 0f)) {
+            interpolator = DecelerateInterpolator(1f)
+            duration = 250
+            start()
+        }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        toggle.onConfigurationChanged(newConfig)
+    }
+
+    private fun clearBackStack() {
+        supportFragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+    }
+
+    override fun setTitle(title: CharSequence) {
+        TransitionManager.beginDelayedTransition(toolbar, ChangeText().setChangeBehavior(ChangeText.CHANGE_BEHAVIOR_IN).setDuration(250))
+        super.setTitle(title)
+    }
+
+    private fun canOpenDrawer() = supportFragmentManager?.backStackEntryCount == 0
 
     private fun ifHuaweiAlert() {
         val intent = Intent()
@@ -477,5 +461,6 @@ class MainActivity : AppCompatActivity(), Drawer.OnDrawerItemClickListener, Acco
     companion object {
         const val REQUEST_CODE = 1905
         const val LOGIN_REQUEST_CODE = 2
+        const val BUNDLE_CURRENT_SELECTION = "drawerView.currentSelection"
     }
 }
