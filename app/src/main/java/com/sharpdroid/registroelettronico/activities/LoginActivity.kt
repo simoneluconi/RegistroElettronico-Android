@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.content.res.AppCompatResources
 import android.support.v7.widget.LinearLayoutManager
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
@@ -33,6 +34,12 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.fragment_login)
+
+        val p = AppCompatResources.getDrawable(this, R.drawable.ic_person_compound_light)
+        val l = AppCompatResources.getDrawable(this, R.drawable.ic_password_compound_light)
+
+        mail.setCompoundDrawablesWithIntrinsicBounds(p, null, null, null)
+        password.setCompoundDrawablesWithIntrinsicBounds(l, null, null, null)
 
         val s = intent.getStringExtra("user")
         if (s != null)

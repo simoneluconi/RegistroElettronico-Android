@@ -65,9 +65,7 @@ class Spaggiari(val profile: Profile?) {
 
             try {
                 val res = chain.proceed(request)
-                if (res.isSuccessful) {
-                    Log.d("Spaggiari", "request successful")
-                } else {
+                if (!res.isSuccessful) {
                     Log.d("Spaggiari", "request not successful ${res.code()} ${request.method()} ${request.url()}")
                 }
                 return@Interceptor res
@@ -99,7 +97,8 @@ class Spaggiari(val profile: Profile?) {
     }
 
     fun api(): SpaggiariAPI {
-        if (cache.get(profile?.id?.toInt() ?: 0, null) != null) return cache[profile?.id?.toInt() ?: 0]
+        if (cache.get(profile?.id?.toInt() ?: 0, null) != null) return cache[profile?.id?.toInt()
+                ?: 0]
         val retrofit = retrofit.create(SpaggiariAPI::class.java)
         cache.put(profile?.id?.toInt() ?: 0, retrofit)
         return retrofit
