@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
         drawerView = DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
-                //.withSavedInstance(savedInstanceState)
+                .withSavedInstance(savedInstanceState)
                 .withActionBarDrawerToggleAnimated(true)
                 .withOnDrawerItemClickListener { _, _, drawerItem -> openFragment(drawerItem.identifier, null) }
                 .addDrawerItems(
@@ -161,14 +161,6 @@ class MainActivity : AppCompatActivity() {
 
             // Update database so user doens't get notified of the same stuff
             saveContentFromNotification(intent.getSerializableExtra("list") as? List<Serializable>)
-
-        } else if (savedInstanceState != null && savedInstanceState[BUNDLE_CURRENT_SELECTION] != null) {
-
-            // Screen Changes
-
-            // Restore last position from bundle
-            selectedItem = savedInstanceState.getLong(BUNDLE_CURRENT_SELECTION)
-            //drawerView.setSelection(selectedItem, false)
 
         } else if (savedInstanceState == null) {
 
@@ -302,7 +294,7 @@ class MainActivity : AppCompatActivity() {
      * Save drawer's state
      */
     override fun onSaveInstanceState(outState: Bundle?) {
-        drawerView.saveInstanceState(outState) //This causes UI-bugs, like more item selected at once... leave this commented
+        drawerView.saveInstanceState(outState) // CRASH: user changes orientation while keeping profile list visible
         //headerResult.saveInstanceState(outState)
         outState?.putLong(BUNDLE_CURRENT_SELECTION, selectedItem)
         super.onSaveInstanceState(outState)
