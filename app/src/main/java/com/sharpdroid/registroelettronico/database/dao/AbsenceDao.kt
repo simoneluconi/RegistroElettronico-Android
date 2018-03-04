@@ -1,28 +1,31 @@
 package com.sharpdroid.registroelettronico.database.dao
 
 import android.arch.lifecycle.LiveData
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.OnConflictStrategy
-import android.arch.persistence.room.Query
+import android.arch.persistence.room.*
 import com.sharpdroid.registroelettronico.database.entities.Absence
 import java.util.*
 
 @Dao
-interface AbsenceDao {
+abstract class AbsenceDao {
 
     @Query("SELECT * FROM ABSENCE WHERE DATE = :date AND PROFILE = :profile")
-    fun getAbsences(date: Date, profile: Long): LiveData<List<Absence>>
+    abstract fun getAbsences(date: Date, profile: Long): LiveData<List<Absence>>
 
     @Query("SELECT * FROM ABSENCE WHERE PROFILE=:profile AND TYPE='ABA0'")
-    fun getAbsences(profile: Long): List<Absence>
+    abstract fun getAbsences(profile: Long): List<Absence>
 
     @Query("SELECT * FROM ABSENCE WHERE PROFILE=:profile AND TYPE!='ABA0'")
-    fun getNoAbsences(profile: Long): List<Absence>
+    abstract fun getNoAbsences(profile: Long): List<Absence>
 
     @Query("DELETE FROM ABSENCE WHERE PROFILE=:profile")
-    fun delete(profile: Long)
+    abstract fun delete(profile: Long)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(events: List<Absence>)
+    abstract fun insert(events: List<Absence>)
+
+    @Transaction
+    open fun removeAndInsert(profile: Long, events: List<Absence>) {
+        delete(profile)
+        insert(events)
+    }
 }

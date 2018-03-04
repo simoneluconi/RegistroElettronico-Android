@@ -1,5 +1,8 @@
+@file:SuppressLint("CheckResult")
+
 package com.sharpdroid.registroelettronico.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
@@ -26,6 +29,7 @@ import com.sharpdroid.registroelettronico.database.pojos.GeniusTimetable
 import com.sharpdroid.registroelettronico.database.pojos.LocalAgendaPOJO
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
 import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import okhttp3.Headers
 import okhttp3.ResponseBody
 import retrofit2.HttpException
@@ -344,13 +348,12 @@ object Metodi {
         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_FOLDERS_START, null) }
         Spaggiari(p).api().getDidactics().subscribe({
             val files = mutableListOf<File>()
+            val teachers = it.didactics
 
-            DatabaseHelper.database.foldersDao().deleteFiles(p.id)
             DatabaseHelper.database.foldersDao().deleteFolders(p.id)
-            DatabaseHelper.database.subjectsDao().insert(it.didactics)
 
             //collect folders and files
-            for (teacher in it.didactics) {
+            for (teacher in teachers) {
                 for (folder in teacher.folders) {
                     folder.teacher = teacher.id
                     folder.profile = p.id
@@ -365,19 +368,20 @@ object Metodi {
                         files.add(file)
                     }
                 }
-                teacher.folders = emptyList()
+                //teacher.folders = emptyList()
             }
 
-            DatabaseHelper.database.foldersDao().insertFiles(files) //update otherwise will clean any additional info (path...)
+            DatabaseHelper.database.subjectsDao().insert(teachers)
+            DatabaseHelper.database.foldersDao().removeFilesAndInsert(p.id, files)
 
             //Download informations if not file
             for (f in DatabaseHelper.database.foldersDao().getNoFiles(p.id)) {
                 if (f.type == "link")
                     Spaggiari(p).api().getAttachmentUrl(f.id)
-                            .subscribe({ downloadURL -> DatabaseHelper.database.foldersDao().insert(FileInfo(f.objectId, downloadURL.item.link)) }, { it.printStackTrace() })
+                            .subscribe({ downloadURL -> DatabaseHelper.database.foldersDao().insert(FileInfo(f.objectId, downloadURL.item.link)) }, {})
                 else
                     Spaggiari(p).api().getAttachmentTxt(f.id)
-                            .subscribe { downloadTXT -> DatabaseHelper.database.foldersDao().insert(FileInfo(f.objectId, downloadTXT.item.text)) }
+                            .subscribe({ downloadTXT -> DatabaseHelper.database.foldersDao().insert(FileInfo(f.objectId, downloadTXT.item.text)) }, {})
             }
             handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_FOLDERS_OK, null) }
         }) {
@@ -398,9 +402,7 @@ object Metodi {
         val dates = getStartEnd("yyyyMMdd")
         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_AGENDA_START, null) }
         Spaggiari(p).api().getAgenda(dates[0], dates[1]).subscribe({
-            val apiAgenda = it.getAgenda(p)
-            DatabaseHelper.database.eventsDao().deleteRemote(p.id)
-            DatabaseHelper.database.eventsDao().insertRemote(apiAgenda)
+            DatabaseHelper.database.eventsDao().removeRemoteAndInsert(p.id, it.getAgenda(p))
             handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_AGENDA_OK, null) }
         }) {
             handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_AGENDA_KO, null) }
@@ -419,8 +421,7 @@ object Metodi {
 
         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_ABSENCES_START, null) }
         Spaggiari(p).api().getAbsences().subscribe({
-            DatabaseHelper.database.absencesDao().delete(p.id)
-            DatabaseHelper.database.absencesDao().insert(it.getEvents(p))
+            DatabaseHelper.database.absencesDao().removeAndInsert(p.id, it.getEvents(p))
             handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_ABSENCES_OK, null) }
         }) {
             handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_ABSENCES_KO, null) }
@@ -439,37 +440,42 @@ object Metodi {
 
         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_BACHECA_START, null) }
         Spaggiari(p).api().getBacheca().subscribe({
-            val list = it.getCommunications(p).toMutableList()
-            val toRemove = mutableListOf<Communication>()
+            val infos = DatabaseHelper.database.communicationsDao().getAllInfo()
 
-            for (communication in list) {
-                if (communication.cntStatus == "deleted") {
-                    toRemove.add(communication)
-                    continue
-                }
-
-                val info = DatabaseHelper.database.communicationsDao().getInfo(communication.myId)
-                if (info == null || !communication.isRead || info.content.isEmpty()) {
-                    println("REQUEST - " + communication.title)
-                    Spaggiari(p).api().readBacheca(communication.evtCode, communication.id).subscribe { readResponse ->
-                        communication.isRead = true
-                        DatabaseHelper.database.communicationsDao().insert(communication)
-
-                        val downloadedInfo = readResponse.item
-                        downloadedInfo.id = communication.myId
-                        downloadedInfo.content = if (downloadedInfo.content.isEmpty())
-                            info?.content ?: ""
-                        else
-                            downloadedInfo.content
-                        DatabaseHelper.database.communicationsDao().insert(downloadedInfo)
-                    }
-                }
+            val notDeleted = it.getCommunications(p).toMutableList().filter { it.cntStatus != "deleted" }
+            val notReadList = notDeleted.filter { comm ->
+                val info = infos.firstOrNull { it.id == comm.id }
+                info == null || !comm.isRead || info.content.isEmpty()
             }
-            list.removeAll(toRemove)
 
-            DatabaseHelper.database.communicationsDao().delete(p.id)
-            DatabaseHelper.database.communicationsDao().insert(list)
-            handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_BACHECA_OK, null) }
+            val api = Spaggiari(p).api()
+
+            // Read notReadList
+            Observable
+                    .fromArray(*notReadList.map { api.readBacheca(it.evtCode, it.id) }.toTypedArray())
+                    .flatMap { it.subscribeOn(Schedulers.computation()) }
+                    .subscribe({
+                        // Update single communication
+                        val info = it.item
+                        val comm = notDeleted
+                                .firstOrNull { comm -> comm.myId == info.id }
+                                ?.apply { isRead = true }
+
+                        // Set isRead to true
+                        comm?.let {
+                            DatabaseHelper.database.communicationsDao().insert(it)
+                        }
+
+                        info.content = info.content.or(comm?.title.orEmpty())
+                        info.id = comm?.myId ?: -1
+
+                        DatabaseHelper.database.communicationsDao().insert(info)
+                    }, { Log.e("updateBacheca", it.localizedMessage) }, {
+
+                        // Completed all
+                        DatabaseHelper.database.communicationsDao().removeAndInsert(p.id, notDeleted)
+                        handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_BACHECA_OK, null) }
+                    })
         }) {
             handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_BACHECA_KO, null) }
             it.printStackTrace()
@@ -491,13 +497,18 @@ object Metodi {
             val notRead = notes.filter { !it.mStatus || it.mText == "..." }
 
             if (notRead.isNotEmpty()) {
-                Observable.merge(notRead.map {
-                    Spaggiari(p).api().markNote(it.mType, it.id.toInt())
-                }).blockingSubscribe({
-                    updateNote(p)
-                }, {
-                    handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_NOTES_KO, null) }
-                })
+                Observable
+                        .fromArray(*notRead.map {
+                            Spaggiari(p).api().markNote(it.mType, it.id.toInt())
+                        }.toTypedArray())
+                        .flatMap { it.subscribeOn(Schedulers.computation()) }
+                        .subscribe({
+                            updateNote(p)
+                        }, {
+                            Log.e("updateNote", it.localizedMessage)
+                        }, {
+                            handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_NOTES_OK, null) }
+                        })
             } else {
                 DatabaseHelper.database.notesDao().delete(p.id)
                 DatabaseHelper.database.notesDao().insert(notes)

@@ -26,6 +26,12 @@ abstract class FolderDao {
     @Query("DELETE FROM FILE WHERE PROFILE=:profile")
     abstract fun deleteFiles(profile: Long)
 
+    @Transaction
+    open fun removeFilesAndInsert(profile: Long, files: List<File>) {
+        deleteFiles(profile)
+        insertFiles(files)
+    }
+
     @Query("DELETE FROM FOLDER WHERE PROFILE=:profile")
     abstract fun deleteFolders(profile: Long)
 

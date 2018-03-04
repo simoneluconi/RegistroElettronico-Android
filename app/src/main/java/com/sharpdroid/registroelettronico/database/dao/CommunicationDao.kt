@@ -7,32 +7,42 @@ import com.sharpdroid.registroelettronico.database.entities.CommunicationInfo
 import io.reactivex.Flowable
 
 @Dao
-interface CommunicationDao {
+abstract class CommunicationDao {
 
     @Query("SELECT * FROM COMMUNICATION_INFO WHERE ID = :id")
-    fun getInfo(id: Long): CommunicationInfo?
+    abstract fun getInfo(id: Long): CommunicationInfo?
+
+    @Query("SELECT * FROM COMMUNICATION_INFO")
+    abstract fun getAllInfo(): List<CommunicationInfo>
 
     @Query("SELECT * FROM COMMUNICATION WHERE PROFILE = :profile ORDER BY DATE DESC")
-    fun loadCommunications(profile: Long): LiveData<List<Communication>>
+    abstract fun loadCommunications(profile: Long): LiveData<List<Communication>>
 
     @Query("SELECT * FROM COMMUNICATION WHERE PROFILE = :profile ORDER BY DATE DESC")
-    fun loadCommunicationsFlow(profile: Long): Flowable<List<Communication>>
+    abstract fun loadCommunicationsFlow(profile: Long): Flowable<List<Communication>>
 
     @Query("SELECT * FROM COMMUNICATION WHERE PROFILE = :profile ORDER BY DATE DESC")
-    fun getCommunicationsList(profile: Long): List<Communication>
+    abstract fun getCommunicationsList(profile: Long): List<Communication>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(communications: List<Communication>)
+    abstract fun insert(communications: List<Communication>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(communications: CommunicationInfo)
+    abstract fun insert(communications: CommunicationInfo)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(communications: Communication)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insert(communications: Communication)
 
     @Query("DELETE FROM COMMUNICATION WHERE PROFILE=:profile")
-    fun delete(profile: Long)
+    abstract fun delete(profile: Long)
+
+    @Transaction
+    open fun removeAndInsert(profile: Long, communications: List<Communication>) {
+        delete(profile)
+        insert(communications)
+    }
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun update(info: CommunicationInfo): Int
+    abstract fun update(info: CommunicationInfo): Int
+
 }
