@@ -191,7 +191,6 @@ class MainActivity : AppCompatActivity() {
 
         // Animate Hamburger on BackStack changes
         supportFragmentManager.addOnBackStackChangedListener {
-            Log.d("MainActivity", "BackStack count" + supportFragmentManager.backStackEntryCount.toString())
             updateDrawerLockMode()
             updateHamburgerDrawable()
         }
@@ -252,10 +251,6 @@ class MainActivity : AppCompatActivity() {
         headerResult.clear()
         headerResult.profiles = Profile.getIProfiles() + Profile.NEW_ACCOUNT_ROW
         headerResult.setActiveProfile(Account.with(this).user, false)
-        Log.d("MainActivity", "Drawer selection: ${drawerView.currentSelection}")
-        Log.d("MainActivity", "Drawer position: ${drawerView.currentSelectedPosition}")
-        Log.d("MainActivity", "Profile selection: ${headerResult.activeProfile.identifier}")
-        Log.d("MainActivity", "Customized selection: $selectedItem")
     }
 
     /**
@@ -278,13 +273,13 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        //User is coming from LoginActivity or FragmentLogin
+        //User is coming from LoginActivity
         else if (requestCode == LOGIN_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 updateDrawerHeader()
-                Log.d("MainActivity", "Logged in from LoginActivity or FragmentLogin")
+                Log.d("MainActivity", "Logged in from LoginActivity")
             } else if (Profile.getProfile(this) == null) {
-                Log.d("MainActivity", "Could not log in from LoginActivity or FragmentLogin")
+                Log.d("MainActivity", "Could not log in from LoginActivity")
                 finish()
             }
         }
