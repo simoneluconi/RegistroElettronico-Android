@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.sharpdroid.registroelettronico.database.entities.TimetableItem
+import com.sharpdroid.registroelettronico.database.pojos.SubjectPOJO
 import com.sharpdroid.registroelettronico.utils.Metodi.dp
 
 class TimetableLayout : ViewGroup {
@@ -74,7 +75,7 @@ class TimetableLayout : ViewGroup {
 
     }
 
-    fun setupData(list: List<TimetableItem>) {
+    fun setupData(list: List<TimetableItem>, subjects: List<SubjectPOJO>) {
         data.forEach {
             removeView(findViewById<TimetableItemView>(it.hashCode()))
         }
@@ -82,16 +83,15 @@ class TimetableLayout : ViewGroup {
         data.clear()
         data.addAll(list)
         data.map {
-            val t = TimetableItemView(context)
-            t.item = it
+            val t = TimetableItemView(context, it, subjects.firstOrNull { s -> it.subject == s.subject.id })
             t.id = it.hashCode()
             t.setOnClickListener { view ->
                 view as TimetableItemView
-                itemListener?.invoke(view.item!!)
+                itemListener?.invoke(view.item)
             }
             t.setOnLongClickListener { view ->
                 view as TimetableItemView
-                itemLongListener?.invoke(view.item!!)
+                itemLongListener?.invoke(view.item)
                 true
             }
             t
@@ -125,7 +125,7 @@ class TimetableLayout : ViewGroup {
                         }
                     }
                     is TimetableItemView -> {
-                        layout(marginLeft + itemMargin / 2 + divider + tileWidth * item!!.dayOfWeek, Math.round(divider + itemMargin / 2 + tileHeight * item!!.start), tileWidth + marginLeft - itemMargin / 2 + tileWidth * item!!.dayOfWeek, Math.round(tileHeight * item!!.end - itemMargin / 2))
+                        layout(marginLeft + itemMargin / 2 + divider + tileWidth * item.dayOfWeek, Math.round(divider + itemMargin / 2 + tileHeight * item.start), tileWidth + marginLeft - itemMargin / 2 + tileWidth * item.dayOfWeek, Math.round(tileHeight * item.end - itemMargin / 2))
                     }
                     is TextView -> {
                         if (id in 1 until 24) {
@@ -163,7 +163,7 @@ class TimetableLayout : ViewGroup {
                     }
                     is TimetableItemView -> {
                         if (item == null) throw NullPointerException("Data within TimetableItemView must not be null")
-                        measure(MeasureSpec.makeMeasureSpec(tileWidth - itemMargin, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec((tileHeight * Math.round(item!!.end - item!!.start)) - itemMargin, MeasureSpec.EXACTLY))
+                        measure(MeasureSpec.makeMeasureSpec(tileWidth - itemMargin, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec((tileHeight * Math.round(item.end - item.start)) - itemMargin, MeasureSpec.EXACTLY))
                     }
                     is TextView -> measure(MeasureSpec.getSize(getWidth()), MeasureSpec.getSize(getHeight()))
                     is AddView -> measure(MeasureSpec.makeMeasureSpec(tileWidth - divider - addViewMargin, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(tileHeight - divider - addViewMargin, MeasureSpec.EXACTLY))
