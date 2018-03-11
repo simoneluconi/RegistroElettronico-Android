@@ -40,6 +40,7 @@ import kotlinx.android.synthetic.main.app_bar_main.*
 
 class FragmentTimetable : Fragment() {
     private lateinit var timetable: TimetableLayout
+    private lateinit var subjects: List<SubjectPOJO>
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -55,6 +56,8 @@ class FragmentTimetable : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         activity.title = "Orario"
         setHasOptionsMenu(true)
+
+        subjects = DatabaseHelper.database.subjectsDao().getAllSubjectsPOJOBlocking(Account.with(context).user)
 
         timetable.addListener = { col, row ->
             startActivity(Intent(context, AddTimetableItemActivity::class.java).putExtra("day", col).putExtra("start", row))
@@ -77,22 +80,20 @@ class FragmentTimetable : Fragment() {
             startActivity(Intent(context, AddTimetableItemActivity::class.java).putExtra("id", item.id))
         }
 
-        DatabaseHelper.database.timetableDao().queryProfile(Account.with(context).user).observe(this, Observer {
-            timetable.setupData(it.orEmpty())
 
-            if ((timetable.parent as NestedScrollView?)?.scrollY == 0) {
-                if (savedInstanceState != null && savedInstanceState["scrollY"] != null) {
-                    (timetable.parent as NestedScrollView).postDelayed({
-                        (timetable.parent as NestedScrollView?)?.scrollY = savedInstanceState["scrollY"] as Int
+        DatabaseHelper.database.timetableDao().queryProfile(Account.with(context).user).observe(this, Observer {
+            timetable.setupData(it.orEmpty(), subjects)
+
+            with(timetable.parent as NestedScrollView) {
+                if (scrollY == 0) {
+                    postDelayed({
+                        if (scrollY == 0) {
+                            scrollY = initialScrollY(savedInstanceState)
+                        }
                     }, 20)
-                } else {
-                    val minY = Math.max(timetable.data.minBy { it.start }?.start?.times(timetable.tileHeight)?.minus(dp(6))
-                            ?: 0f, 0f)
-                    (timetable.parent as NestedScrollView?)?.scrollY = Math.round(minY)
                 }
             }
         })
-
 
         if (!BuildConfig.DEBUG)
             Answers.getInstance().logContentView(ContentViewEvent().putContentId("Orario"))
@@ -102,6 +103,16 @@ class FragmentTimetable : Fragment() {
         val p = Profile.getProfile(context)
         updateSubjects(p)
         updateLessons(p)
+    }
+
+    private fun initialScrollY(savedInstanceState: Bundle?): Int {
+        return if (savedInstanceState?.get("scrollY") != null) savedInstanceState["scrollY"] as Int else adaptTableScrollY()
+    }
+
+    private fun adaptTableScrollY(): Int {
+        val minY = Math.max(timetable.data.minBy { it.start }?.start?.times(timetable.tileHeight)?.minus(dp(6))
+                ?: 0f, 0f)
+        return Math.round(minY)
     }
 
     private fun showTutorial() {

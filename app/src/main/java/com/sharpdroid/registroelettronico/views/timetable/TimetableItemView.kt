@@ -14,50 +14,34 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.AppCompatTextView
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.AttributeSet
 import android.util.TypedValue
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.database.entities.TimetableItem
-import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
-import com.sharpdroid.registroelettronico.utils.Account
+import com.sharpdroid.registroelettronico.database.pojos.SubjectPOJO
 import com.sharpdroid.registroelettronico.utils.CustomTypefaceSpan
 import com.sharpdroid.registroelettronico.utils.Metodi.dp
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
 
-class TimetableItemView : AppCompatTextView {
+class TimetableItemView(context: Context, var item: TimetableItem, private val subjectPOJO: SubjectPOJO?) : AppCompatTextView(context) {
     private val padding = dp(4)
-    private var disposable: Disposable? = null
-
-    @Suppress("DEPRECATION")
-    var item: TimetableItem? = null
-        set(value) {
-            field = value
-            if (disposable == null) {
-                disposable = DatabaseHelper.database.subjectsDao().getSubjectPOJOFlowable(value!!.subject, Account.with(context).user).observeOn(AndroidSchedulers.mainThread()).subscribe { it ->
-                    val t = it.getOrNull(0)
-                    if (!t?.getSubjectName().isNullOrEmpty()) {
-                        val spannable = SpannableString(t?.getSubjectName().orEmpty() + "\n" + value.where.orEmpty())
-                        spannable.setSpan(CustomTypefaceSpan("", Typeface.create("sans-serif-medium", Typeface.NORMAL)), 0, t?.getSubjectName().orEmpty().length, 0)
-                        spannable.setSpan(CustomTypefaceSpan("", Typeface.create("sans-serif-regular", Typeface.NORMAL)), spannable.length - (value.where.orEmpty().length), spannable.length, 0)
-                        spannable.setSpan(ForegroundColorSpan(Color.parseColor("#DDDDDD")), spannable.length - (value.where.orEmpty().length), spannable.length, 0)
-                        text = spannable
-                    }
-                }
-            }
-            getRoundedRectangle(value!!.color).let {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    background = it
-                } else {
-                    setBackgroundDrawable(it)
-                }
-            }
-        }
 
     init {
         setTextColor(Color.WHITE)
         setPadding(padding, padding, padding, padding)
         setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+
+        getRoundedRectangle(item.color).let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                background = it
+            } else {
+                setBackgroundDrawable(it)
+            }
+        }
+
+        val spannable = SpannableString(subjectPOJO?.getSubjectName().orEmpty() + "\n" + item.where.orEmpty())
+        spannable.setSpan(CustomTypefaceSpan("", Typeface.create("sans-serif-medium", Typeface.NORMAL)), 0, subjectPOJO?.getSubjectName().orEmpty().length, 0)
+        spannable.setSpan(CustomTypefaceSpan("", Typeface.create("sans-serif-regular", Typeface.NORMAL)), spannable.length - (item.where.orEmpty().length), spannable.length, 0)
+        spannable.setSpan(ForegroundColorSpan(Color.parseColor("#DDDDDD")), spannable.length - (item.where.orEmpty().length), spannable.length, 0)
+        text = spannable
     }
 
     private fun getRoundedRectangle(color: Int): Drawable {
@@ -75,13 +59,4 @@ class TimetableItemView : AppCompatTextView {
             dr
         }
     }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        disposable?.dispose()
-    }
-
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 }
