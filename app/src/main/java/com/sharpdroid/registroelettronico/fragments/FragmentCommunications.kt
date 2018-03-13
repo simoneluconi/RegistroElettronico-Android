@@ -115,7 +115,6 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
         viewModel
                 .getCommunications(Account.with(context).user)
                 .observe(this, Observer {
-                    println("OBSERVED")
                     addCommunications(it ?: emptyList())
                 })
 

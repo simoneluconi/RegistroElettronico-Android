@@ -455,23 +455,24 @@ object Metodi {
                     .fromArray(*notReadList.map { api.readBacheca(it.evtCode, it.id) }.toTypedArray())
                     .flatMap { it.subscribeOn(Schedulers.computation()) }
                     .subscribe({
-                        // Update single communication
                         val info = it.item
-                        val comm = notDeleted
-                                .firstOrNull { comm -> comm.myId == info.id }
+                        val comm = notReadList
+                                .find { comm -> comm.title == info.title }
                                 ?.apply { isRead = true }
+                                ?: throw IllegalStateException("Communication not found")
 
                         // Set isRead to true
-                        comm?.let {
-                            DatabaseHelper.database.communicationsDao().insert(it)
-                        }
+                        DatabaseHelper.database.communicationsDao().insert(comm)
 
-                        info.content = info.content.or(comm?.title.orEmpty())
-                        info.id = comm?.myId ?: -1
+                        // Make sure info has some content
+                        info.content = info.content.or(comm.title.or(comm.title.orEmpty()))
+                        // Setup relation
+                        info.id = comm.myId
 
                         DatabaseHelper.database.communicationsDao().insert(info)
-                    }, { Log.e("updateBacheca", it.localizedMessage) }, {
 
+                    }, { Log.e("updateBacheca", it.localizedMessage) }, {
+                        Log.d("updateBacheca", "Download completed")
                         // Completed all
                         DatabaseHelper.database.communicationsDao().removeAndInsert(p.id, notDeleted)
                         handler.post { NotificationManager.instance.postNotificationName(EventType.UPDATE_BACHECA_OK, null) }
