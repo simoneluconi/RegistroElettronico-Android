@@ -51,13 +51,13 @@ class Spaggiari(val profile: Profile?) {
         }
     }
 
-    private val zorro by lazy {
+    private val headers by lazy {
         Interceptor { chain ->
             val original = chain.request()
 
             val request = original.newBuilder()
-                    .header("User-Agent", "zorro/1.0")
-                    .header("Z-Dev-Apikey", "+zorro+")
+                    .header("User-Agent", "CVVS/std/1.6.1 Android/1.6.1")
+                    .header("Z-Dev-Apikey", "Tg1NWEwNGIgIC0K")
                     .header("Z-Auth-Token", profile?.token.orEmpty())
                     .method(original.method(), original.body())
                     .url(original.url().toString().replace("%7BstudentId%7D", profile?.id.toString()))
@@ -78,7 +78,7 @@ class Spaggiari(val profile: Profile?) {
     private val okHttp by lazy {
         OkHttpClient.Builder()
                 .addInterceptor(loginInterceptor)
-                .addInterceptor(zorro)
+                .addInterceptor(headers)
                 .build()
     }
 
