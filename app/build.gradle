@@ -126,7 +126,7 @@ dependencies {
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.0@aar') {
         transitive = true
     }
-    implementation('com.google.firebase:firebase-core:11.8.0') {
+    implementation('com.google.firebase:firebase-core:15.0.0') {
         exclude module: 'firebase-database'
     }
     implementation('com.crashlytics.sdk.android:answers:1.4.1@aar') {
@@ -139,8 +139,7 @@ dependencies {
         transitive = true
     }
 
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    //kapt 'com.android.databinding:compiler:3.0.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
 
     implementation('com.afollestad.material-dialogs:core:0.9.6.0') {
         exclude group: 'com.android.support'
@@ -167,16 +166,16 @@ dependencies {
     implementation 'com.github.sundeepk:compact-calendar-view:2.0.2.2'
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.heinrichreimersoftware:material-intro:1.6.2'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation('com.wdullaer:materialdatetimepicker:3.5.1') {
         exclude group: 'com.android.support'
     }
     implementation 'com.yqritc:recyclerview-flexibledivider:1.4.0'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
-    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.12'
     implementation 'org.apache.commons:commons-lang3:3.7'
 
     //room
@@ -185,12 +184,12 @@ dependencies {
     kapt "android.arch.persistence.room:compiler:1.0.0"
 
     //LiveData & ViewModel
-    implementation "android.arch.lifecycle:extensions:1.1.0"
+    implementation "android.arch.lifecycle:extensions:1.1.1"
 
     //For Lifecycles Java8 Lanaguage support, add:
-    implementation "android.arch.lifecycle:common-java8:1.1.0"
+    implementation "android.arch.lifecycle:common-java8:1.1.1"
 
-    implementation 'com.google.firebase:firebase-messaging:11.8.0'
+    implementation 'com.google.firebase:firebase-messaging:15.0.0'
     implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"

@@ -25,7 +25,7 @@ class OptionView : RelativeLayout {
 
         try {
             setTitle(a.getString(R.styleable.OptionView_title))
-            setContent(a.getString(R.styleable.OptionView_content))
+            setContent(a.getString(R.styleable.OptionView_content_view))
             setImage(a.getDrawable(R.styleable.OptionView_image))
         } finally {
             a.recycle()

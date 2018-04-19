@@ -2,7 +2,7 @@
 <resources>
     <declare-styleable name="OptionView">
         <attr name="title" format="string" />
-        <attr name="content" format="string" />
+        <attr name="content_view" format="string" />
         <attr name="image" format="reference" />
     </declare-styleable>
 
