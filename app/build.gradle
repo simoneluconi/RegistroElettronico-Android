@@ -77,9 +77,6 @@ android {
             if (rootProject.file("keystore.properties").exists()) {
                 signingConfig signingConfigs.config
             }
-
-            // Disable fabric build ID generation for debug builds
-            ext.enableCrashlytics = false
         }
 
         release {
