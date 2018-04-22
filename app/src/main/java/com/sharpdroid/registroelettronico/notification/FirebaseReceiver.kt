@@ -22,15 +22,17 @@ class FirebaseReceiver : FirebaseMessagingService() {
                     .setService(NotificationService::class.java)
                     // uniquely identifies the job
                     .setTag("sharpdroid-notification-service")
-                    // start now
-                    .setTrigger(Trigger.NOW)
+                    // start between 0 and 60 seconds from now
+                    .setTrigger(Trigger.executionWindow(0, 60))
                     // one-off job
                     .setRecurring(false)
                     // don't overwrite an existing job with the same tag
-                    .setReplaceCurrent(true)
+                    .setReplaceCurrent(false)
                     // constraints that need to be satisfied for the job to run
                     .setConstraints(
+                            // only run when a network connection is available
                             Constraint.ON_ANY_NETWORK,
+                            // only run when the device is idle
                             Constraint.DEVICE_IDLE
                     )
 
