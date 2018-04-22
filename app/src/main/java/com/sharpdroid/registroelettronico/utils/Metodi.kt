@@ -32,6 +32,8 @@ import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import okhttp3.Headers
 import okhttp3.ResponseBody
+import okio.BufferedSink
+import okio.Okio
 import retrofit2.HttpException
 import java.io.FileOutputStream
 import java.io.IOException
@@ -173,25 +175,10 @@ object Metodi {
 
     private fun writeResponseBodyToDisk(body: ResponseBody?, file: JavaFile): Boolean {
         if (body == null) return false
-        try {
-            body.byteStream().use { inputStream ->
-                FileOutputStream(file).use { outputStream ->
-                    val fileReader = ByteArray(4096)
-                    while (true) {
-                        val read = inputStream.read(fileReader)
-                        if (read == -1)
-                            break
-                        outputStream.write(fileReader, 0, read)
-                    }
-                    outputStream.flush()
-                    return true
-                }
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-            return false
-        }
-
+        val sink = Okio.buffer(Okio.sink(file))
+        sink.writeAll(body.source())
+        sink.close()
+        return true
     }
 
     private fun getFileNameFromHeaders(headers: Headers): String {
