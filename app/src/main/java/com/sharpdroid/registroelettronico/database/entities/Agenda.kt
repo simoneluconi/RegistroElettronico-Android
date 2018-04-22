@@ -69,6 +69,7 @@ data class RemoteAgenda(
         result = 31 * result + end.hashCode()
         result = 31 * result + isFullDay.hashCode()
         result = 31 * result + notes.hashCode()
+        result = 31 * result + author.hashCode()
         result = 31 * result + profile.hashCode()
         return result
     }
