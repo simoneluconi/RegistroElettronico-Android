@@ -26,8 +26,6 @@ import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
-import com.crashlytics.android.answers.Answers
-import com.crashlytics.android.answers.ShareEvent
 import com.google.firebase.messaging.FirebaseMessaging
 import com.mikepenz.materialdrawer.AccountHeader
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
@@ -317,9 +315,6 @@ class MainActivity : AppCompatActivity() {
                 val url = "https://play.google.com/store/apps/details?id=com.sharpdroid.registroelettronico"
                 intent.putExtra(Intent.EXTRA_TEXT, url)
                 startActivity(Intent.createChooser(intent, getString(R.string.share_with)))
-
-                if (!BuildConfig.DEBUG)
-                    Answers.getInstance().logShare(ShareEvent().putMethod("ACTION_SEND"))
                 return true
             }
             R.id.nav_send -> {
@@ -328,9 +323,6 @@ class MainActivity : AppCompatActivity() {
                 intentMail.putExtra(Intent.EXTRA_SUBJECT, "Registro Elettronico")
                 intentMail.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intentMail)
-
-                if (!BuildConfig.DEBUG)
-                    Answers.getInstance().logShare(ShareEvent().putMethod("ACTION_SEND"))
                 return false
             }
             else -> return false

@@ -11,8 +11,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.*
 import com.afollestad.materialdialogs.MaterialDialog
-import com.crashlytics.android.answers.Answers
-import com.crashlytics.android.answers.ContentViewEvent
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.holders.Holder
@@ -59,10 +57,6 @@ class EditSubjectDetailsActivity : AppCompatActivity() {
         DatabaseHelper.database.subjectsDao().getSubjectPOJO(intent.getLongExtra("code", 0L), Account.with(this).user).observe(this, Observer {
             it?.let { it1 -> init(it1, teachers) }
         })
-
-        if (!BuildConfig.DEBUG)
-            Answers.getInstance().logContentView(ContentViewEvent().putContentId("Materia").putContentType("Modifica"))
-
     }
 
     internal fun init(subject: SubjectPOJO, teachers: List<String>) {

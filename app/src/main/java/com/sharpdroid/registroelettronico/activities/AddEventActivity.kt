@@ -12,8 +12,6 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.TextView
 import com.afollestad.materialdialogs.MaterialDialog
-import com.crashlytics.android.answers.Answers
-import com.crashlytics.android.answers.ContentViewEvent
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.database.entities.LocalAgenda
@@ -60,9 +58,6 @@ class AddEventActivity : AppCompatActivity() {
         selectedDay = Date(intent.getLongExtra("time", 0))
         init(intent.getStringExtra("type"))
         animShake = AnimationUtils.loadAnimation(this, R.anim.shake)
-        if (!BuildConfig.DEBUG)
-            Answers.getInstance().logContentView(ContentViewEvent().putContentId("Evento").putContentType("Nuovo"))
-
         vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
     }
 

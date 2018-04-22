@@ -15,8 +15,6 @@ import android.support.v7.preference.PreferenceCategory
 import android.support.v7.preference.PreferenceFragmentCompat
 import android.support.v7.preference.TwoStatePreference
 import android.view.View
-import com.crashlytics.android.answers.Answers
-import com.crashlytics.android.answers.ContentViewEvent
 import com.mikepenz.aboutlibraries.LibsBuilder
 import com.mikepenz.aboutlibraries.LibsConfiguration
 import com.sharpdroid.registroelettronico.BuildConfig
@@ -133,9 +131,6 @@ class FragmentSettings : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         } else {
             preference.removePreference(findPreference("notify_settings"))
         }
-
-        if (!BuildConfig.DEBUG)
-            Answers.getInstance().logContentView(ContentViewEvent().putContentId("Impostazioni"))
     }
 
     override fun onResume() {

@@ -14,8 +14,6 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import com.afollestad.materialdialogs.MaterialDialog
-import com.crashlytics.android.answers.Answers
-import com.crashlytics.android.answers.LoginEvent
 import com.heinrichreimersoftware.materialintro.app.SlideFragment
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
@@ -148,8 +146,6 @@ class FragmentLogin : SlideFragment() {
         loggedIn = true
         updateNavigation()
         nextSlide()
-        if (!BuildConfig.DEBUG)
-            Answers.getInstance().logLogin(LoginEvent().putMethod("multiple"))
     }
 
     private fun loginWithIdent(email: String, password: String, idents: Array<String>): io.reactivex.Observable<LoginResponse> {

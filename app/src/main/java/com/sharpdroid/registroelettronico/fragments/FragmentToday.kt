@@ -9,8 +9,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.crashlytics.android.answers.Answers
-import com.crashlytics.android.answers.ContentViewEvent
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.holders.Holder
@@ -148,9 +146,6 @@ class FragmentToday : Fragment() {
                 nested_scroll_view?.scrollY = savedInstanceState.getInt("scrollY")
             }, 20)
         }
-
-        if (!BuildConfig.DEBUG)
-            Answers.getInstance().logContentView(ContentViewEvent().putContentId("Panoramica"))
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {

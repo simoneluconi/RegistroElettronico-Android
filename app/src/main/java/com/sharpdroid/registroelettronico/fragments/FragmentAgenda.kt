@@ -9,8 +9,6 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.*
-import com.crashlytics.android.answers.Answers
-import com.crashlytics.android.answers.ContentViewEvent
 import com.github.sundeepk.compactcalendarview.CompactCalendarView
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
@@ -165,9 +163,6 @@ class FragmentAgenda : Fragment(), CompactCalendarView.CompactCalendarViewListen
         Cloud.api.pullRemoteInfo(profile).subscribe({
             DatabaseHelper.database.eventsDao().insertRemoteInfo(it)
         }, { Log.e("Cloud", it.localizedMessage) })
-
-        if (!BuildConfig.DEBUG)
-            Answers.getInstance().logContentView(ContentViewEvent().putContentId("Agenda"))
     }
 
     private fun download() {

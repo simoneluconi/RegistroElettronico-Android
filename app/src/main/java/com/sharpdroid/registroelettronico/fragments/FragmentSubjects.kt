@@ -11,8 +11,6 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
 import android.view.*
 import android.widget.FrameLayout
-import com.crashlytics.android.answers.Answers
-import com.crashlytics.android.answers.ContentViewEvent
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.EditSubjectDetailsActivity
@@ -67,9 +65,6 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, SearchView
         recycler.addItemDecoration(HorizontalDividerItemDecoration.Builder(context).colorResId(R.color.divider).build())
         recycler.adapter = adapter
         empty_subjects.setTextAndDrawable("Nessuna lezione", R.drawable.ic_view_agenda)
-
-        if (!BuildConfig.DEBUG)
-            Answers.getInstance().logContentView(ContentViewEvent().putContentId("Lezioni").putContentType("Materie"))
 
         if (savedInstanceState == null)
             download()

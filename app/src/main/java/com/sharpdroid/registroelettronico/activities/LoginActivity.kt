@@ -11,8 +11,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
-import com.crashlytics.android.answers.Answers
-import com.crashlytics.android.answers.LoginEvent
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.LoginAdapter
@@ -105,8 +103,6 @@ class LoginActivity : AppCompatActivity() {
                                     setResult(Activity.RESULT_OK)
                                     finish()
                                 })
-                                if (!BuildConfig.DEBUG)
-                                    Answers.getInstance().logLogin(LoginEvent().putMethod("multiple"))
                             }
                             .canceledOnTouchOutside(false)
                             .onNeutral { _, _ ->
@@ -128,8 +124,6 @@ class LoginActivity : AppCompatActivity() {
 
                 PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("first_run", false).apply()
                 login_btn.setText(R.string.login_riuscito)
-                if (!BuildConfig.DEBUG)
-                    Answers.getInstance().logLogin(LoginEvent().putMethod("single"))
                 setResult(Activity.RESULT_OK)
                 finish()
             }

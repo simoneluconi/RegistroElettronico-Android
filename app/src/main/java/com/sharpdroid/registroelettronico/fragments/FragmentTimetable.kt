@@ -12,8 +12,6 @@ import android.support.v4.widget.NestedScrollView
 import android.view.*
 import android.widget.LinearLayout
 import com.afollestad.materialdialogs.MaterialDialog
-import com.crashlytics.android.answers.Answers
-import com.crashlytics.android.answers.ContentViewEvent
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetView
 import com.sharpdroid.registroelettronico.BuildConfig
@@ -94,9 +92,6 @@ class FragmentTimetable : Fragment() {
                 }
             }
         })
-
-        if (!BuildConfig.DEBUG)
-            Answers.getInstance().logContentView(ContentViewEvent().putContentId("Orario"))
 
         showTutorial()
 
