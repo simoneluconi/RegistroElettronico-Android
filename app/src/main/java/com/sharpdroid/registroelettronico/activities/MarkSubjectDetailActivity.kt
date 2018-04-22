@@ -17,8 +17,6 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.AdapterView
 import android.widget.SeekBar
 import com.afollestad.materialdialogs.MaterialDialog
-import com.crashlytics.android.answers.Answers
-import com.crashlytics.android.answers.ContentViewEvent
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetView
 import com.github.mikephil.charting.data.Entry
@@ -165,10 +163,6 @@ class MarkSubjectDetailActivity : AppCompatActivity(), HypotheticalView.Hypothet
         DatabaseHelper.database.lessonsDao().loadLastLessons(subjectId, account).observe(this, Observer {
             lessons.update(it.orEmpty(), subjectId.toInt())
         })
-
-        //STATS
-        if (!BuildConfig.DEBUG)
-            Answers.getInstance().logContentView(ContentViewEvent().putContentId("Materia").putContentType("Dettagli"))
 
         //RESTORE SCROLL
         if (savedInstanceState != null && savedInstanceState["scrollY"] != null) {

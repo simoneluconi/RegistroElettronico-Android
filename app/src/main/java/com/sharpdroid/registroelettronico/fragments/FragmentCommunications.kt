@@ -10,8 +10,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SearchView
 import android.view.*
 import com.afollestad.materialdialogs.MaterialDialog
-import com.crashlytics.android.answers.Answers
-import com.crashlytics.android.answers.ContentViewEvent
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
@@ -117,9 +115,6 @@ class FragmentCommunications : Fragment(), SwipeRefreshLayout.OnRefreshListener,
                 .observe(this, Observer {
                     addCommunications(it ?: emptyList())
                 })
-
-        if (!BuildConfig.DEBUG)
-            Answers.getInstance().logContentView(ContentViewEvent().putContentId("Comunicazioni"))
     }
 
     override fun onCommunicationClick(communication: Communication) {

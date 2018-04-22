@@ -74,10 +74,6 @@
                 android:resource="@xml/filepaths" />
         </provider>
 
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="3124a44c739be03092b7db7c9c44a5052bd37fa5" />
-
         <service
             android:name=".notification.FirebaseReceiver"
             android:enabled="true"

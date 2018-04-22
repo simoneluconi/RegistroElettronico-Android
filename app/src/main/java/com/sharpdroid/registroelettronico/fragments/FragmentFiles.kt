@@ -10,8 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.afollestad.materialdialogs.MaterialDialog
-import com.crashlytics.android.answers.Answers
-import com.crashlytics.android.answers.ContentViewEvent
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.NotificationManager
 import com.sharpdroid.registroelettronico.R
@@ -78,9 +76,6 @@ class FragmentFiles : Fragment(), NotificationManager.NotificationReceiver, File
             mRVAdapter.clear()
             mRVAdapter.addAll(it.files)
         })
-
-        if (!BuildConfig.DEBUG)
-            Answers.getInstance().logContentView(ContentViewEvent().putContentId("Didattica").putContentType("File"))
     }
 
     override fun onFileClick(file: File) {

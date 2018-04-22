@@ -13,8 +13,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.crashlytics.android.answers.Answers
-import com.crashlytics.android.answers.ContentViewEvent
 import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.utils.Metodi
 
@@ -43,8 +41,6 @@ class FragmentCredits : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity.title = "Riconoscimenti"
-        if (!BuildConfig.DEBUG)
-            Answers.getInstance().logContentView(ContentViewEvent().putContentId("Riconoscimenti"))
     }
 
     companion object {
