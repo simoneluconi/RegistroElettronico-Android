@@ -3,6 +3,7 @@ package com.sharpdroid.registroelettronico.adapters
 import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.adapters.holders.LessonHolder
@@ -19,7 +20,11 @@ class LessonsAdapter(private val mContext: Context) : RecyclerView.Adapter<Lesso
 
     override fun onBindViewHolder(holder: LessonHolder, position: Int) {
         val lesson = lessons[position]
-        holder.content.text = lesson.mArgument.trim { it <= ' ' }
+        if (lesson.mArgument.isNullOrBlank()) {
+            holder.content.visibility = View.GONE
+        } else {
+            holder.content.text = lesson.mArgument
+        }
         holder.date.text = formatter.format(lesson.mDate)
     }
 

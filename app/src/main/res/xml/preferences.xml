@@ -99,11 +99,6 @@
             android:summary="Conosci gli sviluppatori :)"
             android:title="Riconoscimenti" />
 
-        <Preference
-            android:key="attribution"
-            android:summary="Librerie Open Source"
-            android:title="Attribuzioni" />
-
     </PreferenceCategory>
 
 </PreferenceScreen>

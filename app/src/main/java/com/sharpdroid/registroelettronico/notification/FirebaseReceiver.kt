@@ -1,5 +1,6 @@
 package com.sharpdroid.registroelettronico.notification
 
+import android.content.Intent
 import android.preference.PreferenceManager
 import com.firebase.jobdispatcher.Constraint
 import com.firebase.jobdispatcher.FirebaseJobDispatcher

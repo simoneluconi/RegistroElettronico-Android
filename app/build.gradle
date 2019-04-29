@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.25.1'
+        classpath 'io.fabric.tools:gradle:1.+'
     }
 }
 
@@ -22,7 +22,6 @@ repositories {
 
 android {
     compileSdkVersion 26
-    buildToolsVersion '27.0.3'
 
     defaultConfig {
         applicationId "com.sharpdroid.registroelettronico"
@@ -123,12 +122,8 @@ dependencies {
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.1@aar') {
         transitive = true;
     }
-    implementation 'com.google.firebase:firebase-core:15.0.0'
+    implementation 'com.google.firebase:firebase-core:16.0.8'
     implementation('com.mikepenz:materialdrawer:6.0.7@aar') {
-        exclude group: 'com.android.support'
-        transitive = true
-    }
-    implementation('com.mikepenz:aboutlibraries:6.0.7@aar') {
         exclude group: 'com.android.support'
         transitive = true
     }
@@ -158,11 +153,13 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation 'com.github.sundeepk:compact-calendar-view:2.0.2.2'
-    implementation 'com.google.code.gson:gson:2.8.2'
-    implementation 'com.heinrichreimersoftware:material-intro:1.6.2'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation ('com.heinrichreimersoftware:material-intro:7221502f1f') {
+        exclude group: 'com.android.support'
+    }
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation('com.wdullaer:materialdatetimepicker:3.5.1') {
         exclude group: 'com.android.support'
     }
@@ -172,9 +169,9 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.1.12'
 
     //room
-    implementation "android.arch.persistence.room:runtime:1.0.0"
-    implementation "android.arch.persistence.room:rxjava2:1.0.0"
-    kapt "android.arch.persistence.room:compiler:1.0.0"
+    implementation "android.arch.persistence.room:runtime:1.1.1"
+    implementation "android.arch.persistence.room:rxjava2:1.1.1"
+    kapt "android.arch.persistence.room:compiler:1.1.1"
 
     //LiveData & ViewModel
     implementation "android.arch.lifecycle:extensions:1.1.1"
@@ -182,21 +179,20 @@ dependencies {
     //For Lifecycles Java8 Lanaguage support, add:
     implementation "android.arch.lifecycle:common-java8:1.1.1"
 
-    implementation 'com.google.firebase:firebase-messaging:15.0.0'
+    implementation 'com.google.firebase:firebase-messaging:17.6.0'
     implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
     implementation 'com.android.support:multidex:1.0.3'
 
-    androidTestImplementation 'android.arch.persistence.room:testing:1.0.0'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:3.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-intents:3.0.1'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'android.arch.persistence.room:testing:1.1.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:3.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-intents:3.0.2'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:1.10.19'
-
 }
 
 apply plugin: 'com.google.gms.google-services'
