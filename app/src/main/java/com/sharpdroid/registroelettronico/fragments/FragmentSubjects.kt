@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
 import android.view.*
 import android.widget.FrameLayout
-import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.activities.EditSubjectDetailsActivity
 import com.sharpdroid.registroelettronico.adapters.SubjectsAdapter
@@ -175,7 +174,9 @@ class FragmentSubjects : Fragment(), SubjectsAdapter.SubjectListener, SearchView
             grouped.keys.sortedBy { it }.forEach {
                 this.data.add(it)
                 this.data.addAll(grouped[it]?.map {
-                    it.mArgument = it.mArgument.replace(Regex(query, RegexOption.IGNORE_CASE), "<b>$0</b>")
+                    if (!it.mArgument.isNullOrBlank()) {
+                        it.mArgument = it.mArgument!!.replace(Regex(query, RegexOption.IGNORE_CASE), "<b>$0</b>")
+                    }
                     it
                 }?.sortedByDescending { it.mDate } ?: emptyList())
             }

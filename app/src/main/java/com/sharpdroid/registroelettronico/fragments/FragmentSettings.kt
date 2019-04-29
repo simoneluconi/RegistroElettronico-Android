@@ -14,10 +14,6 @@ import android.support.v7.preference.ListPreference
 import android.support.v7.preference.PreferenceCategory
 import android.support.v7.preference.PreferenceFragmentCompat
 import android.support.v7.preference.TwoStatePreference
-import android.view.View
-import com.mikepenz.aboutlibraries.LibsBuilder
-import com.mikepenz.aboutlibraries.LibsConfiguration
-import com.sharpdroid.registroelettronico.BuildConfig
 import com.sharpdroid.registroelettronico.R
 import com.sharpdroid.registroelettronico.database.entities.Profile
 import com.sharpdroid.registroelettronico.database.room.DatabaseHelper
@@ -26,7 +22,6 @@ import com.sharpdroid.registroelettronico.utils.Account
 import com.sharpdroid.registroelettronico.utils.Metodi.pushDatabase
 import io.reactivex.Completable
 import io.reactivex.schedulers.Schedulers
-
 
 /**
  * shows the settings option for choosing the movie categories in ListPreference.
@@ -77,21 +72,6 @@ class FragmentSettings : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                     DatabaseHelper.database.profilesDao().update(profile)
                 }
             }.subscribeOn(Schedulers.computation())
-            return@setOnPreferenceClickListener true
-        }
-
-        findPreference("attribution").setOnPreferenceClickListener { _ ->
-            val transaction = activity.supportFragmentManager.beginTransaction()
-            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.fragment_container, LibsBuilder().withUiListener(object : LibsConfiguration.LibsUIListener {
-                override fun preOnCreateView(view: View) = view
-
-                override fun postOnCreateView(view: View): View {
-                    if (activity != null)
-                        activity.title = "Attribuzioni"
-                    return view
-                }
-            }).supportFragment()).addToBackStack(null)
-            transaction.commit()
             return@setOnPreferenceClickListener true
         }
 

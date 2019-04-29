@@ -30,7 +30,7 @@ import com.sharpdroid.registroelettronico.database.entities.*
             (Teacher::class),
             (ExcludedMark::class)
         ],
-        version = 13)
+        version = 14)
 @TypeConverters(Converters::class)
 abstract class RoomDB : RoomDatabase() {
     abstract fun absencesDao(): AbsenceDao

@@ -20,7 +20,7 @@ class LessonCell(context: Context) : FrameLayout(context) {
 
     fun bindData(lesson: Lesson) {
         data = lesson
-        if (lesson.mArgument.isBlank()) {
+        if (lesson.mArgument.isNullOrBlank()) {
             content.visibility = View.GONE
         } else {
             content.text = lesson.mArgument

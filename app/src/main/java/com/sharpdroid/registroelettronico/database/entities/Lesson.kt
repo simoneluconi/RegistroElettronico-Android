@@ -29,7 +29,7 @@ import java.util.*
  */
 @Entity(tableName = "LESSON")
 class Lesson(
-        @ColumnInfo(name = "M_ARGUMENT") @Expose @SerializedName("lessonArg") var mArgument: String = "",
+        @ColumnInfo(name = "M_ARGUMENT") @Expose @SerializedName("lessonArg") var mArgument: String? = "",
         @ColumnInfo(name = "M_AUTHOR_NAME") @Expose @SerializedName("authorName") var mAuthorName: String = "",
         @ColumnInfo(name = "M_CLASS_DESCRIPTION") @Expose @SerializedName("classDesc") var mClassDescription: String = "",
         @ColumnInfo(name = "M_CODE") @Expose @SerializedName("evtCode") var mCode: String = "",
