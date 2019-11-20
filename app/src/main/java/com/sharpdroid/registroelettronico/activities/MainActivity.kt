@@ -2,6 +2,7 @@ package com.sharpdroid.registroelettronico.activities
 
 import android.animation.ObjectAnimator
 import android.app.Activity
+import android.app.Dialog
 import android.appwidget.AppWidgetManager
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
@@ -22,9 +23,7 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.animation.DecelerateInterpolator
-import android.widget.CheckBox
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.*
 import com.afollestad.materialdialogs.MaterialDialog
 import com.google.firebase.messaging.FirebaseMessaging
 import com.mikepenz.materialdrawer.AccountHeader
