@@ -17,4 +17,13 @@
         android:background="#0000"
         android:elevation="0dp"
         android:id="@+id/dialog_close_btn"/>
+
+    <Button
+        android:background="#0000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:text="Non mostrare più"
+        android:id="@+id/dialog_dont_show_again_btn"
+        android:padding="20dp"/>
 </FrameLayout>
