@@ -2,10 +2,12 @@ package com.sharpdroid.registroelettronico.activities
 
 import android.animation.ObjectAnimator
 import android.app.Activity
+import android.app.Dialog
 import android.appwidget.AppWidgetManager
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
@@ -22,9 +24,7 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.animation.DecelerateInterpolator
-import android.widget.CheckBox
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.*
 import com.afollestad.materialdialogs.MaterialDialog
 import com.google.firebase.messaging.FirebaseMessaging
 import com.mikepenz.materialdrawer.AccountHeader
@@ -210,14 +210,46 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        val profile = Profile.getProfile(this)
+        val PREFS_NAME = "com.sharpdroid.registroelettronico.widget.orario.WidgetOrario"
+        if (this.getSharedPreferences(PREFS_NAME, 0).getBoolean("have_dismissed_westudents_banner", false))
+            continueOnResume()
+        else {
 
+            val dialog = Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
+            dialog.setContentView(R.layout.dialog_westudents_banner)
+            val exitBtn: Button = dialog.findViewById(R.id.dialog_close_btn)
+            val imgView: ImageView = dialog.findViewById(R.id.dialog_banner_image)
+            val neverShowAgain : TextView = dialog.findViewById(R.id.dialog_dont_show_again_btn)
+
+            exitBtn.setOnClickListener { dialog.dismiss() }
+            imgView.setOnClickListener {
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.westudents.westudents&gl=IT"))
+                startActivity(browserIntent)
+            }
+            neverShowAgain.setOnClickListener {
+                val prefs = this.getSharedPreferences(PREFS_NAME, 0).edit()
+                prefs.putBoolean("have_dismissed_westudents_banner",true)
+                prefs.apply()
+                dialog.dismiss()
+            }
+
+            dialog.show()
+
+            dialog.setOnDismissListener {
+                continueOnResume()
+            }
+
+        }
+    }
+
+    private fun continueOnResume(){
+        val profile = Profile.getProfile(this)
         when {
-        // First time opening the app
+            // First time opening the app
             PreferenceManager.getDefaultSharedPreferences(this).getBoolean("first_run", true) ->
                 startActivityForResult(Intent(this, Intro::class.java), 1)
 
-        // Last user has logged out
+            // Last user has logged out
             profile == null -> {
                 val otherProfile = DatabaseHelper.database.profilesDao().randomProfile
 
@@ -228,7 +260,7 @@ class MainActivity : AppCompatActivity() {
                     startActivityForResult(Intent(this, LoginActivity::class.java), LOGIN_REQUEST_CODE)
                 }
             }
-        // Everything's OK
+            // Everything's OK
             else -> {
                 updateDrawerHeader()
                 ifHuaweiAlert()
