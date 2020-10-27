@@ -9,6 +9,6 @@
 # Local configuration file (sdk path, etc)
 keystore.properties
 app/fabric.properties
-google-services.json
+app/google-services.json
 src/main/res/drawable-v21/
 app/schemas

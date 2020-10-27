@@ -1,24 +1,8 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url 'https://maven.fabric.io/public' }
-    }
-
-    dependencies {
-        classpath 'io.fabric.tools:gradle:1.+'
-    }
-}
-
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'io.fabric'
-
-repositories {
-    maven { url 'https://maven.fabric.io/public' }
-    mavenCentral()
-}
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 26
@@ -119,10 +103,8 @@ allprojects {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation('com.crashlytics.sdk.android:crashlytics:2.9.1@aar') {
-        transitive = true;
-    }
-    implementation 'com.google.firebase:firebase-core:16.0.8'
+    implementation platform('com.google.firebase:firebase-bom:25.12.0')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation('com.mikepenz:materialdrawer:6.0.7@aar') {
         exclude group: 'com.android.support'
         transitive = true
@@ -179,7 +161,7 @@ dependencies {
     //For Lifecycles Java8 Lanaguage support, add:
     implementation "android.arch.lifecycle:common-java8:1.1.1"
 
-    implementation 'com.google.firebase:firebase-messaging:17.6.0'
+    implementation 'com.google.firebase:firebase-messaging:20.3.0'
     implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
@@ -194,5 +176,3 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:1.10.19'
 }
-
-apply plugin: 'com.google.gms.google-services'
