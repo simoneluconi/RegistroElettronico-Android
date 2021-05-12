@@ -1,4 +1,4 @@
-# Registro Elettronico [![Licenza Creative Commons](https://i.creativecommons.org/l/by-nc/2.5/it/88x31.png)](http://creativecommons.org/licenses/by-nc/2.5/it/) 
+# Registro Elettronico [![Licenza Creative Commons](https://i.creativecommons.org/l/by-nc/3.0/it/88x31.png)](http://creativecommons.org/licenses/by-nc/3.0/it/) 
 
 App non ufficiale sviluppata per accedere al Registro Elettronico Spaggiari.
 
